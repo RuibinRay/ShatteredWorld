@@ -35,9 +35,19 @@ Gamepad: X attack, A jump, RB dash, Y skill, B special, RT awaken, LT guard, LB 
 
 Skills have cooldowns (U under a second, S + U and I a few seconds, S + I seven seconds); the four slots are shown under the health bar.
 
+## Touch controls (`js/touch.js`)
+
+On a phone or tablet the game shows a floating joystick (put a thumb down anywhere on the left half and drag) and action
+buttons on the right. Each button carries the keyboard letter that the game's hints use (J attack, K jump, L dash, U skill,
+I special, O awaken, J+K charge, E talk, Q item, M map, Esc menu) with the action's name in the current language. Down on
+the joystick guards, up aims and climbs, exactly like S and W. Menus work with the joystick plus J (choose) and K (back).
+The game fills the screen, the page cannot scroll or zoom, the first tap tries to go full screen, and a note asks to turn
+the phone sideways while it is upright. Settings > Touch controls: Auto (on touchscreens), On, Off.
+Not on touch: Player vs Player (two players need a keyboard) and typing the unlock code.
+
 ## Settings and languages (`js/settings.js`, `js/i18n.js`, `js/lang/`)
 
-Title screen > **Settings**: Language (English, Español, 简体中文), sound effects volume, music volume. In the story,
+Title screen > **Settings**: Language (English, Español, 简体中文), touch controls, sound effects volume, music volume. In the story,
 Esc > SYSTEM has a Language row too. The choices are kept in the browser (`shattered-worlds-settings-v1`), not in the save.
 
 How it works: every piece of text the game shows goes through `SW.text` / `SW.textW` / `SW.wrap`, and `js/i18n.js`
