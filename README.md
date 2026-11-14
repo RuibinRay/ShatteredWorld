@@ -182,6 +182,26 @@ careful player 13% and the masher 42% of their health; the Hunter costs both abo
 was 190 HP / 19 damage at first and cost the masher 70% alone; it is 160 / 17. The Elite trooper blocks every fourth hit and
 commits to its swings, because a plain trooper is stun-locked and does no damage.
 
+## Side quests (`js/sidequests.js`)
+
+The first four of the design document's ten side quests, given to the game's own cast (the document's versions use
+characters from other series). Esc > **QUESTS** (the ninth tab) lists them; a **!** over someone means a quest to take,
+**?** one to hand in.
+
+| Quest | From | Opens | Task | Reward |
+|---|---|---|---|---|
+| Bun Run | Mags, Deepline Slums | after Act 1 | 5 hot buns to the Slum Kid, the Cartographer, Madame Quill, the Bookie (Pit) and Tamsin (Old Metro) in 100 s | max HP +20 for good, 50 creds |
+| Arena Ladder | the Bookie, Pit Arena | first sparring win | 10 tiers, one fight each, healed first; tier 10 is Anvil (after the Grand Melee) | 40 creds x tier (a quarter on rematches), Syndicate +2, titles at 3 / 6 / 10, a core at 10 |
+| Dry Wells | Wenna, east end of the Ash Dunes | after the Scrap Baron | fix 3 pumps (3 scrap each); each brings raiders (a Husk at night) | 250 creds, 2 gel, Caravan +10 |
+| Odile's Patients | Odile, Scrapton | with the Glowwild filter | 6 glowcaps in the Glowwild (brighter at night) | healing items heal 15% more of max HP, 100 creds |
+
+**Measured:**
+- **Bun Run:** a clean run of the route takes the route bot about 55 s (24 s across the Slums, 10 s through the Market to the Pit, 5.5 s on to the Metro, 2 s to Tamsin, plus stops and screen changes), so the timer is 100 s.
+- **Arena Ladder:** at each tier's recommended level, tiers 1-3 cost the test players 0-5%, tiers 4-9 about 15-50%, and tier 10 (Anvil) kills the masher and costs the careful player about 57%. Two Sump Gangers in one tier cost 70-80% (they shoot), so no tier has more than one.
+- **Dry Wells:** each ambush costs 0-12% at level 9, with a street thug joining from the second pump. A gunner as the third attacker killed the test players. Ambushers spawn on the pump's own ground level; one once landed on an unreachable ledge and the job could not finish.
+- **Placement:** every pump and glowcap is at least 3 tiles from any hero's secret spot (all 25 heroes checked).
+- **Translation:** all text is translated (es, zh) through `tools/i18n/extra.json`; built from whole sentences and `{0}` templates so it translates.
+
 ## The Ember Ledger: the black market (`js/ledger.js`)
 
 The design document's fourth faction: based in the Ash Dunes, hostile until a hidden quest after A2-2, paying in
@@ -386,6 +406,7 @@ again over the night darkness.
 - **Cyber mods and crafting** are in (see "Cyber mods" above).
 - **Heat and factions** are in (see "Heat and factions" above), and the fourth faction, the black market, too (see "The
   Ember Ledger" above).
+- **Side quests:** 4 of the design document's 10 are in (see "Side quests" above).
 - **Day/night and radiation** are in (see "Day/night and radiation" above). Every system in the design document is now built,
   apart from shop hours (only the black market keeps them: it trades at night).
 
@@ -622,6 +643,7 @@ ghost-step escape, air recovery). Those ideas were re-implemented from scratch h
 | `js/heat.js` | Heat (stars, patrols, the Hunter, vents) and factions (standing, perks, jobs boards, the Esc > FACTIONS tab) |
 | `js/daynight.js` | The day/night clock, the night lighting, night Husks, and radiation in the Glowwild and the Crater |
 | `js/ledger.js` | The Ember Ledger: the hidden quest, Sable, the test fight, the night market and Ember Heart |
+| `js/sidequests.js` | Side quests: Bun Run, Arena Ladder, Dry Wells, Odile's Patients, the Esc > QUESTS tab and the ! / ? markers |
 | `js/difficulty.js` | Easy / Medium / Hard / Nightmare, the menus for it, and the easier first bosses |
 | `js/moves.js` | Moves update: the S + I skill for every hero, cooldowns, combo linking, the power mode on S + O, and the effects pass |
 | `tools/story-test.js` | Play-test bot for the tutorials and Act 2 (`ST.all()`, `ST.craterAll()`) |

@@ -203,9 +203,24 @@
   };
   const _dp = ui.drawPause; ui.drawPause = function (ctx, g) {
     _dp(ctx, g);
-    const pm = ui.pm, W = SW.W, all = BASE_TABS.concat(XT.map(t => t.name)), sp = Math.min(68, Math.floor((W - 8) / all.length)), x0 = Math.round((W - sp * all.length + sp) / 2);
+    // laid out from each label's real width (translated labels differ); when they don't all fit, a window of tabs around
+    // the current one is shown, with < > at the ends (nine tabs ran together at a fixed spacing)
+    const pm = ui.pm, W = SW.W, all = BASE_TABS.concat(XT.map(t => t.name)), GAP = 12, room = W - 24;
+    const wd = all.map(t => SW.textW(t)), span = (a, b) => wd.slice(a, b + 1).reduce((s, w) => s + w, 0) + GAP * (b - a);
+    let a = 0, b = all.length - 1;
+    if (span(a, b) > room) {
+      a = b = pm.tab;
+      while (true) { const canL = a > 0 && span(a - 1, b) <= room, canR = b < all.length - 1 && span(a, b + 1) <= room; if (!canL && !canR) break; if (canR && (!canL || b - pm.tab <= pm.tab - a)) b++; else a--; }
+    }
     art.rect(ctx, '#05060c', 0, 0, W, 26);
-    all.forEach((t, i) => { const x = x0 + i * sp; text(ctx, t, x, 12, i === pm.tab ? '#f5c542' : '#5a6078', { align: 'center' }); if (i === pm.tab) art.rect(ctx, '#f5c542', x - Math.min(24, sp / 2 - 4), 23, Math.min(48, sp - 8), 1); });
+    let x = Math.round((W - span(a, b)) / 2);
+    for (let i = a; i <= b; i++) {
+      text(ctx, all[i], x, 12, i === pm.tab ? '#f5c542' : '#5a6078');
+      if (i === pm.tab) art.rect(ctx, '#f5c542', x, 23, wd[i], 1);
+      x += wd[i] + GAP;
+    }
+    if (a > 0) text(ctx, '<', 4, 12, '#8a92b8');
+    if (b < all.length - 1) text(ctx, '>', W - 10, 12, '#8a92b8');
     const tab = pm.tab > 5 ? XT[pm.tab - 6] : null;
     if (tab) tab.draw(ctx, g);
   };
