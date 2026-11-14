@@ -232,7 +232,7 @@
       const i = top + k, y = 76 + k * 9, on = pm.sel === i, own = !!S.mods.own[m.id], eq = S.mods.slots.slice(0, n).indexOf(m.id) >= 0, craft = !own && !m.market && canPay(S, m);
       art.rect(ctx, own ? kcol(m.kind) : '#2a2c40', x0, y + 1, 5, 5);
       text(ctx, (on ? '> ' : '') + m.name, x0 + 9, y, on ? '#f5c542' : own ? '#ffffff' : craft ? '#c8ccd8' : '#5a6078');
-      if (eq) text(ctx, 'ON', x0 + 112, y, '#7dffa0'); else if (craft) text(ctx, 'craft', x0 + 112, y, '#22d3ee'); else if (m.market && !own) text(ctx, 'buy', x0 + 112, y, '#b8643a');
+      if (eq) text(ctx, 'ON', x0 + 112, y, '#7dffa0'); else if (craft) text(ctx, 'craft', x0 + 112, y, '#22d3ee'); else if (m.market && !own) text(ctx, 'Shop', x0 + 112, y, '#b8643a');   // an already translated word (js/lang)
     });
     if (top > 0) text(ctx, '^', x0 + 140, 76, '#8a92b8');
     if (top + ROWS < MODS.length) text(ctx, 'v', x0 + 140, 76 + (ROWS - 1) * 9, '#8a92b8');

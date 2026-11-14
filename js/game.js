@@ -271,6 +271,7 @@
     if (G.scene === 'title') {
       SW.audio.music('title');
       if (G.overlay === 'controls') { if (I.ok() || I.back()) { G.overlay = null; SW.audio.sfx('back'); } return; }
+      if (G.overlay === 'settings') { if (SW.settings) SW.settings.update(G); else G.overlay = null; return; }   // js/settings.js
       const items = ui.titleItems(G);
       if (ui.title.sel >= items.length) ui.title.sel = 0;
       if (I.hit('down')) { ui.title.sel = (ui.title.sel + 1) % items.length; SW.audio.sfx('move'); }
@@ -278,7 +279,7 @@
       if (I.ok()) {
         SW.audio.sfx('select');
         const a = items[ui.title.sel][1];
-        if (a === 'continue') G.continueGame(); else if (a === 'new') { G.scene = 'select'; } else if (a === 'versus') SW.versus.open(G); else G.overlay = 'controls';
+        if (a === 'continue') G.continueGame(); else if (a === 'new') { G.scene = 'select'; } else if (a === 'versus') SW.versus.open(G); else if (a === 'settings') { G.overlay = 'settings'; if (SW.settings) SW.settings.open(G); } else G.overlay = 'controls';
       }
     } else if (G.scene === 'select') {
       ui.selectUpdate(G);
@@ -293,8 +294,9 @@
   // ---------- render ----------
   function render() {
     const ctx = G.ctx;
+    if (SW.view) SW.view.begin(ctx);   // js/i18n.js: the canvas may be rendered at screen resolution (Chinese text)
     ctx.imageSmoothingEnabled = false;
-    if (G.scene === 'title') { ui.drawTitle(ctx, G); if (G.overlay === 'controls') ui.drawControls(ctx); return; }
+    if (G.scene === 'title') { ui.drawTitle(ctx, G); if (G.overlay === 'controls') ui.drawControls(ctx); else if (G.overlay === 'settings' && SW.settings) SW.settings.draw(ctx, G); return; }
     if (G.scene === 'select') { ui.drawSelect(ctx, G); return; }
     if (G.scene === 'prologue') { ui.drawPrologue(ctx, G); return; }
     if (G.scene === 'vs') { SW.versus.draw(ctx, G); return; }

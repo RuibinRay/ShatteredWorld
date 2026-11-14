@@ -454,7 +454,7 @@
       SW.wrap(r.desc, W - 74 - 12).forEach(ln => { text(ctx, ln, 74, y, '#c8ccd8'); y += 8; });
       y += 3;
     });
-    if (h.blurb && y < 226) { text(ctx, 'About', 12, y + 2, '#8a92b8'); SW.wrap(String(h.blurb).replace(/\n/g, ' '), W - 74 - 12).slice(0, 2).forEach((ln, i) => text(ctx, ln, 74, y + 2 + i * 8, '#8a92b8')); }
+    if (h.blurb && y < 226) { text(ctx, 'About', 12, y + 2, '#8a92b8'); SW.wrap(String(SW.i18n ? SW.i18n.tr(h.blurb) : h.blurb).replace(/\n/g, ' '), W - 74 - 12).slice(0, 2).forEach((ln, i) => text(ctx, ln, 74, y + 2 + i * 8, '#8a92b8')); }
     if (f.i === 1 && !f.bot) text(ctx, 'Player 2 keys: arrows = W A S D,   1 2 3 = J K L,   4 5 6 = U I O', W / 2, 249, '#ff8a8a', { align: 'center' });
     text(ctx, 'A / D: other fighter      J / Esc: back', W / 2, 260, '#8a92b8', { align: 'center' });
   }
@@ -469,13 +469,13 @@
       const label = { mode: ['Mode', MODES.find(m => m[0] === V.mode)[1]], diff: ['Bot level', DIFF[V.diff]], dummy: ['Dummy', DUMMY[V.dummy]], stage: ['Stage', STAGES[V.stage][0]], gain: ['Energy gain', GAIN[V.gain][0]], start: ['Choose heroes', ''] };
       const rows = menuRows().map(id => label[id]);
       rows.forEach((r, i) => { const on = V.row === i, y = 70 + i * 16; text(ctx, (on ? '> ' : '  ') + r[0], 130, y, on ? '#f5c542' : '#ffffff'); if (r[1]) text(ctx, '<  ' + r[1] + '  >', 240, y, on ? '#ffffff' : '#8a92b8'); });
-      ui.panel(ctx, 40, 154, 410, 76, '#3a3d55', 0.7);
-      text(ctx, 'P1   W A S D move    J attack   K jump   L dash   U skill   I special   O awaken', 48, 161, '#22d3ee');
-      text(ctx, 'P2   arrows move      1 attack   2 jump   3 dash   4 skill   5 special   6 awaken', 48, 173, '#ff8a8a');
-      text(ctx, '     (P2 uses the number pad, or 7 8 9 0 - = on the top row)', 48, 183, '#8a92b8');
-      text(ctx, 'Ultimate: hold up + special with a full energy bar.  Escape a combo: down + dash.', 48, 196, '#ffffff');
-      text(ctx, 'Guard: hold down. A guard timed just as the hit lands stuns the attacker.', 48, 208, '#ffe066');
-      text(ctx, 'Energy: land hits or take them. Holding attack + jump charges it slowly.', 48, 220, '#ffffff');
+      ui.panel(ctx, 28, 154, 432, 76, '#3a3d55', 0.7);
+      text(ctx, 'P1   W A S D move    J attack   K jump   L dash   U skill   I special   O awaken', 36, 161, '#22d3ee');
+      text(ctx, 'P2   arrows move      1 attack   2 jump   3 dash   4 skill   5 special   6 awaken', 36, 173, '#ff8a8a');
+      text(ctx, '     (P2 uses the number pad, or 7 8 9 0 - = on the top row)', 36, 183, '#8a92b8');
+      text(ctx, 'Ultimate: hold up + special with a full energy bar.  Escape a combo: down + dash.', 36, 196, '#ffffff');
+      text(ctx, 'Guard: hold down. A guard timed just as the hit lands stuns the attacker.', 36, 208, '#ffe066');
+      text(ctx, 'Energy: land hits or take them. Holding attack + jump charges it slowly.', 36, 220, '#ffffff');
       text(ctx, 'W / S: move    A / D: change    J / Enter: next    Esc: back', W / 2, 250, '#8a92b8', { align: 'center' });
     } else if (V.phase === 'pick') {
       const who = V.mode === 'rival' ? 'CHOOSE YOUR HERO' : V.step === 0 ? 'PLAYER 1: CHOOSE YOUR HERO' : V.mode === 'pvb' ? "CHOOSE THE BOT'S HERO" : V.mode === 'train' ? "CHOOSE THE DUMMY'S HERO" : 'PLAYER 2: CHOOSE YOUR HERO';

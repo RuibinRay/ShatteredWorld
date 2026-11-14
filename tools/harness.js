@@ -46,7 +46,8 @@
       G.render();
       const s = scale || 2, r = crop || [0, 0, 480, 270], c = document.createElement('canvas');
       c.width = r[2] * s; c.height = r[3] * s;
-      const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(G.canvas, r[0], r[1], r[2], r[3], 0, 0, c.width, c.height);
+      const k = G.canvas.width / 480;   // the canvas may be rendered at screen resolution (SW.view, Chinese text)
+      const x = c.getContext('2d'); x.imageSmoothingEnabled = k > 1; x.drawImage(G.canvas, r[0] * k, r[1] * k, r[2] * k, r[3] * k, 0, 0, c.width, c.height);
       const blob = await new Promise(res => c.toBlob(res, 'image/png'));
       const resp = await fetch('/__shot/' + name, { method: 'POST', body: blob });
       return resp.status;

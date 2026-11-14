@@ -35,6 +35,27 @@ Gamepad: X attack, A jump, RB dash, Y skill, B special, RT awaken, LT guard, LB 
 
 Skills have cooldowns (U under a second, S + U and I a few seconds, S + I seven seconds); the four slots are shown under the health bar.
 
+## Settings and languages (`js/settings.js`, `js/i18n.js`, `js/lang/`)
+
+Title screen > **Settings**: Language (English, Español, 简体中文), sound effects volume, music volume. In the story,
+Esc > SYSTEM has a Language row too. The choices are kept in the browser (`shattered-worlds-settings-v1`), not in the save.
+
+How it works: every piece of text the game shows goes through `SW.text` / `SW.textW` / `SW.wrap`, and `js/i18n.js`
+looks the English up in the chosen language's dictionary there, so no game file needs changing to be translated.
+Dictionaries are `js/lang/es.js` and `js/lang/zh.js` (only the chosen one is loaded). Spanish keeps the pixel font, which
+now has á é í ó ú ü ñ ¿ ¡. Chinese uses the computer's own Chinese font, and while it is on the game is drawn at screen
+resolution so the characters are sharp (pixel art looks the same). Text that has no translation stays in English.
+
+Adding text or a language:
+1. `tools/i18n-extract.ps1` lists every string in `js/*.js` into `tools/i18n/strings.json`.
+2. New strings go into a batch file in `tools/i18n/src`, translations into `tools/i18n/out` (format in `tools/i18n-build.ps1`),
+   or single fixes into `tools/i18n/extra.json`. `tools/i18n/STYLE.md` and `tools/i18n/glossary.json` keep names and tone
+   consistent.
+3. `tools/i18n-build.ps1` writes `js/lang/<id>.js`.
+4. `tools/i18n-check.js` (in the browser console) walks every menu and conversation and lists what is still in English.
+A new language needs an entry in the list at the top of `js/i18n.js`, and glyphs in `js/core.js` if it uses letters the
+pixel font lacks (otherwise it is drawn with the system font, like Chinese).
+
 ## Difficulty (`js/difficulty.js`)
 
 Chosen on the title screen (the Difficulty line: J or A / D to change) or in Esc > SYSTEM (the last row). It belongs to the
