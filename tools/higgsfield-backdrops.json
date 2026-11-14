@@ -1,0 +1,89 @@
+[
+  {
+    "name": "slums",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: an underground cavern city built inside old metro tunnels. A long row of crooked shanty towers made of stacked corrugated-metal shacks receding in layered dark silhouettes, tangled pipes and hanging cables along the top, tiny warm sodium lamps and a few small magenta and cyan neon signs. Deep navy darkness.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [18, 20, 40] }, { "rgb": [38, 42, 84] }, { "rgb": [150, 52, 120] }, { "rgb": [40, 140, 170] }, { "rgb": [200, 160, 70] } ]
+    }
+  },
+  {
+    "name": "market",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: a crowded underground night market street inside a cavern. A long row of stacked stalls and narrow buildings covered in glowing magenta and cyan neon signs showing abstract glyphs, paper lanterns, steam rising from noodle stalls, cables strung overhead. Deep navy shadows, warm and lively.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [18, 20, 40] }, { "rgb": [48, 36, 90] }, { "rgb": [255, 62, 165] }, { "rgb": [34, 211, 238] }, { "rgb": [245, 197, 66] } ]
+    }
+  },
+  {
+    "name": "metro",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: an abandoned flooded subway tunnel. Repeating concrete arches and pillars receding into darkness, rusted dead train cars on a broken platform, pools of faintly glowing toxic green sludge, dripping water, thin green mist. Very dark teal and green.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [10, 22, 24] }, { "rgb": [24, 52, 52] }, { "rgb": [60, 96, 80] }, { "rgb": [90, 200, 110] }, { "rgb": [150, 110, 70] } ]
+    }
+  },
+  {
+    "name": "medlab",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: interior of a vast sterile high-tech laboratory hall. Long rows of tall glass specimen tanks filled with pale cyan liquid, white wall panels, ceiling pipes, dim monitors, thin red alarm light strips. Cold pale grey-blue and white with cyan and a little gold.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [43, 47, 58] }, { "rgb": [120, 132, 150] }, { "rgb": [200, 206, 214] }, { "rgb": [111, 211, 232] }, { "rgb": [200, 70, 70] } ]
+    }
+  },
+  {
+    "name": "skyport",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted colours so foreground sprites stand out. Crisp chunky pixels, limited palette, retro console game art. Scene: a wealthy floating sky city at golden hour seen from an airship dock. Elegant white and gold towers on anti-gravity pylons, maglev rail bridges, moored airships, hanging gardens, a sea of clouds below, clear cyan sky fading to warm gold at the horizon.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [244, 241, 234] }, { "rgb": [217, 180, 90] }, { "rgb": [111, 211, 232] }, { "rgb": [43, 47, 58] }, { "rgb": [150, 190, 210] } ]
+    }
+  },
+  {
+    "name": "surface",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted colours so foreground sprites stand out. Crisp chunky pixels, limited palette, retro console game art. Scene: a post-apocalyptic desert plain in hazy late afternoon. Wrecked skyscraper ruins half buried in sand, a scrap-metal shanty town and slow wind turbines on the horizon, rust-orange dust haze, teal-grey sky, and high above in the sky the huge dark silhouette of a floating city held up by pylons.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [95, 138, 139] }, { "rgb": [200, 100, 42] }, { "rgb": [140, 106, 74] }, { "rgb": [232, 196, 138] }, { "rgb": [60, 50, 54] } ]
+    }
+  },
+  {
+    "name": "pit",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling fighting game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no text, no UI. Muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: interior of an underground cage-fighting arena. Tiered stands packed with a cheering crowd shown only as tiny dark silhouettes behind chain-link fencing, big glowing betting screens showing abstract bars, spotlights cutting through smoke, magenta and cyan neon strips. Deep navy darkness.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [14, 14, 30] }, { "rgb": [44, 36, 80] }, { "rgb": [255, 62, 165] }, { "rgb": [34, 211, 238] }, { "rgb": [245, 197, 66] } ]
+    }
+  },
+  {
+    "name": "title",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art key art for a cyberpunk action RPG title screen, no text, no logo, no UI, no characters. A dramatic vertical cross-section of a ruined future Earth in three stacked layers: at the top a gleaming white and gold city floating above the clouds on anti-gravity pylons, in the middle a rust-orange desert wasteland with a huge glowing violet crater, at the bottom a neon-lit underground city in dark tunnels with magenta and cyan signs. A jagged violet energy beam tears vertically through all three layers. Dark, cinematic, moody. Crisp chunky pixels, limited palette, retro console game art.",
+      "resolution": "1k", "aspect_ratio": "16:9", "output_format": "png"
+    }
+  },
+  {
+    "name": "mem_kael",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art cutscene illustration, dreamlike half-remembered memory with a soft glow, no text, no UI. A vast sea of golden steppe grass bending in the wind under towering violet thunderheads with forked amber lightning, a small silhouetted boy running joyfully ahead of the storm with a long scarf streaming behind him, tiny tents and banners of a nomad camp far on the horizon. Warm amber and deep violet. Crisp chunky pixels, limited palette, retro console game art.",
+      "resolution": "1k", "aspect_ratio": "16:9", "output_format": "png"
+    }
+  },
+  {
+    "name": "mem_nyra",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art cutscene illustration, dreamlike half-remembered memory with a soft glow, no text, no UI. A frozen harbour at blue dusk, old sailing ships locked in the ice, a green and blue aurora across the sky, a lone silhouetted woman standing at an open forge of pale blue fire on the pier, drawing a long glass-like blade of ice up out of the frozen sea. Cold blues and pale cyan with a little warm lantern light. Crisp chunky pixels, limited palette, retro console game art.",
+      "resolution": "1k", "aspect_ratio": "16:9", "output_format": "png"
+    }
+  }
+]

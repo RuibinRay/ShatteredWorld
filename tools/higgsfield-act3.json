@@ -1,0 +1,26 @@
+[
+  {
+    "name": "bg_skylift",
+    "model": "recraft_v4_1", "aspect_ratio": "16:9", "resolution": "1k",
+    "colors": ["#2a3a78", "#6fd3e8", "#f6e3b4", "#d9b45a", "#8f8a7c"],
+    "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: high above the clouds at dawn, a giant steel cable-lift line climbing diagonally through layered sunlit cloud banks. Tall lattice pylons with blinking lamps, thick cables, small empty gondolas far away, and the faint outline of a floating white-and-gold city on anti-gravity pylons high on the horizon. Below the clouds a rusty junk town glows through gaps. Pale cyan sky, cream and peach clouds, small gold lights."
+  },
+  {
+    "name": "bg_noble",
+    "model": "recraft_v4_1", "aspect_ratio": "16:9", "resolution": "1k",
+    "colors": ["#1c2440", "#3c4a7a", "#e8e2d0", "#d9b45a", "#7ae0c8"],
+    "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: the rich upper ring of a floating city at dusk. Grand white marble and gold facades with tall arched windows, terraced hanging gardens, gilded domes, blank holographic banners in pale teal, slim surveillance relay masts with glowing dishes, a monorail arch, and far away a single enormous glass tower rising into the clouds. Navy dusk sky, cream stone, warm gold window light, a little teal."
+  },
+  {
+    "name": "bg_spire",
+    "model": "recraft_v4_1", "aspect_ratio": "16:9", "resolution": "1k",
+    "colors": ["#0a1030", "#2a3a78", "#c8ccdc", "#d9b45a", "#6fd3e8"],
+    "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: inside a colossal corporate glass tower at night. Tall gold-framed windows show a moonlit sea of clouds outside; between them rows of glowing cyan server columns, sealed laboratory pods, suspended walkways and glass elevator shafts, clean white ceiling ribs and cold spotlights. Deep navy and steel blue, silver, cyan glow, thin gold trim."
+  },
+  {
+    "name": "bg_core",
+    "model": "recraft_v4_1", "aspect_ratio": "16:9", "resolution": "1k",
+    "colors": ["#120a26", "#3a1f5c", "#b48cff", "#e8d8ff", "#c8642a"],
+    "prompt": "16-bit pixel art background layer for a 2D side-scrolling action game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: the vast machine chamber at the heart of a tower. A colossal ring-shaped engine wheel stands in the middle, crackling with violet energy arcs; thick cables and pipes run from it in every direction, broken support girders, floating shards of glass and rock, and through cracks in the walls a torn night sky with drifting stars. Very dark indigo and violet, bright lilac glow, a touch of rust orange."
+  }
+]

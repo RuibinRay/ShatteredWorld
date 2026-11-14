@@ -1,0 +1,29 @@
+[
+  {
+    "name": "vs_crater",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling fighting game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: the rim of a colossal impact crater in a desert wasteland at night. Far away in the middle of the crater a jagged pillar of violet energy rises into the sky, lighting drifting dust and slowly floating shards of rock. Broken skyscraper ruins lean along the rim, low purple storm clouds, a few faint stars. Deep indigo and violet with a little rust orange.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [18, 10, 38] }, { "rgb": [58, 31, 92] }, { "rgb": [180, 140, 255] }, { "rgb": [200, 100, 42] }, { "rgb": [90, 70, 110] } ]
+    }
+  },
+  {
+    "name": "vs_spire",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling fighting game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: a wealthy floating sky city at night seen from a high rooftop terrace. Elegant white and gold towers with warm lit windows standing on anti-gravity pylons, maglev rail bridges, moored airships hung with lanterns, a huge full moon behind thin clouds, a sea of moonlit cloud below. Deep navy blue and silver with small gold lights.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [10, 16, 48] }, { "rgb": [42, 58, 120] }, { "rgb": [200, 206, 224] }, { "rgb": [217, 180, 90] }, { "rgb": [111, 211, 232] } ]
+    }
+  },
+  {
+    "name": "vs_foundry",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling fighting game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: interior of a vast underground foundry. Giant hanging crucibles pouring glowing molten metal, falls of lava running into channels, heavy chains, catwalks and silhouetted gantry cranes, huge cogwheels, drifting sparks and heat haze. Very dark brown-black with glowing orange and red.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [20, 6, 6] }, { "rgb": [58, 18, 8] }, { "rgb": [168, 80, 42] }, { "rgb": [255, 138, 58] }, { "rgb": [255, 210, 122] } ]
+    }
+  }
+]
