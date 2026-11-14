@@ -8,7 +8,9 @@ This is the **first playable build: Act 1 for both heroes** (the GDD's vertical 
 
 ## Play
 
-Open `index.html` in a browser. No install, no build step.
+**Play in the browser: https://ruibinray.github.io/ShatteredWorld/** (GitHub Pages, deployed from `main`).
+
+Or open `index.html` in a browser. No install, no build step.
 
 (Optional local server: `powershell -ExecutionPolicy Bypass -File tools/serve.ps1`, then http://localhost:8765)
 
