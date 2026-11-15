@@ -7,6 +7,8 @@
 //   with ?debug in the address. The public site ignores them, and the menus only mention F9 where it works (ui.js).
 //   The Spire's harvest ledger (a step of A3-5) sits mid-fight in the Shard Vault and was easy to walk past: a hint now
 //   points at it until it is read.
+//   Full-height gates could be climbed over the top of the map with Magnet Grip (found by the autoplay bot): their solid
+//   part now reaches far above the map, and the hero cannot climb more than 2 tiles above the map's top edge.
 (function () {
   const SW = window.SW, G = SW.game, Z = SW.zones, T = 16;
   const host = location.hostname;
@@ -22,6 +24,19 @@
       z.hints.push(hint);
     };
   }
+  // Gates that reach the top of the map (the Noble Ring's Chancery gate, both Skylift gates, the finale's) could be
+  // climbed: Kael's Magnet Grip walked up the gate, over its top edge and down the far side, skipping the three relays.
+  // Their solid part now reaches far up into the sky (the picture is unchanged), so nothing gets over.
+  // Raising the gate alone did not stop it (a wall-jump climb has no end), so the story's maps also get a ceiling: the
+  // hero's feet stay within 2 tiles of the top edge. Ordinary jumps never get that high.
+  const PU = SW.Player.prototype, _pu = PU.update;
+  PU.update = function (g) { const r = _pu.apply(this, arguments); if (g.scene === 'play' && this.y < -2 * T) { this.y = -2 * T; if (this.vy < 0) this.vy = 0; } return r; };
+  const _gate = SW.Zone.prototype.gate;
+  SW.Zone.prototype.gate = function (tx, ty, th, o) {
+    const g = _gate.apply(this, arguments);
+    if (ty === 0 && g && g.rect && !g.horiz) { g.rect.y -= 64 * T; g.rect.h += 64 * T; }
+    return g;
+  };
   const def = Z.medlab;
   if (def) {
     const b = def.build;
