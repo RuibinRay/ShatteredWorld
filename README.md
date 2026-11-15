@@ -264,6 +264,10 @@ again over the night darkness.
 
 ## Voices and sound signatures (`js/voice.js`)
 
+**Switched off.** `index.html` no longer loads `js/voice.js`: heroes have no spoken voices, awakening callouts, element
+sound layers or hit grunts, on every platform. The game's own sound effects and music are unchanged. The file stays in the
+repository; adding its `<script>` line back after `js/finisher.js` turns it on again. What it did:
+
 - **English by default.** The finisher's spoken line starts in English (M during a finisher still switches English, Chinese,
   Japanese or off, and the choice is kept). Heroes also call out their awakening by name; the ultimate itself is silent.
 - **A voice for every hero.** The device's English voices are shared out between the heroes (deeper-sounding voices for
