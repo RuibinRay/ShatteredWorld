@@ -12,7 +12,9 @@
   const eat = () => { I.prev = Object.assign({}, I.now); };   // the keypress is used up: nothing else sees it this frame
 
   // ---------- language ----------
-  const loading = {};
+  // which js/lang/<id>.js files have loaded. Not L.dict[id]: other scripts add a few lines of their own to a language at
+  // boot (SW.i18n.add), so a dictionary can exist before its file is loaded.
+  const loading = {}, loaded = L.files = L.files || {};
   let note = '';
   function fixData() {   // text the game types out letter by letter from the source: give it the translated source
     if (!D._prologueEn) D._prologueEn = D.prologue.slice();
@@ -26,12 +28,12 @@
   function setLang(id) {
     if (!L.langs.some(l => l.id === id)) id = 'en';
     S.lang = id; save();
-    if (id === 'en' || L.dict[id]) { apply(id); return; }
+    if (id === 'en' || loaded[id]) { apply(id); return; }
     if (loading[id]) return;
     loading[id] = true; note = '...';
     const sc = document.createElement('script');
     sc.src = 'js/lang/' + id + '.js';
-    sc.onload = () => { loading[id] = false; apply(id); };
+    sc.onload = () => { loading[id] = false; loaded[id] = true; apply(id); };
     sc.onerror = () => { loading[id] = false; note = 'Translation file missing: js/lang/' + id + '.js'; };
     document.head.appendChild(sc);
   }

@@ -10,8 +10,9 @@
   const SW = window.SW, G = SW.game, D = SW.data, L = SW.i18n, ui = SW.ui, V = SW.versus, T = window.T;
   const IC = window.IC = {};
   const loadLang = id => new Promise(res => {
-    if (id === 'en' || L.dict[id]) return res();
-    const s = document.createElement('script'); s.src = 'js/lang/' + id + '.js?' + Date.now(); s.onload = res; s.onerror = res; document.head.appendChild(s);
+    const files = L.files = L.files || {};   // not L.dict[id]: other scripts add a few lines to a language at boot
+    if (id === 'en' || files[id]) return res();
+    const s = document.createElement('script'); s.src = 'js/lang/' + id + '.js?' + Date.now(); s.onload = () => { files[id] = true; res(); }; s.onerror = res; document.head.appendChild(s);
   });
   const draw = () => { try { G.render(); } catch (e) { IC.errors.push(String(e).slice(0, 160)); } };
   // T.boot clears localStorage (saves, the unlock profile, settings): keep a copy and put it all back afterwards
