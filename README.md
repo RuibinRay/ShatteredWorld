@@ -372,6 +372,10 @@ again over the night darkness.
   hero, then on another of the same team, swaps them). When a hero falls or loses on time, that side's next hero steps in;
   the hero still standing stays with the health they had left plus 20% (and their energy). The last team standing wins.
   The three squares under each health bar show the team: out, fighting, waiting.
+  **Arcade** (one player, 1 vs 1 or 3 vs 3): six stages against bots that get harder (Easy, Easy, Normal, Normal, Hard,
+  Hard); each stage is a full match against a random hero or team, and the last is led by a legend at the Aurelia Spire.
+  A lost stage can be continued (the stage is fought again; continues are counted). The clock counts fighting time
+  only. The best clear for each format (fewest continues, then fastest) is kept in localStorage `shattered-worlds-arcade-v1`.
   The first ten heroes and the newest five are available in Versus whether or not they are unlocked in the story; the ten legends must be earned (see above). Player 2: arrow keys, and 1-6 on the number pad
   (or 7 8 9 0 - = on the top row) for attack, jump, dash, skill, special, awaken.
   Versus has its own energy rules: energy comes mainly from landing hits (and from being hit), and holding attack + jump

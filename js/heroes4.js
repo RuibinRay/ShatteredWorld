@@ -565,7 +565,9 @@
       if (img) ctx.drawImage(img, h.gridX || 27, 14, cw - 4, ch - 2, x + 1, y + 1, cw - 4, ch - 2);   // gridX: where the tile's window starts in a portrait whose face is off-centre
       else { art.rect(ctx, art.shade(h.color, 0.22), x + 1, y + 1, cw - 4, ch - 2); const k = ch < 80 ? 1.5 : 2; ctx.translate(x + cw / 2 - 1, y + ch - (ch < 80 ? 13 : 16)); ctx.scale(k, k); art.draw(ctx, h.sheet, on ? 'run' : 'idle', on ? Math.floor(SW.frame / 5) % 8 : Math.floor(SW.frame / 28) % 2, 0, 0, false); }
       ctx.restore(); ctx.globalAlpha = 0.78; art.rect(ctx, '#05060c', x + 1, y + ch - 12, cw - 4, 11); ctx.globalAlpha = 1;
-      text(ctx, open ? h.name.toUpperCase() : 'LOCKED', x + cw / 2 - 1, y + ch - 11, open ? (on ? h.color : '#c8ccd8') : '#ff5a5a', { align: 'center' });
+      // a locked card says LOCKED, or shows a padlock when the translated word is wider than the card (Spanish BLOQUEADO)
+      if (open || SW.textW('LOCKED') <= cw - 6) text(ctx, open ? h.name.toUpperCase() : 'LOCKED', x + cw / 2 - 1, y + ch - 11, open ? (on ? h.color : '#c8ccd8') : '#ff5a5a', { align: 'center' });
+      else { const px = x + cw / 2 - 4, py = y + ch - 11; art.rect(ctx, '#ff5a5a', px + 1, py, 5, 1); art.rect(ctx, '#ff5a5a', px + 1, py, 1, 4); art.rect(ctx, '#ff5a5a', px + 5, py, 1, 4); art.rect(ctx, '#ff5a5a', px, py + 4, 7, 5); art.rect(ctx, '#05060c', px + 3, py + 5, 1, 2); }
       if (h.legend) { art.rect(ctx, '#f5c542', x + cw - 9, y + 3, 5, 5); art.rect(ctx, '#fff7d0', x + cw - 8, y + 4, 3, 3); }   // legend mark
       who.forEach(k => { if (o.tags[k]) { ui.panel(ctx, x + 1 + k * 22, y + 2, 20, 11, o.colors[k], 0.9); text(ctx, o.tags[k], x + 11 + k * 22, y + 4, '#ffffff', { align: 'center' }); } });
     });

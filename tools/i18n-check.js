@@ -44,7 +44,10 @@
     for (const h of heroes) {
       T.boot(h); T.step(5); if (ui.dlg.active) T.skip(); draw();
       T.press('pause');
-      for (let tab = 0; tab < 12; tab++) { ui.pm.tab = tab; for (let s = 0; s < 8; s++) { ui.pm.sel = s; draw(); } }
+      for (let tab = 0; tab < 12; tab++) {   // the UPGRADES tab (5) lists only D.upgrades: the game never selects past its end
+        const rows = tab === 5 && D.upgrades ? Math.min(8, D.upgrades.length) : 8;
+        ui.pm.tab = tab; for (let s = 0; s < rows; s++) { ui.pm.sel = s; draw(); }
+      }
       G.overlay = null;
       if (h === heroes[0]) for (const id of Object.keys(D.dialogue)) {
         try { G.say(id); } catch (e) { continue; }

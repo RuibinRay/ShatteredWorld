@@ -14,7 +14,7 @@
   const V = SW.versus = { phase: 'menu', mode: 'pvb', diff: 1, stage: 0, gain: 1, row: 0, pick: [0, 1], step: 0, f: [], wins: [0, 0], round: 1, t: 0, cur: null,
     dummy: 0, endless: true, showMoves: true, paused: false, pRow: 0, pPage: null, pWho: 0, diff2: 1, speed: 0, fmt: 0, team: [[], []], ti: [0, 0], oRow: 0, oCol: 0, oMark: null };
   // Bot vs Bot: nobody plays, two bots fight each other (each with its own level); Esc > Speed runs it faster
-  const MODES = [['pvb', 'Player vs Bot'], ['pvp', 'Player vs Player'], ['bvb', 'Bot vs Bot'], ['train', 'Training'], ['rival', 'Rival Duel']];   // while a duel runs V.mode is 'duel'
+  const MODES = [['pvb', 'Player vs Bot'], ['pvp', 'Player vs Player'], ['bvb', 'Bot vs Bot'], ['arcade', 'Arcade'], ['train', 'Training'], ['rival', 'Rival Duel']];   // while a duel runs V.mode is 'duel'
   const SPEEDS = [['Normal', 1], ['Fast', 2], ['Very fast', 4]];
   const lvOf = f => (f.lv !== undefined ? f.lv : V.diff);   // a bot's level: its own in Bot vs Bot, else the menu's
   const isBvb = () => V.mode === 'bvb';
@@ -22,8 +22,16 @@
   // three heroes and sets their order; when a hero falls (or loses on time) the next one steps in, and the hero still standing
   // stays in with the health they had left plus TEAM_HEAL of their maximum (energy carries over too). The last team with a hero wins.
   const FORMATS = ['1 vs 1', '3 vs 3'], TEAM_HEAL = 0.2;
-  const team3 = () => V.fmt === 1 && (V.mode === 'pvb' || V.mode === 'pvp' || V.mode === 'bvb');
-  const teamName = s => (isBvb() ? 'BOT ' + (s + 1) : s === 1 && V.mode === 'pvb' ? 'BOT' : 'PLAYER ' + (s + 1));
+  const team3 = () => V.fmt === 1 && (V.mode === 'pvb' || V.mode === 'pvp' || V.mode === 'bvb' || V.mode === 'arcade');
+  const teamName = s => (isBvb() ? 'BOT ' + (s + 1) : s === 1 && (V.mode === 'pvb' || V.mode === 'arcade') ? 'BOT' : 'PLAYER ' + (s + 1));
+  // Arcade: one player against a ladder of RUNGS bot opponents (1 vs 1 or 3 vs 3), each a full match. The bots get harder
+  // (RUNG_LV: Easy, Easy, Normal, Normal, Hard, Hard) and the last one is a legend (in 3 vs 3, the last of its team).
+  // A lost match can be continued (fight that stage again; continues are counted). The clock counts fighting time only.
+  // Best clear per format (fewest continues, then fastest) is kept in localStorage ARC_KEY.
+  const RUNGS = 6, RUNG_LV = [0, 0, 1, 1, 2, 2], ARC_KEY = 'shattered-worlds-arcade-v1';
+  const isArc = () => V.mode === 'arcade';
+  const arcBest = () => { try { return JSON.parse(localStorage.getItem(ARC_KEY)) || {}; } catch (e) { return {}; } };
+  const clock = n => { const s = n / 60, m = Math.floor(s / 60), r = s - m * 60; return (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r.toFixed(2); };
   const DUMMY = ['Stands still', 'Guards', 'Attacks', 'Fights back'];   // what the Training dummy does
   const STAGES = [['Random', null], ['Pit Arena', 'arena'], ['Deepline Slums', 'slums'], ['Neon Market', 'market'], ['Old Metro', 'metro'], ['Med-Lab', 'lab'], ['Skyport', 'sky'], ['Rust Flats', 'surface']];
   // three arenas that exist only here (backdrops: assets/bg/vs_*.png, prompts in tools/higgsfield-arenas.json)
@@ -49,8 +57,9 @@
   // The numbers come from a bot tournament among those fifteen (every pair, both sides, bots on Normal): untuned, their
   // win rates ran from 30% to 77%; with this table they run from about 41% to 59%.
   // To re-measure after changing heroes, see "Versus balance" in the README.
+  // Brakk 1.1 -> 1.2 after a recorded tournament: at 1.1 he won 40% of 112 rounds against the other fourteen (1.2: 51%).
   V.tune = {
-    kael: 1.3, nyra: 1.05, fenn: 0.65, isolde: 0.7, brakk: 1.1, pyra: 1.15, gale: 1.35, ashka: 0.95, dyna: 1.35, vesper: 1.05,
+    kael: 1.3, nyra: 1.05, fenn: 0.65, isolde: 0.7, brakk: 1.2, pyra: 1.15, gale: 1.35, ashka: 0.95, dyna: 1.35, vesper: 1.05,
     kiri: 1.05, tarn: 0.95, maren: 0.9, yara: 1.15, brann: 0.75
   };
   const KEYS = [
@@ -134,7 +143,38 @@
   function sideFighter(s, idx) {   // side 0 (left) or 1 (right) of a Versus match, hero by its index in D.heroOrder
     const f = makeFighter(s, D.heroOrder[idx], s === 0 ? isBvb() : V.mode !== 'pvp');
     if (isBvb()) f.lv = s ? V.diff2 : V.diff;
+    if (isArc() && s === 1) f.lv = RUNG_LV[V.arc.rung];
     return f;
+  }
+  // ---------- arcade ladder ----------
+  function startArcade() {   // the player's hero or team is chosen (V.pick[0] / V.team[0]): draw up the six opponents
+    const n = team3() ? 3 : 1, mine = team3() ? V.team[0] : [V.pick[0]];
+    const all = D.heroOrder.map((id, i) => i), shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0, x = a[i]; a[i] = a[j]; a[j] = x; } return a; };
+    let pool = all.filter(i => !D.heroes[D.heroOrder[i]].legend && mine.indexOf(i) < 0);
+    if (pool.length < n) pool = all.filter(i => mine.indexOf(i) < 0);
+    const legends = all.filter(i => D.heroes[D.heroOrder[i]].legend), boss = legends.length ? legends[Math.random() * legends.length | 0] : pool[0];
+    let deck = [];
+    const draw = team => { for (let tries = 0; tries < 99; tries++) { if (!deck.length) deck = shuffle(pool.slice()); const x = deck.pop(); if (team.indexOf(x) < 0 && x !== boss) return x; } return pool[0]; };
+    const opp = [];
+    for (let r = 0; r < RUNGS; r++) { const t = []; while (t.length < (r === RUNGS - 1 ? n - 1 : n)) t.push(draw(t)); if (r === RUNGS - 1) t.push(boss); opp.push(t); }
+    V.arc = { rung: 0, opp, time: 0, cont: 0, mine: mine.slice(), rec: false };
+    V.phase = 'ladder'; V.t = 0;
+  }
+  function arcFight() {   // the current rung's match
+    const o = V.arc.opp[V.arc.rung];
+    if (team3()) V.team = [V.arc.mine.slice(), o.slice()]; else V.pick = [V.arc.mine[0], o[0]];
+    startMatch();
+  }
+  function arcResult() {   // after a finished match: next rung, the clear screen, or the continue screen
+    const A = V.arc, won = V.champ === 0;
+    quit(true);
+    if (!won) { V.phase = 'arcOver'; V.t = 0; return; }
+    A.rung++;
+    if (A.rung < RUNGS) { V.phase = 'ladder'; V.t = 0; return; }
+    const best = arcBest(), k = team3() ? '3v3' : '1v1', b = best[k];
+    A.rec = !b || A.cont < b.cont || (A.cont === b.cont && A.time < b.t);
+    if (A.rec) { best[k] = { t: A.time, cont: A.cont, heroes: A.mine.map(i => D.heroOrder[i]) }; try { localStorage.setItem(ARC_KEY, JSON.stringify(best)); } catch (e) { /* private window */ } }
+    V.phase = 'arcClear'; V.t = 0; SW.audio.sfx('level'); SW.audio.sfx('shard');
   }
   function nextFighters(out) {   // 3 vs 3: the sides in `out` lost this fight; their next heroes step in, the other side's hero stays
     const keep = V.f.map(f => { if (out.indexOf(f.i) >= 0) return null; G.state = f.state; return { hp: f.state.hp, en: f.state.energy }; });
@@ -144,7 +184,8 @@
     G.state = V.f[0].state;
   }
   function startMatch() {
-    const th = STAGES[V.stage][1] || STAGES[1 + (Math.random() * (STAGES.length - 1) | 0)][1];
+    const th = isArc() ? (V.arc.rung === RUNGS - 1 ? 'vs_spire' : STAGES[1 + (Math.random() * (STAGES.length - 1) | 0)][1])   // arcade: the final fight is at the Aurelia Spire
+      : STAGES[V.stage][1] || STAGES[1 + (Math.random() * (STAGES.length - 1) | 0)][1];
     SW.zones.versus.theme = th;
     V.ti = [0, 0];
     V.f = [0, 1].map(s => sideFighter(s, team3() ? V.team[s][0] : V.pick[s]));
@@ -306,6 +347,7 @@
     if (V.phase === 'intro') { if (V.t > 80) { V.phase = 'fight'; V.t = 0; SW.audio.sfx('roar'); } }
     else if (V.phase === 'fight') {
       if (V.mode !== 'train' && V.mode !== 'duel') V.timer--;
+      if (isArc()) V.arc.time++;   // the arcade clock: fighting time only
       const dead = [A.dead, B.dead], out = V.timer <= 0;
       if (dead[0] || dead[1] || out) {
         const r = V.f.map(f => { G.state = f.state; return Math.max(0, f.state.hp) / f.p.hpMax(); });
@@ -331,7 +373,7 @@
   }
   // ---------- menu rows, pause, move list ----------
   const menuRows = () => (V.mode === 'pvb' ? ['mode', 'fmt', 'diff', 'stage', 'gain', 'start'] : V.mode === 'pvp' ? ['mode', 'fmt', 'stage', 'gain', 'start'] : V.mode === 'rival' ? ['mode', 'diff', 'gain', 'start']
-    : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start']
+    : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start'] : isArc() ? ['mode', 'fmt', 'gain', 'start']
     : V.dummy === 3 ? ['mode', 'dummy', 'diff', 'stage', 'start'] : ['mode', 'dummy', 'stage', 'start']);
   const pauseItems = () => (V.mode === 'train' ? ['resume', 'dummy', 'endless', 'onscreen', 'reset', 'moves', 'quit'] : V.mode === 'duel' && !V.duelO.canQuit ? ['resume', 'moves']
     : isBvb() ? ['resume', 'speed', 'moves', 'quit'] : ['resume', 'moves', 'quit']);
@@ -397,20 +439,20 @@
         else if (ok && tm[V.step].indexOf(V.pick[V.step]) >= 0) SW.audio.sfx('deny');   // already on this team
         else if (ok) {
           SW.audio.sfx('select'); tm[V.step].push(V.pick[V.step]);
-          if (tm[V.step].length === 3) { if (V.step === 0) V.step = 1; else { V.phase = 'order'; V.oRow = 2; V.oCol = 0; V.oMark = null; } }
+          if (tm[V.step].length === 3) { if (V.step === 0 && !isArc()) V.step = 1; else {   /* arcade: only the player's team is picked */ V.phase = 'order'; V.oRow = 2; V.oCol = 0; V.oMark = null; } }
         }
       } else if (back) { SW.audio.sfx('back'); if (V.step) V.step = 0; else V.phase = 'menu'; }
       else if (ok) {
         SW.audio.sfx('select');
         if (V.mode === 'rival') { const hero = D.heroOrder[V.pick[0]]; V.duel({ hero, rival: D.heroes[hero].route === 'kael' ? 'nyra' : 'kael', diff: V.diff, title: 'THE CRATER' }); }   // the lead hero of the other road
+        else if (isArc()) startArcade();
         else if (V.step === 0) V.step = 1; else startMatch();
       }
     } else if (V.phase === 'order') {   // 3 vs 3 team order: W / S team row or Start, A / D slot, J on two heroes of a team swaps them
-      if (up) { V.oRow = (V.oRow + 2) % 3; SW.audio.sfx('move'); }
-      if (down) { V.oRow = (V.oRow + 1) % 3; SW.audio.sfx('move'); }
+      if (up || down) { V.oRow = isArc() ? (V.oRow ? 0 : 2) : (V.oRow + (up ? 2 : 1)) % 3; SW.audio.sfx('move'); }   // arcade: only the player's team row
       if ((left || right) && V.oRow < 2) { V.oCol = (V.oCol + (right ? 1 : 2)) % 3; SW.audio.sfx('move'); }
-      if (back) { SW.audio.sfx('back'); if (V.oMark) V.oMark = null; else { V.phase = 'pick'; V.step = 1; V.team[1].pop(); } }
-      else if (ok && V.oRow === 2) { SW.audio.sfx('select'); startMatch(); }
+      if (back) { SW.audio.sfx('back'); if (V.oMark) V.oMark = null; else { V.phase = 'pick'; V.step = isArc() ? 0 : 1; V.team[V.step].pop(); } }
+      else if (ok && V.oRow === 2) { SW.audio.sfx('select'); if (isArc()) startArcade(); else startMatch(); }
       else if (ok && (!V.oMark || V.oMark[0] !== V.oRow)) { V.oMark = [V.oRow, V.oCol]; SW.audio.sfx('select'); }
       else if (ok) { const t = V.team[V.oRow], a = V.oMark[1], x = t[a]; t[a] = t[V.oCol]; t[V.oCol] = x; V.oMark = null; SW.audio.sfx('select'); }
     } else if (V.phase === 'duelEnd') {
@@ -419,6 +461,20 @@
       V.t++;
       if (V.t > 30 && ok) { SW.audio.sfx('select'); startRound(); }
       else if (back && V.duelO.canQuit) endDuel('lose');
+    } else if (V.phase === 'ladder') {   // arcade: the tower before each stage
+      V.t++;
+      if (V.t > 20 && ok) { SW.audio.sfx('select'); arcFight(); }
+      else if (back) { SW.audio.sfx('back'); V.phase = 'menu'; }
+    } else if (V.phase === 'arcOver') {
+      V.t++;
+      if (V.t > 30 && ok) { SW.audio.sfx('select'); V.arc.cont++; V.phase = 'ladder'; V.t = 0; }
+      else if (back) { SW.audio.sfx('back'); V.phase = 'menu'; }
+    } else if (V.phase === 'arcClear') {
+      V.t++;
+      if (V.t > 60 && (ok || back)) { SW.audio.sfx('back'); V.phase = 'menu'; }
+    } else if (V.phase === 'result' && isArc()) {
+      V.t++;
+      if (V.t > 40 && ok) { SW.audio.sfx('select'); arcResult(); }
     } else if (V.phase === 'result') {
       V.t++;
       if (V.t > 30 && ok) { SW.audio.sfx('select'); if (team3()) startMatch(); else { V.wins = [0, 0]; V.round = 1; V.unlocked = null; startRound(); SW.audio.music('boss'); } }
@@ -467,6 +523,7 @@
     } else if (V.mode === 'duel') text(ctx, 'DUEL', W / 2, 8, '#f5c542', { align: 'center' });   // no clock: it ends when one of them falls
     if (isBvb() && !V.paused && V.phase !== 'result') text(ctx, 'BOT VS BOT    ' + DIFF[V.diff] + ' - ' + DIFF[V.diff2] + '    Speed: ' + SPEEDS[V.speed][0] + '    Esc: speed and the move list', W / 2, 259, '#8a92b8', { align: 'center' });
     if (V.mode !== 'train' && V.mode !== 'duel') text(ctx, String(Math.max(0, Math.ceil(V.timer / 60))), W / 2, 6, V.timer < 600 ? '#ff5a5a' : '#ffffff', { align: 'center', scale: 2 });
+    if (isArc() && V.arc) text(ctx, V.arc.rung === RUNGS - 1 ? 'FINAL STAGE' : 'STAGE ' + (V.arc.rung + 1) + ' / ' + RUNGS, W / 2, 24, V.arc.rung === RUNGS - 1 ? '#ff5a5a' : '#f5c542', { align: 'center' });
     const big = (s, c, sub) => { art.rect(ctx, '#05060c', 0, 96, W, sub ? 52 : 40); text(ctx, s, W / 2, 104, c, { align: 'center', scale: 3 }); if (sub) text(ctx, sub, W / 2, 134, '#ffffff', { align: 'center' }); };
     if (V.phase === 'intro') big(V.t < 50 ? (V.mode === 'duel' ? V.duelO.title || 'RIVAL DUEL' : 'ROUND ' + V.round) : 'FIGHT!', V.t < 50 ? '#ffffff' : '#f5c542',
       team3() && V.t < 50 ? D.heroes[V.f[0].hero].name.toUpperCase() + '   VS   ' + D.heroes[V.f[1].hero].name.toUpperCase() : '');
@@ -478,7 +535,7 @@
       const w = V.champ, n = w < 0 ? 'DRAW' : (team3() ? whoIs(w).toUpperCase() : D.heroes[V.f[w].hero].name.toUpperCase()) + ' WINS';
       big(n, w < 0 ? '#ffffff' : D.heroes[V.f[w].hero].color, team3() ? 'Heroes left: ' + (3 - V.ti[0]) + ' - ' + (3 - V.ti[1]) : (w < 0 ? '' : whoIs(w) + '   ') + V.wins[0] + ' - ' + V.wins[1]);
       if (V.unlocked) text(ctx, 'ACHIEVEMENT: Duelist  -  NEW STORY HERO UNLOCKED: ' + V.unlocked.toUpperCase(), W / 2, 156, '#f5c542', { align: 'center' });
-      text(ctx, 'J / Enter: rematch     U: change heroes     Esc: Versus menu', W / 2, 250, '#8a92b8', { align: 'center' });
+      text(ctx, isArc() ? 'J / Enter: continue' : 'J / Enter: rematch     U: change heroes     Esc: Versus menu', W / 2, 250, '#8a92b8', { align: 'center' });
     }
   }
   function drawFight(ctx) {
@@ -527,7 +584,7 @@
       ctx.globalAlpha = 0.8; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
       text(ctx, 'VERSUS', W / 2, 22, '#f5c542', { align: 'center', scale: 3 });
       text(ctx, V.mode === 'train' ? 'Practise against a dummy: no timer, endless energy, moves on screen.' : V.mode === 'rival' ? 'One fall, no clock, at the Crater: you against the lead hero of the other road.'
-        : team3() ? 'Teams of three. When a hero falls, the next one steps in.' : isBvb() ? 'Sit back and watch two bots fight, best of three.' : 'Two heroes, best of three. Every hero is available here.', W / 2, 52, '#bfe8ff', { align: 'center' });
+        : isArc() ? 'Climb six stages against ever harder bots. A legend waits at the top.' : team3() ? 'Teams of three. When a hero falls, the next one steps in.' : isBvb() ? 'Sit back and watch two bots fight, best of three.' : 'Two heroes, best of three. Every hero is available here.', W / 2, 52, '#bfe8ff', { align: 'center' });
       const label = { mode: ['Mode', MODES.find(m => m[0] === V.mode)[1]], fmt: ['Format', FORMATS[V.fmt]], diff: [isBvb() ? 'Bot 1 level' : 'Bot level', DIFF[V.diff]], diff2: ['Bot 2 level', DIFF[V.diff2]], speed: ['Speed', SPEEDS[V.speed][0]], dummy: ['Dummy', DUMMY[V.dummy]], stage: ['Stage', STAGES[V.stage][0]], gain: ['Energy gain', GAIN[V.gain][0]], start: ['Choose heroes', ''] };
       const rows = menuRows().map(id => label[id]);
       rows.forEach((r, i) => { const on = V.row === i, y = 70 + i * (rows.length > 7 ? 11 : rows.length > 5 ? 12 : 16);   /* Bot vs Bot's seven rows stay above the help panel */ text(ctx, (on ? '> ' : '  ') + r[0], 130, y, on ? '#f5c542' : '#ffffff'); if (r[1]) text(ctx, '<  ' + r[1] + '  >', 240, y, on ? '#ffffff' : '#8a92b8'); });
@@ -544,7 +601,7 @@
       ui.heroGrid(ctx, { title: who, cursors: V.step === 0 ? [V.pick[0]] : [V.pick[0], V.pick[1]], colors: ['#22d3ee', '#ff5a5a'], tags: isBvb() ? ['BOT 1', 'BOT 2'] : ['P1', V.mode === 'pvb' ? 'BOT' : V.mode === 'train' ? 'DUMMY' : 'P2'], open: () => true });
       const h = D.heroes[D.heroOrder[V.pick[V.step]]];
       text(ctx, h.name.toUpperCase() + '  -  ' + h.title, 10, 235, h.color);
-      if (team3()) [0, 1].forEach(s => {   // the two teams so far, in fighting order
+      if (team3()) (isArc() ? [0] : [0, 1]).forEach(s => {   // the two teams so far, in fighting order (arcade: the player's only)
         for (let k = 0; k < 3; k++) {
           const id = D.heroOrder[V.team[s][k]], th = id && D.heroes[id], x = s ? W - 10 - (2 - k) * 76 : 10 + k * 76;
           text(ctx, (k + 1) + ' ' + (th ? th.name.toUpperCase() : '---'), x, 245, th ? th.color : s === V.step && k === V.team[s].length ? '#ffffff' : '#5a6078', { align: s ? 'right' : 'left' });
@@ -553,14 +610,59 @@
       else text(ctx, h.element + '     Signature: ' + h.sig + '     Ultimate: ' + D.abilities[h.ultimate].name, 10, 245, '#ffffff');
       text(ctx, 'Move: W A S D or arrows    J / Enter: pick    U: random    Esc: back', 10, 257, '#8a92b8');
     } else if (V.phase === 'order') drawOrder(ctx);
+    else if (V.phase === 'ladder' || V.phase === 'arcOver' || V.phase === 'arcClear') drawArcade(ctx);
     else drawFight(ctx);
   };
+  function face(ctx, idx, x, y, w, h, dim) {   // a small hero portrait
+    const id = D.heroOrder[idx], img = art.bg['hero_' + id];
+    art.rect(ctx, '#05060c', x - 1, y - 1, w + 2, h + 2);
+    if (img) { ctx.globalAlpha = dim ? 0.35 : 1; ctx.drawImage(img, 4, 14, 88, 98, x, y, w, h); ctx.globalAlpha = 1; }
+    else art.rect(ctx, D.heroes[id].color, x, y, w, h);
+  }
+  function drawArcade(ctx) {   // the ladder, the continue screen and the clear screen
+    const A = V.arc, bg = art.bg.title, names = t => t.map(i => D.heroes[D.heroOrder[i]].name.toUpperCase()).join('  ');
+    if (bg) ctx.drawImage(bg, 0, 0);
+    ctx.globalAlpha = 0.85; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
+    const best = arcBest()[team3() ? '3v3' : '1v1'], bestLine = best ? 'Best: ' + clock(best.t) + '   Continues: ' + best.cont : 'Best: none yet';
+    if (V.phase === 'arcClear') {
+      text(ctx, 'ARCADE CLEAR', W / 2, 40, '#f5c542', { align: 'center', scale: 3 });
+      A.mine.forEach((idx, k) => face(ctx, idx, W / 2 - A.mine.length * 30 + k * 60 + 5, 80, 50, 56));
+      text(ctx, 'Time: ' + clock(A.time) + '      Continues: ' + A.cont, W / 2, 150, '#ffffff', { align: 'center', scale: 2 });
+      if (A.rec) text(ctx, 'NEW RECORD!', W / 2, 172, SW.frame % 30 < 20 ? '#7dffa0' : '#ffffff', { align: 'center', scale: 2 });
+      else text(ctx, bestLine, W / 2, 176, '#8a92b8', { align: 'center' });
+      text(ctx, 'J / Enter: Versus menu', W / 2, 250, '#8a92b8', { align: 'center' });
+      return;
+    }
+    if (V.phase === 'arcOver') {
+      text(ctx, 'DEFEATED', W / 2, 60, '#ff5a5a', { align: 'center', scale: 3 });
+      text(ctx, (A.rung === RUNGS - 1 ? 'FINAL STAGE' : 'STAGE ' + (A.rung + 1)) + ':  ' + names(A.opp[A.rung]), W / 2, 100, '#ffffff', { align: 'center' });
+      text(ctx, 'Continue? You fight this stage again. The clock keeps running.', W / 2, 124, '#bfe8ff', { align: 'center' });
+      text(ctx, 'Continues so far: ' + A.cont, W / 2, 140, '#8a92b8', { align: 'center' });
+      text(ctx, 'J / Enter: continue      Esc: give up', W / 2, 250, '#8a92b8', { align: 'center' });
+      return;
+    }
+    text(ctx, 'ARCADE', W / 2, 6, '#f5c542', { align: 'center', scale: 2 });
+    text(ctx, 'YOU', 40, 36, '#22d3ee', { align: 'center' });
+    A.mine.forEach((idx, k) => face(ctx, idx, 22, 48 + k * 44, 36, 40));
+    for (let r = RUNGS - 1; r >= 0; r--) {   // the tower: stage 1 at the bottom, the legend at the top
+      const y = 30 + (RUNGS - 1 - r) * 32, cur = r === A.rung, done = r < A.rung, fin = r === RUNGS - 1, t = A.opp[r];
+      ui.panel(ctx, 80, y, 380, 28, cur ? '#f5c542' : fin ? '#ff5a5a' : '#3a3d55', cur ? 0.95 : 0.6);
+      if (cur) text(ctx, '>', 83, y + 6, '#f5c542');
+      text(ctx, fin ? 'FINAL' : 'STAGE ' + (r + 1), 90, y + 6, cur ? '#f5c542' : fin ? '#ff5a5a' : done ? '#5a6078' : '#ffffff');
+      text(ctx, DIFF[RUNG_LV[r]], 90, y + 16, done ? '#5a6078' : '#8a92b8');
+      t.forEach((idx, k) => face(ctx, idx, 160 + k * 24, y + 3, 20, 22, done));
+      text(ctx, done ? 'CLEARED' : names(t), 160 + t.length * 24 + 6, y + 10, done ? '#5a6078' : fin ? '#ff8a8a' : '#ffffff');
+    }
+    text(ctx, 'Time: ' + clock(A.time) + '     Continues: ' + A.cont + '     ' + bestLine, W / 2, 230, '#bfe8ff', { align: 'center' });
+    text(ctx, 'J / Enter: fight      Esc: give up', W / 2, 250, '#8a92b8', { align: 'center' });
+  }
   function drawOrder(ctx) {   // 3 vs 3: both teams' fighting order
     const bg = art.bg.title;
     if (bg) ctx.drawImage(bg, 0, 0);
     ctx.globalAlpha = 0.85; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
     text(ctx, 'TEAM ORDER', W / 2, 6, '#f5c542', { align: 'center', scale: 2 });
-    [0, 1].forEach(s => {
+    if (isArc()) text(ctx, 'Your opponents: six bots, each one harder. A legend waits at the top.', W / 2, 160, '#8a92b8', { align: 'center' });
+    (isArc() ? [0] : [0, 1]).forEach(s => {
       const y = 30 + s * 92, col = s ? '#ff5a5a' : '#22d3ee';
       text(ctx, teamName(s), 24, y + 30, col);
       text(ctx, 'fights in this order', 24, y + 42, '#8a92b8');

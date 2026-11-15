@@ -20,6 +20,14 @@
   const FIRST_HP = 0.75, FIRST_DMG = 0.85, E = SW.data.enemies, TUT = (SW.story && SW.story.tutorials) || {};
   const FIRST = ['tusk', 'warden'].concat(Object.keys(TUT).map(h => TUT[h].boss)).filter((v, i, a) => v && a.indexOf(v) === i);
   FIRST.forEach(n => { const d = E[n]; if (!d || d.eased) return; d.eased = true; d.hp = Math.round(d.hp * FIRST_HP); d.dmg = Math.max(1, Math.round(d.dmg * FIRST_DMG)); });
+  // ...then evened out between heroes (a recorded playtest found Brakk losing 88% to Foreman Crake and Kael 13% to Tusk).
+  // Measured with ST.bench at level 2, the careful test player first lost from 7% (Holt, Voss) to 57% (Crake); these
+  // [health, damage] multipliers bring the medians into about 25-50%. The fights that summon helpers (Holt, Voss, Penn,
+  // Purl) stay swingy, because the helpers drop health: one fight in ten the careful player ends with more than they
+  // started, another costs half the bar. Penn at 1.6x killed the careful player 2 fights in 10, so it stays at 1.25x.
+  const FIRST_TUNE = { crake: [0.9, 0.8], slag: [0.9, 0.8], tusk: [0.9, 0.78], ante: [0.95, 0.85], cinder: [0.95, 0.85], hale: [0.95, 0.9],
+    holt: [1.3, 1.1], voss: [1.25, 1.2], ilse: [1.1, 1.1], penn: [1.25, 1], purl: [1.35, 1.15] };
+  Object.keys(FIRST_TUNE).forEach(n => { const d = E[n], q = FIRST_TUNE[n]; if (!d || d.evened) return; d.evened = true; d.hp = Math.round(d.hp * q[0]); d.dmg = Math.max(1, Math.round(d.dmg * q[1])); });
   // Later bosses, retuned for the level players really arrive at. Working the XP through the story (every mission, every
   // enemy killed once) puts a player at level 8-9 for the Baron, 10 for the Glowmother, 14 for Anvil, 17 for Vane, 19 for Quist,
   // 20-22 for the Spire and 23 for the Director, against the 7 / 9 / 12 / 13 / 14 / 15 / 16 they were first tuned at, and the

@@ -29,13 +29,14 @@
       if (/\{(\d|[A-Z]+)\}/.test(k)) {   // pattern: "Lv {0}" -> "Nv {0}"; also named slots the code fills in, like {NAME}
         let rx = '^', lit = ''; const order = [];
         k.split(/\{(\d|[A-Z]+)\}/).forEach((p, i) => { if (i % 2) { rx += '(.+?)'; order.push(p); } else { rx += esc(p); lit += p; } });
-        if (/[A-Za-z]{2}/.test(lit)) pats.push({ re: new RegExp(rx + '$'), order, v });   // a pattern needs words of its own, or it matches everything
+        if (/[A-Za-z]{2}/.test(lit)) pats.push({ re: new RegExp(rx + '$'), order, v, n: lit.length });   // a pattern needs words of its own, or it matches everything
         continue;
       }
       d.set(k, v);
       const ku = k.toUpperCase(); if (ku !== k && !up.has(ku)) up.set(ku, v.toUpperCase());
       const kt = k.trim(); if (kt && kt !== k && !d.has(kt)) d.set(kt, v.trim());
     }
+    pats.sort((a, b) => b.n - a.n);   // the most specific pattern first: "STAGE {0} / {1}" before "STAGE {0}"
     I.frags[lang] = null; I.cache.clear(); I.done.clear();
   };
 
