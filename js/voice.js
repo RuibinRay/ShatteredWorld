@@ -8,7 +8,7 @@
 //     voices for the low-voiced heroes, brighter ones for the high), and each hero also gets their own pitch and speed, so
 //     no two sound the same even on a device with only one or two voices. The Convergence gets a robotic voice where the
 //     device has one.
-//   - Heroes call out their ultimate and their awakening by name, in that voice (only while the voice is English).
+//   - Heroes call out their awakening by name, in that voice (only while the voice is English). The ultimate is silent.
 //   - Phones: iOS lets a page speak only after a tap, so the first tap or key press unlocks speech silently.
 // SOUND SIGNATURES:
 //   - Each hero's swings, hits and skills carry an extra layer in their element's colour (a crackle for fire, a chime
@@ -169,8 +169,8 @@
       heroNow = null;
       if (id && this.state !== before && !this.dead) {
         const h = HR[id], AB = D.abilities;
-        if (this.state === 'ult' && h && AB[h.ultimate]) callout(id, AB[h.ultimate].name + '!');
-        else if (this.state === 'awaken' && h && AB[h.awaken]) callout(id, AB[h.awaken].name + '!');
+        // no shout for the ultimate (the user asked for it to be silent); the awakening is still called out
+        if (this.state === 'awaken' && h && AB[h.awaken]) callout(id, AB[h.awaken].name + '!');
       }
     }
   };

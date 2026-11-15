@@ -265,7 +265,7 @@ again over the night darkness.
 ## Voices and sound signatures (`js/voice.js`)
 
 - **English by default.** The finisher's spoken line starts in English (M during a finisher still switches English, Chinese,
-  Japanese or off, and the choice is kept). Heroes also call out their ultimate and their awakening by name.
+  Japanese or off, and the choice is kept). Heroes also call out their awakening by name; the ultimate itself is silent.
 - **A voice for every hero.** The device's English voices are shared out between the heroes (deeper-sounding voices for
   the low-voiced heroes, brighter ones for the high), and each hero has their own pitch and speed taken from their
   dialogue pitch and fighting style, so all 44 fighters sound different even with only two or three voices installed.
@@ -313,6 +313,10 @@ intro. Tested: Player vs Bot (round 1 only, again for a new match), Bot vs Bot, 
 English, Spanish and Chinese.
 
 ## Ultimate finishers (`js/finisher.js`, `js/finisher-lines.js`)
+
+**Switched off (user's request, 2026-11-15):** `index.html` no longer loads these two files, so an ultimate that ends a fight
+no longer plays the cinematic or a spoken line. To bring it back, add both script tags again right after `js/vsboss.js`.
+
 
 When an ultimate lands the final blow (a Versus knockout, the Versus boss fight, or a boss in the story; never any other
 blow), the moment becomes a short cinematic, about five seconds:
