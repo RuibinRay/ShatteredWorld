@@ -365,6 +365,13 @@ again over the night darkness.
   (`assets/bg/ult_<hero>.png`; prompts for these and the Versus arenas are in `tools/higgsfield-ults.json` and `tools/higgsfield-arenas.json`).
 - **Versus mode** (title menu): Player vs Player on one keyboard, or Player vs Bot (Easy / Normal / Hard), best of three, on ten arenas or a random one.
   Three arenas exist only in Versus: Crater Rim, Aurelia Spire and Deep Foundry.
+  **Bot vs Bot** is a watch mode: pick both heroes and each bot's level (Easy / Normal / Hard), then watch; Speed
+  (menu or Esc) runs the fight at normal, double or four times speed.
+  **Format** (Player vs Bot, Player vs Player, Bot vs Bot): 1 vs 1, best of three; or 3 vs 3, a team battle. In 3 vs 3
+  each side picks three heroes (Esc takes back the last pick), then the Team Order screen sets who fights first (J on one
+  hero, then on another of the same team, swaps them). When a hero falls or loses on time, that side's next hero steps in;
+  the hero still standing stays with the health they had left plus 20% (and their energy). The last team standing wins.
+  The three squares under each health bar show the team: out, fighting, waiting.
   The first ten heroes and the newest five are available in Versus whether or not they are unlocked in the story; the ten legends must be earned (see above). Player 2: arrow keys, and 1-6 on the number pad
   (or 7 8 9 0 - = on the top row) for attack, jump, dash, skill, special, awaken.
   Versus has its own energy rules: energy comes mainly from landing hits (and from being hit), and holding attack + jump
