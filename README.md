@@ -292,6 +292,28 @@ Draw-only polish for every hero and foe, in the story and in Versus; timing, hit
 - **Squash and stretch:** take-off, hard landings (with a puff of dust), dashes and being hit. Foes crouch into their wind-up.
 - Measured: no change in frame time (about 1.1 ms a frame either way). `SW.anim.on = false` turns it all off for a comparison.
 
+## Animation update 2 (`js/anim2.js`)
+
+New poses and effects, again draw-only (no change to timing, hitboxes or damage):
+1. **Smoother attacks:** every attack, skill and special gets two in-between poses (wind-up to strike, strike to
+   recovery). Armed heroes get blade in-betweens, the rest fist ones; humanoid foes get them for their attacks too.
+2. **Knockdowns:** a launched or swept fighter tumbles over in the air; a downed foe kneels and gets up instead of
+   popping upright, and a thrown foe bounces with dust when it lands.
+3. **Hit reactions:** heavy blows throw the body back, a hit from behind lurches it forward, light hits keep the flinch.
+4. **Small touches:** a crouch after a hard landing, a side-on frame when turning round, slow breathing while standing.
+5. **Victory poses:** the winner of a Versus round strikes a pose (fist raised, arms folded, blade raised or a bow),
+   chosen per hero; sword fighters raise the blade.
+6. **Health bars that drain:** damage leaves a white, then orange chunk that waits half a second and drains away,
+   in the story HUD and both Versus bars (the Versus part is in `js/versus.js`).
+7. **Deaths in their own style:** machines spark and shed parts, beasts drop in dust, Husks squash and crumble into
+   motes, people fall as before.
+8. **Livelier backgrounds:** banners sway, lamps pulse and now and then drop a spark, and most areas have their own
+   drifting particles (ash, embers, snow, spores, sand, glints).
+
+The new frames live on a small side sheet per fighter (`<sheet id>+`), baked in the background after the game has loaded,
+fighters on screen first, so start-up is no slower; until a side sheet is ready the old frames are used. All 179 side
+sheets are done within about ten seconds of loading. `SW.anim2.on = false` turns the update off.
+
 ## The throw (`js/throw.js`)
 
 One new move for every hero, in the story and in Versus: **J + L together, on the ground, up close** (touch: the Throw

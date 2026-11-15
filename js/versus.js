@@ -629,6 +629,15 @@
       G.state = S;
       const mx = f.p.hpMax(), hw = Math.round(190 * SW.clamp(S.hp / mx, 0, 1));
       art.rect(ctx, '#05060c', bx - 1, 9, 192, 11); art.rect(ctx, '#2a1418', bx, 10, 190, 9);
+      {   // damage leaves a pale chunk that waits a moment, then drains (js/anim2.js does the same for the story bar)
+        const hp = SW.clamp(S.hp, 0, mx);
+        if (f.lag === undefined || hp > f.lag || f.lagP !== f.p) { f.lag = hp; f.lagP = f.p; }
+        if (f.lagHp !== undefined && hp < f.lagHp - 0.01) f.lagT = 28;
+        f.lagHp = hp;
+        if (f.lagT > 0) f.lagT--; else f.lag = Math.max(hp, f.lag - mx * 0.012);
+        const lw = Math.round(190 * (f.lag - hp) / mx);
+        if (lw > 0) art.rect(ctx, f.lagT > 20 ? '#ffffff' : '#ff9a5a', left ? bx + hw : bx + 190 - hw - lw, 10, lw, 9);
+      }
       art.rect(ctx, S.hp / mx < 0.3 ? '#ff5a5a' : '#6fe89a', left ? bx : bx + 190 - hw, 10, hw, 9); art.rect(ctx, '#ffffff', left ? bx : bx + 190 - hw, 10, hw, 1);
       text(ctx, V.mode === 'duel' ? duelName(i) : (isBvb() ? 'BOT ' + (i + 1) + ' ' : f.bot ? (V.mode === 'train' ? 'DUMMY ' : 'BOT ') : 'P' + (i + 1) + ' ') + h.name.toUpperCase(), left ? bx : bx + 190, 1, h.color, { align: left ? 'left' : 'right' });   // y 1: clear of the top edge
       for (let k = 0; k < 3; k++) { const e = SW.clamp((S.energy - k * 100) / 100, 0, 1), ex = left ? bx + k * 34 : bx + 190 - 32 - k * 34; art.rect(ctx, '#05060c', ex - 1, 21, 34, 6); art.rect(ctx, '#22202e', ex, 22, 32, 4); art.rect(ctx, e >= 1 ? h.colorHi : h.color, left ? ex : ex + 32 - Math.round(32 * e), 22, Math.round(32 * e), 4); }
