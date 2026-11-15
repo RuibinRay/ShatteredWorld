@@ -4154,5 +4154,7 @@ SW.i18n.add('zh', {
   "Echo Chamber": "回音殿",
   "The bell rings three times, each echo landing further ahead than the last.": "钟声响了三次，每一道回音都落在比上一道更远的前方。",
   "THE CONVERGENCE IS UNRAVELLING": "交汇正在崩解",
-  "The Engine core, again. The Convergence turns to face you, white as the inside of a star. Your partner is already at your side, and the Engine's light is in your hands: your ULTIMATE is ready.": "又是引擎核心。交汇转身面对你，白得如同星辰的内部。你的搭档已在身旁，引擎之光握在你手中：你的终极技已就绪。"
+  "The Engine core, again. The Convergence turns to face you, white as the inside of a star. Your partner is already at your side, and the Engine's light is in your hands: your ULTIMATE is ready.": "又是引擎核心。交汇转身面对你，白得如同星辰的内部。你的搭档已在身旁，引擎之光握在你手中：你的终极技已就绪。",
+  "J / Enter: skip": "J / Enter：跳过",
+  "VS": "VS"
 });

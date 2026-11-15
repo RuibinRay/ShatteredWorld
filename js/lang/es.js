@@ -4154,5 +4154,7 @@ SW.i18n.add('es', {
   "Echo Chamber": "Cámara de Ecos",
   "The bell rings three times, each echo landing further ahead than the last.": "La campana suena tres veces y cada eco cae más lejos que el anterior.",
   "THE CONVERGENCE IS UNRAVELLING": "LA CONVERGENCIA SE DESHACE",
-  "The Engine core, again. The Convergence turns to face you, white as the inside of a star. Your partner is already at your side, and the Engine's light is in your hands: your ULTIMATE is ready.": "El núcleo del Motor, otra vez. La Convergencia se vuelve hacia ti, blanca como el interior de una estrella. Tu compañero ya está a tu lado y la luz del Motor está en tus manos: tu DEFINITIVA está lista."
+  "The Engine core, again. The Convergence turns to face you, white as the inside of a star. Your partner is already at your side, and the Engine's light is in your hands: your ULTIMATE is ready.": "El núcleo del Motor, otra vez. La Convergencia se vuelve hacia ti, blanca como el interior de una estrella. Tu compañero ya está a tu lado y la luz del Motor está en tus manos: tu DEFINITIVA está lista.",
+  "J / Enter: skip": "J / Enter: saltar",
+  "VS": "VS"
 });

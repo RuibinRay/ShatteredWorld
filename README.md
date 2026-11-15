@@ -254,6 +254,17 @@ about 2 ms a frame. Fixed: respawning now clears radiation (a fall in the Glowwi
 quitting to the title and continuing no longer counts as changing area (it took two Heat stars off), and YOU FELL is written
 again over the night darkness.
 
+## The Versus entrance (`js/vsintro.js`)
+
+When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
+the Crater duel), a 2.5 s splash plays before ROUND 1: the screen splits on a slant in the two heroes' colours, their
+portraits slide in from each side with their names, titles and who plays them (PLAYER 1, BOT ...), VS slams down
+between them with a flash, sparks run along the split, and everything slides away. J / Enter skips it. In the arena each
+fighter then arrives in a pillar of light and a burst of their element, with their name over their head until FIGHT!
+The match waits while the splash plays. Rounds 2 and 3 of the same pair go straight to the round call; Training has no
+intro. Tested: Player vs Bot (round 1 only, again for a new match), Bot vs Bot, Arcade, Training (none), skipping,
+English, Spanish and Chinese.
+
 ## Bosses: how they look (`js/bossfx.js`) and the final fight (`js/finalboss.js`)
 
 - **Every boss** now has an entrance (letterbox bars, its name and title announced in its colour), an aura (a glow on the
