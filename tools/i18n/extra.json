@@ -174,5 +174,15 @@
   "STAGE {0}:  {1}": { "es": "ETAPA {0}:  {1}", "zh": "第 {0} 关：{1}" },
   "FINAL STAGE:  {0}": { "es": "ETAPA FINAL:  {0}", "zh": "最终关：{0}" },
   "A terminal is up on the gantry: climb the ladder (W).": { "es": "Hay una terminal arriba, en la pasarela: sube por la escalera (W).", "zh": "上方栈桥上还有一台终端：爬梯子上去（W）。" },
-  "locked": { "es": "bloqueada", "zh": "未解锁" }
+  "locked": { "es": "bloqueada", "zh": "未解锁" },
+  "Survival": { "es": "Supervivencia", "zh": "生存" },
+  "Beat as many bots as you can. Every tenth one is a legend.": { "es": "Vence a todos los bots que puedas. Cada décimo es una leyenda.", "zh": "尽可能多地击败电脑。每第十个都是传奇英雄。" },
+  "Your three heroes are your lives: when one falls, the next steps in.": { "es": "Tus tres héroes son tus vidas: cuando uno cae, entra el siguiente.", "zh": "你的三名英雄就是你的命：一名倒下，下一名上场。" },
+  "FIGHT {0}": { "es": "COMBATE {0}", "zh": "第 {0} 战" },
+  "LEGEND FIGHT": { "es": "COMBATE DE LEYENDA", "zh": "传奇之战" },
+  "WINS: {0}": { "es": "VICTORIAS: {0}", "zh": "胜场：{0}" },
+  "SURVIVAL OVER": { "es": "FIN DE LA SUPERVIVENCIA", "zh": "生存结束" },
+  "Wins: {0}      Time: {1}": { "es": "Victorias: {0}      Tiempo: {1}", "zh": "胜场：{0}      用时：{1}" },
+  "Best: {0} wins   {1}": { "es": "Mejor: {0} victorias   {1}", "zh": "最佳：{0} 胜   {1}" },
+  "J / Enter: try again      Esc: Versus menu": { "es": "J / Enter: reintentar      Esc: menú de Versus", "zh": "J / Enter：再试一次      Esc：对战菜单" }
 }

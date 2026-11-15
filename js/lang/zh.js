@@ -4050,5 +4050,15 @@ SW.i18n.add('zh', {
   "STAGE {0}:  {1}": "第 {0} 关：{1}",
   "FINAL STAGE:  {0}": "最终关：{0}",
   "A terminal is up on the gantry: climb the ladder (W).": "上方栈桥上还有一台终端：爬梯子上去（W）。",
-  "locked": "未解锁"
+  "locked": "未解锁",
+  "Survival": "生存",
+  "Beat as many bots as you can. Every tenth one is a legend.": "尽可能多地击败电脑。每第十个都是传奇英雄。",
+  "Your three heroes are your lives: when one falls, the next steps in.": "你的三名英雄就是你的命：一名倒下，下一名上场。",
+  "FIGHT {0}": "第 {0} 战",
+  "LEGEND FIGHT": "传奇之战",
+  "WINS: {0}": "胜场：{0}",
+  "SURVIVAL OVER": "生存结束",
+  "Wins: {0}      Time: {1}": "胜场：{0}      用时：{1}",
+  "Best: {0} wins   {1}": "最佳：{0} 胜   {1}",
+  "J / Enter: try again      Esc: Versus menu": "J / Enter：再试一次      Esc：对战菜单"
 });

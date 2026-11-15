@@ -4050,5 +4050,15 @@ SW.i18n.add('es', {
   "STAGE {0}:  {1}": "ETAPA {0}:  {1}",
   "FINAL STAGE:  {0}": "ETAPA FINAL:  {0}",
   "A terminal is up on the gantry: climb the ladder (W).": "Hay una terminal arriba, en la pasarela: sube por la escalera (W).",
-  "locked": "bloqueada"
+  "locked": "bloqueada",
+  "Survival": "Supervivencia",
+  "Beat as many bots as you can. Every tenth one is a legend.": "Vence a todos los bots que puedas. Cada décimo es una leyenda.",
+  "Your three heroes are your lives: when one falls, the next steps in.": "Tus tres héroes son tus vidas: cuando uno cae, entra el siguiente.",
+  "FIGHT {0}": "COMBATE {0}",
+  "LEGEND FIGHT": "COMBATE DE LEYENDA",
+  "WINS: {0}": "VICTORIAS: {0}",
+  "SURVIVAL OVER": "FIN DE LA SUPERVIVENCIA",
+  "Wins: {0}      Time: {1}": "Victorias: {0}      Tiempo: {1}",
+  "Best: {0} wins   {1}": "Mejor: {0} victorias   {1}",
+  "J / Enter: try again      Esc: Versus menu": "J / Enter: reintentar      Esc: menú de Versus"
 });
