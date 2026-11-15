@@ -95,7 +95,7 @@ the test players no stat points:
 | Boss | Real arrival (first tuned at) | Health / damage now |
 |---|---|---|
 | Grist / Brandt (Act 1 end) | 5 / 4 (5 / 4) | 620 / 580, unchanged |
-| Scrap Baron | 8-9 (7) | 989 / 18 |
+| Scrap Baron | 8-9 (7) | 989 / 16, flasks 8 (was 18, flasks 16: the careful player died in 30-43% of fights as Brakk and Nyra; now 10-13%) |
 | Glowmother | 10 (9) | 1056 / 18 |
 | Anvil | 14 (12) | 1080 / 15 (was 20: the careful player lost 81-85% as Kael and Nyra; now 46-63%, no deaths) |
 | Lord Castellan Vane | 17 (13) | 1250 / 21 |

@@ -38,8 +38,15 @@
   // Anvil (champ) was [1.2, 1.1] = 20 damage: a playtest bot run of Acts 2-3 had him kill Nyra, and at level 14 the
   // careful test player lost 85% as Kael, 81% as Nyra (sometimes dying). At 15 damage the careful player loses 46-63% with
   // no deaths and the masher still mostly falls; his health stays 1080 so boss health keeps climbing through the story.
-  const LATE = { baron: [1.15, 1.25], glowmother: [1.1, 1.15], champ: [1.2, 0.84], vane: [1.25, 1.3], quist: [1.2, 0.95], morrow: [1.2, 1.15], kessen: [1, 1.1], director: [1.5, 1.6], fused: [1.5, 1.6], convergence: [1.5, 1.6] };
+  // The Scrap Baron was [1.15, 1.25] = 18 damage, and his thrown flasks took his damage less 2 (16 each, three or four a
+  // volley) when every other boss's flasks had been turned down to 4-6. The improved autoplay bot reached him for the
+  // first time and fell to him; at level 9 the careful test player then died in 30-43% of 30 fights as Brakk and Nyra.
+  // At 16 damage with 8-damage flasks it dies in 10-13% (none in 12 as Kael), losing 26-31% on average, and the masher
+  // still mostly falls (Kael 6/6, Brakk 4/6; Nyra's masher loses 65% on average).
+  const LATE = { baron: [1.15, 1.15], glowmother: [1.1, 1.15], champ: [1.2, 0.84], vane: [1.25, 1.3], quist: [1.2, 0.95], morrow: [1.2, 1.15], kessen: [1, 1.1], director: [1.5, 1.6], fused: [1.5, 1.6], convergence: [1.5, 1.6] };
   Object.keys(LATE).forEach(n => { const d = E[n], q = LATE[n]; if (!d || d.lateTuned) return; d.lateTuned = true; d.hp = Math.round(d.hp * q[0]); d.dmg = Math.round(d.dmg * q[1]); });
+  const baronLob = E.baron && E.baron.script && E.baron.script.find(s => s[0] === 'lob');
+  if (baronLob) baronLob[1].dmg = 8;
   const cur = () => LEVELS.find(l => l.id === (SW.profile && SW.profile.diff)) || LEVELS[1];
   const set = id => { SW.profile.diff = id; if (SW.saveProfile) SW.saveProfile(); };
   const step = d => { const i = LEVELS.indexOf(cur()); set(LEVELS[(i + d + LEVELS.length) % LEVELS.length].id); SW.audio.sfx('select'); };
