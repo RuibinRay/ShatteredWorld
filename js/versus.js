@@ -62,7 +62,7 @@
   const GAIN = [['Slow', 0.6], ['Normal', 1], ['Fast', 1.6]], PASSIVE = 0.045, CHARGE = 0.6, HIT_MELEE = 10, HIT_SKILL = 3, HIT_TAKEN = 0.5;
   // Perfect block (guard in the last few frames before a hit): frames the attacker is stunned, and how often a bot's
   // well-timed guard counts as perfect on Easy / Normal / Hard.
-  const STUN_MELEE = 60, STUN_RANGED = 30, BOT_PERFECT = [0.15, 0.4, 0.7];
+  const STUN_MELEE = 60, STUN_RANGED = 30, BOT_PERFECT = [0.1, 0.25, 0.45], BOT_PERFECT_GAP = 180;   // and never two within three seconds
   // Versus balance table: every hit a hero lands in Versus is multiplied by their entry; heroes not listed deal normal
   // damage. The story itself is not affected (and the Crater duel switches the table off for its two fighters).
   // The ten legend heroes are NOT listed, by the user's choice: they are meant to be super strong and stay that way here
@@ -71,9 +71,11 @@
   // win rates ran from 30% to 77%; with this table they run from about 41% to 59%.
   // To re-measure after changing heroes, see "Versus balance" in the README.
   // Brakk 1.1 -> 1.2 after a recorded tournament: at 1.1 he won 40% of 112 rounds against the other fourteen (1.2: 51%).
+  // Re-solved 2026-11-15 with all 34 non-legend fighters in one pool (these fifteen, the Hidden Clans and the Convergence),
+  // 2 rounds per ordered pair per pass, 5 passes, then a few edge cases nudged by hand: 37-64% before, about 41-57% after.
   V.tune = {
-    kael: 1.3, nyra: 1.05, fenn: 0.65, isolde: 0.7, brakk: 1.2, pyra: 1.15, gale: 1.35, ashka: 0.95, dyna: 1.35, vesper: 1.05,
-    kiri: 1.05, tarn: 0.95, maren: 0.9, yara: 1.15, brann: 0.75
+    kael: 1.35, nyra: 1.1, fenn: 0.6, isolde: 0.8, brakk: 1.3, pyra: 1.25, gale: 1.45, ashka: 0.95, dyna: 1.35, vesper: 1.1,
+    kiri: 1.1, tarn: 1.1, maren: 0.95, yara: 1.3, brann: 0.75
   };
   const KEYS = [
     { left: ['KeyA'], right: ['KeyD'], up: ['KeyW'], down: ['KeyS'], attack: ['KeyJ'], jump: ['KeyK'], dash: ['KeyL'], skill: ['KeyU'], special: ['KeyI'], awaken: ['KeyO'], throw: [] },   // throw: the touch button (J + L works anyway)
@@ -107,9 +109,9 @@
     const train = V.mode === 'train', fresh = p.state !== 'hurt';
     const dmg = me && me !== f ? Math.max(1, Math.round(atk.dmg * (V.tune[me.hero] || 1))) : atk.dmg;   // Versus balance table (TUNE)
     if (train) f.state.hp = Math.max(f.state.hp, dmg + 1);   // nobody is knocked out in Training
-    if (f.bot && p.state === 'guard' && p.guardT <= 6 && Math.random() > BOT_PERFECT[lvOf(f)]) p.guardT = 7;   // a bot does not get every perfect block
+    if (f.bot && p.state === 'guard' && p.guardT <= 6 && (Math.random() > BOT_PERFECT[lvOf(f)] || V.t - (f.pfT === undefined ? -999 : f.pfT) < BOT_PERFECT_GAP)) p.guardT = 7;   // a bot does not get every perfect block
     const r = p.takeHit(Object.assign({}, atk, { dmg, src: null, srcX: atk.srcX === undefined ? (me ? me.p.x : p.x) : atk.srcX }), G);
-    if (r === 'perfect') V.perfects = (V.perfects || 0) + 1;
+    if (r === 'perfect') { V.perfects = (V.perfects || 0) + 1; f.pfT = V.t; }
     if (train && r !== 'none') f.hitT = V.t;
     if (train && r === 'hit') { if (fresh || !f.cm) f.cm = { hits: 0, dmg: 0 }; f.cm.hits++; f.cm.dmg += dmg; }   // combo counter: restarts when the hit lands on a fighter who had recovered
     if (r === 'hit') {
@@ -148,7 +150,7 @@
       G.state = f.state;
       f.p = new SW.Player(G, z.pw / 2 + (i ? 90 : -90), 14 * 16); f.p.face = i ? -1 : 1; f.p.juggle = 0;
       f.state.hp = f.p.hpMax(); f.state.energy = 100; f.state.awaken = 0;
-      f.ents = [proxy(V.f[1 - i])]; f.shots = []; f.combo = null; f.inp = { now: {}, prev: {}, lastHit: {} }; f.burnT = 0; f.frozen = 0; f.stunT = 0; f.bonus = 0; f.base = 0; f.ai = null; f.cm = null; f.hitT = -999;
+      f.ents = [proxy(V.f[1 - i])]; f.shots = []; f.combo = null; f.inp = { now: {}, prev: {}, lastHit: {} }; f.burnT = 0; f.frozen = 0; f.stunT = 0; f.bonus = 0; f.base = 0; f.ai = null; f.cm = null; f.hitT = -999; f.pfT = undefined;
     });
     V.phase = V.mode === 'train' ? 'fight' : 'intro'; V.t = 0; V.timer = 60 * 60; V.winner = -1;
     G.cam.x = Math.max(0, z.pw / 2 - W / 2); G.cam.y = Math.max(0, z.ph - H);

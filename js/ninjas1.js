@@ -453,9 +453,9 @@
   // ================= sprites =================
   Object.assign(RIG, {
     rook:   { head: 'headband', c: { skin: '#e8b890', hair: '#1c3a3a', acc: '#2a2a34', white: '#c8ccd8', top: '#1c5a58', arm: '#1c5a58', fore: '#e8b890', hand: '#e8b890', pants: '#22303a', boots: '#2ec4b6', belt: '#2ec4b6', chest: '#c8fff8', trail: '#2ec4b6' }, trailLen: 3 },
-    sable:  { head: 'scarf', weapon: 'tanto', armed: 1, c: { skin: '#d8c0b0', hair: '#14122a', acc: '#3a2e6a', top: '#2a2448', arm: '#2a2448', fore: '#8f7bff', hand: '#e6e0ff', pants: '#1a1830', boots: '#3a2e6a', belt: '#8f7bff', chest: '#e6e0ff', trail: '#3a2e6a' }, trailHead: 1, trailLen: 5 },
+    sable:  { head: 'scarf', weapon: 'tanto', armed: 1, c: { skin: '#d8c0b0', hair: '#14122a', acc: '#3a2e6a', top: '#3d3470', arm: '#3d3470', fore: '#8f7bff', hand: '#e6e0ff', pants: '#1a1830', boots: '#3a2e6a', belt: '#8f7bff', chest: '#e6e0ff', trail: '#3a2e6a' }, trailHead: 1, trailLen: 5 },
     dune:   { head: 'veil', sc: 1.06, limb: 3, bulk: 9, c: { skin: '#b08060', hair: '#d9a441', acc: '#c8a878', accD: '#8a6a2a', glow: '#fff0c8', top: '#c89a5a', arm: '#c89a5a', fore: '#e8d0a0', hand: '#b08060', pants: '#8a6a3a', boots: '#5a4020', belt: '#fff0c8', chest: '#d9a441', trail: '#c89a5a' }, trailLen: 4, trailW: 3 },
-    moro:   { head: 'knot', c: { skin: '#d8b498', hair: '#1a1a24', top: '#3a3d5a', arm: '#3a3d5a', fore: '#2a2a3a', hand: '#d8b498', pants: '#22243a', boots: '#14141e', belt: '#5b5f97', chest: '#d0d2ff' } },
+    moro:   { head: 'knot', c: { skin: '#d8b498', hair: '#1a1a24', top: '#4a4f78', arm: '#4a4f78', fore: '#2a2a3a', hand: '#d8b498', pants: '#22243a', boots: '#14141e', belt: '#5b5f97', chest: '#d0d2ff' } },
     pell:   { head: 'mask', c: { skin: '#c8a890', hair: '#2a1a2a', white: '#f0e6d8', glow: '#b5179e', top: '#4a1a44', arm: '#4a1a44', fore: '#b5179e', hand: '#c8a890', pants: '#2a1428', boots: '#1a0c18', belt: '#ffc8f0', chest: '#b5179e', trail: '#4a1a44' }, trailLen: 5 },
     hollis: { head: 'sage', sc: 1.1, limb: 4, bulk: 9, c: { skin: '#c89a78', hair: '#c8ccc0', acc: '#6a994e', white: '#e8ece0', top: '#4a6a3a', arm: '#4a6a3a', fore: '#c89a78', hand: '#c89a78', pants: '#3a3a2a', boots: '#2a2418', belt: '#e0ffc8', chest: '#6a994e', trail: '#6a994e' }, trailLen: 4, trailW: 3 }
   });
@@ -464,7 +464,7 @@
 
   // Versus balance (same table as js/versus.js V.tune): fitted with tools/versus-balance.js, each hero against the fifteen
   // regular heroes, both sides, bots on Normal. Untuned they won 38-57%; with this table about 44-58%.
-  if (SW.versus && SW.versus.tune) Object.assign(SW.versus.tune, { rook: 0.8, sable: 0.88, dune: 0.95, moro: 1.17, pell: 1.15, hollis: 1.28 });
+  if (SW.versus && SW.versus.tune) Object.assign(SW.versus.tune, { rook: 0.8, sable: 0.85, dune: 1, moro: 1.3, pell: 1.05, hollis: 1.3 });   // re-solved 2026-11-15 with everyone in one pool (see js/versus.js)
 
   // ================= translations =================
   const ES = {

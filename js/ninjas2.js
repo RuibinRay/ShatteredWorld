@@ -406,7 +406,7 @@
     kestra: { head: 'ponytail', weapon: 'warfan', armed: 1, c: { skin: '#f0c8a8', hair: '#8a1c0a', top: '#3a1a14', arm: '#3a1a14', fore: '#ff6b35', hand: '#f0c8a8', pants: '#2a1410', boots: '#5a2a1a', belt: '#ffd24a', chest: '#ff6b35', trail: '#8a1c0a' }, trailHead: 1, trailLen: 4 },
     ivo:    { head: 'mohawk', limb: 3, bulk: 7, c: { skin: '#c8906a', hair: '#1a1a1a', top: '#1a1a1a', arm: '#c8906a', fore: '#ffb703', hand: '#fff3c4', pants: '#ffb703', boots: '#2a2a2a', belt: '#fb8500' } },
     nami:   { head: 'shaggy', sc: 1.08, bulk: 8, weapon: 'cleaver2', armed: 1, c: { skin: '#a8c0c8', hair: '#0e2a44', acc: '#caf0f8', top: '#0a3a5a', arm: '#0a3a5a', fore: '#a8c0c8', hand: '#a8c0c8', pants: '#03045e', boots: '#0a1a2a', belt: '#caf0f8', chest: '#48cae4', trail: '#0077b6' }, trailLen: 3, trailW: 3 },
-    lin:    { head: 'longhair', c: { skin: '#f4dcc8', hair: '#1a1a2a', white: '#ffffff', top: '#e8feff', arm: '#e8feff', fore: '#f4dcc8', hand: '#f4dcc8', pants: '#3a4a6a', boots: '#2a3048', belt: '#5ec8d8', chest: '#5ec8d8', trail: '#1a1a2a' }, trailHead: 1, trailLen: 6 },
+    lin:    { head: 'longhair', c: { skin: '#f4dcc8', hair: '#1a1a2a', white: '#ffffff', top: '#e8feff', arm: '#e8feff', fore: '#f4dcc8', hand: '#9ef0ff', pants: '#8a90a0', boots: '#2a3048', belt: '#5ec8d8', chest: '#5ec8d8', trail: '#1a1a2a' }, trailHead: 1, trailLen: 6 },
     corvin: { head: 'crowhood', c: { skin: '#c8b0a8', hair: '#14101c', acc: '#d8a020', glow: '#e0c3fc', top: '#1c1428', arm: '#1c1428', fore: '#3a1a5a', hand: '#c8b0a8', pants: '#14101c', boots: '#0c0810', belt: '#7209b7', chest: '#e0c3fc', trail: '#14101c' }, trailLen: 6, trailW: 3 },
     thorne: { head: 'braid', weapon: 'bonesword', armed: 1, c: { skin: '#e0d8d0', hair: '#f4f0e0', top: '#3a2a2a', arm: '#3a2a2a', fore: '#ece6cc', hand: '#e0d8d0', pants: '#2a1c1c', boots: '#ece6cc', belt: '#8a1c2a', chest: '#ece6cc', trail: '#8a1c2a' }, trailLen: 4 }
   });
@@ -414,7 +414,7 @@
   N.portraits(NEW);
 
   // Versus balance (see ninjas1.js). Untuned they won 33-77% (Corvin's crow dodge is worth a lot against bots); with this table about 46-57%.
-  if (V && V.tune) Object.assign(V.tune, { kestra: 1.03, ivo: 1.25, nami: 0.84, lin: 1.18, corvin: 0.67, thorne: 0.78 });
+  if (V && V.tune) Object.assign(V.tune, { kestra: 1, ivo: 1, nami: 0.75, lin: 1.15, corvin: 0.6, thorne: 0.75 });   // re-solved 2026-11-15 (see js/versus.js)
 
   // ================= translations =================
   const ES = {

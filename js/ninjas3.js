@@ -404,7 +404,7 @@
   Object.assign(RIG, {
     ume:   { head: 'bun', c: { skin: '#f0d0b0', hair: '#38b000', top: '#2d6a4f', arm: '#2d6a4f', fore: '#9ef01a', hand: '#f0d0b0', pants: '#1b4332', boots: '#c77dff', belt: '#c77dff', chest: '#efffd0', trail: '#38b000' }, trailLen: 3 },
     tarek: { head: 'bandana', c: { skin: '#b07850', hair: '#2a1a10', acc: '#6c757d', top: '#3a2e1a', arm: '#3a2e1a', fore: '#c9a227', hand: '#b07850', pants: '#2a2418', boots: '#1a140c', belt: '#c9a227', chest: '#fff1c1', trail: '#6c757d' }, weapon: 'tanto', trailLen: 3 },
-    isa:   { head: 'knot', weapon: 'staff', c: { skin: '#f4dccc', hair: '#14141e', top: '#f4f1ea', arm: '#f4f1ea', fore: '#14141e', hand: '#f4dccc', pants: '#2b2d42', boots: '#14141e', belt: '#ef476f', chest: '#ef476f', trail: '#ef476f' }, trailLen: 4 },
+    isa:   { head: 'knot', weapon: 'staff', c: { skin: '#f4dccc', hair: '#14141e', top: '#f4f1ea', arm: '#f4f1ea', fore: '#14141e', hand: '#f4dccc', pants: '#e4dfd2', boots: '#14141e', belt: '#ef476f', chest: '#ef476f', trail: '#ef476f' }, trailLen: 4 },
     garo:  { head: 'helmet', sc: 1.12, limb: 4, bulk: 10, c: { skin: '#c89070', hair: '#4a4e5a', glow: '#edf2f4', top: '#4a4e5a', arm: '#4a4e5a', fore: '#8d99ae', hand: '#c89070', pants: '#2b2d42', boots: '#1a1c28', belt: '#edf2f4', chest: '#8d99ae' }, shield: 1 },
     mika:  { head: 'ponytail', weapon: 'tanto', armed: 1, c: { skin: '#f0d8c8', hair: '#e8ecff', top: '#3d348b', arm: '#3d348b', fore: '#b8c0ff', hand: '#f0d8c8', pants: '#2a2460', boots: '#b8c0ff', belt: '#ffffff', chest: '#b8c0ff', trail: '#e8ecff' }, trailHead: 1, trailLen: 5 },
     oda:   { head: 'bald', sc: 1.08, limb: 4, bulk: 9, c: { skin: '#c08860', hair: '#c08860', acc: '#6f4518', top: '#bc6c25', arm: '#c08860', fore: '#c08860', hand: '#c08860', pants: '#6f4518', boots: '#3a2410', belt: '#fefae0', chest: '#fefae0', trail: '#bc6c25' }, trailLen: 4, trailW: 3 }
@@ -413,7 +413,7 @@
   N.portraits(NEW);
 
   // Versus balance (see ninjas1.js): fitted against the fifteen regular heroes. Untuned they won 33-67%; with this table about 44-54%.
-  if (V && V.tune) Object.assign(V.tune, { ume: 1.21, tarek: 1.03, isa: 1.18, garo: 0.9, mika: 0.88, oda: 1.32 });
+  if (V && V.tune) Object.assign(V.tune, { ume: 1.15, tarek: 1.15, isa: 1.15, garo: 0.9, mika: 0.85, oda: 1.45 });   // re-solved 2026-11-15 (see js/versus.js)
 
   // ================= translations =================
   const ES = {

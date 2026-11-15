@@ -52,6 +52,8 @@ Not on touch: Player vs Player (two players need a keyboard) and typing the unlo
   (if the browser wants a touch first, the next tap does it) and turning it upright again returns to normal. iPhone Safari
   has no full screen for web pages: there, Share > Add to Home Screen opens the game full screen from its icon
   (`manifest.webmanifest` and the Apple meta tags in `index.html`), and a one-time tip says so.
+- **Home Screen icon** (`assets/icons/`): Kael and Nyra facing off across the crack, drawn from the game's own sprites
+  (64 px, scaled up without smoothing): 180 px for iPhone, 192 and 512 px for Android and the manifest.
 
 ## Settings and languages (`js/settings.js`, `js/i18n.js`, `js/lang/`)
 
@@ -279,6 +281,13 @@ repository; adding its `<script>` line back after `js/finisher.js` turns it on a
   chime for ice, zap for lightning, ring for blades, thump for earth, and so on), tuned to the hero; being hit gives a
   short grunt at the hero's own pitch. Matches settled at once in a Tournament stay silent.
 - `SW.voice.on = false` turns it all off; `SW.voice.profileOf(id)` shows a hero's voice.
+
+## No grinding by dying (`js/farming.js`)
+
+Dying, or leaving an area and coming back, brings its foes back. Each area now counts its recent kills: the first 18 pay
+XP and creds in full (the busiest area, the Metro, has 15 foes), each one after that pays 6% less, down to 20%, and the
+count drops by one every 15 seconds. A message says so the first time it happens in an area. Bosses and the Pit Arena
+always pay in full. The count lives in memory only (it is about the last few minutes, not the save).
 
 ## Fight animation (`js/anim.js`)
 
@@ -567,6 +576,8 @@ would even the rest out.
   charges it at about half the story's speed. The menu's "Energy gain" row sets Slow / Normal / Fast.
   A perfect block (guard in the last few frames before a hit lands) stuns the attacker: one second for a direct blow,
   half a second for a projectile or summon. A stunned fighter cannot move or escape. Ultimates cannot be interrupted.
+  Bots turn a well-timed guard into a perfect block 10% / 25% / 45% of the time on Easy / Normal / Hard, and never twice
+  within three seconds (it was 15 / 40 / 70% with no gap, which made Hard bots stun-lock the player).
   The numbers are at the top of `js/versus.js` (`GAIN`, `PASSIVE`, `CHARGE`, `HIT_*`, `STUN_*`, `BOT_PERFECT`).
   **Training: Your hero / Dummy hero** in its pause menu switch either fighter on the spot (left / right; locked heroes are skipped).
   **Training** is the third Versus mode: no timer and no knock-outs, both fighters heal when left alone, the player has
@@ -579,6 +590,9 @@ would even the rest out.
   87% of rounds against everyone else. The table evens out the other fifteen against each other. It was derived from a bot
   tournament (`tools/versus-balance.js`: every pair of those fifteen, both sides, bots on Normal). Untuned, their win rates
   ran from 30% to 77%; with the table they run from about 41% to 59%.
+  Re-solved on 2026-11-15 with all 34 non-legend fighters in one pool (the fifteen, the 18 Hidden Clans, the Convergence):
+  37-64% before, 40-59% after in a check run (2 rounds per ordered pair, about plus or minus 4% noise). The Hidden Clans'
+  entries are in `js/ninjas1.js`-`ninjas3.js`; the Convergence keeps 0.72 (`js/vsboss.js`) and stays a little strong on purpose.
   Re-run the tournament after adding or changing heroes: `VB.solve(10)` adjusts the table, `VB.table()` prints it.
   **Rival Duel** (fourth Versus mode, and a hook for the story): one fall, no clock, on the Crater Rim, against the lead hero
   of the other road (Kael's road meets Nyra, Nyra's road meets Kael), with the rival driven by the Versus bot.
