@@ -580,7 +580,8 @@
   };
 
   // ---------- legends stay locked in Versus (PvP and PvB, either side) until earned or opened with the code ----------
-  const lockedVs = id => !!(HR[id] && HR[id].legend && !G.unlocked(id));
+  // the Hidden Clans (ninja-core.js, `clan`) open only with the unlock code; the legends also by their story feat
+  const lockedVs = id => !!(HR[id] && (HR[id].clan ? !(SW.profile && SW.profile.all) : HR[id].legend && !G.unlocked(id)));
   SW.lockedVs = lockedVs;
   const V = SW.versus;
   let vsCode = null, vsMsg = '', vsMsgT = 0;
@@ -615,7 +616,8 @@
         if (vsMsgT > 0) text(ctx, vsMsg, W / 2, 208, '#ff8a8a', { align: 'center' });
       } else if (lockedVs(id)) {
         ui.panel(ctx, 6, 230, W - 12, 34, '#ff5a5a', 0.96);
-        text(ctx, 'LEGEND HERO - LOCKED', 12, 234, '#ff5a5a'); text(ctx, 'Earn it in the story: ' + D.achievements[h.need].desc + '.', 12, 244, '#ffffff');
+        if (h.clan) { text(ctx, 'HIDDEN CLANS - LOCKED', 12, 234, '#ff5a5a'); text(ctx, 'The Hidden Clans open only with the unlock code.', 12, 244, '#ffffff'); }
+        else { text(ctx, 'LEGEND HERO - LOCKED', 12, 234, '#ff5a5a'); text(ctx, 'Earn it in the story: ' + (h.need && D.achievements[h.need] ? D.achievements[h.need].desc : '?') + '.', 12, 244, '#ffffff'); }
         text(ctx, 'J / Enter: type the unlock code     A D W S: choose another', 12, 254, '#8a92b8');
       } else if (vsMsgT > 0) { ui.panel(ctx, W / 2 - 90, 214, 180, 14, '#7dffa0', 0.95); text(ctx, vsMsg, W / 2, 217, '#7dffa0', { align: 'center' }); }
     };

@@ -45,6 +45,11 @@ The game fills the screen, the page cannot scroll or zoom, the first tap tries t
 the phone sideways while it is upright. Settings > Touch controls: Auto (on touchscreens), On, Off.
 Not on touch: Player vs Player (two players need a keyboard) and typing the unlock code.
 
+- **Full screen on rotate** (Settings, on by default): on a phone or tablet, turning it sideways makes the game full screen
+  (if the browser wants a touch first, the next tap does it) and turning it upright again returns to normal. iPhone Safari
+  has no full screen for web pages: there, Share > Add to Home Screen opens the game full screen from its icon
+  (`manifest.webmanifest` and the Apple meta tags in `index.html`), and a one-time tip says so.
+
 ## Settings and languages (`js/settings.js`, `js/i18n.js`, `js/lang/`)
 
 Title screen > **Settings**: Language (English, Español, 简体中文), touch controls, sound effects volume, music volume. In the story,
@@ -254,6 +259,45 @@ about 2 ms a frame. Fixed: respawning now clears radiation (a fall in the Glowwi
 quitting to the title and continuing no longer counts as changing area (it took two Heat stars off), and YOU FELL is written
 again over the night darkness.
 
+## Voices and sound signatures (`js/voice.js`)
+
+- **English by default.** The finisher's spoken line starts in English (M during a finisher still switches English, Chinese,
+  Japanese or off, and the choice is kept). Heroes also call out their ultimate and their awakening by name.
+- **A voice for every hero.** The device's English voices are shared out between the heroes (deeper-sounding voices for
+  the low-voiced heroes, brighter ones for the high), and each hero has their own pitch and speed taken from their
+  dialogue pitch and fighting style, so all 44 fighters sound different even with only two or three voices installed.
+  The Convergence gets a robotic voice where the device has one. iPhones and iPads speak only after a tap, so the first
+  tap or key press unlocks speech.
+- **Sound signatures.** Each hero's swings, hits and skills carry an extra layer in their element (crackle for fire,
+  chime for ice, zap for lightning, ring for blades, thump for earth, and so on), tuned to the hero; being hit gives a
+  short grunt at the hero's own pitch. Matches settled at once in a Tournament stay silent.
+- `SW.voice.on = false` turns it all off; `SW.voice.profileOf(id)` shows a hero's voice.
+
+## Fight animation (`js/anim.js`)
+
+Draw-only polish for every hero and foe, in the story and in Versus; timing, hitboxes and damage are untouched.
+- **Anticipation and follow-through:** the body draws back a pixel in an attack's wind-up and lunges two forward on the
+  strike, with a slight crouch and stretch. Skills (cast, rush, wave) get the same.
+- **Swing smear:** a crescent in the hero's colours, shaped by the move (side swing, uppercut for the launcher, low
+  arc for the sweep, downward for air attacks), plus two fading after-images of the wind-up pose.
+- **Impact:** a burst of rays in the hero's colour where a hit lands (bigger for heavy hits, launchers and big damage),
+  and a recoil on whoever was hit: foes are knocked back a pixel or two and stretched by the blow.
+- **Squash and stretch:** take-off, hard landings (with a puff of dust), dashes and being hit. Foes crouch into their wind-up.
+- Measured: no change in frame time (about 1.1 ms a frame either way). `SW.anim.on = false` turns it all off for a comparison.
+
+## The throw (`js/throw.js`)
+
+One new move for every hero, in the story and in Versus: **J + L together, on the ground, up close** (touch: the Throw
+button). The hero reaches out (5 frames); if someone is there they are grabbed, held for a moment and thrown for 30
+damage (times the hero's combo multiplier), knocked down. A throw goes through a guard, a shield, armour and blocking,
+so it is the answer to a fighter who only guards and to Enforcers' shields. Hold back as it lands to throw behind you.
+A missed grab leaves you open for 16 frames. Bosses are too heavy (TOO HEAVY), fliers cannot be grabbed, and Husks
+still only feel energy. After a throw you can cancel into a skill or special, as after any combo hit.
+Versus: the one who is grabbed can break free with J + L within 8 frames (BREAK). The bot throws a fighter who guards up
+close, and breaks throws 15 / 35 / 60% of the time on Easy / Normal / Hard (`V.breakChance` in `js/versus.js`).
+Tested: 30 damage to a thug, 30 through an Enforcer's shield where a jab does 0, back throws, a whiff, TOO HEAVY on a
+boss, NO EFFECT on a Husk; in Versus, grabs, breaks and landed throws against the Easy and the Hard bot.
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
@@ -274,7 +318,7 @@ blow), the moment becomes a short cinematic, about five seconds:
 - a full-screen finisher: the hero's ultimate art drifting closer over rays in their colours and particles of their
   element, the ultimate's name slammed in, the hero's name and title, the element word behind it all, one of their three
   voice lines spoken aloud with a subtitle typed out, and FINISH!; then a flash back into the knockout or the fight.
-- Every fighter (every hero and the Convergence) has three original lines, each in English, Japanese, Spanish and
+- Every fighter (all 43 heroes and the Convergence) has three original lines, each in English, Japanese, Spanish and
   Chinese. The voice speaks Japanese, English or Chinese (M switches it, and the choice is kept); the subtitle is in the
   game's language. Any key or a tap skips. The music drops while the line is spoken.
 - Voices are the browser's own speech voices (Japanese falls back to English where a browser has no Japanese voice).
@@ -292,7 +336,7 @@ The Convergence (the story's last form) is on the Versus roster, at the end (til
 - **Boss fight.** In Player vs Bot, give the bot the Convergence and you fight the real boss: its own attacks (World Rend,
   Blink, Last Light, the last stand), its own health, no round clock. It is scaled by the bot level; the Versus bot, playing
   ten different heroes, won 76% of rounds against it on Easy, 32% on Normal and 13% on Hard.
-- **Playable.** Anywhere else (your own pick, Player vs Player, Bot vs Bot, Arcade, 3 vs 3) it is a fighter
+- **Playable.** Anywhere else (your own pick, Player vs Player, Bot vs Bot, Tournament, Arcade, 3 vs 3) it is a fighter
   with the boss's moves turned into a player's: U Void Shard, S + U Rift Step, I World Rend, S + I Engine Light, W + O Engine
   Collapse, S + O Unravel, O Engine Form, W + I World's End (its own ultimate). Its sprite is Noct's frames in the
   Convergence's white and violet. At 0.72 damage (`V.tune`) it wins about 55% of bot rounds against the rest of the pool
@@ -323,22 +367,33 @@ one attempt at the last form succeeds 4 of 8 times as Kael, 7 of 8 as Nyra, 8 of
 wins, before or after. (The first try of the new attacks made the fight easier: the careful player simply guarded their
 long wind-ups, so World Rend became unguardable and the openings after Last Light shorter.)
 
-## Signature skills and skill effects (`js/signature.js`, `js/skillfx.js`)
+## Signature skills, element melee and skill effects (`js/signature.js`, `js/clanmelee.js`, `js/skillfx.js`)
 
-- **A signature skill for every hero (W + O).** One new skill per hero: 75 energy, a 7 s cooldown, a fifth slot on the
-  HUD. In the story it is known together with the hero's I move, so old saves have it. A Versus bot throws it in place of
-  I one time in five. Examples: Kael's Ball Lightning drifts ahead zapping everything near it; Nyra's Frost Bloom rings
-  her with freezing spikes; Maren's Tidal Wave carries foes along; Vega's Gravity Well pulls everything in and
-  collapses; Tessa's Time Bomb rings and bursts; Jax's Ricochet keeps coming back. Esc > SKILLS lists each one.
+- **A signature skill for every hero (W + O).** 43 new skills, one per hero, story and Hidden Clans: 75 energy, a 7 s
+  cooldown, a fifth slot on the HUD. In the story it is known together with the hero's I move, so old saves have it.
+  A Versus bot throws it in place of I one time in five. Examples: Kael's Ball Lightning drifts ahead zapping everything
+  near it; Nyra's Frost Bloom rings her with freezing spikes; Maren's Tidal Wave carries foes along; Vega's Gravity Well
+  pulls everything in and collapses; Dune's Sand Maw closes on the nearest foe; Corvin's Murder of Crows; Garo's Twin
+  Wheels go out high and low and come back. Esc > SKILLS lists each one with its description.
+- **The Hidden Clans are locked until the unlock code is entered** (Versus pick screen: J on a locked card offers the code;
+  there is no story feat for them). Until then they are not offered as Arcade, Survival or Tournament opponents. (`lockedVs` in `js/heroes4.js`.)
+- **The Hidden Clans fight in their element.** The eighteen ninjas used to borrow a shared J combo (Dune swung Brakk's).
+  Each now has a combo of their own: every hit throws their element (sand, lightning, water, fire, shadow, ink, crow
+  feathers, spores, bone ...), and the fourth J ends in an element finisher: Dune's sand wave, Sable's lightning arc,
+  Nami's water whip, Corvin's crows, Garo's returning wheel, Oda's bell toll and so on. A finisher deals a quarter of the
+  last hit again: it is the element's flourish more than a second blow.
 - **Every skill looks like its element.** Each hero has an element style (colours, particle shape, how it moves). Every
   skill turns a sigil under the hero's feet as it is cast (bigger for I, S + I and the power-ups, a pillar of light for
   the awakening and the ultimate), energy hits burst in the element, shots shed it as they fly, and a running power-up
   lets it drift off the hero. Effects only: no timing, hitbox or damage changes.
 
-Tested: each new skill in Versus (no errors; against a foe standing 60 px away a median of 23 damage, up to 45, less for
-the close-range ones), in the story (learned with the I move, 75 energy, the HUD slot), the Skills tab and the controls
-screen in English, Spanish and Chinese. `js/clanmelee.js` is for a Versus roster that is not part of this build yet and
-does nothing without it.
+Tested: each of the 43 skills in Versus (no errors; against a foe standing 60 px away a median of 23 damage, up to 45,
+less for the close-range or scattered ones such as Sen's petals and Thorne's spikes),
+in the story (learned with the I move, 75 energy, the HUD slot), the Skills tab and the controls screen in English,
+Spanish and Chinese. Versus balance, bot against bot, 192 games a hero: win rates spread from 38 to 63% (before: 43 to
+61%); the Hidden Clans average 52-54% against 46-48% for the story heroes. Extra reach and finishers that pulled the foe
+back in were tried and removed (Pell's made a combo loop the bot won 70% with). Re-solving `V.tune` (tools/versus-balance.js)
+would even the rest out.
 
 ## Moves update (`js/moves.js`)
 
@@ -459,6 +514,12 @@ does nothing without it.
   hero, then on another of the same team, swaps them). When a hero falls or loses on time, that side's next hero steps in;
   the hero still standing stays with the health they had left plus 20% (and their energy). The last team standing wins.
   The three squares under each health bar show the team: out, fighting, waiting.
+  **Tournament**: a knockout bracket, 1 vs 1, best of three. Bracket: 8 heroes, 16 heroes, or All heroes (every hero open
+  in Versus, up to 32; byes fill the bracket). Your entry: Play (pick a hero; you fight your own matches, always on the
+  left) or Watch (bots only). Every other match is bot against bot at the menu's bot level: watched at the chosen speed,
+  or settled at once in silence with "Bot matches: Skip". The bracket screen is two-sided (the final meets in the middle),
+  shows each result, the next match and the champion; Esc > quit in a match forfeits your own match (a bot match goes to
+  whoever leads). The code is in `js/versus.js` (`startTour`, `settle`, `tourNext`, `drawBracket`).
   **Arcade** (one player, 1 vs 1 or 3 vs 3): six stages against bots that get harder (Easy, Easy, Normal, Normal, Hard,
   Hard); each stage is a full match against a random hero or team, and the last is led by a legend at the Aurelia Spire.
   A lost stage can be continued (the stage is fought again; continues are counted). The clock counts fighting time

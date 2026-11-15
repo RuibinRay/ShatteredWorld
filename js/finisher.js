@@ -25,7 +25,7 @@
   const loadVoices = () => { try { voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; } catch (e) { voices = []; } };
   loadVoices(); try { if (window.speechSynthesis) speechSynthesis.onvoiceschanged = loadVoices; } catch (e) { /* none */ }
   const voiceFor = lang => voices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang));
-  const pref = () => (SW.profile && SW.profile.finVoice) || 'ja';
+  const pref = () => (SW.profile && SW.profile.finVoice) || 'en';   // English unless the player picks another (js/voice.js gives each hero a voice)
   // the language actually spoken: the chosen one if a recording or a browser voice exists for it, else English, else none
   function spokenLang(hero, n) {
     const want = pref(); if (want === 'off') return null;

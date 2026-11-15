@@ -66,6 +66,7 @@
     ['attack', 'J', 'Attack', 1.0, 1.0, 1.35], ['jump', 'K', 'Jump', 2.45, 0.75, 1.1], ['dash', 'L', 'Dash', 0.85, 2.45, 1.0],
     ['skill', 'U', 'Skill', 2.3, 2.1, 0.95], ['special', 'I', 'Special', 1.7, 3.45, 0.95], ['awaken', 'O', 'Awaken', 0.65, 3.7, 0.85],
     ['charge', 'J+K', 'Charge', 3.75, 0.65, 0.75], ['interact', 'E', 'Talk', 3.6, 1.95, 0.75], ['item', 'Q', 'Item', 3.25, 3.15, 0.7],
+    ['throw', 'J+L', 'Throw', 4.85, 1.3, 0.75],   // js/throw.js
     ['map', 'M', 'Map', 1.75, -0.6, 0.62], ['pause', 'Esc', 'Menu', 0.6, -0.6, 0.62]
   ];
   const btns = BTNS.map(([a, k, w, x, y, s]) => {
@@ -97,13 +98,60 @@
   const end = e => { if (e.pointerId !== sid) return; sid = null; show(false); setDir(0, 0); };
   zone.addEventListener('pointerup', end); zone.addEventListener('pointercancel', end); zone.addEventListener('lostpointercapture', end);
 
-  // first touch: sound may start now, and the page goes full screen (where the browser allows it)
+  // ---------- full screen on rotate (Settings > Full screen on rotate, on by default) ----------
+  // Turned sideways: the page goes full screen. Turned upright again: it comes back out (only if it went in by itself).
+  // Browsers allow full screen only after a touch, so when the turn alone is refused, the next tap does it. A player who
+  // leaves full screen by hand is left alone until the next turn upright. iPhone Safari has no full screen for pages:
+  // there the game is full screen when opened from a Home Screen icon (manifest.webmanifest), and a tip says so, once.
+  T.autoFs = read().autoFs !== false;
+  T.setAutoFs = function (on) { T.autoFs = on; const s = read(); s.autoFs = on; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* private window */ } if (!on) exitFs(); else orient(); };
+  const de = document.documentElement, fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const canFs = () => !!(de.requestFullscreen || de.webkitRequestFullscreen);
+  const landscape = () => window.innerWidth > window.innerHeight;
+  const standalone = () => navigator.standalone === true || (window.matchMedia && (matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches));
+  let autoIn = false, wantFs = false, leftByHand = false, leaving = false;
+  function enterFs() {
+    if (fsEl() || !canFs()) return;
+    try {
+      const p = (de.requestFullscreen || de.webkitRequestFullscreen).call(de, { navigationUI: 'hide' });
+      autoIn = true; wantFs = false;
+      if (p && p.catch) p.catch(() => { autoIn = false; wantFs = true; });   // refused without a tap: the next tap tries again
+    } catch (e) { wantFs = true; }
+  }
+  function exitFs() {
+    wantFs = false;
+    if (!fsEl()) return;
+    leaving = true;
+    try { const p = (document.exitFullscreen || document.webkitExitFullscreen).call(document); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ }
+    autoIn = false;
+  }
+  function orient() {
+    if (!T.on() || !T.autoFs) { wantFs = false; return; }
+    if (landscape()) { if (!fsEl() && !leftByHand) enterFs(); else if (!canFs()) iosTip(); }
+    else { leftByHand = false; if (fsEl() && autoIn) exitFs(); else wantFs = false; }
+  }
+  const onFsChange = () => { if (!fsEl()) { if (!leaving && autoIn && landscape()) leftByHand = true; autoIn = false; leaving = false; } setTimeout(layout, 60); };
+  document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
+  window.addEventListener('pointerdown', () => { if (wantFs && T.autoFs && T.on() && landscape()) enterFs(); }, true);
+  // iPhone: a one-time tip about the Home Screen icon
+  let tipShown = false;
+  function iosTip() {
+    if (tipShown || canFs() || standalone() || !/iPhone|iPod/.test(navigator.userAgent)) return;
+    tipShown = true;
+    try { if (localStorage.getItem('shattered-worlds-fs-tip')) return; localStorage.setItem('shattered-worlds-fs-tip', '1'); } catch (e) { /* show it anyway */ }
+    const L = SW.i18n, msg = 'For full screen on iPhone: Share > Add to Home Screen, then open the game from that icon.';
+    const tip = document.createElement('div');
+    tip.style.cssText = 'position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:30;background:rgba(5,6,12,.9);color:#fff;border:1px solid #f5c542;border-radius:8px;padding:8px 12px;font:14px "Trebuchet MS",sans-serif;max-width:80vw;text-align:center;pointer-events:none';
+    tip.textContent = L ? L.tr(msg) : msg; document.body.appendChild(tip);
+    setTimeout(() => tip.remove(), 6000);
+  }
+
+  // first touch: sound may start now, and (turned sideways) the page goes full screen
   let started = false;
   function first() {
     T.used = true; if (SW.audio.unlock) SW.audio.unlock();
     if (started) return; started = true;
-    const d = document.documentElement;
-    try { const p = d.requestFullscreen && d.requestFullscreen(); if (p && p.then) p.then(() => { try { screen.orientation.lock('landscape').catch(() => {}); } catch (x) { /* ignore */ } }).catch(() => {}); } catch (x) { /* not allowed here */ }
+    if (T.autoFs && landscape()) enterFs();
   }
   window.addEventListener('touchstart', () => { if (T.mode === 'auto' && !T.used) { T.used = true; layout(); } }, { passive: true });
 
@@ -135,9 +183,11 @@
   setInterval(() => { if (T.on()) labels(); }, 500);
   window.addEventListener('load', () => {
     document.body.appendChild(root);
-    window.addEventListener('resize', layout);   // registered after game.js's own resize handler, so this one has the last word
-    window.addEventListener('orientationchange', () => setTimeout(layout, 150));
+    let wasLand = landscape();
+    window.addEventListener('resize', () => { layout(); const l = landscape(); if (l !== wasLand) { wasLand = l; orient(); } });   // registered after game.js's own resize handler, so this one has the last word
+    window.addEventListener('orientationchange', () => setTimeout(() => { layout(); wasLand = landscape(); orient(); }, 150));
+    try { const mq = window.matchMedia('(orientation: landscape)'), on = () => setTimeout(() => { layout(); wasLand = landscape(); orient(); }, 100); if (mq.addEventListener) mq.addEventListener('change', on); else if (mq.addListener) mq.addListener(on); } catch (e) { /* older browsers: resize covers it */ }
     layout();
   });
-  T.layout = layout;
+  T.layout = layout; T.orient = orient;
 })();

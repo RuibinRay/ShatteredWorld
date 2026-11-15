@@ -12,12 +12,17 @@
 (function () {
   const SW = window.SW, G = SW.game, D = SW.data, art = SW.art, fx = SW.fx, ui = SW.ui, I = SW.input, W = SW.W, H = SW.H, text = SW.text;
   const V = SW.versus = { phase: 'menu', mode: 'pvb', diff: 1, stage: 0, gain: 1, row: 0, pick: [0, 1], step: 0, f: [], wins: [0, 0], round: 1, t: 0, cur: null,
-    dummy: 0, endless: true, showMoves: true, paused: false, pRow: 0, pPage: null, pWho: 0, diff2: 1, speed: 0, fmt: 0, team: [[], []], ti: [0, 0], oRow: 0, oCol: 0, oMark: null };
+    dummy: 0, endless: true, showMoves: true, paused: false, pRow: 0, pPage: null, pWho: 0, diff2: 1, speed: 0, tsize: 0, entry: 0, tskip: 0, tourBots: false, tour: null, fmt: 0, team: [[], []], ti: [0, 0], oRow: 0, oCol: 0, oMark: null };
   // Bot vs Bot: nobody plays, two bots fight each other (each with its own level); Esc > Speed runs it faster
-  const MODES = [['pvb', 'Player vs Bot'], ['pvp', 'Player vs Player'], ['bvb', 'Bot vs Bot'], ['arcade', 'Arcade'], ['surv', 'Survival'], ['train', 'Training'], ['rival', 'Rival Duel']];   // while a duel runs V.mode is 'duel'
+  const MODES = [['pvb', 'Player vs Bot'], ['pvp', 'Player vs Player'], ['bvb', 'Bot vs Bot'], ['tour', 'Tournament'], ['arcade', 'Arcade'], ['surv', 'Survival'], ['train', 'Training'], ['rival', 'Rival Duel']];
+  // Tournament: a knockout bracket of 8, 16 or every open hero (byes fill it up to 16 or 32), 1 vs 1, best of three.
+  // Entry "Play": you pick a hero and play your own matches against the bots; "Watch": bots only. Every other match is
+  // bot against bot at the menu's bot level, watched at the chosen speed, or settled at once with "Bot matches: Skip".
+  const TSIZE = [['8 heroes', 8], ['16 heroes', 16], ['All heroes', 0]], ENTRY = ['Play', 'Watch'], TSKIP = ['Watch', 'Skip'];   // while a duel runs V.mode is 'duel'
   const SPEEDS = [['Normal', 1], ['Fast', 2], ['Very fast', 4]];
   const lvOf = f => (f.lv !== undefined ? f.lv : V.diff);   // a bot's level: its own in Bot vs Bot, else the menu's
-  const isBvb = () => V.mode === 'bvb';
+  const isTour = () => V.mode === 'tour';
+  const isBvb = () => V.mode === 'bvb' || (isTour() && !!V.tourBots);   // a tournament match between two bots plays as Bot vs Bot
   // Format (Player vs Bot, Player vs Player, Bot vs Bot): 1 vs 1 is best of three; 3 vs 3 is a team battle. Each side picks
   // three heroes and sets their order; when a hero falls (or loses on time) the next one steps in, and the hero still standing
   // stays in with the health they had left plus TEAM_HEAL of their maximum (energy carries over too). The last team with a hero wins.
@@ -35,6 +40,7 @@
   // TEAM_HEAL. Opponents: Easy for fights 1-3, Normal to 8, then Hard and SURV_HP more health per fight after the 10th;
   // every 10th is a legend. Best run per format (most wins, then fastest) is kept in localStorage SURV_KEY.
   const SURV_KEY = 'shattered-worlds-survival-v1', SURV_HP = 10;
+  const EDGE = 14;   // px a fighter is kept from the arena's left and right ends
   const isSurv = () => V.mode === 'surv', solo = () => isArc() || isSurv();
   const survBest = () => { try { return JSON.parse(localStorage.getItem(SURV_KEY)) || {}; } catch (e) { return {}; } };
   const arcBest = () => { try { return JSON.parse(localStorage.getItem(ARC_KEY)) || {}; } catch (e) { return {}; } };
@@ -48,7 +54,7 @@
     vs_foundry: { style: 'brick', a: '#4a2c24', b: '#3a221c', top: '#a8502a', hi: '#ffb060', deep: '#180c0a', plat: '#6a4a3a', sky: ['#140606', '#3a1208'], mid: 'arches', midCol: '#1a0a08', bg: 'vs_foundry', dim: 0.22, haz: '#ff8a3a', win: ['#ff8a3a'] }
   });
   ['vs_crater', 'vs_spire', 'vs_foundry'].forEach(n => { const im = new Image(); im.onload = () => { art.bg[n] = im; }; im.src = 'assets/bg/' + n + '.png'; });
-  STAGES.push(['Crater Rim', 'vs_crater'], ['Aurelia Spire', 'vs_spire'], ['Deep Foundry', 'vs_foundry']);
+  STAGES.push(['Crater Rim', 'vs_crater'], ['Aurelia Spire', 'vs_spire'], ['Deep Foundry', 'vs_foundry'], ['Hidden Gorge', 'vs_clans']);   // vs_clans: theme and backdrop in ninja-core.js
   const DIFF = ['Easy', 'Normal', 'Hard'];
   // Energy in Versus comes from fighting, not from standing still. GAIN is the menu's "Energy gain" row: [label, multiplier].
   // Per frame: PASSIVE trickle, CHARGE while holding attack + jump (the story charges at 1.25). Per hit landed: HIT_MELEE for
@@ -70,7 +76,7 @@
     kiri: 1.05, tarn: 0.95, maren: 0.9, yara: 1.15, brann: 0.75
   };
   const KEYS = [
-    { left: ['KeyA'], right: ['KeyD'], up: ['KeyW'], down: ['KeyS'], attack: ['KeyJ'], jump: ['KeyK'], dash: ['KeyL'], skill: ['KeyU'], special: ['KeyI'], awaken: ['KeyO'] },
+    { left: ['KeyA'], right: ['KeyD'], up: ['KeyW'], down: ['KeyS'], attack: ['KeyJ'], jump: ['KeyK'], dash: ['KeyL'], skill: ['KeyU'], special: ['KeyI'], awaken: ['KeyO'], throw: [] },   // throw: the touch button (J + L works anyway)
     { left: ['ArrowLeft'], right: ['ArrowRight'], up: ['ArrowUp'], down: ['ArrowDown'], attack: ['Numpad1', 'Digit7'], jump: ['Numpad2', 'Digit8'], dash: ['Numpad3', 'Digit9'], skill: ['Numpad4', 'Digit0'], special: ['Numpad5', 'Minus'], awaken: ['Numpad6', 'Equal'] }
   ];
   SW.zones.versus = { name: 'Versus', theme: 'arena', music: 'boss', w: 38, h: 17, build(z) { z.ground(0, 37, 14); } };
@@ -154,11 +160,13 @@
     if (isSurv() && s === 1) { const k = V.sv.n + 1; f.lv = k <= 3 ? 0 : k <= 8 ? 1 : 2; f.state.hpBonus += SURV_HP * Math.max(0, k - 10); }
     return f;
   }
+  // a Hidden Clans fighter still locked (no unlock code yet) is never drawn as an opponent
+  const clanLocked = i => { const id = D.heroOrder[i], h = D.heroes[id]; return !!(h && h.clan && SW.lockedVs && SW.lockedVs(id)); };
   // ---------- survival ----------
   function survOpp() {   // the next opponent (fight number V.sv.n + 1): a legend every 10th fight
     const all = D.heroOrder.map((id, i) => i), k = V.sv.n + 1, last = V.team[1] && V.team[1][V.team[1].length - 1];
-    let pool = all.filter(i => !!D.heroes[D.heroOrder[i]].legend === (k % 10 === 0) && V.sv.mine.indexOf(i) < 0 && i !== last);
-    if (!pool.length) pool = all.filter(i => V.sv.mine.indexOf(i) < 0);
+    let pool = all.filter(i => !!D.heroes[D.heroOrder[i]].legend === (k % 10 === 0) && V.sv.mine.indexOf(i) < 0 && i !== last && !clanLocked(i));
+    if (!pool.length) pool = all.filter(i => V.sv.mine.indexOf(i) < 0 && !clanLocked(i));
     return pool[Math.random() * pool.length | 0];
   }
   function startSurvival(mine) {
@@ -176,8 +184,8 @@
   function startArcade() {   // the player's hero or team is chosen (V.pick[0] / V.team[0]): draw up the six opponents
     const n = team3() ? 3 : 1, mine = team3() ? V.team[0] : [V.pick[0]];
     const all = D.heroOrder.map((id, i) => i), shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0, x = a[i]; a[i] = a[j]; a[j] = x; } return a; };
-    let pool = all.filter(i => !D.heroes[D.heroOrder[i]].legend && mine.indexOf(i) < 0);
-    if (pool.length < n) pool = all.filter(i => mine.indexOf(i) < 0);
+    let pool = all.filter(i => !D.heroes[D.heroOrder[i]].legend && mine.indexOf(i) < 0 && !clanLocked(i));
+    if (pool.length < n) pool = all.filter(i => mine.indexOf(i) < 0 && !clanLocked(i));
     const legends = all.filter(i => D.heroes[D.heroOrder[i]].legend), boss = legends.length ? legends[Math.random() * legends.length | 0] : pool[0];
     let deck = [];
     const draw = team => { for (let tries = 0; tries < 99; tries++) { if (!deck.length) deck = shuffle(pool.slice()); const x = deck.pop(); if (team.indexOf(x) < 0 && x !== boss) return x; } return pool[0]; };
@@ -201,6 +209,65 @@
     A.rec = !b || A.cont < b.cont || (A.cont === b.cont && A.time < b.t);
     if (A.rec) { best[k] = { t: A.time, cont: A.cont, heroes: A.mine.map(i => D.heroOrder[i]) }; try { localStorage.setItem(ARC_KEY, JSON.stringify(best)); } catch (e) { /* private window */ } }
     V.phase = 'arcClear'; V.t = 0; SW.audio.sfx('level'); SW.audio.sfx('shard');
+  }
+  // ---------- tournament ----------
+  // V.tour = { size, R, me, cur, last, done }: R[0] is the draw (hero ids, null for a bye), R[r + 1][m] the winner of
+  // match m of round r. The player (if playing) is always side 0 of their own matches.
+  // every fighter open in Versus, the Convergence included (outside Player vs Bot it fights as a playable fighter, js/vsboss.js)
+  const tourOpen = () => D.heroOrder.filter(id => !(SW.lockedVs && SW.lockedVs(id)));
+  const shuffled = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0, x = a[i]; a[i] = a[j]; a[j] = x; } return a; };
+  function startTour(meIdx) {
+    const me = meIdx === undefined ? null : D.heroOrder[meIdx], want = TSIZE[V.tsize][1];
+    const pool = shuffled(tourOpen().filter(id => id !== me)), n = Math.min(want || 64, pool.length + (me ? 1 : 0));
+    const size = want || (n <= 8 ? 8 : n <= 16 ? 16 : n <= 32 ? 32 : 64), ent = shuffled((me ? [me] : []).concat(pool).slice(0, n));
+    let byes = size - ent.length; const slots = [];
+    for (let i = 0; i < size / 2; i++) { slots.push(ent.length ? ent.shift() : null); slots.push(byes > 0 ? (byes--, null) : ent.length ? ent.shift() : null); }
+    V.tour = { size, R: [slots], me, cur: null, last: null, done: false, champ: null };
+    settle(); V.phase = 'bracket'; V.t = 0;
+  }
+  function setWin(r, m, w) {
+    const T = V.tour; (T.R[r + 1] = T.R[r + 1] || [])[m] = w;
+    if (T.R[r].length === 2) { T.done = true; T.champ = w; }
+  }
+  function settle() {   // move byes along; return the next match that needs fighting, or null when the bracket is done
+    const T = V.tour;
+    for (let r = 0; T.R[r] && T.R[r].length > 1; r++) for (let m = 0; m < T.R[r].length / 2; m++) {
+      if (T.R[r + 1] && T.R[r + 1][m] !== undefined) continue;
+      const a = T.R[r][m * 2], b = T.R[r][m * 2 + 1];
+      if (a === undefined || b === undefined) continue;
+      if (a === null || b === null) { setWin(r, m, a || b); return settle(); }
+      return { r, m, a, b };
+    }
+    return null;
+  }
+  function tourNext() {
+    const T = V.tour, M = settle();
+    if (!M) return;
+    const mine = !!T.me && (M.a === T.me || M.b === T.me), s0 = mine ? T.me : M.a;
+    T.cur = Object.assign(M, { s0, s1: s0 === M.a ? M.b : M.a, mine });
+    V.tourBots = !mine; V.diff2 = V.diff;
+    V.pick = [D.heroOrder.indexOf(T.cur.s0), D.heroOrder.indexOf(T.cur.s1)];
+    if (!mine && V.tskip === 1) { simulate(); return; }
+    startMatch();
+  }
+  function simulate() {   // a bot match settled at once, in silence
+    const sfx = SW.audio.sfx, mus = SW.audio.music; SW.audio.sfx = () => {}; SW.audio.music = () => {}; V.simulating = true;   // js/voice.js stays quiet too
+    try { startMatch(); let n = 0; while ((V.phase === 'intro' || V.phase === 'fight' || V.phase === 'ko') && n++ < 60 * 60 * 8) fightTick(); }
+    finally { SW.audio.sfx = sfx; SW.audio.music = mus; V.simulating = false; }
+    tourResult();
+  }
+  function tourResult() {
+    const T = V.tour, M = T.cur; if (!M) return;
+    const w = V.champ === 1 ? M.s1 : M.s0;   // a draw goes to side 0
+    T.last = { a: M.s0, b: M.s1, sa: V.wins[0], sb: V.wins[1], w };
+    setWin(M.r, M.m, w); T.cur = null;
+    quit(true); V.tourBots = false; settle(); V.phase = 'bracket'; V.t = 0;
+    if (T.done) SW.audio.sfx('level');
+  }
+  function tourForfeit() {   // Esc > quit during a tournament match: your own match is lost; a bot match goes to whoever leads
+    const r = V.f.map(f => { G.state = f.state; return f.p ? Math.max(0, f.state.hp) / f.p.hpMax() : 0; });
+    V.champ = V.tour.cur && V.tour.cur.mine ? 1 : r[1] > r[0] ? 1 : 0;
+    tourResult();
   }
   function nextFighters(out) {   // 3 vs 3: the sides in `out` lost this fight; their next heroes step in, the other side's hero stays
     const keep = V.f.map(f => { if (out.indexOf(f.i) >= 0) return null; G.state = f.state; return { hp: f.state.hp, en: f.state.energy }; });
@@ -290,6 +357,7 @@
       ai.t = c.every + (R() * c.every | 0); ai.n = 0;
       if (p.state === 'hurt' && S.energy >= 60 && R() < c.react * 0.35) ai.plan = 'slip';
       else if (o.stunT > 8 && R() < c.aggr + 0.2) ai.plan = adx > 44 ? 'approach' : 'combo';   // punish a stunned opponent
+      else if (q.state === 'guard' && adx < 34 && p.onGround && R() < 0.4 + 0.5 * c.aggr) ai.plan = 'throw';   // a guard up close: throw it (js/throw.js)
       else if (qAtk && adx < 70 && R() < c.react) ai.plan = R() < 0.25 && S.energy >= 60 ? 'slip' : 'guard';
       else if (S.awaken >= 100 && p.awakeT <= 0 && R() < 0.9) ai.plan = 'awaken';
       else if ((p.awakeT > 0 ? S.energy >= 100 : S.energy >= 300) && adx < 260 && R() < c.ult) ai.plan = 'ult';
@@ -315,8 +383,10 @@
       case 'guard': k.down = true; break;
       case 'slip': k.down = true; if (ai.n > 1 && ai.n < 4) k.dash = true; break;
       case 'charge': k.attack = true; k.jump = true; break;
+      case 'throw': if (!turn()) { if (adx > 22) k[to] = true; else if (ai.n < 4) { k.attack = true; k.dash = true; } } break;
     }
   }
+  V.breakChance = f => [0.15, 0.35, 0.6][lvOf(f)];   // how often a bot breaks a throw (js/throw.js)
   function dummyThink(f, o, k) {   // the Training partner
     const p = f.p, dx = o.p.x - p.x;
     if (V.dummy === 3) return botThink(f, o, k);
@@ -367,6 +437,8 @@
       }
     });
     ctx(null);
+    // nobody is squeezed against the arena's edge half off the screen (playtest: a cornered fighter was drawn at x 5)
+    V.f.forEach(f => { if (f.p && !f.p.held) f.p.x = SW.clamp(f.p.x, EDGE, V.zone.pw - EDGE); });
     fx.update();
     const A = V.f[0].p, B = V.f[1].p;
     G.cam.x += (SW.clamp((A.x + B.x) / 2 - W / 2, 0, Math.max(0, z.pw - W)) - G.cam.x) * 0.12;
@@ -405,7 +477,7 @@
   }
   // ---------- menu rows, pause, move list ----------
   const menuRows = () => (V.mode === 'pvb' ? ['mode', 'fmt', 'diff', 'stage', 'gain', 'start'] : V.mode === 'pvp' ? ['mode', 'fmt', 'stage', 'gain', 'start'] : V.mode === 'rival' ? ['mode', 'diff', 'gain', 'start']
-    : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start'] : solo() ? ['mode', 'fmt', 'gain', 'start']
+    : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start'] : solo() ? ['mode', 'fmt', 'gain', 'start'] : isTour() ? ['mode', 'tsize', 'entry', 'diff', 'tskip', 'speed', 'start']
     : V.dummy === 3 ? ['mode', 'dummy', 'diff', 'stage', 'start'] : ['mode', 'dummy', 'stage', 'start']);
   const pauseItems = () => (V.mode === 'train' ? ['resume', 'dummy', 'endless', 'onscreen', 'reset', 'moves', 'quit'] : V.mode === 'duel' && !V.duelO.canQuit ? ['resume', 'moves']
     : isBvb() ? ['resume', 'speed', 'moves', 'quit'] : ['resume', 'moves', 'quit']);
@@ -428,7 +500,7 @@
     else if (id === 'onscreen' && (d || ok)) { V.showMoves = !V.showMoves; sfx('move'); }
     else if (ok && id === 'reset') { startRound(); V.paused = false; sfx('select'); }
     else if (ok && id === 'moves') { V.pPage = 'moves'; V.pWho = 0; sfx('select'); }
-    else if (ok && id === 'quit') { V.paused = false; sfx('back'); if (V.mode === 'duel') endDuel('lose'); else quit(true); }
+    else if (ok && id === 'quit') { V.paused = false; sfx('back'); if (V.mode === 'duel') endDuel('lose'); else if (isTour() && V.tour) tourForfeit(); else quit(true); }
   }
   // a hero's moves for the lists: the kit without its story-only traversal slot. key is the input with any "(when ...)" note removed.
   function moveRows(hero) {
@@ -453,6 +525,9 @@
         else if (id === 'diff') V.diff = (V.diff + 3 + d) % 3;
         else if (id === 'diff2') V.diff2 = (V.diff2 + 3 + d) % 3;
         else if (id === 'fmt') V.fmt = 1 - V.fmt;
+        else if (id === 'tsize') V.tsize = (V.tsize + TSIZE.length + d) % TSIZE.length;
+        else if (id === 'entry') V.entry = 1 - V.entry;
+        else if (id === 'tskip') V.tskip = 1 - V.tskip;
         else if (id === 'speed') V.speed = (V.speed + SPEEDS.length + d) % SPEEDS.length;
         else if (id === 'dummy') V.dummy = (V.dummy + DUMMY.length + d) % DUMMY.length;
         else if (id === 'stage') V.stage = (V.stage + STAGES.length + d) % STAGES.length;
@@ -460,6 +535,7 @@
         SW.audio.sfx('move');
       }
       if (back) { quit(false); SW.audio.sfx('back'); }
+      else if (ok && isTour() && V.entry === 1) { SW.audio.sfx('select'); startTour(); }   // watching: straight to the bracket
       else if (ok) { SW.audio.sfx('select'); toPick(); }
     } else if (V.phase === 'pick') {
       const i = ui.gridMove(V.pick[V.step], left, right, up, down);
@@ -479,6 +555,7 @@
         if (V.mode === 'rival') { const hero = D.heroOrder[V.pick[0]]; V.duel({ hero, rival: D.heroes[hero].route === 'kael' ? 'nyra' : 'kael', diff: V.diff, title: 'THE CRATER' }); }   // the lead hero of the other road
         else if (isArc()) startArcade();
         else if (isSurv()) startSurvival([V.pick[0]]);
+        else if (isTour()) startTour(V.pick[0]);
         else if (V.step === 0) V.step = 1; else startMatch();
       }
     } else if (V.phase === 'order') {   // 3 vs 3 team order: W / S team row or Start, A / D slot, J on two heroes of a team swaps them
@@ -509,6 +586,13 @@
     } else if (V.phase === 'arcClear') {
       V.t++;
       if (V.t > 60 && (ok || back)) { SW.audio.sfx('back'); V.phase = 'menu'; }
+    } else if (V.phase === 'bracket') {   // tournament: J plays, watches or settles the next match; Esc leaves the tournament
+      V.t++;
+      if (V.t > 12 && ok) { SW.audio.sfx('select'); if (V.tour.done) V.phase = 'menu'; else tourNext(); }
+      else if (back) { SW.audio.sfx('back'); V.phase = 'menu'; V.tour = null; }
+    } else if (V.phase === 'result' && isTour()) {
+      V.t++;
+      if ((V.t > 40 && ok) || (V.tourBots && V.t > 150)) { SW.audio.sfx('select'); tourResult(); }
     } else if (V.phase === 'result' && isArc()) {
       V.t++;
       if (V.t > 40 && ok) { SW.audio.sfx('select'); arcResult(); }
@@ -538,7 +622,7 @@
       const mx = f.p.hpMax(), hw = Math.round(190 * SW.clamp(S.hp / mx, 0, 1));
       art.rect(ctx, '#05060c', bx - 1, 9, 192, 11); art.rect(ctx, '#2a1418', bx, 10, 190, 9);
       art.rect(ctx, S.hp / mx < 0.3 ? '#ff5a5a' : '#6fe89a', left ? bx : bx + 190 - hw, 10, hw, 9); art.rect(ctx, '#ffffff', left ? bx : bx + 190 - hw, 10, hw, 1);
-      text(ctx, V.mode === 'duel' ? duelName(i) : (isBvb() ? 'BOT ' + (i + 1) + ' ' : f.bot ? (V.mode === 'train' ? 'DUMMY ' : 'BOT ') : 'P' + (i + 1) + ' ') + h.name.toUpperCase(), left ? bx : bx + 190, 0, h.color, { align: left ? 'left' : 'right' });
+      text(ctx, V.mode === 'duel' ? duelName(i) : (isBvb() ? 'BOT ' + (i + 1) + ' ' : f.bot ? (V.mode === 'train' ? 'DUMMY ' : 'BOT ') : 'P' + (i + 1) + ' ') + h.name.toUpperCase(), left ? bx : bx + 190, 1, h.color, { align: left ? 'left' : 'right' });   // y 1: clear of the top edge
       for (let k = 0; k < 3; k++) { const e = SW.clamp((S.energy - k * 100) / 100, 0, 1), ex = left ? bx + k * 34 : bx + 190 - 32 - k * 34; art.rect(ctx, '#05060c', ex - 1, 21, 34, 6); art.rect(ctx, '#22202e', ex, 22, 32, 4); art.rect(ctx, e >= 1 ? h.colorHi : h.color, left ? ex : ex + 32 - Math.round(32 * e), 22, Math.round(32 * e), 4); }
       const aw = SW.clamp(S.awaken / 100, 0, 1), ax = left ? bx + 106 : bx + 4;
       art.rect(ctx, '#05060c', ax - 1, 22, 82, 4); art.rect(ctx, f.p.awakeT > 0 ? h.colorHi : aw >= 1 && SW.frame % 16 < 8 ? '#ffffff' : '#8b5cf6', left ? ax : ax + 80 - Math.round(80 * aw), 23, Math.round(80 * aw), 2);
@@ -573,7 +657,7 @@
       const w = V.champ, n = w < 0 ? 'DRAW' : (team3() ? whoIs(w).toUpperCase() : D.heroes[V.f[w].hero].name.toUpperCase()) + ' WINS';
       big(n, w < 0 ? '#ffffff' : D.heroes[V.f[w].hero].color, team3() ? 'Heroes left: ' + (3 - V.ti[0]) + ' - ' + (3 - V.ti[1]) : (w < 0 ? '' : whoIs(w) + '   ') + V.wins[0] + ' - ' + V.wins[1]);
       if (V.unlocked) text(ctx, 'ACHIEVEMENT: Duelist  -  NEW STORY HERO UNLOCKED: ' + V.unlocked.toUpperCase(), W / 2, 156, '#f5c542', { align: 'center' });
-      text(ctx, isArc() ? 'J / Enter: continue' : 'J / Enter: rematch     U: change heroes     Esc: Versus menu', W / 2, 250, '#8a92b8', { align: 'center' });
+      text(ctx, isTour() ? 'J / Enter: back to the bracket' : isArc() ? 'J / Enter: continue' : 'J / Enter: rematch     U: change heroes     Esc: Versus menu', W / 2, 250, '#8a92b8', { align: 'center' });
     }
   }
   function drawFight(ctx) {
@@ -581,6 +665,8 @@
     G.state = A.state; G.player = A.p; G.combo = null;
     z.ents = A.ents.concat(B.ents, [{ draw(c, cam) { G.state = B.state; G.player = B.p; B.p.draw(c, cam, G); G.state = A.state; G.player = A.p; } }]);
     z.shots = A.shots.concat(B.shots);
+    // pop-up words (PERFECT, STUNNED, BREAK, damage) stay whole on the screen
+    fx.list.forEach(p => { if (p.k === 't') { const hw = SW.textW(SW.i18n ? SW.i18n.tr(p.str) : p.str) / 2 + 2; p.x = SW.clamp(p.x, G.cam.x + hw, G.cam.x + W - hw); } });
     const sh = fx.shakeT > 0 ? fx.shakeAmt : 0;
     z.draw(ctx, { x: Math.round(G.cam.x + (sh ? SW.rand(-sh, sh) : 0)), y: Math.round(G.cam.y + (sh ? SW.rand(-sh, sh) : 0)) }, G);
     if (fx.flashT > 0) { ctx.globalAlpha = 0.7 * fx.flashT / fx.flashMax; art.rect(ctx, fx.flashCol, 0, 0, W, H); ctx.globalAlpha = 1; }
@@ -603,7 +689,7 @@
     text(ctx, name, 12, 6, h.color, { scale: 2 });
     text(ctx, who + '   -   ' + h.title + '   -   ' + h.element, 22 + SW.textW(name) * 2, 12, '#ffffff');
     text(ctx, 'J combo    W + J launcher    S + J sweep    J in the air: air combo    K jump    L dash', 12, 27, '#8a92b8');
-    text(ctx, 'S guard    S + L or W + L slipstep (60 energy)    J + K charge energy', 12, 36, '#8a92b8');
+    text(ctx, 'S guard    S + L or W + L slipstep (60 energy)    J + K charge energy    J + L throw (up close)', 12, 36, '#8a92b8');
     let y = 50;
     rows.forEach(r => {
       text(ctx, r.key, 12, y, '#f5c542'); text(ctx, r.name, 74, y, h.colorHi); if (r.long) text(ctx, r.long, W - 12, y, '#bfe8ff', { align: 'right' });
@@ -622,17 +708,19 @@
       ctx.globalAlpha = 0.8; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
       text(ctx, 'VERSUS', W / 2, 22, '#f5c542', { align: 'center', scale: 3 });
       text(ctx, V.mode === 'train' ? 'Practise against a dummy: no timer, endless energy, moves on screen.' : V.mode === 'rival' ? 'One fall, no clock, at the Crater: you against the lead hero of the other road.'
+        : isTour() ? 'A knockout bracket, best of three. Fight your way to the title, or watch the bots.'
         : isArc() ? 'Climb six stages against ever harder bots. A legend waits at the top.' : isSurv() ? 'Beat as many bots as you can. Every tenth one is a legend.' : team3() ? 'Teams of three. When a hero falls, the next one steps in.' : isBvb() ? 'Sit back and watch two bots fight, best of three.' : 'Two heroes, best of three. Every hero is available here.', W / 2, 52, '#bfe8ff', { align: 'center' });
-      const label = { mode: ['Mode', MODES.find(m => m[0] === V.mode)[1]], fmt: ['Format', FORMATS[V.fmt]], diff: [isBvb() ? 'Bot 1 level' : 'Bot level', DIFF[V.diff]], diff2: ['Bot 2 level', DIFF[V.diff2]], speed: ['Speed', SPEEDS[V.speed][0]], dummy: ['Dummy', DUMMY[V.dummy]], stage: ['Stage', STAGES[V.stage][0]], gain: ['Energy gain', GAIN[V.gain][0]], start: ['Choose heroes', ''] };
+      const label = { mode: ['Mode', MODES.find(m => m[0] === V.mode)[1]], fmt: ['Format', FORMATS[V.fmt]], tsize: ['Bracket', TSIZE[V.tsize][0]], entry: ['Your entry', ENTRY[V.entry]], tskip: ['Bot matches', TSKIP[V.tskip]], diff: [isBvb() ? 'Bot 1 level' : 'Bot level', DIFF[V.diff]], diff2: ['Bot 2 level', DIFF[V.diff2]], speed: ['Speed', SPEEDS[V.speed][0]], dummy: ['Dummy', DUMMY[V.dummy]], stage: ['Stage', STAGES[V.stage][0]], gain: ['Energy gain', GAIN[V.gain][0]], start: ['Choose heroes', ''] };
       const rows = menuRows().map(id => label[id]);
       rows.forEach((r, i) => { const on = V.row === i, y = 70 + i * (rows.length > 7 ? 11 : rows.length > 5 ? 12 : 16);   /* Bot vs Bot's seven rows stay above the help panel */ text(ctx, (on ? '> ' : '  ') + r[0], 130, y, on ? '#f5c542' : '#ffffff'); if (r[1]) text(ctx, '<  ' + r[1] + '  >', 240, y, on ? '#ffffff' : '#8a92b8'); });
-      ui.panel(ctx, 28, 154, 432, 76, '#3a3d55', 0.7);
+      ui.panel(ctx, 28, 154, 432, 88, '#3a3d55', 0.7);
       text(ctx, 'P1   W A S D move    J attack   K jump   L dash   U skill   I special   O awaken', 36, 161, '#22d3ee');
       text(ctx, 'P2   arrows move      1 attack   2 jump   3 dash   4 skill   5 special   6 awaken', 36, 173, '#ff8a8a');
       text(ctx, '     (P2 uses the number pad, or 7 8 9 0 - = on the top row)', 36, 183, '#8a92b8');
       text(ctx, 'Ultimate: hold up + special with a full energy bar.  Escape a combo: down + dash.', 36, 196, '#ffffff');
       text(ctx, 'Guard: hold down. A guard timed just as the hit lands stuns the attacker.', 36, 208, '#ffe066');
       text(ctx, 'Energy: land hits or take them. Holding attack + jump charges it slowly.', 36, 220, '#ffffff');
+      text(ctx, 'Throw: attack + dash up close beats a guard. Press them back in time to break free.', 36, 232, '#bfe8ff');
       text(ctx, 'W / S: move    A / D: change    J / Enter: next    Esc: back', W / 2, 250, '#8a92b8', { align: 'center' });
     } else if (V.phase === 'pick') {
       const who = team3() ? teamName(V.step) + ': CHOOSE 3 HEROES' : V.mode === 'rival' ? 'CHOOSE YOUR HERO' : isBvb() ? (V.step === 0 ? "CHOOSE BOT 1'S HERO" : "CHOOSE BOT 2'S HERO") : V.step === 0 ? 'PLAYER 1: CHOOSE YOUR HERO' : V.mode === 'pvb' ? "CHOOSE THE BOT'S HERO" : V.mode === 'train' ? "CHOOSE THE DUMMY'S HERO" : 'PLAYER 2: CHOOSE YOUR HERO';
@@ -650,6 +738,7 @@
     } else if (V.phase === 'order') drawOrder(ctx);
     else if (V.phase === 'ladder' || V.phase === 'arcOver' || V.phase === 'arcClear') drawArcade(ctx);
     else if (V.phase === 'svOver') drawSurvival(ctx);
+    else if (V.phase === 'bracket') drawBracket(ctx);
     else drawFight(ctx);
   };
   function face(ctx, idx, x, y, w, h, dim) {   // a small hero portrait
@@ -657,6 +746,82 @@
     art.rect(ctx, '#05060c', x - 1, y - 1, w + 2, h + 2);
     if (img) { ctx.globalAlpha = dim ? 0.35 : 1; ctx.drawImage(img, 4, 14, 88, 98, x, y, w, h); ctx.globalAlpha = 1; }
     else art.rect(ctx, D.heroes[id].color, x, y, w, h);
+  }
+  function drawBracket(ctx) {   // two-sided: the first half of the draw runs left to right, the second right to left, the final meets in the middle
+    const T = V.tour, bg = art.bg.title, rounds = Math.round(Math.log2(T.size));
+    if (bg) ctx.drawImage(bg, 0, 0);
+    ctx.globalAlpha = 0.88; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
+    text(ctx, 'TOURNAMENT', W / 2, 4, '#f5c542', { align: 'center', scale: 2 });
+    const cur = T.cur || settle();
+    let nm = id => (id === null ? 'BYE' : id === undefined ? '' : D.heroes[id].name.toUpperCase());
+    // 64: too many names for one tree, so the first round is a list of its matches, and the tree starts at the last 32
+    const first = T.R[1] ? T.R[1].filter(x => x !== undefined).length : 0, r0 = T.size > 32 ? 1 : 0;
+    if (r0 && first < T.size / 2) { drawRoundList(ctx, T, cur, nm); return; }
+    const top = 30, bot = 226, colW = (W / 2 - 34) / (rounds - r0);
+    const full = nm, fit = id => { let s = full(id); if (SW.textW(s) <= colW - 6) return s; while (s.length > 3 && SW.textW(s + '.') > colW - 6) s = s.slice(0, -1); return s.trim() + '.'; };   // long names are cut to the column
+    nm = fit;
+    for (let r = r0; r < rounds; r++) {
+      const list = T.R[r] || [], len = T.size >> r, half = len / 2, next = T.R[r + 1] || [], c = r - r0;
+      for (let i = 0; i < len; i++) {
+        const left = i < half, j = i % half, y = Math.round(top + (j + 0.5) * (bot - top) / half), id = list[i], m = i >> 1, w = next[m];
+        const x = left ? 6 + c * colW : W - 6 - c * colW, lost = w !== undefined && id !== undefined && w !== id;
+        const live = cur && cur.r === r && cur.m === m, mine = T.me && id === T.me;
+        const col = id === undefined ? '#3a3d55' : id === null ? '#3a3d55' : lost ? '#4a4e66' : live ? '#ffffff' : D.heroes[id].color;
+        if (id === undefined) art.rect(ctx, '#2a2d45', left ? x : x - 24, y + 3, 24, 1);
+        else text(ctx, (live && left ? '>' : '') + nm(id) + (live && !left ? '<' : ''), x, y, col, { align: left ? 'left' : 'right' });
+        if (mine && !lost) art.rect(ctx, '#22d3ee', left ? x : x - SW.textW(nm(id)), y + 8, SW.textW(nm(id)), 1);   // you
+        // the bracket line joining this pair
+        if (i % 2 === 0 && r < rounds - 1) {
+          const y2 = Math.round(top + (j + 1.5) * (bot - top) / half), lx = left ? x + colW - 6 : x - colW + 6;
+          art.rect(ctx, '#3a3d55', lx, y + 4, 1, y2 - y);
+        }
+      }
+    }
+    // the middle: the champion, or what is next
+    if (T.done) {
+      const h = D.heroes[T.champ];
+      text(ctx, 'CHAMPION', W / 2, 98, '#f5c542', { align: 'center' });
+      text(ctx, h.name.toUpperCase(), W / 2, 112, h.colorHi, { align: 'center', scale: 2 });
+      if (T.me) text(ctx, T.champ === T.me ? 'YOU WON THE TOURNAMENT!' : 'Better luck next time.', W / 2, 136, T.champ === T.me ? '#7dffa0' : '#8a92b8', { align: 'center' });
+    } else text(ctx, '?', W / 2, 108, '#5a6078', { align: 'center', scale: 2 });
+    if (T.last) {
+      const L = T.last, wn = D.heroes[L.w].name, ln = D.heroes[L.w === L.a ? L.b : L.a].name, s = L.w === L.a ? L.sa + '-' + L.sb : L.sb + '-' + L.sa;
+      text(ctx, wn + ' beat ' + ln + ' ' + s, W / 2, 232, '#bfe8ff', { align: 'center' });
+    }
+    let hint;
+    if (T.done) hint = 'J / Enter: Versus menu';
+    else if (cur) {
+      const mine = T.me && (cur.a === T.me || cur.b === T.me);
+      hint = 'Next: ' + D.heroes[cur.a].name + ' v ' + D.heroes[cur.b].name + '      J / Enter: ' + (mine ? 'fight' : V.tskip ? 'settle it' : 'watch') + '      Esc: leave';
+    }
+    if (hint) text(ctx, hint, W / 2, 248, '#8a92b8', { align: 'center' });
+  }
+  // a 64 bracket's first round: its matches in four columns (byes listed underneath), then the tree takes over
+  function drawRoundList(ctx, T, cur, nm) {
+    const list = T.R[0], next = T.R[1] || [], pairs = [], byes = [];
+    for (let m = 0; m < list.length / 2; m++) { const a = list[m * 2], b = list[m * 2 + 1]; if (a && b) pairs.push(m); else if (a || b) byes.push(a || b); }
+    text(ctx, 'ROUND OF 64', W / 2, 22, '#8a92b8', { align: 'center' });
+    const rows = Math.ceil(pairs.length / 3), colX = [8, 166, 324];
+    pairs.forEach((m, k) => {
+      const a = list[m * 2], b = list[m * 2 + 1], w = next[m], x = colX[Math.floor(k / rows)], y = 36 + (k % rows) * 12, live = cur && cur.r === 0 && cur.m === m;
+      const shade = id => (w !== undefined && w !== id ? '#4a4e66' : live ? '#ffffff' : D.heroes[id].color);
+      let cx = x;
+      if (live) { text(ctx, '>', cx, y, '#f5c542'); }
+      cx += 7; text(ctx, nm(a), cx, y, shade(a)); cx += SW.textW(nm(a)) + 4;
+      text(ctx, 'v', cx, y, '#5a6078'); cx += SW.textW('v') + 4;
+      text(ctx, nm(b), cx, y, shade(b));
+      if (T.me && (a === T.me || b === T.me)) art.rect(ctx, '#22d3ee', x + 7, y + 8, 4, 1);
+    });
+    if (byes.length) {
+      const by = 40 + rows * 12;
+      text(ctx, 'Byes to the round of 32:', 8, by, '#8a92b8');
+      SW.wrap(byes.map(nm).join('  '), W - 16).slice(0, 3).forEach((ln, i) => text(ctx, ln, 8, by + 10 + i * 9, '#c8ccd8'));
+    }
+    if (T.last) {
+      const L = T.last, wn = D.heroes[L.w].name, ln = D.heroes[L.w === L.a ? L.b : L.a].name, s = L.w === L.a ? L.sa + '-' + L.sb : L.sb + '-' + L.sa;
+      text(ctx, wn + ' beat ' + ln + ' ' + s, W / 2, 232, '#bfe8ff', { align: 'center' });
+    }
+    if (cur) text(ctx, 'Next: ' + D.heroes[cur.a].name + ' v ' + D.heroes[cur.b].name + '      J / Enter: ' + (T.me && (cur.a === T.me || cur.b === T.me) ? 'fight' : V.tskip ? 'settle it' : 'watch') + '      Esc: leave', W / 2, 248, '#8a92b8', { align: 'center' });
   }
   function drawSurvival(ctx) {   // the run is over
     const S = V.sv, bg = art.bg.title, b = survBest()[S.mine.length === 3 ? '3v3' : '1v1'];

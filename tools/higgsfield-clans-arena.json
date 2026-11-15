@@ -1,0 +1,11 @@
+[
+  {
+    "name": "bg_vs_clans",
+    "endpoint": "recraft/v4.1/text-to-image",
+    "body": {
+      "prompt": "16-bit pixel art background layer for a 2D side-scrolling fighting game. Flat straight-on side elevation view, one continuous horizontal panorama spread evenly across the full width, no vignette, no frame, no characters, no creatures, no text, no UI. Distant scenery only, soft atmospheric haze, muted low-contrast colours so foreground sprites stand out, bottom quarter fades into plain dark shadow. Crisp chunky pixels, limited palette, retro console game art. Scene: a hidden mountain village of ninja clans tucked into a deep misty gorge at dusk. Wooden watchtowers and rope bridges strung between cliff faces, curved tiled roofs stepping up the slopes, rows of glowing paper lanterns, thin waterfalls, pine trees, a few rusted old-world power pylons half swallowed by the forest, a huge pale moon low in the sky. Deep teal and slate blue with warm lantern orange.",
+      "resolution": "1k", "aspect_ratio": "2:1", "output_format": "png",
+      "colors": [ { "rgb": [10, 24, 32] }, { "rgb": [30, 64, 76] }, { "rgb": [90, 130, 140] }, { "rgb": [255, 160, 70] }, { "rgb": [220, 230, 220] } ]
+    }
+  }
+]
