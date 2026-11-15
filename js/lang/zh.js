@@ -4060,5 +4060,8 @@ SW.i18n.add('zh', {
   "SURVIVAL OVER": "生存结束",
   "Wins: {0}      Time: {1}": "胜场：{0}      用时：{1}",
   "Best: {0} wins   {1}": "最佳：{0} 胜   {1}",
-  "J / Enter: try again      Esc: Versus menu": "J / Enter：再试一次      Esc：对战菜单"
+  "J / Enter: try again      Esc: Versus menu": "J / Enter：再试一次      Esc：对战菜单",
+  "Supplies are short down here. Come back often.": "下面的货一直紧缺。常来看看。",
+  "E at the glowing console: read the harvest ledger.": "在发光的控制台按 E：查看收割账簿。",
+  " / 60  (every 5: +3% dmg, +10% regen)": " / 60  （每5块：伤害+3%，恢复+10%）"
 });

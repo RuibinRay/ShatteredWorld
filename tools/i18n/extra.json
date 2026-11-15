@@ -184,5 +184,8 @@
   "SURVIVAL OVER": { "es": "FIN DE LA SUPERVIVENCIA", "zh": "生存结束" },
   "Wins: {0}      Time: {1}": { "es": "Victorias: {0}      Tiempo: {1}", "zh": "胜场：{0}      用时：{1}" },
   "Best: {0} wins   {1}": { "es": "Mejor: {0} victorias   {1}", "zh": "最佳：{0} 胜   {1}" },
-  "J / Enter: try again      Esc: Versus menu": { "es": "J / Enter: reintentar      Esc: menú de Versus", "zh": "J / Enter：再试一次      Esc：对战菜单" }
+  "J / Enter: try again      Esc: Versus menu": { "es": "J / Enter: reintentar      Esc: menú de Versus", "zh": "J / Enter：再试一次      Esc：对战菜单" },
+  "Supplies are short down here. Come back often.": { "es": "Aquí abajo escasean las provisiones. Vuelve a menudo.", "zh": "下面的货一直紧缺。常来看看。" },
+  "E at the glowing console: read the harvest ledger.": { "es": "E en la consola que brilla: lee el registro de cosecha.", "zh": "在发光的控制台按 E：查看收割账簿。" },
+  " / 60  (every 5: +3% dmg, +10% regen)": { "es": " / 60  (cada 5: +3% daño, +10% regen.)", "zh": " / 60  （每5块：伤害+3%，恢复+10%）" }
 }

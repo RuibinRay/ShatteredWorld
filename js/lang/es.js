@@ -4060,5 +4060,8 @@ SW.i18n.add('es', {
   "SURVIVAL OVER": "FIN DE LA SUPERVIVENCIA",
   "Wins: {0}      Time: {1}": "Victorias: {0}      Tiempo: {1}",
   "Best: {0} wins   {1}": "Mejor: {0} victorias   {1}",
-  "J / Enter: try again      Esc: Versus menu": "J / Enter: reintentar      Esc: menú de Versus"
+  "J / Enter: try again      Esc: Versus menu": "J / Enter: reintentar      Esc: menú de Versus",
+  "Supplies are short down here. Come back often.": "Aquí abajo escasean las provisiones. Vuelve a menudo.",
+  "E at the glowing console: read the harvest ledger.": "E en la consola que brilla: lee el registro de cosecha.",
+  " / 60  (every 5: +3% dmg, +10% regen)": " / 60  (cada 5: +3% daño, +10% regen.)"
 });

@@ -197,7 +197,7 @@
     const rows = [['A / D', 'Move'], ['K', 'Jump (hold for height). S + K drops through ledges'], ['J', 'Attack: tap for a 4-hit combo'], ['W + J', 'Launcher (then K to follow up in the air)'], ['S + J', 'Sweep'],
       ['L', 'Dash (brief invulnerability; works in mid-air)'], ['S + L / W + L', 'Slipstep: blink through a foe / upward (60 energy)'], ['L when launched', 'Recover in mid-air'], ['S (hold)', 'Guard. Time it late for a PERFECT guard'], ['J + K (hold)', 'Charge energy'], ['U', 'Skill (25).  W + U: aimed up.  S + U: alternate skill'],
       ['I', 'Special (50).  S + I: big skill (100).  W + I: ultimate'], ['O', 'Awakening when full, else your assist.  S + O: power mode'], ['Q', 'Use a healing item'], ['E', 'Talk / interact'], ['W / S', 'Climb ladders'], ['M', 'World map'], ['Esc', 'Menu: missions, skills, journal, stats'],
-      ['F9', 'Debug: unlock every ability'], ['Gamepad', 'X attack, A jump, RB dash, Y skill, B special,'], ['', 'RT awaken, LT guard, LB charge, Up interact']];
+      ['F9', 'Debug: unlock every ability'], ['Gamepad', 'X attack, A jump, RB dash, Y skill, B special,'], ['', 'RT awaken, LT guard, LB charge, Up interact']].filter(r => r[0] !== 'F9' || SW.dev);   // debug keys: local copies only (playfixes.js)
     rows.forEach((r, i) => { text(ctx, r[0], 118, 30 + i * 10, '#22d3ee', { align: 'right' }); text(ctx, r[1], 128, 30 + i * 10, '#ffffff'); });
     text(ctx, 'J / Esc: back', W / 2, 254, '#8a92b8', { align: 'center' });
   };
@@ -254,16 +254,21 @@
       SW.wrap(has ? a.desc + (a.cost ? ' Cost: ' + a.cost + ' ' + hero.energy + '.' : '') : 'Recover a Major Memory Shard to remember this.', 188).forEach((l, i) => text(ctx, l, 258, 60 + i * 10, '#ffffff'));
       text(ctx, 'BASICS', 250, 122, '#8a92b8');
       ['J x4 combo   W+J launcher   S+J sweep', 'K jump   L dash   S guard', 'S+L / W+L: slipstep escape (60)', 'Hold J+K: charge ' + hero.energy, 'O: awakening / assist   Q: heal item'].forEach((l, i) => text(ctx, l, 250, 134 + i * 11, '#c8ccd8'));
-      text(ctx, 'F9 unlocks every ability (debug)', 250, 226, '#5a6078');
+      if (SW.dev) text(ctx, 'F9 unlocks every ability (debug)', 250, 226, '#5a6078');
     } else if (pm.tab === 2) {
-      text(ctx, 'MEMORY JOURNAL', x0, y, '#f5c542'); text(ctx, 'Minor shards: ' + S.minor + ' / 60   (every 5: +3% damage, +10% energy regen)', x0 + 110, y, '#b9a0ff'); y += 16;
+      // the shard line sits right-aligned in the panel (inner edge 456) so longer translations still fit beside the title
+      const shards = 'Minor shards: ' + S.minor + ' / 60  (every 5: +3% dmg, +10% regen)';
+      text(ctx, 'MEMORY JOURNAL', x0, y, '#f5c542'); text(ctx, shards, Math.max(x0 + SW.textW('MEMORY JOURNAL') + 10, 456 - SW.textW(shards)), y, '#b9a0ff'); y += 16;
       if (!S.memories.length) text(ctx, 'Nothing yet. Everything you were is scattered across this world.', x0, y, '#8a92b8');
       S.memories.forEach((id, i) => text(ctx, (i === pm.sel ? '> ' : '  ') + D.memories[id].title, x0, y + i * 12, i === pm.sel ? '#f5c542' : '#ffffff'));
       const mem = D.memories[S.memories[pm.sel]];
       if (mem) {
+        // the picture gives up height when the memory's text needs it, so the text always ends inside the panel (it used to
+        // run off the bottom for the longer memories)
+        const rows = [].concat.apply([], mem.lines.map(l => SW.wrap(G.txt(l), 250))), top = Math.min(174, Math.max(110, 236 - rows.length * 10)), ih = top - 63;
         const im = art.bg[mem.img];
-        if (im) { ctx.drawImage(im, 0, 30, 480, 210, 200, 56, 254, 111); art.rect(ctx, '#05060c', 200, 56, 254, 1); }
-        let yy = 174; mem.lines.forEach(l => SW.wrap(G.txt(l), 250).forEach(r => { text(ctx, r, 200, yy, '#e8ecf4'); yy += 10; }));
+        if (im && ih > 20) { ctx.drawImage(im, 0, 30 + Math.round((210 - ih * 480 / 254) / 2), 480, Math.round(ih * 480 / 254), 200, 56, 254, ih); art.rect(ctx, '#05060c', 200, 56, 254, 1); }
+        let yy = top; rows.forEach(r => { text(ctx, r, 200, yy, '#e8ecf4'); yy += 10; });
       }
     } else if (pm.tab === 3) {
       const need = G.xpNeed();
@@ -324,7 +329,7 @@
     text(ctx, (ui.shop.sel === 0 ? '> ' : '  ') + hero.item + '   30 creds', 142, 126, ui.shop.sel === 0 ? '#f5c542' : '#ffffff');
     text(ctx, '    restores 40% HP (press Q)', 142, 137, '#8a92b8');
     text(ctx, (ui.shop.sel === 1 ? '> ' : '  ') + 'Leave', 142, 152, ui.shop.sel === 1 ? '#f5c542' : '#ffffff');
-    text(ctx, 'More stock arrives in Act 2.', 142, 166, '#5a6078');
+    text(ctx, 'Supplies are short down here. Come back often.', 142, 166, '#5a6078');   // it used to promise more stock in Act 2, which never came
   };
 
   // ---------- memory flashback ----------
