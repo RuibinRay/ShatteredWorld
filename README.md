@@ -265,6 +265,39 @@ The match waits while the splash plays. Rounds 2 and 3 of the same pair go strai
 intro. Tested: Player vs Bot (round 1 only, again for a new match), Bot vs Bot, Arcade, Training (none), skipping,
 English, Spanish and Chinese.
 
+## Ultimate finishers (`js/finisher.js`, `js/finisher-lines.js`)
+
+When an ultimate lands the final blow (a Versus knockout, the Versus boss fight, or a boss in the story; never any other
+blow), the moment becomes a short cinematic, about five seconds:
+- slow motion while the camera pushes in on the victim, with a flash, shake, speed lines and rings; then a freeze and a
+  slash of light;
+- a full-screen finisher: the hero's ultimate art drifting closer over rays in their colours and particles of their
+  element, the ultimate's name slammed in, the hero's name and title, the element word behind it all, one of their three
+  voice lines spoken aloud with a subtitle typed out, and FINISH!; then a flash back into the knockout or the fight.
+- Every fighter (every hero and the Convergence) has three original lines, each in English, Japanese, Spanish and
+  Chinese. The voice speaks Japanese, English or Chinese (M switches it, and the choice is kept); the subtitle is in the
+  game's language. Any key or a tap skips. The music drops while the line is spoken.
+- Voices are the browser's own speech voices (Japanese falls back to English where a browser has no Japanese voice).
+  Recorded voices and new finisher art are used automatically when present: list them in `assets/fin/list.json`, as
+  `voice_<hero>_<0-2>_<ja|en|zh>.mp3` and `fin_<hero>.png`. Until then the art is each hero's ultimate art (the
+  Convergence, which has none, shows its sprite). The sprites are pixel art, so there are no lip movements: the art pulses
+  with the voice instead.
+Tested: Versus knockouts by ultimate (Kael, Isolde, Vesper and the Convergence among others) play it and then hand back
+to the knockout and the next round; a knockout by an ordinary skill does not; a story boss finished by an ultimate plays
+it and the world resumes after.
+
+## The final boss in Versus (`js/vsboss.js`)
+
+The Convergence (the story's last form) is on the Versus roster, at the end (tile: CONV.), and only in Versus.
+- **Boss fight.** In Player vs Bot, give the bot the Convergence and you fight the real boss: its own attacks (World Rend,
+  Blink, Last Light, the last stand), its own health, no round clock. It is scaled by the bot level; the Versus bot, playing
+  ten different heroes, won 76% of rounds against it on Easy, 32% on Normal and 13% on Hard.
+- **Playable.** Anywhere else (your own pick, Player vs Player, Bot vs Bot, Arcade, 3 vs 3) it is a fighter
+  with the boss's moves turned into a player's: U Void Shard, S + U Rift Step, I World Rend, S + I Engine Light, W + O Engine
+  Collapse, S + O Unravel, O Engine Form, W + I World's End (its own ultimate). Its sprite is Noct's frames in the
+  Convergence's white and violet. At 0.72 damage (`V.tune`) it wins about 55% of bot rounds against the rest of the pool
+  (65% at full damage): still the strongest fighter, as a final boss should be.
+
 ## Bosses: how they look (`js/bossfx.js`) and the final fight (`js/finalboss.js`)
 
 - **Every boss** now has an entrance (letterbox bars, its name and title announced in its colour), an aura (a glow on the
