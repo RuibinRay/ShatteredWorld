@@ -35,7 +35,10 @@
   // button-masher survived most late bosses (the Director cost them 6%). [health, damage] multipliers, from those measurements:
   // Health also climbs boss to boss, never dipping (Anvil, Quist and Morrow get more health and keep their measured damage):
   // Baron 989, Glowmother 1056, Anvil 1080, Vane 1250, Quist 1260, Morrow 1320, Kessen 1400, the Director 1350 + 1650 + 1500.
-  const LATE = { baron: [1.15, 1.25], glowmother: [1.1, 1.15], champ: [1.2, 1.1], vane: [1.25, 1.3], quist: [1.2, 0.95], morrow: [1.2, 1.15], kessen: [1, 1.1], director: [1.5, 1.6], fused: [1.5, 1.6], convergence: [1.5, 1.6] };
+  // Anvil (champ) was [1.2, 1.1] = 20 damage: a playtest bot run of Acts 2-3 had him kill Nyra, and at level 14 the
+  // careful test player lost 85% as Kael, 81% as Nyra (sometimes dying). At 15 damage the careful player loses 46-63% with
+  // no deaths and the masher still mostly falls; his health stays 1080 so boss health keeps climbing through the story.
+  const LATE = { baron: [1.15, 1.25], glowmother: [1.1, 1.15], champ: [1.2, 0.84], vane: [1.25, 1.3], quist: [1.2, 0.95], morrow: [1.2, 1.15], kessen: [1, 1.1], director: [1.5, 1.6], fused: [1.5, 1.6], convergence: [1.5, 1.6] };
   Object.keys(LATE).forEach(n => { const d = E[n], q = LATE[n]; if (!d || d.lateTuned) return; d.lateTuned = true; d.hp = Math.round(d.hp * q[0]); d.dmg = Math.round(d.dmg * q[1]); });
   const cur = () => LEVELS.find(l => l.id === (SW.profile && SW.profile.diff)) || LEVELS[1];
   const set = id => { SW.profile.diff = id; if (SW.saveProfile) SW.saveProfile(); };

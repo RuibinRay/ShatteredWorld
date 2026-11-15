@@ -97,7 +97,7 @@ the test players no stat points:
 | Grist / Brandt (Act 1 end) | 5 / 4 (5 / 4) | 620 / 580, unchanged |
 | Scrap Baron | 8-9 (7) | 989 / 18 |
 | Glowmother | 10 (9) | 1056 / 18 |
-| Anvil | 14 (12) | 1080 / 20 |
+| Anvil | 14 (12) | 1080 / 15 (was 20: the careful player lost 81-85% as Kael and Nyra; now 46-63%, no deaths) |
 | Lord Castellan Vane | 17 (13) | 1250 / 21 |
 | Prefect Quist | 19 (14) | 1260 / 15 |
 | Dr. Morrow | 20-21 (15) | 1320 / 16 |
@@ -149,15 +149,16 @@ state `G.fresh` returns before running `ST.bench`. Recipes cost less scrap with 
 **Heat** (design document: "fighting in public raises Heat 1-5 stars; at 3 or more, elite patrols hunt you; hide in vents or
 leave the zone to cool down"). It runs from the start of the assault on Aurelia (A3-2 done) until the ending, in the
 **Skyport, the Noble Ring and the Spire**, and shows as stars on the HUD.
-- A foe killed there adds 8 (4 inside a story fight, 3 for a patrol). Every 20 is a star, up to 5.
+- A foe killed there adds 8 (3 for a patrol). The story's own fights add nothing: a playtest run had slower heroes
+  reach 3 stars between the uprising's fights, with patrols and a Hunter mid-mission. Every 20 is a star, up to 5.
 - It cools on its own after 8 calm seconds (no hits, no kills, no patrol within 220 px): about one star per 11 seconds.
   Changing area takes two stars off. A **maintenance vent** (two or three per area) hides you for 2.5 s and takes two stars
   off, but not while a foe is close; patrols farther away lose your trail.
 - **3 stars:** elite patrols walk in from the edge of the screen (black-and-gold Halcyon Elites, Elite Enforcers, Hunter
   Drones), up to stars - 1 alive at once. They drop a chip half the time. **5 stars:** one **Halcyon Hunter**, a gold
   mini-boss (560 HP, never staggered). Beating it clears all Heat and drops a core, 2 chips and 6 scrap.
-- Patrols never come during a story fight, a boss or the lift ride, so the story is not hijacked. The scripted Noble Ring run
-  peaks at 1 star. After the Noble Ring and the Spire are won, a few Halcyon stragglers still walk them.
+- Patrols never come during a story fight, a boss or the lift ride, and the story's fights raise no Heat, so the story is
+  not hijacked: Brakk's Noble Ring and Spire missions now finish at 0 Heat. After the Noble Ring and the Spire are won, a few Halcyon stragglers still walk them.
 
 **Factions.** Esc > **FACTIONS** (the eighth tab). Standing runs from 0 to 100: Stranger, Known (15), Friend (40),
 Trusted (70), Honoured (100). Halcyon is always hostile; its row shows your Heat.

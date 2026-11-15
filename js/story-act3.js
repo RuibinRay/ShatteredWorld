@@ -176,7 +176,10 @@
     z.ents = z.ents.filter(e => !(e instanceof SW.NPC && e.sheet === 'anvil'));
     npc(z, 'anvil', 26, 13, { name: 'Anvil', fixed: true, face: -1, talk: gg => (gg.state.done['A3-2'] ? 'p3_anvil_after' : on(gg) ? 'p3_anvil' : null), show: gg => !gg.melee });
     z.ents.forEach(e => { if (e instanceof SW.NPC && e.sheet === 'bookie') { const t0 = e.talk; e.talk = gg => (on(gg) && !gg.state.steps['A3-2:gauntlet'] ? 'p3_bookie' : typeof t0 === 'function' ? t0(gg) : t0); } });
-    z.trigger(2, 2, 5, 12, gg => { if (on(gg)) { gg.step('A3-2:deep'); gg.say('p3_enter'); } }, { flag: 'a3_pit_in' });
+    // fires on A3-2's own visit, not on the first visit ever: Kael's road comes to the Pit in Act 1, and a one-time flag
+    // spent then left 'A3-2:deep' unset forever, so A3-2 could never complete (found in a full-story playtest). Saves
+    // already caught by it recover the moment the player walks into the Pit.
+    z.trigger(2, 2, 5, 12, gg => { if (on(gg) && !gg.state.steps['A3-2:deep']) { gg.step('A3-2:deep'); gg.say('p3_enter'); } }, { once: false });
     z.add(new Melee());
   });
   const _gs = G.gotoZone; G.gotoZone = function (id, spawn) { G.melee = null; return _gs.call(this, id, spawn); };

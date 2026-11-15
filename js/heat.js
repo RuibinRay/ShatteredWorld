@@ -5,7 +5,7 @@
 //   Halcyon Ascendancy; prices shift with standing by up to 20%).
 //
 //   HEAT  Runs from the start of the assault on Aurelia (Rally the Deep done) until the ending, in the Skyport, the Noble
-//         Ring and the Spire. A foe killed there: +8 (+4 for one inside a story fight, +3 for a patrol). Every 20 is a star.
+//         Ring and the Spire. A foe killed there: +8 (+3 for a patrol; nothing for the story's own fights). Every 20 is a star.
 //         It cools by itself after 8 calm seconds (no hits, no kills, no patrol close by), drops two stars when you change
 //         area, and a maintenance vent hides you for 2.5 s and takes two stars off (not with a foe watching).
 //         3 stars: elite patrols come in from the edge of the screen. 5 stars: one Halcyon Hunter (a mini-boss with a core).
@@ -304,7 +304,9 @@
       return;
     }
     if (e.patrol && M && M.drop && Math.random() < 0.5) M.drop('chip', 1, e.x, e.y - 14);
-    if (heatHere()) raise(e.patrol ? 3 : e.ax0 !== undefined ? 4 : 8);
+    // the story's own fights (arena foes carry ax0) add no Heat: a playtest run had slower heroes reach 3 stars between the
+    // uprising's fights, then patrols and a Halcyon Hunter mid-mission. Heat comes only from fights the player picks.
+    if (heatHere() && e.ax0 === undefined) raise(e.patrol ? 3 : 8);
   };
   const _hit = G.onHit; G.onHit = function (atk, e, b) { _hit.call(this, atk, e, b); if (heatHere()) H.calm = 0; };
   const _rest = G.rest; G.rest = function (sp) {
