@@ -4213,5 +4213,9 @@ SW.i18n.add('es', {
   "HIDDEN CLANS - LOCKED": "CLANES OCULTOS - BLOQUEADOS",
   "The Hidden Clans open only with the unlock code.": "Los Clanes Ocultos solo se abren con el código de desbloqueo.",
   "Full screen on rotate": "Pantalla completa al girar",
-  "For full screen on iPhone: Share > Add to Home Screen, then open the game from that icon.": "Para pantalla completa en iPhone: Compartir > Añadir a pantalla de inicio, y abre el juego desde ese icono."
+  "For full screen on iPhone: Share > Add to Home Screen, then open the game from that icon.": "Para pantalla completa en iPhone: Compartir > Añadir a pantalla de inicio, y abre el juego desde ese icono.",
+  "Full screen": "Pantalla completa",
+  "Full screen is not available here. On iPhone: Share > Add to Home Screen.": "La pantalla completa no está disponible aquí. En iPhone: Compartir > Añadir a pantalla de inicio.",
+  "Your hero": "Tu héroe",
+  "Dummy hero": "Héroe del muñeco"
 });

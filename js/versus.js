@@ -479,13 +479,20 @@
   const menuRows = () => (V.mode === 'pvb' ? ['mode', 'fmt', 'diff', 'stage', 'gain', 'start'] : V.mode === 'pvp' ? ['mode', 'fmt', 'stage', 'gain', 'start'] : V.mode === 'rival' ? ['mode', 'diff', 'gain', 'start']
     : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start'] : solo() ? ['mode', 'fmt', 'gain', 'start'] : isTour() ? ['mode', 'tsize', 'entry', 'diff', 'tskip', 'speed', 'start']
     : V.dummy === 3 ? ['mode', 'dummy', 'diff', 'stage', 'start'] : ['mode', 'dummy', 'stage', 'start']);
-  const pauseItems = () => (V.mode === 'train' ? ['resume', 'dummy', 'endless', 'onscreen', 'reset', 'moves', 'quit'] : V.mode === 'duel' && !V.duelO.canQuit ? ['resume', 'moves']
+  const pauseItems = () => (V.mode === 'train' ? ['resume', 'myhero', 'dummyhero', 'dummy', 'endless', 'onscreen', 'reset', 'moves', 'quit'] : V.mode === 'duel' && !V.duelO.canQuit ? ['resume', 'moves']
     : isBvb() ? ['resume', 'speed', 'moves', 'quit'] : ['resume', 'moves', 'quit']);
   // who a fighter is, in words: "Player 2", "The bot", "Bot 1"
   const whoIs = i => (isBvb() ? 'Bot ' + (i + 1) : V.f[i].bot ? 'The bot' : 'Player ' + (i + 1));
   const pick3 = (label, value) => label + ':  <  ' + value + '  >';
-  const pauseLabel = id => ({ resume: 'Resume', speed: pick3('Speed', SPEEDS[V.speed][0]), dummy: pick3('Dummy', DUMMY[V.dummy]), endless: pick3('Endless energy', V.endless ? 'On' : 'Off'), onscreen: pick3('Moves on screen', V.showMoves ? 'On' : 'Off'),
+  const heroName = s => (V.f[s] ? D.heroes[V.f[s].hero].name : '');
+  const pauseLabel = id => ({ resume: 'Resume', myhero: pick3('Your hero', heroName(0)), dummyhero: pick3('Dummy hero', heroName(1)), speed: pick3('Speed', SPEEDS[V.speed][0]), dummy: pick3('Dummy', DUMMY[V.dummy]), endless: pick3('Endless energy', V.endless ? 'On' : 'Off'), onscreen: pick3('Moves on screen', V.showMoves ? 'On' : 'Off'),
     reset: 'Reset positions', moves: 'Move list', quit: V.mode === 'duel' ? 'Give up the duel' : 'Quit to the Versus menu' })[id];
+  // Training: change your hero or the dummy's from the pause menu (the next open hero either way; locked ones are skipped)
+  function swapHero(s, dir) {
+    const n = D.heroOrder.length; let i = V.pick[s];
+    for (let k = 0; k < n; k++) { i = (i + dir + n) % n; if (!(SW.lockedVs && SW.lockedVs(D.heroOrder[i]))) break; }
+    V.pick[s] = i; V.f[s] = sideFighter(s, i); startRound(); V.paused = true;
+  }
   function pauseUpdate(ok, back, up, down, left, right) {
     const sfx = SW.audio.sfx;
     if (V.pPage === 'moves') { if (left || right) { V.pWho = 1 - V.pWho; sfx('move'); } if (ok || back) { V.pPage = null; sfx('back'); } return; }
@@ -494,6 +501,7 @@
     if (down) { V.pRow = (V.pRow + 1) % items.length; sfx('move'); }
     const id = items[V.pRow];
     if (back || (ok && id === 'resume')) { V.paused = false; sfx('back'); }
+    else if ((id === 'myhero' || id === 'dummyhero') && (d || ok)) { swapHero(id === 'myhero' ? 0 : 1, d || 1); sfx('move'); }
     else if (id === 'dummy' && (d || ok)) { V.dummy = (V.dummy + DUMMY.length + (d || 1)) % DUMMY.length; V.f[1].ai = null; sfx('move'); }
     else if (id === 'speed' && (d || ok)) { V.speed = (V.speed + SPEEDS.length + (d || 1)) % SPEEDS.length; sfx('move'); }
     else if (id === 'endless' && (d || ok)) { V.endless = !V.endless; sfx('move'); }

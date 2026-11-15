@@ -48,6 +48,8 @@
     #sw-touch .btn b { font-size: 1.15em; font-weight: bold; }
     #sw-touch .btn i { font-style: normal; font-size: .52em; opacity: .85; margin-top: .2em; white-space: nowrap; }
     #sw-touch .btn.down { background: rgba(245,197,66,.45); border-color: #f5c542; }
+    #sw-touch .pad { position: absolute; right: 10px; bottom: 10px; display: none; grid-template-columns: repeat(3, var(--k)); gap: 8px; }
+    #sw-touch .pad .key { position: static; transform: none; width: var(--k); height: var(--k); border-radius: 12px; font-size: calc(var(--k) * 0.42); background: rgba(10,12,24,.75); }
     #sw-touch .rot { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(5,6,12,.92);
       color: #fff; font-size: 20px; text-align: center; padding: 24px; pointer-events: auto; }
     body.sw-touch { touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
@@ -79,6 +81,29 @@
     root.appendChild(el);
     return { el, a, w, x, y, s };
   });
+  // ---------- a number pad for the unlock code (a phone has no keyboard to type it on) ----------
+  // Shown while a code box is on screen (ui.drawCode: hero select and the Versus pick screen); the action buttons hide
+  // meanwhile. Digits and Backspace go into the same key queue the keyboard fills (SW.input.keys); Esc is the pause action.
+  const pad = document.createElement('div'); pad.className = 'pad';
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace', '0', 'Esc'].forEach(k => {
+    const b = document.createElement('div'); b.className = 'btn key'; b.innerHTML = '<b></b>'; b.firstChild.textContent = k === 'Backspace' ? '⌫' : k;
+    b.addEventListener('pointerdown', e => {
+      e.preventDefault(); first(); b.classList.add('down'); setTimeout(() => b.classList.remove('down'), 120);
+      if (k === 'Esc') T.tap.pause = true; else { I.keys.push(k); if (I.keys.length > 24) I.keys.shift(); }
+    });
+    pad.appendChild(b);
+  });
+  root.appendChild(pad);
+  let codeSeen = -99;
+  const _dc = SW.ui.drawCode;
+  if (_dc) SW.ui.drawCode = function () { codeSeen = SW.frame; return _dc.apply(this, arguments); };
+  let padOn = false;
+  setInterval(() => {
+    const want = T.on() && SW.frame - codeSeen < 12;
+    if (want === padOn) return;
+    padOn = want; pad.style.display = want ? 'grid' : 'none';
+    for (const b of btns) b.el.style.visibility = want ? 'hidden' : '';
+  }, 80);
   root.appendChild(rot);   // the "turn sideways" note covers the buttons too
   // floating joystick: put a thumb down anywhere on the left, drag to move; down is guard, up aims and climbs
   let sid = null, ox = 0, oy = 0, R = 50;
@@ -130,6 +155,12 @@
     if (landscape()) { if (!fsEl() && !leftByHand) enterFs(); else if (!canFs()) iosTip(); }
     else { leftByHand = false; if (fsEl() && autoIn) exitFs(); else wantFs = false; }
   }
+  // Settings > Full screen: on or off right now, by hand (a full screen entered this way is not left by turning upright)
+  T.canFs = canFs; T.isFs = () => !!fsEl();
+  T.fullscreen = function (on) {
+    if (on) { leftByHand = false; enterFs(); autoIn = false; return canFs(); }
+    leaving = true; exitFs(); if (landscape()) leftByHand = true; return true;
+  };
   const onFsChange = () => { if (!fsEl()) { if (!leaving && autoIn && landscape()) leftByHand = true; autoIn = false; leaving = false; } setTimeout(layout, 60); };
   document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
   window.addEventListener('pointerdown', () => { if (wantFs && T.autoFs && T.on() && landscape()) enterFs(); }, true);
@@ -160,6 +191,7 @@
     const on = T.on(), vw = window.innerWidth, vh = window.innerHeight, u = Math.max(40, Math.min(72, Math.min(vw, vh) * 0.16));
     root.classList.toggle('on', on); root.style.display = on ? 'block' : 'none'; document.body.classList.toggle('sw-touch', on);
     R = u * 0.75;
+    pad.style.setProperty('--k', Math.round(Math.min(u * 1.05, (vh - 60) / 4.3)) + 'px');   // four rows of keys fit the height
     for (const b of btns) {
       const d = u * b.s; b.el.style.width = b.el.style.height = d + 'px'; b.el.style.fontSize = (u * 0.34 * Math.max(0.8, b.s)) + 'px';
       b.el.style.left = (vw - b.x * u - 8) + 'px'; b.el.style.top = (b.y < 0 ? -b.y * u + 6 : vh - b.y * u - 6) + 'px';

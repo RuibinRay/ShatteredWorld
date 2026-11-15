@@ -45,6 +45,9 @@ The game fills the screen, the page cannot scroll or zoom, the first tap tries t
 the phone sideways while it is upright. Settings > Touch controls: Auto (on touchscreens), On, Off.
 Not on touch: Player vs Player (two players need a keyboard) and typing the unlock code.
 
+- **Full screen** (Settings): switches full screen on or off right away, on phones and on desktop (on an iPhone it says
+  to use Share > Add to Home Screen instead). **Unlock code on a phone:** while a code box is open (hero select, Versus
+  pick), the touch controls show a number pad (0-9, delete, Esc) in place of the action buttons.
 - **Full screen on rotate** (Settings, on by default): on a phone or tablet, turning it sideways makes the game full screen
   (if the browser wants a touch first, the next tap does it) and turning it upright again returns to normal. iPhone Safari
   has no full screen for web pages: there, Share > Add to Home Screen opens the game full screen from its icon
@@ -535,6 +538,7 @@ would even the rest out.
   A perfect block (guard in the last few frames before a hit lands) stuns the attacker: one second for a direct blow,
   half a second for a projectile or summon. A stunned fighter cannot move or escape. Ultimates cannot be interrupted.
   The numbers are at the top of `js/versus.js` (`GAIN`, `PASSIVE`, `CHARGE`, `HIT_*`, `STUN_*`, `BOT_PERFECT`).
+  **Training: Your hero / Dummy hero** in its pause menu switch either fighter on the spot (left / right; locked heroes are skipped).
   **Training** is the third Versus mode: no timer and no knock-outs, both fighters heal when left alone, the player has
   endless energy, and the hero's moves are listed on screen. The dummy can stand still, guard, attack every two seconds
   (for practising perfect blocks) or fight back like a bot, and a counter shows the hits and damage of the last combo.

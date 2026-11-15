@@ -4213,5 +4213,9 @@ SW.i18n.add('zh', {
   "HIDDEN CLANS - LOCKED": "隐秘氏族 - 未解锁",
   "The Hidden Clans open only with the unlock code.": "隐秘氏族只能用解锁码开启。",
   "Full screen on rotate": "横屏时全屏",
-  "For full screen on iPhone: Share > Add to Home Screen, then open the game from that icon.": "iPhone 全屏：分享 > 添加到主屏幕，然后从该图标打开游戏。"
+  "For full screen on iPhone: Share > Add to Home Screen, then open the game from that icon.": "iPhone 全屏：分享 > 添加到主屏幕，然后从该图标打开游戏。",
+  "Full screen": "全屏",
+  "Full screen is not available here. On iPhone: Share > Add to Home Screen.": "此处无法全屏。iPhone 上：分享 > 添加到主屏幕。",
+  "Your hero": "你的英雄",
+  "Dummy hero": "木桩英雄"
 });
