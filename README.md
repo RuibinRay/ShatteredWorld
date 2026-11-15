@@ -27,7 +27,7 @@ Or open `index.html` in a browser. No install, no build step.
 | J + K (hold) | Charge energy |
 | U | Skill, 25 energy. W + U aimed up, S + U alternate skill. Cancels out of a combo |
 | I | Special, 50 energy. **S + I: each hero's big skill, 100 energy.** W + I ultimate (full bar, or one bar while awakened) |
-| O | Awakening when the bar is full, otherwise call your assist (20 s cooldown). **S + O: the 10-second power mode** (it used to be on S + I) |
+| O | Awakening when the bar is full, otherwise call your assist (20 s cooldown). **S + O: the 10-second power mode** (it used to be on S + I). **W + O: each hero's signature skill, 75 energy** |
 | Q / E / M / Esc | Heal item / interact / world map / menu |
 | F9, F8, F7 | Debug: unlock every ability / warp to next zone / heal |
 
@@ -102,7 +102,7 @@ the test players no stat points:
 | Prefect Quist | 19 (14) | 1260 / 15 |
 | Dr. Morrow | 20-21 (15) | 1320 / 16 |
 | Dr. Kessen's mech | 22 (15) | 1400 / 22 |
-| The Director, 3 phases | 23 (16) | 1350 + 1650 + 1500 / 24, 24, 22 |
+| The Director, 3 phases | 23 (16) | 1485 + 1815 + 2175 / 24, 24, 25 (was 1350 + 1650 + 1500 / 24, 24, 22; see "The final fight") |
 
 Re-measured at those levels with half the stat points in Power: the button-masher dies or ends near death against every one of
 them, and the careful player wins losing about 20 to 55% (the Glowmother sometimes beats a careful Kael). The multipliers are in
@@ -253,6 +253,48 @@ saves keep the clock, Heat, standing, jobs, materials and mods; Versus and the r
 about 2 ms a frame. Fixed: respawning now clears radiation (a fall in the Glowwild at full meter drained you again on waking),
 quitting to the title and continuing no longer counts as changing area (it took two Heat stars off), and YOU FELL is written
 again over the night darkness.
+
+## Bosses: how they look (`js/bossfx.js`) and the final fight (`js/finalboss.js`)
+
+- **Every boss** now has an entrance (letterbox bars, its name and title announced in its colour), an aura (a glow on the
+  ground and motes rising off it; hotter and red once it is enraged), clear tells (it flashes during a wind-up and a glint
+  pops over its head), a big moment when it enrages (rings, a burst, a shake), a death in a chain of bursts ending in a
+  white flash and rays of light, and a health bar with a frame in its colour and a pale trail of recent damage.
+  Looks only: no boss's timing, hitboxes or damage changed here.
+- **The final fight is much stronger.** THE CONVERGENCE has 45% more health (2175), hits harder (25) and three new
+  attacks, each with a clear wind-up:
+  - *World Rend*: two waves of void columns across the whole arena, the second filling the first one's gaps. Void cannot
+    be guarded: read the lines on the floor and stand in a gap.
+  - *Blink*: it vanishes and strikes from behind you, twice.
+  - *Last Light*: at 30% health it rises, gathers the Engine's light and bursts it outward in a huge ring, then falls.
+  Below 30% it is unravelling (the screen's edges pulse violet): faster, 20% more damage, attacking more often. A halo of
+  void shards turns round it, and it leaves afterimages when it moves fast. The Director learns Blink once enraged, and
+  his first two forms have 10% more health.
+- **A checkpoint.** Losing to the last form restarts the fight at the last form (with your partner, a full bar, two
+  healing items and your ultimate), not back at the Director. Winning clears it.
+
+Measured with the scripted players (all three forms back to back, level 23, Kael / Nyra / Brakk, 6 runs each):
+before, the careful player won 11 of 18 runs; now 4 of 18, nearly always falling to the last form. From the checkpoint,
+one attempt at the last form succeeds 4 of 8 times as Kael, 7 of 8 as Nyra, 8 of 8 as Brakk. The button-masher never
+wins, before or after. (The first try of the new attacks made the fight easier: the careful player simply guarded their
+long wind-ups, so World Rend became unguardable and the openings after Last Light shorter.)
+
+## Signature skills and skill effects (`js/signature.js`, `js/skillfx.js`)
+
+- **A signature skill for every hero (W + O).** One new skill per hero: 75 energy, a 7 s cooldown, a fifth slot on the
+  HUD. In the story it is known together with the hero's I move, so old saves have it. A Versus bot throws it in place of
+  I one time in five. Examples: Kael's Ball Lightning drifts ahead zapping everything near it; Nyra's Frost Bloom rings
+  her with freezing spikes; Maren's Tidal Wave carries foes along; Vega's Gravity Well pulls everything in and
+  collapses; Tessa's Time Bomb rings and bursts; Jax's Ricochet keeps coming back. Esc > SKILLS lists each one.
+- **Every skill looks like its element.** Each hero has an element style (colours, particle shape, how it moves). Every
+  skill turns a sigil under the hero's feet as it is cast (bigger for I, S + I and the power-ups, a pillar of light for
+  the awakening and the ultimate), energy hits burst in the element, shots shed it as they fly, and a running power-up
+  lets it drift off the hero. Effects only: no timing, hitbox or damage changes.
+
+Tested: each new skill in Versus (no errors; against a foe standing 60 px away a median of 23 damage, up to 45, less for
+the close-range ones), in the story (learned with the I move, 75 energy, the HUD slot), the Skills tab and the controls
+screen in English, Spanish and Chinese. `js/clanmelee.js` is for a Versus roster that is not part of this build yet and
+does nothing without it.
 
 ## Moves update (`js/moves.js`)
 

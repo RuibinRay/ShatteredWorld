@@ -196,7 +196,7 @@
     text(ctx, 'CONTROLS', W / 2, 10, '#f5c542', { align: 'center', scale: 2 });
     const rows = [['A / D', 'Move'], ['K', 'Jump (hold for height). S + K drops through ledges'], ['J', 'Attack: tap for a 4-hit combo'], ['W + J', 'Launcher (then K to follow up in the air)'], ['S + J', 'Sweep'],
       ['L', 'Dash (brief invulnerability; works in mid-air)'], ['S + L / W + L', 'Slipstep: blink through a foe / upward (60 energy)'], ['L when launched', 'Recover in mid-air'], ['S (hold)', 'Guard. Time it late for a PERFECT guard'], ['J + K (hold)', 'Charge energy'], ['U', 'Skill (25).  W + U: aimed up.  S + U: alternate skill'],
-      ['I', 'Special (50).  S + I: big skill (100).  W + I: ultimate'], ['O', 'Awakening when full, else your assist.  S + O: power mode'], ['Q', 'Use a healing item'], ['E', 'Talk / interact'], ['W / S', 'Climb ladders'], ['M', 'World map'], ['Esc', 'Menu: missions, skills, journal, stats'],
+      ['I', 'Special (50).  S + I: big skill (100).  W + I: ultimate'], ['O', 'Awakening when full, else your assist.  S + O: power mode'], ['W + O', 'Signature skill (75 energy, 7 s cooldown)'],['Q', 'Use a healing item'], ['E', 'Talk / interact'], ['W / S', 'Climb ladders'], ['M', 'World map'], ['Esc', 'Menu: missions, skills, journal, stats'],
       ['F9', 'Debug: unlock every ability'], ['Gamepad', 'X attack, A jump, RB dash, Y skill, B special,'], ['', 'RT awaken, LT guard, LB charge, Up interact']].filter(r => r[0] !== 'F9' || SW.dev);   // debug keys: local copies only (playfixes.js)
     rows.forEach((r, i) => { text(ctx, r[0], 118, 30 + i * 10, '#22d3ee', { align: 'right' }); text(ctx, r[1], 128, 30 + i * 10, '#ffffff'); });
     text(ctx, 'J / Esc: back', W / 2, 254, '#8a92b8', { align: 'center' });
