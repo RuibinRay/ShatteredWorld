@@ -6,8 +6,8 @@
 //      joy, hands together) bent to that hero (every joint is shifted by the hero's own amount, and the pose breathes at
 //      the hero's own pace), with their element rising, circling, raining or bursting around them. POSE says who strikes
 //      which; fighters not listed get one from their name. The frames are baked per hero the first time they win.
-//   2. Melee of their own for the Hidden Clans (all waves). Every J hit, not only the fourth, draws that fighter's own
-//      swing: an arc, claw marks, a thrust, a palm ring, a fan, a ribbon wave, a ground stomp, a spiral, a cross cut or
+//   2. Melee of their own. Every J hit of a Hidden Clans fighter, not only the fourth, draws that fighter's own
+//      swing (everyone else swings by how they fight: a blade cuts arcs, down and up in turn; fists jab, hook and burst): an arc, claw marks, a thrust, a palm ring, a fan, a ribbon wave, a ground stomp, a spiral, a cross cut or
 //      magnetic pulses, in their colours, growing with each hit of the combo (Itsuki's turn through his five elements).
 //      SWING says who uses which.
 //   SW.herostyle.on = false turns both off.
@@ -112,6 +112,10 @@
     stomp(ctx, q, x, y, t, gy) { const f = q.face, k = ease(t); for (let i = 0; i < 6; i++) { const sx = x + f * (10 + i * 7 * q.sz), h = (10 - i) * q.sz * Math.sin(Math.min(1, t * 1.6) * Math.PI); art.rect(ctx, i % 2 ? q.col : q.hi, Math.round(sx - 2), Math.round(gy - h), 4, Math.max(1, Math.round(h))); } line(ctx, '#ffffff', x + f * 6, gy - 1, x + f * (6 + 50 * q.sz * k), gy - 1); },
     spiral(ctx, q, x, y, t) { const cx = x + q.face * 18, spin = t * 8 * (q.n % 2 ? 1 : -1); for (let i = 0; i < 18; i++) { const k = i / 18, r = 18 * q.sz * k, a = spin + k * 5; dot(ctx, i % 4 ? q.col : '#ffffff', cx + Math.cos(a) * r, y + Math.sin(a) * r * 0.8, i > 12 ? 2 : 1); } },
     cross(ctx, q, x, y, t) { const cx = x + q.face * 20, l = 16 * q.sz * ease(t * 1.7); line(ctx, q.col, cx - l, y - l, cx + l, y + l); line(ctx, '#ffffff', cx - l, y - l + 1, cx + l, y + l + 1); if (q.n > 0) { line(ctx, q.hi, cx - l, y + l, cx + l, y - l); line(ctx, '#ffffff', cx - l, y + l + 1, cx + l, y - l + 1); } },
+    // fists (the story heroes): short and tight, at the fist
+    jab(ctx, q, x, y, t) { const f = q.face, k = ease(t * 2), l = 14 * q.sz * k, x0 = x + f * 12, yy = y + (q.n % 2 ? -2 : 2); for (let i = -1; i <= 1; i++) line(ctx, i ? q.col : '#ffffff', x0 - f * (i ? 4 : 0), yy + i * 3, x0 + f * (l - Math.abs(i) * 4), yy + i * 3); if (t < 0.45) { const tx = x0 + f * l; line(ctx, '#ffffff', tx - 3, yy, tx + 3, yy); line(ctx, q.hi, tx, yy - 3, tx, yy + 3); } },
+    hook(ctx, q, x, y, t) { const f = q.face, cx = x + f * 10, r = 13 * q.sz, a0 = 2.2, a1 = -0.6, hd = a0 + (a1 - a0) * ease(t * 1.8), tl = a0 + (a1 - a0) * ease(t * 1.8 - 0.35); for (let i = 0; i <= 9; i++) { const a = tl + (hd - tl) * i / 9; dot(ctx, i > 6 ? '#ffffff' : q.col, cx + Math.cos(a) * r * f, y + Math.sin(a) * r, i > 6 ? 2 : 1); } },
+    smash(ctx, q, x, y, t) { const f = q.face, cx = x + f * 18, k = ease(t * 1.5), r = (4 + 10 * k) * q.sz; for (let i = 0; i < 8; i++) { const a = i * 0.785 + 0.39, rr = i % 2 ? r : r * 0.55; line(ctx, i % 2 ? q.col : '#ffffff', cx + Math.cos(a) * 2, y + Math.sin(a) * 2, cx + Math.cos(a) * rr, y + Math.sin(a) * rr); } if (t < 0.4) dot(ctx, '#ffffff', cx, y, 3); },
     pulse(ctx, q, x, y, t) { const cx = x + q.face * 20; for (let i = 0; i < 3; i++) { const tt = t * 1.6 - i * 0.25; if (tt > 0 && tt < 1) art.ring(ctx, i % 2 ? q.hi : q.col, Math.round(cx + q.face * i * 6), Math.round(y), Math.round(3 + 16 * q.sz * tt)); } }
   };
   const _pu = P.update; P.update = function (g, z) {
@@ -119,12 +123,15 @@
     const s = this.state, a = this.atk;
     if (!HS.on || (s !== 'attack' && s !== 'airatk') || !a || this.st !== a.hitAt || !g.state) return r;
     const h = g.hero(), id = g.state.hero;
-    if (!h || !h.clan) return r;
+    if (!h) return r;
     let n = 0; for (const q of fx.list) if (q.k === 'HM') n++;
     if (n > 12) return r;
-    const kind = SWING[id] || KINDS[hash(id) % KINDS.length], hitNo = Math.max(0, (this.combo || 1) - 1);
+    const hitNo = Math.max(0, (this.combo || 1) - 1);
+    // the Hidden Clans swing their own way; everyone else by how they fight: a blade cuts arcs, fists jab, hook and burst
+    let kind = h.clan ? SWING[id] || KINDS[hash(id) % KINDS.length] : null;
+    if (!kind) { const sh = art.sheets[this.sheet()], armed = !!(sh && sh.cfg && sh.cfg.weapon && sh.cfg.armed), seq = armed ? ['arc', 'arc', 'arc', 'arc'] : ['jab', 'jab', 'hook', 'smash']; kind = s === 'airatk' ? (armed ? 'arc' : 'hook') : seq[Math.min(hitNo, 3)]; }
     const wheel = id === 'itsuki' ? WHEEL[(this._hsWheel = ((this._hsWheel === undefined ? -1 : this._hsWheel) + 1) % WHEEL.length)] : null;   // the five-element master: every hit in the next element, combo after combo
-    fx.list.push({ k: 'HM', m: kind, x: this.x, y: this.y, face: this.face, col: wheel ? wheel[0] : h.color, hi: wheel ? wheel[1] : h.colorHi || '#ffffff', n: hitNo, sz: 0.9 + hitNo * 0.18 + (a.fin ? 0.3 : 0), life: 12, max: 12 });
+    fx.list.push({ k: 'HM', m: kind, x: this.x, y: this.y, face: this.face, col: wheel ? wheel[0] : h.color, hi: wheel ? wheel[1] : h.colorHi || '#ffffff', n: hitNo, sz: h.clan ? 0.9 + hitNo * 0.18 + (a.fin ? 0.3 : 0) : 0.8 + Math.min(hitNo, 3) * 0.1, life: 12, max: 12 });
     return r;
   };
   const _fd = fx.draw; fx.draw = function (ctx, cam) {

@@ -433,6 +433,16 @@ one attempt at the last form succeeds 4 of 8 times as Kael, 7 of 8 as Nyra, 8 of
 wins, before or after. (The first try of the new attacks made the fight easier: the careful player simply guarded their
 long wind-ups, so World Rend became unguardable and the openings after Last Light shorter.)
 
+## How hits and shots read (`js/combatfeel.js`)
+
+- **Hit flash.** A fighter who was hit used to turn into a solid white silhouette for 7 to 10 frames (the 4-frame flash
+  stood still during hit-stop). Now: 2 frames of white, then a white glow fading over 5 more, counted in real frames. While
+  the hit-stop holds, the one who was hit shakes by a pixel.
+- **One damage number per hit in Versus.** A hit there made two numbers (the attacker's and the victim's); now one, red,
+  gold for a heavy hit (burns keep their orange). A quick second hit's number sits above the first instead of on it.
+- **Shots that read.** Every hero's shot leaves a tapered streak in its colour and carries a brighter glow.
+- Draw-only. Tested: bot matches for all 64 Versus heroes with no errors; drawing a frame takes about 1.3 ms.
+
 ## Victory poses and clan swings (`js/herostyle.js`)
 
 - **A victory pose for every fighter.** The winner of a Versus round used to strike one of four shared poses. Each
@@ -440,9 +450,10 @@ long wind-ups, so World Rend became unguardable and the openings after Last Ligh
   pointing, kneeling, flexing, a salute, looking back, arms spread, a low crouch, weapon planted, a shrug, a jump for joy,
   hands together), bent to that hero (every joint shifted by the hero's own amount, breathing at their own pace), with
   their element rising, circling, raining or bursting around them. Baked per hero the first time they win.
-- **Swings of their own for the Hidden Clans.** Every J hit of a clan fighter, not only the fourth, draws that fighter's
-  own swing in their colours, growing through the combo: an arc, claw marks, a thrust, a palm ring, a fan, a ribbon
-  wave, a ground stomp, a spiral, a cross cut or magnetic pulses.
+- **A swing of their own on every hit.** Every J hit, not only the fourth, draws a swing in the fighter's colours. The
+  Hidden Clans each have their own (an arc, claw marks, a thrust, a palm ring, a fan, a ribbon wave, a ground stomp, a
+  spiral, a cross cut or magnetic pulses, growing through the combo; Itsuki's turn through his five elements). Everyone
+  else swings by how they fight: a blade cuts arcs, down and up in turn; fists throw short jabs, a hook and a burst.
 - Draw-only: no timing, hitbox or damage changes. Tested: all 64 fighters bake a pose; 19 bot matches across the 38 clan
   fighters drew all ten swing kinds with no errors.
 
