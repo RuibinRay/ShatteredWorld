@@ -210,13 +210,16 @@
       hit(...front(p, 70, 70, 10), dmg, { kx: dir * 4, ky: -3, stun: 34, heavy: true, srcX: p.x });
     },
     seal_circle(p, z, dmg) {
-      const x = p.x + p.face * 76, gy = floorY(z, x, p.y - 20), hs = new Set(); sfx('charge'); pose(p, 'cast', 1, 18); glyph(p, z, p.x);
+      // cancelled out of a combo, the seal is drawn under whoever is being hit (76 px ahead was past the target, every time)
+      const lk = (q => (q && (fighterOf(q) ? fighterOf(q).p : q).state === 'hurt' ? q : null))(ahead(p, z, 140)); 
+      const x = lk ? lk.x : p.x + p.face * 76, gy = floorY(z, x, p.y - 20), hs = new Set(); sfx('charge'); pose(p, 'cast', 1, 18); glyph(p, z, p.x);
       z.shots.push(new Vis(x, gy, 60, (ctx, sx, sy, t) => {
         const k = Math.min(1, t / 14), r = Math.round(30 * k); ctx.globalAlpha = 0.85;
         for (let i = 0; i < 20 * k; i++) { const a = i / 20 * Math.PI * 2; art.rect(ctx, INK[0], sx + Math.round(Math.cos(a) * r) - 1, sy - 2 + Math.round(Math.sin(a) * r * 0.25), 3, 2); }
         art.rect(ctx, INK[1], sx - 2, sy - 3, 4, 2); ctx.globalAlpha = 1;
         if (t >= 18 && t < 50) for (let i = -2; i <= 2; i++) { const hh = Math.round(30 + Math.abs(Math.sin(t * 0.5 + i)) * 20); art.rect(ctx, i % 2 ? INK[1] : INK[0], sx + i * 10 - 1, sy - hh, 3, hh); }
-      }, v => { if (v.t >= 18 && v.t <= 45 && (v.t - 18) % 9 === 0) { hs.clear(); sfx('swing'); hit(v.x - 30, v.y - 54, 60, 56, dmg, { ky: v.t === 45 ? -6 : -1, kx: 0, stun: 28, hitSet: hs, srcX: v.x, breaker: v.t === 45, heavy: v.t === 45 }); } }));
+      }, v => { if (lk && !lk.dead && v.t < 18) v.x = lk.x;   // the ink follows them until it wakes
+        if (v.t >= 18 && v.t <= 45 && (v.t - 18) % 9 === 0) { hs.clear(); sfx('swing'); hit(v.x - 30, v.y - 54, 60, 56, dmg, { ky: v.t === 45 ? -6 : -1, kx: 0, stun: 28, hitSet: hs, srcX: v.x, breaker: v.t === 45, heavy: v.t === 45 }); } }));
     }
   });
   N.burst('isa', 'binding_script', 'Binding Script', 7, 'Lines of script wrap around the nearest enemy and hold them, then every letter bursts.', (p, z, dmg) => {

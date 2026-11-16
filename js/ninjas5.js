@@ -104,7 +104,8 @@
     const gy = floorY(z, x, y - 20), w = 26;
     const v = new Vis(x, gy, life || 240, (ctx, sx, sy, t) => { const a = Math.min(1, t / 6, ((life || 240) - t) / 20); ctx.globalAlpha = 0.85 * a; art.rect(ctx, '#2d6a4f', sx - w, sy - 2, w * 2, 3); art.rect(ctx, '#52b788', sx - w + 3, sy - 3, w * 2 - 6, 2); if ((t >> 4) % 3 === 0) art.rect(ctx, '#d8f3dc', sx + ((t * 3) % (w * 2)) - w, sy - 4, 2, 2); ctx.globalAlpha = 1; },
       // enemies wading through it are slowed (no stagger: a stun every half second locked them down, and the bot won 80%)
-      (s, g, zz) => { zz.ents.forEach(e => { if (N.isFoe(e) && Math.abs(e.x - s.x) < w && Math.abs(e.y - s.y) < 10 && e.vx !== undefined) e.vx *= 0.55; }); });
+      // Not while they are reeling from a hit: slowing the knock-back left them inside Slick's reach, so his 4th J whiffed
+      (s, g, zz) => { zz.ents.forEach(e => { if (N.isFoe(e) && Math.abs(e.x - s.x) < w && Math.abs(e.y - s.y) < 10 && e.vx !== undefined) { const f = N.fighterOf(e), q = f ? f.p : e; if (q.state !== 'hurt') e.vx *= 0.55; } }); });
     v.isSlime = true; v.p = p; z.shots.push(v);
   }
   const inSlime = (p, z) => z && z.shots.some(s => s.isSlime && s.p === p && !s.gone && Math.abs(s.x - p.x) < 28 && Math.abs(s.y - p.y) < 8);
@@ -322,7 +323,7 @@
       i: { id: 'bulwark_slam', name: 'Bulwark Slam', dmg: 18, desc: 'Bring the shield down on the floor: a shockwave runs out both ways. Smashes cracked walls.',
         cast(p, z, dmg) { sfx('heavy'); pose(p, 'a3', 1, 16); z.shots.push(new Later(6, () => { if (p.dead) return; fx.shake(6, 10); fx.dust(p.x, p.y, 10); [-1, 1].forEach(d => shot(p, z, 'shield', { x: p.x + d * 10, y: p.y - 8, vx: d * 5, dmg, life: 28, w: 18, h: 18, ghost: true, pierce: true, maxHits: 2, ky: -5, breaker: true, paint(ctx, x, y, s) { art.rect(ctx, '#e0f0ff', x - 3, y - 6 - (s.t % 4), 6, 10); art.rect(ctx, '#577590', x - 5, y + 2, 10, 3); } })); })); } },
       si: { id: 'phalanx', name: 'Phalanx', dmg: 22, desc: 'Become a wall for a second and a half: nothing gets through from the front, every shot comes back, and then you bash.',
-        cast(p, z, dmg) { sfx('block'); z.shots.push(new Drive(p, 90, t => { p.vx = 0; p.iframes = Math.max(p.iframes, 2); p.pose = ['guard', 0]; reflect(p, z, 56); if (t % 10 === 0) fx.ring(p.x + p.face * 14, p.y - 20, '#e0f0ff', 4, 20, 8); }, q => { sfx('heavy'); fx.slash(q.x + q.face * 20, q.y - 22, q.face, 3, '#e0f0ff', 50); hit(...front(q, 56, 50, 4), dmg, { kx: q.face * 7, ky: -4, stun: 40, heavy: true, down: true, srcX: q.x }); })); } },
+        cast(p, z, dmg) { sfx('block'); const lk = (q => (q && (fighterOf(q) ? fighterOf(q).p : q).state === 'hurt' ? q : null))(ahead(p, z, 140));  z.shots.push(new Drive(p, lk ? 30 : 90, t => { p.vx = 0; p.iframes = Math.max(p.iframes, 2); p.pose = ['guard', 0]; reflect(p, z, 56); if (t % 10 === 0) fx.ring(p.x + p.face * 14, p.y - 20, '#e0f0ff', 4, 20, 8); }, q => { sfx('heavy'); fx.slash(q.x + q.face * 20, q.y - 22, q.face, 3, '#e0f0ff', 50); hit(...front(q, 56, 50, 4), dmg, { kx: q.face * 7, ky: -4, stun: 40, heavy: true, down: true, srcX: q.x }); })); } },
       sig: { id: 'unbreakable', name: 'Unbreakable', dmg: 10, desc: 'For a moment nothing can touch you; then the shield bursts with everything it caught.',
         cast(p, z, d) { p.iframes = Math.max(p.iframes, 40); sfx('awaken'); fx.ring(p.x, p.y - 20, '#e0f0ff', 30, 10, 20); z.shots.push(new Later(36, () => { if (!p.dead) boom(p, 'shield', p.x, p.y - 20, 60, d * 2, { ky: -5 }); })); } },
       ult: { id: 'last_stand', name: 'Last Stand', dmg: 11, desc: 'he plants himself in the middle of the arena: wall after wall of force rolls out from his shield through everyone.',
