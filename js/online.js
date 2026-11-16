@@ -99,14 +99,20 @@
     });
   }
   const clearP2 = () => { Object.keys(P2).forEach(a => { I.raw[P2[a]] = false; }); };
-  let fed = {};
+  let fed = {}, denied = false;
   // every tick on the host: the guest's buttons become Player 2's keys; on the hero select the guest picks for themself
   const _iu = I.update; I.update = function () {
     if (ON.role === 'host' && ON.conn) {
       const r = ON.remote, inFight = G.scene === 'vs' && V.f && ['intro', 'fight', 'ko'].indexOf(V.phase) >= 0;
       Object.keys(P2).forEach(a => { I.raw[P2[a]] = !!(inFight && (r[a] || (r.throw && (a === 'attack' || a === 'dash')))); });
-      const picking = G.scene === 'vs' && V.phase === 'pick' && V.mode === 'pvp' && (V.step === 1 || (V.fmt === 1 && V.step === 1));
-      ['left', 'right', 'up', 'down', 'attack', 'confirm'].forEach(a => { const want = !!(picking && r[a]); if (want) { I.down[a] = true; fed[a] = true; } else if (fed[a]) { I.down[a] = false; fed[a] = false; } });
+      if (G.scene === 'vs' && V.phase === 'menu' && V.mode !== 'pvp') V.mode = 'pvp';   // with a guest in the room, Versus stays Player vs Player
+      const picking = G.scene === 'vs' && V.phase === 'pick' && V.mode === 'pvp' && V.step === 1;
+      // the guest's turn on the hero select: only the guest's buttons move that cursor
+      // a hero still locked on the host's game is refused (the unlock code box would ask the host's keyboard, not the guest)
+      const D = SW.data, HR = D.heroes, id = picking && D.heroOrder[V.pick[1]], deny = !!(id && HR[id] && (HR[id].clan ? !(SW.profile && SW.profile.all) : HR[id].legend && G.unlocked && !G.unlocked(id)));
+      if (deny && (r.attack || r.confirm) && !denied) { try { SW.audio.sfx('deny'); } catch (e) { /* silent */ } }
+      denied = !!(deny && (r.attack || r.confirm));
+      ['left', 'right', 'up', 'down', 'attack', 'confirm', 'skill', 'pause'].forEach(a => { if (picking) { I.down[a] = !!r[a] && !(deny && (a === 'attack' || a === 'confirm')); fed[a] = true; } else if (fed[a]) { I.down[a] = false; fed[a] = false; } });
     }
     const out = _iu.apply(this, arguments);
     // the Online entry on the title screen

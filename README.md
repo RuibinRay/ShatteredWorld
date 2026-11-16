@@ -350,9 +350,14 @@ or 3 vs 3): the host is Player 1 and runs the game, the guest is Player 2.
 - Limits: one guest per room; the guest sees the game a moment late (video delay); the picture is the game's 480 x 270
   as video, so a little softer than the host's; some strict networks block direct connections, and then joining fails
   with a message; the host must keep the game's tab in front (a hidden tab stops drawing, so the guest's picture freezes).
-- Tested with two tabs on one computer: opening a room, a wrong room number, a wrong passcode, joining, the guest picking
-  a hero and moving Player 2, and the host's match showing on the guest's screen. Not yet tested between two different
-  networks, on phones, or for sound.
+- While a guest is in the room, Versus stays on Player vs Player, and on the guest's turn of the hero select only the
+  guest's buttons move their cursor. A hero still locked on the host's game is refused there (the unlock-code box would
+  ask the host's keyboard, not the guest).
+- Tested with two tabs on one computer: opening a room with and without a passcode, a wrong room number, a wrong
+  passcode, a third player turned away from a full room, the guest picking their own hero (1 vs 1) and team (3 vs 3),
+  moving, attacking and jumping as Player 2 (inputs arrive within a frame or two), picture and sound reaching the guest
+  (about 40 ms of video buffer), the guest leaving and rejoining, and the host closing the room. Also checked on the
+  published site over HTTPS. Not yet tested between two different networks or on phones.
 
 ## The Versus entrance (`js/vsintro.js`)
 
