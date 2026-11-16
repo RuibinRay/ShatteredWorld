@@ -668,7 +668,23 @@ boss and first memory. The tutorials teach the same basics in a different order,
 After the tutorial a bonus hero walks into the Neon Market (Kael's road) or the Med-Lab admin wing (Nyra's road) and plays the rest of
 Act 1 there, with their own lines at the Cartographer, Thessaly and the Act 1 boss, and their own memories at every shard.
 
-**Act 2 onward: one road for everybody.** The missions are the same whoever you play:
+**Act 2: The Middle (`js/story-middle.js`).** The world keeps its three layers, but each one goes deeper. Between the Act 1 boss and
+Scrapton the two roads now take the long way, each through maps with their own look, enemies and boss:
+
+| Road | Maps | New enemies | Boss |
+|---|---|---|---|
+| Kael's road climbs the **Middle Deep** (Grist's shaft no longer opens onto the sky) | The Shafts (six decks of ladders), the Waterworks (three drain valves open the bulkheads, then the pump hall), the Fungal Hollows (glowcaps bounce you up a cliff to the Lamplighters' camp, then the spore nest), the Breach | Cable Rats, Shaft Scavengers, Sludge Crawlers, Pump Drones, Sporelings (burst into a stinging spore cloud), Mycelium Brutes | **The Keystone**, Halcyon's seal on the road up: a wall that stands up. The cave roof falls while it fights (watch for shadows) |
+| Nyra's road falls through the **Underside** (the Garbage Chute drops her on the decks under Aurelia, not in the Rust Flats) | The Ballast Decks (open gaps, gusts that blow towards the drop), the Cargo Ducts (three fans blow you back; pass while one stalls, its off-switch is past it), the Cargo Drop (cut a pod loose and ride it down through three boarding waves) | Ballast Drones, Hull Wardens, Ballast Wisps, Maintenance Units | **The Gravity Clerk** of the Ballast Office, on the falling pod. His rod switches gravity between normal, LIGHT (you float) and HEAVY (every step drags), called out a second early |
+
+New people: Old Wick (the Shafts' lift-keeper), Mother Lumen and the Lamplighters (they keep the old road lit), and Wren on the radio for
+Nyra's road. Missions MD-1 to MD-4 and US-1 to US-3 sit between N1-5 / I1-5 and A2-1; both roads end at the Scrapton bounty board as before.
+After the Keystone breaks, the Scrapton hatch goes straight down to the Old Metro again. Saves that were already past Act 1 keep the old
+way up (Grist's shaft to Scrapton, the chute to the Rust Flats). The world map shows the Middle Deep and the Underside as one box each.
+The act cards are renumbered to match: reaching Scrapton is now "Act 2 complete", the bounty-board road is Act 3, and the Crater card
+leads into Convergence. Balance (story-test bots, level 8): the masher loses most fights against both bosses; careful play wins about
+9 in 10 against the Keystone (losing ~40% health) and 8 in 10 against the Clerk.
+
+**Act 3 onward: one road for everybody.** The missions are the same whoever you play:
 *Dust and Debts* (bounty board, Ash Dunes, the Scrap Baron), *What Grows in the Glow* (Glowwild, the Halcyon relay, the Glowmother)
 and the finale, *Where the Sky Came Down* (the Crater, east of the Glowwild).
 What changes per hero:
@@ -861,6 +877,7 @@ ghost-step escape, air recovery). Those ideas were re-implemented from scratch h
 | `js/story-noble.js` | Act 3, A3-4: the Noble Ring zone, the control relays, Prefect Quist and Vane joining as an assist |
 | `js/story-spire.js` | Act 3, A3-5: the six-floor Spire, Dr. Morrow, Dr. Kessen's mech and the Engine core key |
 | `js/story-finale.js` | Act 3, A3-6: the Engine core, the Director's three phases, the ending and the secret ending |
+| `js/story-middle.js` | Act 2, The Middle: Kael's climb (Shafts, Waterworks, Fungal Hollows, Breach, the Keystone) and Nyra's fall (Ballast Decks, Cargo Ducts, Cargo Drop, the Gravity Clerk); its enemies, backdrops, missions and the reroutes from Act 1 |
 | `js/mods.js` | Cyber mods: material drops, crafting at save points, the Esc > MODS tab and every mod's effect; also the extra pause-tab list (`SW.pauseTabs`) |
 | `js/heat.js` | Heat (stars, patrols, the Hunter, vents) and factions (standing, perks, jobs boards, the Esc > FACTIONS tab) |
 | `js/daynight.js` | The day/night clock, the night lighting, night Husks, and radiation in the Glowwild and the Crater |
