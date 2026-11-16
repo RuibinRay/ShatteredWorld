@@ -8,7 +8,8 @@
 //      which; fighters not listed get one from their name. The frames are baked per hero the first time they win.
 //   2. Melee of their own for the Hidden Clans (all waves). Every J hit, not only the fourth, draws that fighter's own
 //      swing: an arc, claw marks, a thrust, a palm ring, a fan, a ribbon wave, a ground stomp, a spiral, a cross cut or
-//      magnetic pulses, in their colours, growing with each hit of the combo. SWING says who uses which.
+//      magnetic pulses, in their colours, growing with each hit of the combo (Itsuki's turn through his five elements).
+//      SWING says who uses which.
 //   SW.herostyle.on = false turns both off.
 (function () {
   const SW = window.SW, G = SW.game, D = SW.data, art = SW.art, fx = SW.fx, P = SW.Player.prototype, K = SW.skillfx;
@@ -93,6 +94,8 @@
     arc: 'rook isa sora', claw: 'thorne vesna kova', thrust: 'sable lux hart', palm: 'hollis ivo lin fumi taro', fan: 'kestra corvin zara apis elixa opal',
     wave: 'pell nami tarek coda slick', stomp: 'dune tor mako', spiral: 'ume garo rue itsuki', cross: 'moro mika hex ryo', pulse: 'oda vex'
   };
+  // Itsuki's hits turn the five-element wheel in colour: fire, wind, thunder, earth, water (as his skills do)
+  const WHEEL = [['#ff6b35', '#ffd24a'], ['#7dffb2', '#eafff4'], ['#ffe066', '#ffffff'], ['#c8a05a', '#f0d9a8'], ['#4cc9f0', '#ffffff']];
   const SWING = {}; Object.keys(SLIST).forEach(k => SLIST[k].split(' ').forEach(id => { SWING[id] = k; }));
   const KINDS = Object.keys(SLIST);
   HS.SWING = SWING;
@@ -120,7 +123,8 @@
     let n = 0; for (const q of fx.list) if (q.k === 'HM') n++;
     if (n > 12) return r;
     const kind = SWING[id] || KINDS[hash(id) % KINDS.length], hitNo = Math.max(0, (this.combo || 1) - 1);
-    fx.list.push({ k: 'HM', m: kind, x: this.x, y: this.y, face: this.face, col: h.color, hi: h.colorHi || '#ffffff', n: hitNo, sz: 0.9 + hitNo * 0.18 + (a.fin ? 0.3 : 0), life: 12, max: 12 });
+    const wheel = id === 'itsuki' ? WHEEL[(this._hsWheel = ((this._hsWheel === undefined ? -1 : this._hsWheel) + 1) % WHEEL.length)] : null;   // the five-element master: every hit in the next element, combo after combo
+    fx.list.push({ k: 'HM', m: kind, x: this.x, y: this.y, face: this.face, col: wheel ? wheel[0] : h.color, hi: wheel ? wheel[1] : h.colorHi || '#ffffff', n: hitNo, sz: 0.9 + hitNo * 0.18 + (a.fin ? 0.3 : 0), life: 12, max: 12 });
     return r;
   };
   const _fd = fx.draw; fx.draw = function (ctx, cam) {
