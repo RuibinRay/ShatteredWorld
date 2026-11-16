@@ -428,6 +428,19 @@ one attempt at the last form succeeds 4 of 8 times as Kael, 7 of 8 as Nyra, 8 of
 wins, before or after. (The first try of the new attacks made the fight easier: the careful player simply guarded their
 long wind-ups, so World Rend became unguardable and the openings after Last Light shorter.)
 
+## Victory poses and clan swings (`js/herostyle.js`)
+
+- **A victory pose for every fighter.** The winner of a Versus round used to strike one of four shared poses. Each
+  fighter now has their own: one of sixteen stances (fist to the sky, arms folded, blade raised, a bow, both arms up,
+  pointing, kneeling, flexing, a salute, looking back, arms spread, a low crouch, weapon planted, a shrug, a jump for joy,
+  hands together), bent to that hero (every joint shifted by the hero's own amount, breathing at their own pace), with
+  their element rising, circling, raining or bursting around them. Baked per hero the first time they win.
+- **Swings of their own for the Hidden Clans.** Every J hit of a clan fighter, not only the fourth, draws that fighter's
+  own swing in their colours, growing through the combo: an arc, claw marks, a thrust, a palm ring, a fan, a ribbon
+  wave, a ground stomp, a spiral, a cross cut or magnetic pulses.
+- Draw-only: no timing, hitbox or damage changes. Tested: all 64 fighters bake a pose; 19 bot matches across the 38 clan
+  fighters drew all ten swing kinds with no errors.
+
 ## Skill animations, one per skill (`js/skillanim.js`)
 
 Every skill of every fighter (U, S + U, I, S + I, W + O and the ultimate: 264 in all) has its own cast animation in the
