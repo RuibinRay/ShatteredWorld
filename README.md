@@ -336,6 +336,24 @@ close, and breaks throws 15 / 35 / 60% of the time on Easy / Normal / Hard (`V.b
 Tested: 30 damage to a thug, 30 through an Enforcer's shield where a jab does 0, back throws, a whiff, TOO HEAVY on a
 boss, NO EFFECT on a Husk; in Versus, grabs, breaks and landed throws against the Easy and the Hard bot.
 
+## Online rooms (`js/online.js`, `js/vendor/peerjs.min.js`)
+
+Title > **Online**. One player picks HOST A ROOM and gets a 6-digit room number, with a 4-digit passcode if they want
+one; a friend picks JOIN A ROOM and types the number (and the passcode). They then play Versus, Player vs Player (1 vs 1
+or 3 vs 3): the host is Player 1 and runs the game, the guest is Player 2.
+- The two browsers connect directly (WebRTC, through PeerJS 1.5.4, MIT, vendored). The host's picture and sound are
+  streamed to the guest like a video call and the guest's buttons are sent back, so the game runs only once and cannot
+  fall out of step. The guest plays with the normal controls (WASD, J K L U I O, or the touch buttons) and picks their
+  own hero; menus stay with the host.
+- The room number is looked up through PeerJS's public matching server; no game data goes through it. The passcode is
+  checked by the host's browser, and five wrong tries lock the room for a minute.
+- Limits: one guest per room; the guest sees the game a moment late (video delay); the picture is the game's 480 x 270
+  as video, so a little softer than the host's; some strict networks block direct connections, and then joining fails
+  with a message; the host must keep the game's tab in front (a hidden tab stops drawing, so the guest's picture freezes).
+- Tested with two tabs on one computer: opening a room, a wrong room number, a wrong passcode, joining, the guest picking
+  a hero and moving Player 2, and the host's match showing on the guest's screen. Not yet tested between two different
+  networks, on phones, or for sound.
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
@@ -685,23 +703,8 @@ leads into Convergence. Balance (story-test bots, level 8): the masher loses mos
 9 in 10 against the Keystone (losing ~40% health) and 8 in 10 against the Clerk.
 
 **Act 3 onward: one road for everybody.** The missions are the same whoever you play:
-*Dust and Debts* (bounty board, Ash Dunes, the Scrap Baron), *The City Under the Sand* (Buried Meridian, the Excavator),
-*What Grows in the Glow* (Glowwild, the Halcyon relay, the Glowmother), *The Glass Sea* (mirror masts, the Lenswright)
-and the finale, *Where the Sky Came Down* (the Crater, east of the Glass Sea).
-
-The two middle regions (`js/story-surface.js`) make the Surface bigger:
-
-| Region | Maps | New enemies | Boss |
-|---|---|---|---|
-| **Buried Meridian**, under the Ash Dunes (BC-1, after the Baron; Marlo's dune skiff runs you back out to his wreck) | The Sinkhole (ledges down into the dark, sand pouring through cracks), Buried Meridian (the old city's station, high street, a collapsed overpass and plaques that tell what it was, then the Halcyon dig) | Sand Burrowers (a mound with eyes until they lunge), Halcyon Dig Crew, Dig Drones | **The Excavator**, a dig rig on tracks. It dives into the sand; a mound follows you, stops and shakes, then erupts under you |
-| **The Glass Sea**, between the Glowwild and the Crater (GS-1) | The Glass Sea (fused glass, molten pools, three mirror masts that throw Mirages at you until the lens at the foot of each is smashed), the Lensworks | Glass Crawlers, Lens Drones, Mirages | **The Lenswright**, Halcyon's optics man, running the first test of the trick waiting at Field Post 3. He fights alongside Mirror Images of himself that break at a touch |
-
-The story ties them in: Halcyon is digging out Meridian's Lantern Archive, a vault of the old city's memories, and shipping
-them to the relay in the Glowwild; the Glass Sea foreshadows the Crater's illusion. Every hero has their own line for each new
-boss. Saves already past these points skip them (the maps are still there to walk through). Balance at the levels players now
-arrive at (story-test bots): the masher loses most fights against both bosses, careful play wins every time losing ~31%
-(Excavator) and ~48% (Lenswright); the Glowmother answers free hits harder than before, because players reach it higher.
-
+*Dust and Debts* (bounty board, Ash Dunes, the Scrap Baron), *What Grows in the Glow* (Glowwild, the Halcyon relay, the Glowmother)
+and the finale, *Where the Sky Came Down* (the Crater, east of the Glowwild).
 What changes per hero:
 
 - **Conversations.** Marlo, Juniper, the bounty board, every boss and each beat of the Crater get a different line from each hero.
@@ -893,7 +896,6 @@ ghost-step escape, air recovery). Those ideas were re-implemented from scratch h
 | `js/story-spire.js` | Act 3, A3-5: the six-floor Spire, Dr. Morrow, Dr. Kessen's mech and the Engine core key |
 | `js/story-finale.js` | Act 3, A3-6: the Engine core, the Director's three phases, the ending and the secret ending |
 | `js/story-middle.js` | Act 2, The Middle: Kael's climb (Shafts, Waterworks, Fungal Hollows, Breach, the Keystone) and Nyra's fall (Ballast Decks, Cargo Ducts, Cargo Drop, the Gravity Clerk); its enemies, backdrops, missions and the reroutes from Act 1 |
-| `js/story-surface.js` | Act 3, the Surface made bigger: Buried Meridian (Sinkhole, buried city, the Excavator) and the Glass Sea (mirror masts, Lensworks, the Lenswright); their enemies, backdrops and missions BC-1 / GS-1 |
 | `js/mods.js` | Cyber mods: material drops, crafting at save points, the Esc > MODS tab and every mod's effect; also the extra pause-tab list (`SW.pauseTabs`) |
 | `js/heat.js` | Heat (stars, patrols, the Hunter, vents) and factions (standing, perks, jobs boards, the Esc > FACTIONS tab) |
 | `js/daynight.js` | The day/night clock, the night lighting, night Husks, and radiation in the Glowwild and the Crater |
