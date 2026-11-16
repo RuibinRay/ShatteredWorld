@@ -12,7 +12,10 @@
 //   The music drops while the line is spoken. Only an ultimate that finishes the fight triggers it, never any other blow.
 (function () {
   const SW = window.SW, G = SW.game, D = SW.data, art = SW.art, fx = SW.fx, ui = SW.ui, I = SW.input, V = SW.versus, text = SW.text, W = SW.W, H = SW.H, rand = SW.rand;
-  const HR = D.heroes, A = D.abilities, K = SW.skillfx, LINES = SW.finisherLines || {}, P = SW.Player.prototype, sfx = n => SW.audio.sfx(n);
+  const HR = D.heroes, A = D.abilities, K = SW.skillfx, LINES = SW.finisherLines || {}, P = SW.Player.prototype;
+  // Silent by the player's wish: no voice, no extra sound effects, and the music plays on untouched. The line is shown
+  // as a subtitle only. (SILENT = false brings the spoken line, the M voice switch and the sounds back.)
+  const SILENT = true, sfx = n => { if (!SILENT) SW.audio.sfx(n); };
   const SLOW = 42, CUT = 50, VOICE = 64, RECENT = 50;
 
   // ================= optional art and recorded voices =================
@@ -34,6 +37,7 @@
   }
   let audioEl = null;
   function speak(fin) {
+    if (SILENT) { fin.speaking = false; fin.lang = null; return; }
     const l = spokenLang(fin.hero, fin.n); fin.lang = l; if (!l) return;
     const line = LINES[fin.hero] && LINES[fin.hero][fin.n]; if (!line) return;
     const file = 'voice_' + fin.hero + '_' + fin.n + '_' + l + '.mp3';
@@ -92,7 +96,7 @@
       if (fin.t === CUT) { sfx('heavy'); fx.shake(6, 10); }
       if (fin.t === VOICE) speak(fin);
       if (fin.pulse > 0) fin.pulse = Math.max(0, fin.pulse - 0.12);
-      if (!fin.stampAt && fin.t > VOICE + 40 && (!fin.speaking || fin.t > VOICE + 200)) { fin.stampAt = fin.t; sfx('explode'); }
+      if (!fin.stampAt && fin.t > VOICE + (SILENT ? 80 : 40) && (!fin.speaking || fin.t > VOICE + 200)) { fin.stampAt = fin.t; sfx('explode'); }
       if (fin.stampAt && fin.t === fin.stampAt + 46) fin.outAt = fin.t;
       if (fin.outAt && fin.t > fin.outAt + 22) stop();
       else if (fin.skipAt && fin.t > fin.skipAt + 14) stop();
@@ -104,7 +108,7 @@
   const skip = () => { if (fin && fin.t > 16 && !fin.skipAt) { fin.skipAt = fin.t; hush(); duck(false); } };
   window.addEventListener('keydown', e => {
     if (!fin) return;
-    if (e.key === 'm' || e.key === 'M') { const i = VOICES.indexOf(pref()); if (SW.profile) { SW.profile.finVoice = VOICES[(i + 1) % VOICES.length]; if (SW.saveProfile) SW.saveProfile(); } fin.voiceNote = 90; if (fin.t >= VOICE && !fin.stampAt) { hush(); speak(fin); } return; }
+    if (!SILENT && (e.key === 'm' || e.key === 'M')) { const i = VOICES.indexOf(pref()); if (SW.profile) { SW.profile.finVoice = VOICES[(i + 1) % VOICES.length]; if (SW.saveProfile) SW.saveProfile(); } fin.voiceNote = 90; if (fin.t >= VOICE && !fin.stampAt) { hush(); speak(fin); } return; }
     skip();
   });
   window.addEventListener('pointerdown', () => skip());
@@ -198,7 +202,7 @@
       // (built from parts that are each translated: the lookup matches whole strings)
       const tr = s => (SW.i18n && SW.i18n.tr ? SW.i18n.tr(s) : s), v = pref(), code = v === 'off' ? tr('off') : v.toUpperCase();
       const extra = f.lang && v !== 'off' && f.lang !== v ? ' > ' + f.lang.toUpperCase() : !f.lang && v !== 'off' && t > VOICE + 10 ? ' (' + tr('no voice in this browser') + ')' : '';
-      ctx.globalAlpha = 0.6; text(ctx, tr('M: voice') + ' ' + code + extra + '      ' + tr('Any key: skip'), W / 2, H - 12, f.voiceNote > 0 ? '#ffffff' : '#8a92b8', { align: 'center', raw: true }); ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.6; text(ctx, (SILENT ? '' : tr('M: voice') + ' ' + code + extra + '      ') + tr('Any key: skip'), W / 2, H - 12, f.voiceNote > 0 ? '#ffffff' : '#8a92b8', { align: 'center', raw: true }); ctx.globalAlpha = 1;
       if (f.voiceNote > 0) f.voiceNote--;
     }
     // the white flash back into the fight

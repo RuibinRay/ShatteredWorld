@@ -349,8 +349,9 @@ English, Spanish and Chinese.
 
 ## Ultimate finishers (`js/finisher.js`, `js/finisher-lines.js`)
 
-**Switched off (user's request, 2026-11-15):** `index.html` no longer loads these two files, so an ultimate that ends a fight
-no longer plays the cinematic or a spoken line. To bring it back, add both script tags again right after `js/vsboss.js`.
+**On again, silent (user's request):** the finisher plays whenever an ultimate lands the final blow, in 1 vs 1 and for
+every fall in 3 vs 3, but with no voice and no extra sound effects: the hero's line is shown as a subtitle only and the
+music plays on untouched (`SILENT` in `js/finisher.js`). What follows describes the spoken version.
 
 
 When an ultimate lands the final blow (a Versus knockout, the Versus boss fight, or a boss in the story; never any other
