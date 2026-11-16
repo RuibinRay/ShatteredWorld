@@ -409,6 +409,16 @@ one attempt at the last form succeeds 4 of 8 times as Kael, 7 of 8 as Nyra, 8 of
 wins, before or after. (The first try of the new attacks made the fight easier: the careful player simply guarded their
 long wind-ups, so World Rend became unguardable and the openings after Last Light shorter.)
 
+## Skill animations, one per skill (`js/skillanim.js`)
+
+Every skill of every fighter (U, S + U, I, S + I, W + O and the ultimate: 264 in all) has its own cast animation in the
+hero's colours, on top of what the skill already shows: a throwing swoosh with a muzzle star, sweeping crescents, bursting
+spokes and rings, a crack racing along the ground, rising streaks, a closing reticle with falling streaks, speed lines, a
+closing slit of light, a turning glyph circle, spiral arms, and for ultimates three rings, long spokes and bands of light
+across the screen. Eleven kinds; which skill uses which is listed in the file, and each skill's count, tilt, size and
+rhythm come from its own name, so no two look the same. Draw-only: no timing, hitbox or damage changes. Tested: all 264
+fire their animation in Versus with no errors.
+
 ## Signature skills, element melee and skill effects (`js/signature.js`, `js/clanmelee.js`, `js/skillfx.js`)
 
 - **A signature skill for every hero (W + O).** 43 new skills, one per hero, story and Hidden Clans: 75 energy, a 7 s
