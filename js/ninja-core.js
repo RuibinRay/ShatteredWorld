@@ -72,6 +72,7 @@
     return r;
   };
   const _pu = P.update; P.update = function (g, z) { _pu.call(this, g, z); const t = trOf(g); if (t && t.tick && !this.dead) t.tick(this, g, z); };
+  const _sp = P.speed; P.speed = function () { const t = trOf(this.G), s = _sp.call(this); return t && t.spd ? s * t.spd(this, this.G) : s; };
   const _pd = P.draw; P.draw = function (ctx, cam, g) {
     _pd.call(this, ctx, cam, g);
     const t = trOf(g); if (t && t.mark && !this.dead) t.mark(ctx, this, Math.round(this.x - cam.x), Math.round(this.y - cam.y), g);
@@ -163,7 +164,37 @@
   const portraits = ids => ids.forEach(id => ['hero_', 'ult_'].forEach(k => { const im = new Image(); im.onload = () => { art.bg[k + id] = im; }; im.onerror = () => {}; im.src = 'assets/bg/' + k + id + '.png'; }));
 
   // ---------- the Versus hero grid: a small clan mark on each ninja's tile, and a line under the name ----------
+  // more than 50 heroes: thirteen columns of narrower tiles (five rows hold 65), drawn here instead of heroes4.js's ten
+  const COLS13 = 13, CW13 = 35, X13 = 12;
+  const big = () => D.heroOrder.length > 50;
+  const _gm = ui.gridMove; ui.gridMove = function (i, l, r, u, d) {
+    if (!big()) return _gm(i, l, r, u, d);
+    const n = D.heroOrder.length, c = COLS13; if (l) i = (i + n - 1) % n; if (r) i = (i + 1) % n; if (u) i = (i - c + n) % n; if (d) i = (i + c) % n; return i;
+  };
+  function grid13(ctx, o) {
+    const n = D.heroOrder.length, rows = Math.ceil(n / COLS13), cw = CW13, ch = Math.min(100, Math.floor(204 / rows) - 2), bg = art.bg.title, locked = SW.lockedVs || (() => false);
+    if (bg) ctx.drawImage(bg, 0, 0);
+    ctx.globalAlpha = 0.8; art.rect(ctx, '#05060c', 0, 0, W, SW.H); ctx.globalAlpha = 1;
+    text(ctx, o.title, W / 2, 7, '#ffffff', { align: 'center', scale: 2 });
+    D.heroOrder.forEach((id, i) => {
+      const h = HR[id]; if (!h) return;
+      const x = X13 + (i % COLS13) * cw, y = 28 + Math.floor(i / COLS13) * (ch + 2), open = o.open(id) && !locked(id), img = art.bg['hero_' + id];
+      const who = o.cursors.map((c, k) => (c === i ? k : -1)).filter(k => k >= 0), on = who.length > 0;
+      ui.panel(ctx, x, y, cw - 2, ch, on ? o.colors[who[0]] : '#3a3d55', 0.85);
+      ctx.save(); ctx.beginPath(); ctx.rect(x + 1, y + 1, cw - 4, ch - 2); ctx.clip();
+      ctx.globalAlpha = open ? (on ? 1 : 0.6) : 0.16;
+      if (img) ctx.drawImage(img, (h.gridX || 27) + 2, 12, 40, 46, x + 1, y + 1, cw - 4, ch - 2);
+      else { art.rect(ctx, art.shade(h.color, 0.22), x + 1, y + 1, cw - 4, ch - 2); ctx.translate(x + cw / 2 - 1, y + ch - 11); ctx.scale(1.2, 1.2); art.draw(ctx, h.sheet, on ? 'run' : 'idle', on ? Math.floor(SW.frame / 5) % 8 : Math.floor(SW.frame / 28) % 2, 0, 0, false); }
+      ctx.restore(); ctx.globalAlpha = 0.78; art.rect(ctx, '#05060c', x + 1, y + ch - 10, cw - 4, 9); ctx.globalAlpha = 1;
+      let nm = open ? h.name.toUpperCase() : 'LOCKED'; while (nm.length > 3 && SW.textW(nm) > cw - 4) nm = nm.slice(0, -1);
+      text(ctx, nm, x + cw / 2 - 1, y + ch - 9, open ? (on ? h.color : '#c8ccd8') : '#ff5a5a', { align: 'center' });
+      if (h.legend) { art.rect(ctx, '#f5c542', x + cw - 8, y + 3, 4, 4); art.rect(ctx, '#fff7d0', x + cw - 7, y + 4, 2, 2); }
+      if (isNinja(id)) { const mx = x + cw - 8, my = y + 3, c = h.color; art.rect(ctx, '#05060c', mx - 1, my - 1, 6, 6); art.rect(ctx, c, mx + 1, my, 1, 4); art.rect(ctx, c, mx - 0, my + 1, 4, 1); }
+      who.forEach(k => { if (o.tags[k]) { ui.panel(ctx, x + 1, y + 2 + k * 12, 22, 11, o.colors[k], 0.9); text(ctx, o.tags[k], x + 12, y + 4 + k * 12, '#ffffff', { align: 'center' }); } });
+    });
+  }
   const _grid = ui.heroGrid; ui.heroGrid = function (ctx, o) {
+    if (big()) return grid13(ctx, o);
     _grid(ctx, o);
     const n = D.heroOrder.length; if (n <= 10 || !full) return;
     const rows = Math.ceil(n / 10), cw = 46, ch = Math.min(100, Math.floor(204 / rows) - 2);

@@ -165,7 +165,7 @@
   // ---------- ultimate cut-in: a band of splash art crosses the screen when an ultimate starts ----------
   // Art: assets/bg/ult_<hero>.png, 520x260 (prompts in tools/higgsfield-ults.json). CUT_Y is the row of each picture
   // that sits in the middle of the band, so the eyes stay in view. Without a picture the band is plain colour.
-  const CUT_LEN = 56, CUT_H = 100, CUT_Y = { kael: 138, nyra: 120, fenn: 120, isolde: 124, brakk: 116, pyra: 112, gale: 142, ashka: 116, dyna: 126, vesper: 122, maren: 196, moro: 200, sable: 145, thorne: 100, isa: 145, garo: 118, mika: 85 };
+  const CUT_LEN = 56, CUT_H = 100, CUT_Y = { kael: 138, nyra: 120, fenn: 120, isolde: 124, brakk: 116, pyra: 112, gale: 142, ashka: 116, dyna: 126, vesper: 122, maren: 196, moro: 200, sable: 145, thorne: 100, isa: 145, garo: 118, mika: 85, coda: 105, vesna: 105, zara: 105, hart: 110, elixa: 85, tor: 85, opal: 105, ryo: 115, itsuki: 100 };
   D.heroOrder.forEach(id => { const im = new Image(); im.onload = () => { art.bg['ult_' + id] = im; }; im.src = 'assets/bg/ult_' + id + '.png'; });
   let cut = null;
   const _uf = SW.ultFx;

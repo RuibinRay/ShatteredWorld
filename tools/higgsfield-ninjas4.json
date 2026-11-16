@@ -1,0 +1,402 @@
+[
+ {
+  "name": "hero_vex",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a stocky young man with tan skin and short dark hair, a charcoal jacket over steel-plated forearms, one fist glowing red and the other pale blue, scraps of iron floating between his hands, red and pale blue glow."
+  }
+ },
+ {
+  "name": "hero_zara",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a sly young woman with fair skin and black hair under a short black top hat with a gold band, a dark red waistcoat, fanning a hand of white playing cards with gold edges, cards drifting around her, gold glow."
+  }
+ },
+ {
+  "name": "hero_coda",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a graceful young dancer with fair skin and long violet hair, a pink and white dance outfit, mid-spin with long pink silk ribbons swirling around her in loops, pink and violet glow."
+  }
+ },
+ {
+  "name": "hero_vesna",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a pale, elegant woman with dark crimson hair, a black and dark red coat, holding a long scythe whose blade is made of liquid blood, drops of blood floating upward around her, crimson glow."
+  }
+ },
+ {
+  "name": "hero_apis",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a cheerful young woman with warm brown skin and black hair under a small golden crown, a striped amber and black jacket, holding out a hand where a cloud of glowing bees circles, honey-gold glow."
+  }
+ },
+ {
+  "name": "hero_hex",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a thin young woman with pale grey-green skin in a dark navy hood, glowing mint-green eyes, a ragged cloak, voodoo pins held between her fingers, wisps of mint-green ghost light around her, mint glow."
+  }
+ },
+ {
+  "name": "hero_lux",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a bright young woman with fair skin and long white hair, a blue and gold outfit, holding a thin crystal lance that splits a beam of light into a rainbow, prism-coloured light around her, cyan glow."
+  }
+ },
+ {
+  "name": "hero_fumi",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a heavy-set man in a grey cloth mask and a grey work coat with brass valves on the shoulders, steam pouring from the valves and from his clenched fists, white steam glow."
+  }
+ },
+ {
+  "name": "hero_slick",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a round, grinning man made of translucent green slime, a simple dark green vest, his body dripping and wobbling, slime puddles around his feet, lime green glow."
+  }
+ },
+ {
+  "name": "hero_kova",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a wild-looking young man with brown skin and shaggy red-orange hair, tiger-stripe tattoos on his arms, an eagle feather and a turtle-shell pendant on his chest, spirit shapes of a tiger, an eagle and a tortoise behind him, orange glow."
+  }
+ },
+ {
+  "name": "hero_hart",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a lean, calm young man with tan skin and short brown hair under a green cap with a red band, a dark green coat, holding a very long spear diagonally, the spear tip glinting, red and cream glow."
+  }
+ },
+ {
+  "name": "hero_elixa",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: an excited young woman with fair skin and a long purple braid, a white lab coat with violet trim, holding up three bubbling flasks of red, blue and green liquid, coloured smoke around her, violet glow."
+  }
+ },
+ {
+  "name": "hero_tor",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a tall, broad man in a steel-blue helmet and plate armour, a huge round shield held in front of him with arrows and shards bouncing off it, steel blue and white glow."
+  }
+ },
+ {
+  "name": "hero_opal",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a gentle young woman with pale skin and pink hair in a bun, a pale blue and pink outfit, holding a glowing pink crystal, clusters of pink, mint and blue crystals growing around her feet, pink glow."
+  }
+ },
+ {
+  "name": "hero_taro",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a huge sumo wrestler with warm tan skin and a black topknot, a golden belt, crouched in a ready stance with one leg raised, salt grains flying from his hand, gold glow."
+  }
+ },
+ {
+  "name": "hero_rue",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a slim young woman in a white theatre mask with a painted smile, peach and pink clothes, holding a second mask in her hand, faint ghostly copies of other fighters behind her, pink glow."
+  }
+ },
+ {
+  "name": "hero_mako",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a big man in a bulky orange and grey mech suit with a cannon on one arm and a missile pod on the shoulder, his face visible through a glass visor, orange glow."
+  }
+ },
+ {
+  "name": "hero_sora",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a lively young woman with fair skin and spiky pink hair, a sky-blue jacket, hanging from the string of a huge white and blue kite high in the sky, wind lines around her, sky blue glow."
+  }
+ },
+ {
+  "name": "hero_ryo",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a composed young man with tan skin and short black hair, a white gi on one side and a black gi on the other, one palm glowing white and the other dark, a yin-yang circle turning behind him, white and black glow."
+  }
+ },
+ {
+  "name": "hero_itsuki",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "3:4",
+   "output_format": "png",
+   "prompt": "16-bit pixel art character splash portrait for a cyberpunk action RPG hero select screen. Waist-up, three-quarter view facing right, confident pose, dramatic rim lighting, dark gradient background with a faint elemental aura, no text, no UI, no frame. Crisp chunky pixels, limited palette, retro console game art. Original character: a focused young man with warm skin and spiky black hair under a red headband, a dark blue gi with a gold sash, five floating orbs of fire, wind, lightning, earth and water circling him, warm orange glow."
+  }
+ },
+ {
+  "name": "ult_vex",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: red, pale blue, white and black. Original character: a young man with short dark hair, scraps of iron orbiting his face, one eye lit red and one pale blue."
+  }
+ },
+ {
+  "name": "ult_zara",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: gold, dark red, white and black. Original character: a young woman in a black top hat, a winking smile, an ace of hearts held up beside her eye, cards flying past."
+  }
+ },
+ {
+  "name": "ult_coda",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: pink, violet, white and black. Original character: a young woman with long violet hair, eyes closed in a smile, pink ribbons looping across the frame like music."
+  }
+ },
+ {
+  "name": "ult_vesna",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: crimson, pale pink, white and black. Original character: a pale woman with dark crimson hair, red eyes, a curved blade of blood crossing in front of her face."
+  }
+ },
+ {
+  "name": "ult_apis",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: amber, black, pale yellow and white. Original character: a young woman with a small golden crown, smiling, dozens of bees swarming in a spiral around her head."
+  }
+ },
+ {
+  "name": "ult_hex",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: mint green, dark navy, white and black. Original character: a young woman in a dark hood, glowing mint eyes, ghostly faces drifting behind her."
+  }
+ },
+ {
+  "name": "ult_lux",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: cyan, magenta, white and black. Original character: a young woman with long white hair, a rainbow beam reflected across her eyes."
+  }
+ },
+ {
+  "name": "ult_fumi",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: grey, white, brass and black. Original character: a big man in a grey cloth mask, eyes narrowed, jets of steam bursting out behind his head."
+  }
+ },
+ {
+  "name": "ult_slick",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: lime green, dark green, white and black. Original character: a grinning face made of translucent green slime, bubbles rising inside it, drips stretching across the frame."
+  }
+ },
+ {
+  "name": "ult_kova",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: orange, pale cream, green and black. Original character: a young man with shaggy red-orange hair, his face half becoming a tiger, an eagle and a tortoise shell behind him."
+  }
+ },
+ {
+  "name": "ult_hart",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: red, cream, green and black. Original character: a young man in a green cap, calm eyes, a spear point aimed straight past his cheek at the viewer."
+  }
+ },
+ {
+  "name": "ult_elixa",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: violet, teal, yellow and black. Original character: a young woman with a purple braid and round eyes full of curiosity, three bubbling flasks held up beside her face."
+  }
+ },
+ {
+  "name": "ult_tor",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: steel blue, pale blue, white and black. Original character: a man in a steel helmet, eyes visible over the rim of a huge round shield, sparks flying off it."
+  }
+ },
+ {
+  "name": "ult_opal",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: pink, mint, pale blue and black. Original character: a young woman with pink hair, her face reflected in a large faceted crystal, crystal shards flying."
+  }
+ },
+ {
+  "name": "ult_taro",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: gold, cream, tan and black. Original character: a huge sumo wrestler with a black topknot, fierce eyes, salt flying past his face."
+  }
+ },
+ {
+  "name": "ult_rue",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: peach, pink, white and black. Original character: a woman in a white smiling mask, the mask splitting into copies of many different faces behind her."
+  }
+ },
+ {
+  "name": "ult_mako",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: orange, grey, cream and black. Original character: a man behind the glass visor of an orange mech helmet, missiles streaking past the frame."
+  }
+ },
+ {
+  "name": "ult_sora",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: sky blue, white, pink and black. Original character: a young woman with spiky pink hair, laughing, a huge kite and its string cutting across the frame behind her."
+  }
+ },
+ {
+  "name": "ult_ryo",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: white, black, beige and grey. Original character: a young man with short black hair, one half of his face lit white and the other in shadow, a yin-yang circle behind him."
+  }
+ },
+ {
+  "name": "ult_itsuki",
+  "endpoint": "recraft/v4.1/text-to-image",
+  "body": {
+   "resolution": "1k",
+   "aspect_ratio": "2:1",
+   "output_format": "png",
+   "prompt": "16-bit pixel art fighting game super move cut-in, wide cinematic banner. Extreme close-up of a face in the centre of the frame, eyes at mid height, looking right, intense expression, speed lines radiating from behind, no text, no UI, no frame. Crisp chunky pixels, strictly four colours: orange, blue, gold and black. Original character: a young man with spiky black hair and a red headband, five elemental orbs, fire, wind, lightning, stone and water, wheeling around his face."
+  }
+ }
+]
