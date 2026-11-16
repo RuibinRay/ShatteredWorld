@@ -55,6 +55,7 @@
   });
   ['vs_crater', 'vs_spire', 'vs_foundry'].forEach(n => { const im = new Image(); im.onload = () => { art.bg[n] = im; }; im.src = 'assets/bg/' + n + '.png'; });
   STAGES.push(['Crater Rim', 'vs_crater'], ['Aurelia Spire', 'vs_spire'], ['Deep Foundry', 'vs_foundry'], ['Hidden Gorge', 'vs_clans']);   // vs_clans: theme and backdrop in ninja-core.js
+  V.STAGES = STAGES;   // other files add stages of their own (stages.js)
   const DIFF = ['Easy', 'Normal', 'Hard'];
   // Energy in Versus comes from fighting, not from standing still. GAIN is the menu's "Energy gain" row: [label, multiplier].
   // Per frame: PASSIVE trickle, CHARGE while holding attack + jump (the story charges at 1.25). Per hit landed: HIT_MELEE for

@@ -4566,5 +4566,9 @@ SW.i18n.add('zh', {
   "That room already has two players.": "该房间已有两名玩家。",
   "The host closed the room.": "房主已关闭房间。",
   "You are Player 2": "你是玩家 2",
-  "Online": "联机"
+  "Online": "联机",
+  "TRAIN INCOMING": "列车来袭",
+  "GRAVITY SHIFT": "重力转移",
+  "GRAVITY RETURNS": "重力恢复",
+  "THE ENGINE TURNS": "引擎运转"
 });

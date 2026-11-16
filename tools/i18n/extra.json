@@ -693,5 +693,9 @@
   "That room already has two players.": { "es": "Esa sala ya tiene dos jugadores.", "zh": "该房间已有两名玩家。" },
   "The host closed the room.": { "es": "El anfitrión cerró la sala.", "zh": "房主已关闭房间。" },
   "You are Player 2": { "es": "Eres el Jugador 2", "zh": "你是玩家 2" },
-  "Online": { "es": "En línea", "zh": "联机" }
+  "Online": { "es": "En línea", "zh": "联机" },
+  "TRAIN INCOMING": { "es": "TREN EN CAMINO", "zh": "列车来袭" },
+  "GRAVITY SHIFT": { "es": "CAMBIO DE GRAVEDAD", "zh": "重力转移" },
+  "GRAVITY RETURNS": { "es": "VUELVE LA GRAVEDAD", "zh": "重力恢复" },
+  "THE ENGINE TURNS": { "es": "EL MOTOR GIRA", "zh": "引擎运转" }
 }

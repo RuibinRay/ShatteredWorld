@@ -4566,5 +4566,9 @@ SW.i18n.add('es', {
   "That room already has two players.": "Esa sala ya tiene dos jugadores.",
   "The host closed the room.": "El anfitrión cerró la sala.",
   "You are Player 2": "Eres el Jugador 2",
-  "Online": "En línea"
+  "Online": "En línea",
+  "TRAIN INCOMING": "TREN EN CAMINO",
+  "GRAVITY SHIFT": "CAMBIO DE GRAVEDAD",
+  "GRAVITY RETURNS": "VUELVE LA GRAVEDAD",
+  "THE ENGINE TURNS": "EL MOTOR GIRA"
 });

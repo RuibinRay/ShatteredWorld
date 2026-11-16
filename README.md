@@ -433,6 +433,29 @@ one attempt at the last form succeeds 4 of 8 times as Kael, 7 of 8 as Nyra, 8 of
 wins, before or after. (The first try of the new attacks made the fight easier: the careful player simply guarded their
 long wind-ups, so World Rend became unguardable and the openings after Last Light shorter.)
 
+## Story stages in Versus (`js/stages.js`)
+
+Six new stages, each a place from the story, with platforms at several heights in the manner of a platform fighter:
+jump up onto them, stand and fight on them, drop through with S + K. Each has a twist:
+- **The Noble Ring** (Act 5): the tournament stage. Two low platforms and one high one, no tricks.
+- **The Skylift** (Act 5): two cargo lifts ride up and down on either side, carrying whoever stands on them.
+- **The Ballast Decks** (Act 2): now and then the ballast shifts (GRAVITY SHIFT): for six seconds everyone floats and
+  jumps about three times higher, and the top decks come within reach.
+- **The Glass Sea** (Act 3): glass platforms crack under anyone who stands on them, shatter after about a second and a
+  half, and grow back five seconds later.
+- **Platform Zero** (Act 1): every sixteen seconds, after two seconds of warning (TRAIN INCOMING and red lamps), a train
+  crosses the floor. Anyone on the floor takes a heavy hit (14, through a guard); the platforms are safe.
+- **The Engine Core** (Act 5): every fifteen seconds the Engine turns (the new layout blinks first) and its four plates
+  slide into a new arrangement, carrying whoever stands on them.
+
+They are in the Stage list (and Random). The bots use them: they climb to a platform when their foe is above, sometimes on
+their own, and drop down after a foe below. They also get off the floor when the train is coming: an Easy bot notices
+the warning about half the time, Normal three times in four, Hard always.
+Tested: all 64 Versus heroes in bot matches across the six stages, and a 3 vs 3, with no errors. The bots spend 13 to
+43% of a fight on platforms. Riding, dropping through, shattering, the train (14 to whoever is on the floor, nothing to
+whoever is up on a platform), low gravity (a jump of 34 px becomes 111) and the Engine's turn were each checked.
+versus.js shares its stage list (`V.STAGES`) so this file can add to it.
+
 ## How hits and shots read (`js/combatfeel.js`)
 
 - **Hit flash.** A fighter who was hit used to turn into a solid white silhouette for 7 to 10 frames (the 4-frame flash
