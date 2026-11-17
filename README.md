@@ -195,6 +195,8 @@ commits to its swings, because a plain trooper is stun-locked and does no damage
 
 ## Side quests (`js/sidequests.js`)
 
+> **Removed (2026-11-17)** with the first story mode: `js/sidequests.js` and the Esc > QUESTS tab are gone.
+
 The first four of the design document's ten side quests, given to the game's own cast (the document's versions use
 characters from other series). Esc > **QUESTS** (the ninth tab) lists them; a **!** over someone means a quest to take,
 **?** one to hand in.
@@ -833,6 +835,8 @@ would even the rest out.
 
 ## Story structure
 
+> **Removed (2026-11-17):** the first story mode is gone; The Hollow Crown (`js/saga/`) is the only story. Its world (places, enemies, bosses, art, duel balance) lives on in `js/world-*.js` (see the Code map); the missions, scenes, secrets and quests described below no longer exist.
+
 **Act 1: every hero has a different first tutorial.** Each of the twenty-five heroes wakes somewhere else, with their own mission, cast,
 boss and first memory. The tutorials teach the same basics in a different order, with a skill test built around that hero's first ability.
 
@@ -1079,28 +1083,20 @@ ghost-step escape, air recovery). Those ideas were re-implemented from scratch h
 | `js/versus.js` | Versus mode: PvP and Player vs Bot, the bot's decision loop, the fight HUD |
 | `js/data2.js`, `js/elements.js` | Expansion: elemental heroes, summons, status effects, achievements, upgrade shop, hero select |
 | `js/ui.js`, `js/game.js` | HUD, menus, dialogue, missions, travel, save/load, main loop |
-| `js/story.js` | Story structure: per-hero dialogue and memories, Act 2 missions and text, secrets, chapter cards |
-| `js/story-world.js` | The eight bonus-hero tutorial zones, Ash Dunes, Glowwild, the two secret maps, their cast, props and boss scripts |
+| `js/world-kit.js` | The world files' shared helpers (SW.world, also SW.story): recolor / scaled sprites, boss tuning, zone patches, the scripted boss SW.Boss2 and its moves |
+| `js/world-surface.js` | The Surface: Ash Dunes, the Hollow, Glowwild, the Drowned Choir, the Crater, Buried Meridian (Sinkhole), the Glass Sea and Lensworks; their props, sprites, enemies, bosses, the Crater duel balance (SW.world.crater) and the Scrapton links |
+| `js/world-deep.js` | Below Deepline: the Middle Deep (Shafts, Waterworks, Fungal Hollows, Breach) and the Roots (Taproot Stair, Rootways, Heartroot), with the Old Metro links |
+| `js/world-sky.js` | Aurelia and the roads up: the Skylift, the Noble Ring, the Spire, the Engine Core (the Director, fused, the Convergence), the Underside and the Tether Fields |
 | `js/heroes4.js` | Third expansion: ten more heroes, their abilities, ultimates and special rules (rift guard, long arms, true draw ...), sprites, the 20-hero grid |
-| `js/story-heroes4.js` | Those ten heroes' tutorials, bosses, memories, Act 2 lines and secrets (data for the builders in the two story files) |
-| `js/story-crater.js` | Act 2 finale: the Crater map, mission, the veiled rival and the duel hookup, with lines for all twenty heroes |
 | `js/heroes5.js` | Five more heroes (Kiri, Tarn, Maren, Yara, Brann): kits, traits, ultimates, sprites, unlock feats |
-| `js/story-heroes5.js` | Those five heroes' tutorials, bosses, memories, lines on the shared road and at the Crater, and secrets |
-| `js/story-act3.js` | Act 3 part 1: the veil mast, the partner assist, the war council, the Pit's Grand Melee and Anvil as an assist |
-| `js/story-skylift.js` | Act 3, A3-3: the Skylift zone, the gate battle, the ride under attack and Lord Castellan Vane |
-| `js/story-noble.js` | Act 3, A3-4: the Noble Ring zone, the control relays, Prefect Quist and Vane joining as an assist |
-| `js/story-spire.js` | Act 3, A3-5: the six-floor Spire, Dr. Morrow, Dr. Kessen's mech and the Engine core key |
-| `js/story-finale.js` | Act 3, A3-6: the Engine core, the Director's three phases, the ending and the secret ending |
-| `js/story-middle.js` | Act 2, The Middle: Kael's climb (Shafts, Waterworks, Fungal Hollows, Breach, the Keystone) and Nyra's fall (Ballast Decks, Cargo Ducts, Cargo Drop, the Gravity Clerk); its enemies, backdrops, missions and the reroutes from Act 1 |
-| `js/story-surface.js` | Act 3, the Surface made bigger: Buried Meridian (Sinkhole, buried city, the Excavator) and the Glass Sea (mirror masts, Lensworks, the Lenswright); their enemies, backdrops and missions BC-1 / GS-1 |
+| `js/world-tutorials.js` | The 23 bonus heroes' home areas (the old tutorial maps): their themes, bosses, cast sprites and maps |
 | `js/mods.js` | Cyber mods: material drops, crafting at save points, the Esc > MODS tab and every mod's effect; also the extra pause-tab list (`SW.pauseTabs`) |
 | `js/heat.js` | Heat (stars, patrols, the Hunter, vents) and factions (standing, perks, jobs boards, the Esc > FACTIONS tab) |
 | `js/daynight.js` | The day/night clock, the night lighting, night Husks, and radiation in the Glowwild and the Crater |
 | `js/ledger.js` | The Ember Ledger: the hidden quest, Sable, the test fight, the night market and Ember Heart |
-| `js/sidequests.js` | Side quests: Bun Run, Arena Ladder, Dry Wells, Odile's Patients, the Esc > QUESTS tab and the ! / ? markers |
 | `js/difficulty.js` | Easy / Medium / Hard / Nightmare, the menus for it, and the easier first bosses |
 | `js/moves.js` | Moves update: the S + I skill for every hero, cooldowns, combo linking, the power mode on S + O, and the effects pass |
-| `tools/story-test.js` | Play-test bot for the tutorials and Act 2 (`ST.all()`, `ST.craterAll()`) |
+| `js/world-lang.js` | Spanish and Chinese for the Roots' and Tether Fields' place, enemy and boss names and prompts |
 | `tools/harness.js` | Frame-by-frame test driver used to play-test both campaigns |
 
 Adding content is mostly data: a new mission is an entry in `D.missions`, a new enemy an entry in `D.enemies`, a new zone a

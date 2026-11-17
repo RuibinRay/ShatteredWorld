@@ -7,21 +7,21 @@
 // It is the game's only story mode: the first story mode was removed (the user's call, 2026-11-17).
 //   - New Game goes straight to its prologue and hero select; Continue loads its save (shattered-worlds-saga-v1).
 //     The first story's save is left in the browser untouched, but nothing loads it any more.
-//   - The first story's files stay loaded: its map areas, enemies, bosses, art and duel balance are what this story
-//     is built on (and some Versus stages use them). Its own scenes, missions and menus never run.
-//   - It plays on the same map, "clean": the first story's people, triggers, bosses, shards and locked doors are taken
-//     out of every area while a Hollow Crown game is running (see clean()), and its dialogue cannot start.
+//   - The first story's files are gone; the world they built (map areas, enemies, bosses, art, the duel balance) lives
+//     on in js/world-*.js (SW.world, also called SW.story), which this story is built on (and some Versus stages use).
+//   - It plays on that map, "clean": any people, triggers, bosses, shards and locked doors other systems put in an
+//     area are taken out while a Hollow Crown game is running (see clean()), and their dialogue cannot start.
 //   - A chapter: a card (js/saga/saga-cards.js), then the hero is taken to the chapter's area, the opening lines play,
 //     and the chapter's goal runs: waves of enemies (Home, Bond, War), a hero to talk to and duel (Rival, the Called
 //     in chapter 5), the final battle (chapter 6). The lines are in js/saga/lines-*.js; the places and enemies in
 //     js/saga/saga-world.js. Missions SG1-SG6 show the goal on the HUD and in Esc > Mission.
 //   - Abilities come from the story: the hero starts with their kit, learns their power mode in chapter 1, their
 //     awakening in chapter 2 and their ultimate in chapter 3. Chapters 4 and 5 give stat points.
-// Loaded last; only wraps: SW.store.save, G.fresh, G.say, G.memory, G.minorShard, story.card, every zone's build,
-// SW.Zone.prototype.update, I.update, ui.titleItems / drawTitle / drawCard / drawPause / pauseUpdate, SW.i18n.tr, SW.wrap.
+// Loaded last; only wraps: SW.store.save/load, G.fresh, G.say, G.memory, G.minorShard, ui.dlg.next, every zone's build,
+// SW.Zone.prototype.update, I.update, ui.drawTitle / drawCard / drawPause / pauseUpdate, SW.i18n.tr, SW.wrap.
 (function () {
   const SW = window.SW, G = SW.game, D = SW.data, ui = SW.ui, I = SW.input, art = SW.art, fx = SW.fx, W = SW.W, H = SW.H, T = 16;
-  const SG = SW.saga = SW.saga || {}, HR = D && D.heroes, L = SW.lore, V = SW.versus, story = SW.story;
+  const SG = SW.saga = SW.saga || {}, HR = D && D.heroes, L = SW.lore, V = SW.versus, world = SW.world;
   if (!G || !ui || !HR || !SW.store || !SW.Zone) return;
   SG.lines = SG.lines || {};
   SG.add = o => { Object.assign(SG.lines, o); };
@@ -40,7 +40,6 @@
   const _save = SW.store.save;
   SW.store.save = function (o) { if (o && o.saga) return ls.set(SKEY, o); return _save.apply(this, arguments); };
   SG.load = () => ls.get(SKEY);
-  const rawLoad = SW.store.load;   // the first story's save only
   SW.store.load = function () { return SG.load(); };   // the only story's save (the first story's is no longer loaded)
   SG.meta = () => ls.get(MKEY) || { finished: {} };
   const finishedAny = () => Object.keys(SG.meta().finished || {}).length > 0;
@@ -120,11 +119,14 @@
     G.say(id, cb);
   }
   SG.say = say;
-  // while a Hollow Crown game runs, the first story cannot start its own scenes, memories, shards or act cards
+  // while a Hollow Crown game runs, no other system can start its own scenes, memories or shards
   const _say = G.say; G.say = function (id) { if (on() && String(id).indexOf('sg:') !== 0) { SG.dropped = id; return; } return _say.apply(this, arguments); };
   const _mem = G.memory; G.memory = function () { if (on()) return; return _mem.apply(this, arguments); };
   const _ms = G.minorShard; G.minorShard = function () { if (on()) return; return _ms.apply(this, arguments); };
-  if (story && story.card) { const _sc = story.card; story.card = function () { if (on()) return; return _sc.apply(this, arguments); }; }
+  // the lines of this story are written as they are said (raw: true): wrap them as they are, without G.txt, which would
+  // swap the first story's hero names in them for the played hero's
+  const dlg = ui.dlg, _next = dlg.next;
+  dlg.next = function (g) { _next.call(dlg, g); const ln = dlg.active && dlg.lines[dlg.i]; if (ln && ln.raw) dlg.wrapped = SW.wrap(ln.t, ln.s === 'sys' ? 420 : 372); };
 
   // ================= the clean map =================
   function keepEnt(e) {
@@ -259,13 +261,13 @@
   }
 
   // ================= duels =================
-  // the same rules as the first story's Crater duel (story-crater.js): the rival mirrors the hero's progress and gets
-  // a measured edge; Versus' own balance table is set aside for the fight
+  // the same rules as the first story's Crater duel (its table is SW.world.crater, in world-surface.js): the rival
+  // mirrors the hero's progress and gets a measured edge; Versus' own balance table is set aside for the fight
   let tuned = null;
   const untune = ids => { if (!V || !V.tune) return; tuned = {}; ids.forEach(id => { tuned[id] = V.tune[id]; V.tune[id] = 1; }); };
   const retune = () => { if (!tuned) return; Object.keys(tuned).forEach(id => { if (tuned[id] === undefined) delete V.tune[id]; else V.tune[id] = tuned[id]; }); tuned = null; };
   function duel(who, n, c) {
-    const cr = story && story.crater, hero = G.state.hero;
+    const cr = world && world.crater, hero = G.state.hero;
     const o = Object.assign({ diff: 1, hpBonus: 100, rivalPower: 12, rivalHp: 200 }, cr && cr.DUEL, cr && HR[hero].legend ? cr.LEGEND : null, cr && cr.FOR && cr.FOR[hero],
       { rival: who, title: n === 6 ? 'THE LAST CHAMPION' : n === 5 ? 'THE BIG WAR' : 'RIVAL DUEL', rivalName: (n >= 5 ? 'CHAMPION: ' : '') + nm(who).toUpperCase(), stage: SG.stageFor(c.zone), canQuit: true });
     const dl = SW.difficulty && SW.difficulty.cur && SW.difficulty.cur();
@@ -471,7 +473,7 @@
   };
 
   // ================= the title menu, and the new story's own screens =================
-  const M = SG.menu = { open: false, view: 'mode', sel: 0, tab: 0, idx: 0, page: 0, t: 0, skip: false, held: null, confirm: false };
+  const M = SG.menu = { open: false, view: 'pro', sel: 0, tab: 0, idx: 0, page: 0, t: 0, skip: false, held: null, confirm: false };
   const REALMS = (L && L.order ? L.order.slice(0, 4) : ['sky', 'land', 'deep', 'beyond']).filter(r => r !== 'beyond');
   const realm = r => (L && L.realms && L.realms[r]) || { name: r.toUpperCase(), sub: '', col: '#8fd3ff', hi: '#ffffff', desc: '' };
   const listOf = r => (L && L.ui ? L.ui.list(r) : []).filter(id => VILLAIN.indexOf(id) < 0);
@@ -494,16 +496,6 @@
   function update() {
     if (M.skip) { M.skip = false; return; }
     const k = { ok: I.ok(), back: I.hit('pause') || (M.view !== 'pro' && I.hit('jump')), up: rep('up'), down: rep('down'), left: rep('left'), right: rep('right'), prev: I.hit('skill'), next: I.hit('special') };
-    if (M.view === 'mode' || M.view === 'cont') {
-      if (k.up || k.down) { M.sel = 1 - M.sel; sfx('move'); }
-      else if (k.back) { close(); sfx('back'); }
-      else if (k.ok) {
-        sfx('select');
-        if (M.view === 'mode') { if (M.sel === 0) { M.view = 'pro'; M.page = 0; M.t = 0; } else { close(); G.scene = 'select'; } }
-        else { close(); if (M.sel === 0) continueSaga(); else G.continueGame(); }
-      }
-      return;
-    }
     if (M.view === 'pro') {
       M.t++;
       const len = PRO[M.page].length;
@@ -533,27 +525,6 @@
   function backdrop(ctx, col) {
     if (L && L.ui) return L.ui.backdrop(ctx, col);
     art.rect(ctx, '#05060c', 0, 0, W, H);
-  }
-  function choice(ctx, x, y, w, on1, title, sub, col) {
-    ui.panel(ctx, x, y, w, 46, on1 ? col : '#3a3d55', on1 ? 0.95 : 0.75);
-    if (on1) { ctx.globalAlpha = 0.18; art.rect(ctx, col, x + 1, y + 1, w - 2, 44); ctx.globalAlpha = 1; }
-    txt(ctx, (on1 ? '> ' : '  ') + title, x + 10, y + 8, on1 ? '#ffffff' : '#8a92b8', { scale: 2 });
-    txt(ctx, sub, x + 28, y + 30, on1 ? '#e8ecf4' : '#5a6078');
-  }
-  function drawMode(ctx) {
-    backdrop(ctx, '#b48cff');
-    txt(ctx, M.view === 'mode' ? 'NEW GAME' : 'CONTINUE', W / 2, 30, '#ffffff', { align: 'center', scale: 2 });
-    txt(ctx, M.view === 'mode' ? 'Which story?' : 'Which save?', W / 2, 52, '#8a92b8', { align: 'center' });
-    if (M.view === 'mode') {
-      choice(ctx, 60, 76, 360, M.sel === 0, 'THE HOLLOW CROWN', 'NEW  -  all 64 heroes, a story of their own for each one', '#b48cff');
-      choice(ctx, 60, 132, 360, M.sel === 1, 'THE FIRST STORY', 'Kael and Nyra\'s road, as it was first told', '#f5c542');
-    } else {
-      const s = SG.load() || {}, c = rawLoad() || {}, sh = HR[s.hero], ch = HR[c.hero];
-      const sgL = sh ? sh.name + '  -  ' + (s.saga && s.saga.ch > 6 ? 'finished' : 'chapter ' + ((s.saga && s.saga.ch) || 1) + ' of 6') + '  -  level ' + (s.level || 1) : '';
-      choice(ctx, 60, 76, 360, M.sel === 0, 'THE HOLLOW CROWN', sgL, '#b48cff');
-      choice(ctx, 60, 132, 360, M.sel === 1, 'THE FIRST STORY', ch ? ch.name + '  -  level ' + (c.level || 1) : '', '#f5c542');
-    }
-    txt(ctx, 'W / S: choose    J or Enter: select    Esc: back', W / 2, 259, '#8a92b8', { align: 'center' });
   }
   function drawPro(ctx) {
     backdrop(ctx, '#b48cff');
@@ -605,7 +576,7 @@
     }
     txt(ctx, M.confirm ? '' : 'Arrows: choose    U / I: realm    J: play    Esc: back', W / 2, 259, '#8a92b8', { align: 'center' });
   }
-  function draw(ctx) { if (M.view === 'pro') drawPro(ctx); else if (M.view === 'pick') drawPick(ctx); else drawMode(ctx); }
+  function draw(ctx) { if (M.view === 'pick') drawPick(ctx); else drawPro(ctx); }
 
   // the keys: while a screen of this file is open it owns them
   const _iu = I.update;
