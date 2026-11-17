@@ -16,10 +16,24 @@
   const fighterOf = e => (G.scene === 'vs' && e && e.isProxy && V && V.f ? V.f.find(f => f.p && Math.abs(f.p.x - e.x) < 1 && Math.abs(f.p.y - e.y) < 1 && f.p.x === e.x) || null : null);
   const slotId = (hero, slot) => { const h = HR[hero]; if (!h) return null; return slot === 'si' ? (BURST[hero] || {}).id : (h.kit || [])[slot === 'u' ? 0 : slot === 'su' ? 1 : 2]; };
 
+  // the nearest enemy ahead that is still in hit-stun: who a cancelled skill is aimed at
+  const reeling = (p, z) => { const N = SW.ninja, e = N && N.ahead ? N.ahead(p, z, 140) : null; if (!e || e.dead || e.isBoss || typeof e.stagger !== 'function') return null; const f = fighterOf(e), q = f ? f.p : e; return q && q.state === 'hurt' ? e : null; };
+  // two slow skills made into combo enders when they come out of a combo (their objects appear when the cast fires):
+  //   Vega's Heavy Star: the well stops at the target and bursts quickly; Mira's Reflection: the decoy shatters soon.
+  function quicken(h, z) {
+    z.shots.forEach(s => {
+      if (h.seen.has(s)) return; h.seen.add(s);
+      const e = h.list[0] && h.list[0].e; if (!e) return;
+      if (s.travel !== undefined && s.hold !== undefined && s.burst !== undefined && s.vx !== undefined) {   // a gravity well
+        s.travel = Math.max(2, Math.min(s.travel, Math.round(Math.abs(e.x - s.x) / Math.max(0.5, Math.abs(s.vx))))); s.hold = Math.min(s.hold, 14);
+      } else if (s.sheet && s.flip !== undefined && s.life > 40 && s.dmg !== undefined && s.vx === undefined) s.life = s.t + 28;   // a decoy
+    });
+  }
   class Hold {
-    constructor(list, n) { this.n = n; this.t = 0; this.list = list.map(e => { const f = fighterOf(e); return { e, f, hp: f ? f.state.hp : e.hp }; }); }
-    update() {
+    constructor(list, n, z, pre) { this.n = n; this.t = 0; this.seen = pre || new Set(z ? z.shots : []); this.list = list.map(e => { const f = fighterOf(e); return { e, f, hp: f ? f.state.hp : e.hp }; }); }
+    update(g, z) {
       this.t++;
+      if (this.t <= 30 && z) quicken(this, z);
       if (this.t > this.n) { this.gone = true; return; }
       this.list = this.list.filter(o => {
         const e = o.e, q = o.f ? o.f.p : e, hp = o.f ? o.f.state.hp : e.hp;
@@ -41,15 +55,16 @@
     P[name] = function () {
       const g = this.G;
       if (!g || !g.state || !g.zone) return f0.apply(this, arguments);
-      const live = this.linkLive && this.hitSet ? [...this.hitSet].filter(e => e && !e.dead && !e.isBoss && typeof e.stagger === 'function') : [];
-      const cd0 = Object.assign({}, this.cd || {});
+      let live = this.linkLive && this.hitSet ? [...this.hitSet].filter(e => e && !e.dead && !e.isBoss && typeof e.stagger === 'function') : [];
+      if (!live.length) { const e = reeling(this, g.zone); if (e) live = [e]; }   // the link flag is already off for some casts
+      const cd0 = Object.assign({}, this.cd || {}), pre = new Set(g.zone.shots);
       const r = f0.apply(this, arguments);
       if (!live.length) return r;
       const cd = this.cd || {}, slot = ['si', 'i', 'su', 'u'].find(s => (cd[s] || 0) > (cd0[s] || 0) + 2);   // the slot that was just used
       if (!slot) return r;
       const id = slotId(g.state.hero, slot), a = id && A[id];
       if (a && !(a.dmg > 0)) return r;
-      g.zone.shots.push(new Hold(live, HOLD[slot]));
+      g.zone.shots.push(new Hold(live, HOLD[slot], g.zone, pre));
       return r;
     };
   }
@@ -85,40 +100,17 @@
     }
     return r;
   };
-  // ---------- Versus only: more from the combo for the heroes whose combos paid least ----------
-  // From the Hardcore trainer's fluency report (the fifteen weakest). MELEE multiplies a hero's normals (J chain,
-  // launcher, sweep, air); SKILL multiplies one skill that connected after J J J but added little. The story is not
-  // touched. Where a hero came out too strong in the balance tournament, the move that used to carry them is trimmed
-  // (a SKILL entry below 1), so the power moves into the combo instead of being added on top.
-  const MELEE = { fenn: 1.4, corvin: 1.3, rook: 1.35, maren: 1.25, kova: 1.2, kestra: 1.2, ivo: 1.2 };
-  const SKILL = { spore_puff: 1.8, bloom_field: 1.7, chain_bolt: 1.9, thunderclap: 1.5, twin_rush: 1.6, crow_volley: 1.3, scatter: 1.5,
-    three_beasts: 1.4, tiger_pounce: 1.3, sting: 1.4, fan_gust: 1.5, element_bolt: 1.25, element_step: 1.25, element_pillar: 1.25, five_seals: 1.25 };
-  // Versus balance after the boosts (tools/versus-balance.js, each against the fifteen regular heroes, both sides, 5-6 rounds a
-  // pair): every one of these lands at 47-54%. The table in versus.js / ninjas*.js is overridden here for these heroes only.
-  if (V && V.tune) Object.assign(V.tune, { corvin: 0.5, fenn: 0.53, rook: 0.71, kestra: 0.91, apis: 0.95, ume: 1.05, itsuki: 1.18, kova: 0.8 });
-  const vs = () => G.scene === 'vs';
-  const _cm = P.comboMul; P.comboMul = function () { const k = vs() && this.G && this.G.state ? MELEE[this.G.state.hero] : 0; return _cm.call(this) * (k || 1); };
-  // the boost lasts until the cast lands: most U skills work out their damage when the cast animation fires (castFn)
-  const boost = p => (p.skMulT > 0 ? p.skMul || 1 : 1);
-  const _sm = P.specMul; P.specMul = function () { return _sm.call(this) * boost(this); };
-  if (P.skillMul) { const _km = P.skillMul; P.skillMul = function () { return _km.call(this) * boost(this); }; }
-  const _up = P.update; P.update = function () { if (this.skMulT > 0) this.skMulT--; return _up.apply(this, arguments); };
-  // the skill being cast: the same guess the game makes (S held for S+U / S+I); good enough, the bot's random S+I swap aside
-  const castId = (p, name, alt) => {
-    const h = HR[p.G.state.hero]; if (!h) return null; const kit = h.kit || [];
-    if (name === 'useSkill') return alt && p.G.has(kit[1]) ? kit[1] : kit[0];
-    if (SW.input.held('up')) return null;
-    return SW.input.held('down') ? (BURST[p.G.state.hero] || {}).id : kit[2];
-  };
-  ['useSkill', 'useSpecial'].forEach(name => {
-    const f0 = P[name];
-    P[name] = function (alt) {
-      if (!vs() || !this.G || !this.G.state) return f0.apply(this, arguments);
-      const id = castId(this, name, alt), k = id && SKILL[id];
-      this.skMul = k || 1; this.skMulT = k ? 40 : 0;
-      return f0.apply(this, arguments);
-    };
-  });
+  // ---------- air J reaches higher ----------
+  // After J J J > W+J the target goes up from higher than a launcher off the floor, and the first air J (34 px tall) passed
+  // under it: two of three air hits for 50 of 64 heroes. 46 px reach lands all three (Hardcore trainer, JJJLKAAA).
+  const AIR = SW.data.combat && SW.data.combat.air;
+  if (AIR && AIR.length === 3) { AIR[0].box = [0, -46, 32, 44]; AIR[1].box = [0, -46, 32, 44]; AIR[2].box = [0, -46, 36, 50]; }
 
-  SW.combolink = { HOLD, Hold, MELEE, SKILL };
+  // ---------- no damage boosts ----------
+  // A Versus-only damage table for the weakest heroes (MELEE / SKILL multipliers and V.tune overrides) lived here from
+  // 2026-11-16 to 2026-11-17. The user chose to remove all of it ("Remove all damage boosts"): the combo fixes in this
+  // file only change hit-stun, timing, reach and aim, never damage. The weakest heroes got smoother combo animation
+  // instead (js/combo-flow.js). Do not add damage changes here without asking the user.
+
+  SW.combolink = { HOLD, Hold };
 })();
