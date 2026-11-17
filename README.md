@@ -495,6 +495,20 @@ lands bursts in the element, bigger with each hit of the combo; and the fourth J
 flourish by element family (the same families as the ultimates). One target takes a full effect at most every 3
 frames. `SW.meleeElement.on` reports it.
 
+## Skills in every hero's element (`js/skill-element.js`)
+
+Draw-only. Skills already had the sigil and gather at the feet (js/skillfx.js), a motif per skill (js/skillanim.js),
+cast poses (js/cast-motion.js) and shot trails; what was missing was the element on the hero's hand and on the target.
+For every hero but Itsuki (his five skills each draw their own element): while a cast lasts the element gathers into
+the casting hand, which glows and sheds it, with a flash and a ring on release; every skill hit bursts in the element
+with a ring and an extra by element family (the same families as the ultimates: a bolt from above, frost shards,
+embers, a gust, grit, a splash, the dark closing in, rays, a slash), bigger for heavy, launching and knock-down hits;
+the element then clings to whoever was hit for a moment (embers rise off them, frost falls, sparks crackle, a faint
+glow sits on them); and a shot that ends on a wall or a foe pops in the element. One target takes a full contact
+effect at most every 4 frames. Tested on all 63 heroes' U, S + U, I and S + I in training: no errors, particles peaked
+at 217 of 900. Skills that are not a plain cast (a dash, for example) skip the glowing hand but keep the rest.
+`SW.skillElement.on = false` turns it off.
+
 ## Tarek's Chain Prison and Bando's rubber arm (`js/ninjas3.js`, `js/heroes4.js`)
 
 - **Tarek's ultimate shows its chains.** Eight chains lock in from different angles (the screen's edges, the ceiling and
