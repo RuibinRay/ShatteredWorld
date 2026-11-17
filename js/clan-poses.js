@@ -1,5 +1,5 @@
 'use strict';
-// Shattered Worlds — the Hidden Clans fight in stances of their own. Draw-only: no timing, hitbox, damage or state change.
+// Shattered Worlds — the Hidden Clans, and every other fighter, in stances of their own. Draw-only: no timing, hitbox, damage or state change.
 // Loaded after js/herostyle.js, js/anim2.js and js/combo-flow.js.
 // Every fighter's frames are baked from one skeleton pose set (js/art.js), so the Hidden Clans, with their own colours
 // and heads, still moved exactly like Kael (recordings/anim-report.md). Here each clan fighter's sheet is baked again
@@ -14,9 +14,12 @@
 //   pulse   both palms pushed out flat                                               Oda Vex
 //   arc     bigger cutting swings, high to low                                       Isa Sora
 //   thrust  a lunge with the arm straight out                                        Sable
+// The other fighters (the first heroes and the legends) take a style that fits how they fight (OTHER below), five
+// of them new: boxer (fists up at the chin, tight jabs: Kael, Tarn), heavy (arms low, big overhead blows: Ashka, Aldric,
+// Brann), iai (low, hand at the hilt, a deep lunge: Sen), gun (the pistol held level: Jax), bow (the full draw: Yara).
 // plus a small difference of its own for every fighter (lean, knees, elbows). anim2.js's in-between frames are baked
 // again from the same poses so the motion between them matches. Itsuki (another session's) and the ten heroes
-// js/combo-flow.js already gives poses of their own are left as they were. SW.clanPoses.on = false before the game
+// js/combo-flow.js already gives poses of their own are left as they were, and so is Bando (his rubber arm, heroes4.js). SW.clanPoses.on = false before the game
 // loads turns it off (or SW.clanPoses.restore() puts the old frames back).
 (function () {
   const SW = window.SW, art = SW && SW.art, D = SW && SW.data, N = SW && SW.ninja, HS = SW && SW.herostyle;
@@ -93,16 +96,59 @@
         else if (k === 1) Object.assign(p, { aF: 55, aFe: 0, aB: -30, lean: p.lean + 14, lF: p.lF + 10, wp: (p.wp || 0) + 35 });
       }
     },
+    boxer(p, n, k) {
+      if (n === 'idle') Object.assign(p, { aF: 80, aFe: 120, aB: 70, aBe: 125, lean: p.lean + 6, lFk: p.lFk + 10, lBk: p.lBk + 10 });
+      else if (ATK[n]) {
+        if (k === 1) Object.assign(p, { aF: c(p.aF, 80, 100), aFe: Math.min(p.aFe, 8), aB: 70, aBe: 120, lean: p.lean + 8 });
+        else if (k === 0) Object.assign(p, { aF: 75, aFe: 110, aB: 70, aBe: 125 });
+      }
+    },
+    heavy(p, n, k) {
+      Object.assign(p, { lean: p.lean + 6, lF: p.lF + 8, lB: p.lB - 8, lFk: p.lFk + 14, lBk: p.lBk + 14 });
+      if (n === 'idle') Object.assign(p, { aF: 20, aFe: 40, aB: -10, aBe: 40 });
+      else if (ATK[n]) {
+        if (k === 0) Object.assign(p, { aF: c(p.aF + 60, 100, 175), aFe: 30 });
+        else if (k === 1) Object.assign(p, { aF: c(p.aF - 20, 40, 100), aFe: 10, lean: p.lean + 12 });
+      }
+    },
+    iai(p, n, k) {
+      if (n === 'idle') Object.assign(p, { aF: 25, aFe: 100, aB: 15, aBe: 90, lean: p.lean + 12, lF: p.lF + 10, lB: p.lB - 10, lFk: p.lFk + 20, lBk: p.lBk + 20 });
+      else if (ATK[n]) {
+        if (k === 0) Object.assign(p, { aF: 20, aFe: 100, lean: p.lean + 14 });
+        else if (k === 1) Object.assign(p, { aF: 95, aFe: 0, aB: -40, aBe: 10, lean: p.lean + 18, lF: p.lF + 16, lB: p.lB - 16 });
+      }
+    },
+    gun(p, n, k) {
+      if (n === 'idle') Object.assign(p, { aF: 60, aFe: 30, aB: 10, aBe: 40 });
+      else if (ATK[n]) {
+        if (k === 1) Object.assign(p, { aF: 92, aFe: 0, aB: 30, aBe: 60, lean: p.lean - 4 });
+        else if (k === 0) Object.assign(p, { aF: 70, aFe: 20 });
+      }
+    },
+    bow(p, n, k) {
+      if (n === 'idle') Object.assign(p, { aF: 40, aFe: 20, aB: 30, aBe: 60, lean: p.lean - 2 });
+      else if (ATK[n]) {
+        if (k === 0) Object.assign(p, { aF: 90, aFe: 0, aB: 85, aBe: 140 });
+        else if (k === 1) Object.assign(p, { aF: 92, aFe: 0, aB: 80, aBe: 165, lean: p.lean - 6 });
+      }
+    },
     thrust(p, n, k) {
       if (n === 'idle') Object.assign(p, { aF: 60, aFe: 20, aB: 40, aBe: 50 });
       else if (ATK[n] && k === 1) Object.assign(p, { aF: 92, aFe: 0, aB: 78, aBe: 15, lean: p.lean + 12, lF: p.lF + 10, lB: p.lB - 14 });
     }
   };
+  const OTHER = {
+    kael: 'boxer', tarn: 'boxer', ashka: 'heavy', aldric: 'heavy', brann: 'heavy', sen: 'iai', jax: 'gun', yara: 'bow',
+    nyra: 'arc', noct: 'arc', isolde: 'thrust', brakk: 'stomp', pyra: 'palm', orin: 'palm', gale: 'spiral',
+    dyna: 'fan', mira: 'fan', kiri: 'fan', vesper: 'claw', ferra: 'claw', maren: 'wave', vega: 'pulse', tessa: 'cross'
+  };
+  CP.OTHER = OTHER;
+  const styleOf = hero => (HS && HS.SWING && HS.SWING[hero]) || OTHER[hero];
   const NAMES = ['idle', 'a1', 'a2', 'a3', 'a4', 'b1', 'b2', 'b3', 'b4', 'launcher', 'sweep', 'air', 'cast', 'special'];
   const TWEEN = ['a1', 'a2', 'a3', 'a4', 'b1', 'b2', 'b3', 'b4', 'launcher', 'sweep', 'air', 'cast', 'special'];
   const mix = (a, b, t) => { const o = {}; new Set(Object.keys(a).concat(Object.keys(b))).forEach(k => { const x = a[k], y = b[k]; o[k] = typeof x === 'number' && typeof y === 'number' ? x + (y - x) * t : (t < 0.5 ? (x !== undefined ? x : y) : (y !== undefined ? y : x)); }); return o; };
   function posesFor(hero) {
-    const style = STYLE[HS && HS.SWING && HS.SWING[hero]], seed = hash(hero), v = (i, amt) => Math.round((rnd(seed, i) - 0.5) * 2 * amt);
+    const style = STYLE[styleOf(hero)], seed = hash(hero), v = (i, amt) => Math.round((rnd(seed, i) - 0.5) * 2 * amt);
     if (!style) return null;
     const out = {};
     NAMES.forEach(n => {
@@ -141,10 +187,10 @@
   function pump() {
     if (!CP.on) return;
     const t0 = performance.now();
-    for (const hero of N.IDS) {
+    for (const hero of N.IDS.concat(Object.keys(OTHER))) {
       if (SKIP[hero] || !D.heroes[hero]) continue;
       const h = D.heroes[hero];
-      for (const id of [h.sheet, h.sheetAw]) {
+      for (const id of [h.sheet, h.sheetAw, h.sheetArmed]) {
         if (!id || !art.sheets[id]) continue;
         const done = CP.styled[id];
         if (done && done.img === art.sheets[id].img) continue;

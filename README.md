@@ -441,7 +441,7 @@ kept but alternates between its hit and follow-through frames when held long. Me
 skill and ultimate, every frame drawn): moves held on one pose 30+ frames went from 46 to 7 (with js/ult-motion.js),
 and skill pairs drawn with exactly the same poses from 79 to 7. `SW.castMotion.on = false` turns it off.
 
-## The Hidden Clans in stances of their own (`js/clan-poses.js`)
+## Every fighter in a stance of their own (`js/clan-poses.js`)
 
 Draw-only. The Hidden Clans had their own colours and heads but moved exactly like Kael (one shared skeleton pose set).
 Each clan fighter's frames are now baked from poses bent to their fighting style (the swing js/herostyle.js gives them):
@@ -449,7 +449,11 @@ palm (open-handed strikes from a low stance), claw (hunched, raking), fan (wound
 lash), stomp (wide and low, stamping kicks), spiral (body twisting, high kicks), cross (both arms together), pulse (both
 palms out), arc (big cutting swings) and thrust (a lunge), with a small difference of its own for every fighter, idle
 stances included; launchers, sweeps and air hits keep their direction. anim2.js's in-between frames are baked from the
-same poses. 29 fighters: Itsuki and the ten heroes js/combo-flow.js already restyles are left as they were.
+same poses. The other fighters (the first heroes and the legends) take the style that fits how they fight, five of them new:
+boxer (fists up at the chin: Kael, Tarn), heavy (arms low, big overhead blows: Ashka, Aldric, Brann), iai (low, hand
+at the hilt, a deep lunge: Sen), gun (the pistol held level: Jax) and bow (the full draw: Yara); the rest reuse the clan
+styles (Nyra and Noct arc, Isolde thrust with her staff, Brakk stomp, and so on). 52 fighters in all; Itsuki, Bando (his
+rubber arm, js/heroes4.js) and the ten heroes js/combo-flow.js already restyles are left as they were.
 `SW.clanPoses.restore()` puts the old frames back.
 
 ## The Versus entrance (`js/vsintro.js`)
