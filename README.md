@@ -467,6 +467,15 @@ Garo (silver knight), Kova (orange, dark stripes), Taro (black mawashi), Rue (re
 ninja), and the darker skin of Vega, Apis and Ryo. The other heroes already matched. Colours only; stances
 (js/clan-poses.js) stay on top. Itsuki and Bando are left as they are.
 
+## No frozen fighters between moves (`js/hold-motion.js`)
+
+Draw-only. Measured with every frame drawn in Nightmare and Hard matches, the poses still held one frame for half a
+second or more were a hurt or stunned fighter (344 times, up to 3 seconds), a held guard (43 times) and the power-up (26
+times). Now every hit lands with a short shake, a stunned fighter sways once the hit reaction is over (slumping
+forward now and then), a held guard breathes and shifts its weight, and the power-up gathers before the cheer: hurt
+holds went from 344 to 12 (none over 41 frames) and guard holds from 43 to 1. Itsuki is left as he is.
+`SW.holdMotion.on = false` turns it off.
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
