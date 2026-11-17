@@ -29,7 +29,17 @@
   const DEF = { space: 78, poke: 0.3, charge: 1, slip: 1, ultIn: 1, throwR: 30, wait: 0, ultOpen: 170 };
   // switches for testing each piece of play against the others (all on in the game)
   // stepIn (walk to 22 px before a stun punish) is off: in tests it gave the opponent time to recover (health left 80% vs 85%)
-  HC.opt = { airOpen: true, juggleWait: true, stepIn: false, whiff: true, ultPulse: true };   // ultPulse off (hold the guard through an ultimate) did worse in tests
+  HC.opt = { airOpen: true, juggleWait: true, stepIn: false, whiff: true, ultPulse: true, mirrorShow: true };
+  // MIRROR SHOW: when both fighters are Nightmare bots (Bot vs Bot), two perfect defenders never gave each other an opening:
+  // no hits landed, both charged far apart and traded blocked ultimates until the clock ran out. In a mirror only, each
+  // one defends like a person (an attack is perfect-blocked about half the time, plainly blocked or missed otherwise, a
+  // throw broken half the time) and plays a real neutral game (rushes in with strings, jumps in, pokes with every skill,
+  // feints, throws, backs off after being blocked; charges only in short bursts; saves the ultimate for an opening).
+  // Against Hard bots and players nothing changes. HC.MIR holds the knobs.
+  // still: frames the opponent may stand still before an attack is due (2-3 s); attackIn: when it comes after that (1-3 s)
+  // boss: heroes the mirror show never softens (Itsuki, the strongest by design: in a mirror he still blocks every hit
+  // frame-perfect and breaks every throw, while he plays the same active game)
+  const MIR = HC.MIR = { miss: 0.15, plain: 0.3, breakT: 0.5, still: [120, 180], attackIn: [60, 180], boss: { itsuki: 1 } };   // ultPulse off (hold the guard through an ultimate) did worse in tests
   HC.params = hero => Object.assign({}, DEF, HC.data.params[hero] || {});
 
   // ================= reading the opponent =================
@@ -109,7 +119,7 @@
     X: { key: 'special', mod: 'up' }, T: { key: 'attack', also: 'dash' }
   };
   HC.TOK = TOK;
-  HC.notation = r => r.split('').map(c => ({ J: 'J', A: 'J', L: 'W+J', W: 'S+J', K: 'K', U: 'U', u: 'S+U', I: 'I', i: 'S+I', X: 'W+I', T: 'J+L' })[c]).reduce((s, t, i, a) => {
+  HC.notation = r => r.split('').map(c => ({ J: 'J', A: 'J', L: 'W+J', W: 'S+J', K: 'K', U: 'U', u: 'S+U', I: 'I', i: 'S+I', X: 'W+I', T: 'J+L', F: 'STEP' })[c]).reduce((s, t, i, a) => {
     const prev = r[i - 1], c = r[i];
     const sep = i === 0 ? '' : (c === 'K' || prev === 'K') ? ' > ' : (/[UuIiX]/.test(c) ? ' > ' : ' ');
     return s + sep + t;
@@ -144,6 +154,18 @@
     while (h.r) {
       const tk = h.r[h.ri];
       if (!tk) { h.r = null; h.tk = null; return false; }
+      // F: step back into reach (a hit that pushed the target away, as Itsuki's Thunder Palm does, leaves it stunned
+      // long enough to walk in for the next J)
+      if (tk === 'F') {
+        const o = V.f && V.f.find(x => x && x !== f), q = o && o.p, gap = q ? Math.abs(q.x - p.x) : 0;
+        if (!h.tk) h.tk = { n: 0, w: 0 };
+        const dir = q && q.x > p.x ? 'right' : 'left', faces = q && p.face === (q.x > p.x ? 1 : -1);
+        if (FREE[p.state] || p.state === 'dash') h.tk.n++; else h.tk.w++;
+        if (p.state === 'dash' && h.tk.n < 30) return true;   // let a dash run out (a J pressed in a dash comes out as a dash attack)
+        if (!q || (gap <= reachOf(p) - 6 && faces && p.onGround) || h.tk.n > 30 || h.tk.w > 40) { h.ri++; h.tk = null; continue; }
+        if (FREE[p.state]) { k[dir] = true; if (gap > reachOf(p) + 24 && h.tk.n <= 2 && !h.tk.d) { k.dash = true; h.tk.d = 1; } }   // a wide gap: one dash in (walking let the stun run out)
+        return true;
+      }
       const T = TOK[tk];
       if (!T) { h.ri++; continue; }
       if (!h.tk) h.tk = { n: 0, b: sig(p, S) };
@@ -157,6 +179,85 @@
     return false;
   }
   HC.start = (f, r) => { const h = f.hc || (f.hc = {}); h.r = r; h.ri = 0; h.tk = null; h.whiffT = 0; };
+
+  // ================= the mirror show: a neutral game for Nightmare against Nightmare =================
+  const SLOTKEYS = { u: ['skill'], su: ['skill', 'down'], i: ['special'], si: ['special', 'down'] };
+  const SLOTNAME = { u: 'U', su: 'S+U', i: 'I', si: 'S+I' };
+  function mirrorPlay(f, o, k, h, c) {
+    const { p, q, S, adx, to, away, facing, reach, cd, say, prm } = c, now = V.t;
+    const wallBehind = away === 'left' ? p.x < 40 : p.x > V.zone.pw - 40;
+    // in the air from a jump-in: drift in and strike on the way down
+    if (!p.onGround) {
+      if (h.plan && h.plan.a === 'jumpin') { k[to] = true; if (p.vy > -1 && adx < 60 && h.t % 2) k.attack = true; say('JUMP IN'); return true; }
+      return false;
+    }
+    // nobody turtles: once the opponent has stood still (idle or holding guard) for 2-3 seconds, attack at a random
+    // moment within the next 1-3 seconds (a string or a throw up close, a rush or a jump-in from further out)
+    const qStill = q.onGround && (q.state === 'idle' || q.state === 'guard') && Math.abs(q.vx || 0) < 0.5;
+    if (!qStill) { h.qs = 0; h.qsDue = 0; }
+    else {
+      h.qs = (h.qs || 0) + 1;
+      if (h.qs === 1) h.qsTrig = MIR.still[0] + (Math.random() * (MIR.still[1] - MIR.still[0]) | 0);
+      if (h.qs >= h.qsTrig && !h.qsDue) h.qsDue = now + MIR.attackIn[0] + (Math.random() * (MIR.attackIn[1] - MIR.attackIn[0]) | 0);
+      if (h.qsDue && now >= h.qsDue) {
+        const r = Math.random();
+        h.plan = { a: adx < 52 ? (r < 0.65 ? 'string' : 'throw') : (r < 0.6 ? 'rush' : 'jumpin'), t0: now, until: now + 60 };
+        h.qs = 0; h.qsDue = 0; h.chg = 99; say('IT WAITED - ATTACK');
+      }
+    }
+    // a boss builds the bar for its one-opening KO (Itsuki: step in and J > I four times, 491 damage, 120 energy: the game's juggle limit, enough to KO anyone from full) before going in
+    if (MIR.boss[f.hero] && S.energy < 120 && adx > 110 && !h.qsDue) { k.attack = true; k.jump = true; say('CHARGE FOR THE KILL'); return true; }
+    // energy: only short bursts of charging, and only when far apart and low
+    if (adx > 150 && S.energy < 120 && (h.chg || 0) < 45) { h.chg = (h.chg || 0) + 1; k.attack = true; k.jump = true; say('CHARGE (SHORT)'); return true; }
+    if (adx <= 150 || S.energy >= 120) h.chg = 0;
+    if (q.state === 'guard' && h.lastA === 'hit' && !h.blockedT) h.blockedT = now;   // what we threw was blocked
+    let pl = h.plan;
+    if (!pl || now > pl.until) {
+      const r = Math.random(), close = adx < 52, blocked = h.blockedT && now - h.blockedT < 40;
+      let a;
+      if (blocked && !wallBehind && r < 0.6) a = 'back';
+      else if (adx > 130) a = r < 0.8 ? 'approach' : 'poke';
+      else if (close) a = r < 0.45 ? 'string' : r < 0.7 ? 'throw' : r < 0.85 ? 'poke' : 'back';
+      else a = r < 0.3 ? 'rush' : r < 0.5 ? 'jumpin' : r < 0.72 ? 'poke' : r < 0.86 ? 'feint' : 'ready';
+      pl = h.plan = { a, t0: now, until: now + ({ approach: 50, feint: 26, ready: 10 + (Math.random() * 16 | 0), back: 16 })[a] || 40 };
+      h.blockedT = 0; h.lastA = null;
+    }
+    const t = now - pl.t0;
+    if (!facing && pl.a !== 'back') { k[to] = true; return true; }
+    switch (pl.a) {
+      case 'approach': k[to] = true; if (adx > 170 && h.t % 12 === 0) k.dash = true; say('MOVE IN'); return true;
+      case 'rush': case 'string': {
+        if (adx > reach + 2) { k[to] = true; if (adx > reach + 30 && h.t % 2) k.dash = true; say('RUSH IN'); if (t > 60) pl.until = now; return true; }
+        const free = (HC.data.routes[f.hero] || []).filter(x => x.cost === 0 && !/[TX]/.test(x.r)).sort((a, b) => b.dmg - a.dmg)[0];
+        const r = MIR.boss[f.hero] ? 'J' : free ? free.r : 'JJJ';   // a boss throws one J: if it lands, the confirm starts its one-opening chain
+        HC.start(f, r); h.mr = 26; h.lastA = 'hit'; runRoute(f, k); pl.until = now; say('STRING  ' + HC.notation(r)); return true;
+      }
+      case 'jumpin': if (t < 3) { k.jump = true; k[to] = true; say('JUMP IN'); return true; } pl.until = now; return false;
+      case 'poke': {
+        const slots = ['u', 'su', 'i', 'si'], start = (h.pk = ((h.pk || 0) + 1) % 4);
+        for (let n = 0; n < 4; n++) {
+          const sl = slots[(start + n) % 4];
+          if (cd[sl] > 0 || S.energy < (sl === 'u' ? 25 : sl === 'si' ? 100 : 50)) continue;
+          HC.start(f, ({ u: 'U', su: 'u', i: 'I', si: 'i' })[sl]); h.mr = 12; h.lastA = 'hit'; runRoute(f, k);
+          pl.until = now; say('POKE ' + SLOTNAME[sl]); return true;
+        }
+        pl.a = adx > reach + 6 ? 'rush' : 'string'; return true;   // nothing ready: go in instead
+      }
+      case 'feint': if (t < 12) { k[to] = true; say('FEINT IN'); } else { k[away] = true; say('FEINT OUT'); } return true;
+      case 'throw':
+        if (adx > prm.throwR) { k[to] = true; if (t > 40) pl.until = now; say('IN FOR A THROW'); return true; }
+        HC.start(f, 'T'); h.mr = 8; runRoute(f, k); pl.until = now; say('THROW'); return true;
+      case 'back': if (wallBehind) { pl.until = now; return false; } k[away] = true; if (t < 2) k.dash = true; say('BACK OFF'); return true;
+      case 'ready': say('READY'); return true;
+    }
+    return false;
+  }
+  // throws in a mirror are broken only part of the time (js/throw.js asks V.breakChance)
+  const _bc = V.breakChance;
+  if (_bc) V.breakChance = function (f) {
+    const o = V.f && V.f.find(x => x && x !== f);
+    return HC.opt.mirrorShow && f && o && f.bot && o.bot && HC.is(f) && HC.is(o) && !MIR.boss[f.hero] ? MIR.breakT : _bc.apply(this, arguments);
+  };
 
   // ================= the brain =================
   function think(f, o, k) {
@@ -175,11 +276,15 @@
 
     // hit: slip out of the combo (S + L) if the bar allows and it is not our own route that got interrupted by a trade
     if (p.state === 'hurt') {
-      if (prm.slip && S.energy >= 60 && !(f.stunT > 0) && !open) { k.down = true; if (h.t % 2) k.dash = true; say('HIT - SLIP OUT'); }
+      h.mr = 0; h.plan = null;
+      // (in the mirror show nobody slips out of a boss's combo: Itsuki's chain is meant to finish)
+      const bossCombo = HC.opt.mirrorShow && o.bot && HC.is(o) && MIR.boss[o.hero];
+      if (prm.slip && !bossCombo && S.energy >= 60 && !(f.stunT > 0) && !open) { k.down = true; if (h.t % 2) k.dash = true; say('HIT - SLIP OUT'); }
       else say('HIT');
       h.r = null; return;
     }
     const th = threat(f, o), canGuard = p.onGround && (FREE[p.state] || p.state === 'guard'), cd = p.cd || {};
+    const mirror = HC.opt.mirrorShow && o.bot && HC.is(o);
     // a ring of blades around the opponent (Ferra's Scrap Halo, I: four blades orbiting 36 px out for six seconds): anyone
     // inside is cut and interrupted every 14 frames, so a combo into it breaks. A route that is not a throw stops
     const aura = o.shots.find(s => s.isHalo && !s.gone && (s.t || 0) < 352);
@@ -187,7 +292,7 @@
     // A whiff punish starts before the target is hurt: give its first hit time to land (the target still recovering, or a
     // few frames), then it needs the target open like any other route
     if (h.r && h.whiffT > 0) { h.whiffT--; if (open) h.whiffT = 0; }
-    const opening = open || (h.whiffT > 0 && (recovery(q) > 0 || q.state === 'hurt'));
+    const opening = open || (h.whiffT > 0 && (recovery(q) > 0 || q.state === 'hurt')) || (h.mr > 0 && h.mr-- > 0);
     if (h.r) {
       if (opening && !(th.src === 'shot' && th.t <= 3 && canGuard) && !(aura && h.r !== 'T')) { if (runRoute(f, k)) { say('COMBO  ' + HC.notation(h.r) + '  [' + Math.min(h.ri + 1, h.r.length) + '/' + h.r.length + ']'); return; } }
       else { h.r = null; h.tk = null; say(q.state === 'slip' ? 'IT SLIPPED OUT - DEFEND' : 'COMBO DROPPED'); }
@@ -202,7 +307,15 @@
     }
     if (p.riposteT > 0) { say('COUNTER READY'); return; }
     // defence, frame-perfect (a helpless opponent can still have a shot or a summon in the air)
-    if (th.t <= 4 && (!open || th.src === 'shot' || th.src === 'thing')) {
+    // MIRROR: a read on each attack as it comes: perfect (as below), a plain block (guard raised early, so it blocks but
+    // does not stun), or a miss (no guard: the hit lands)
+    let mirrorMiss = false;
+    if (mirror && !MIR.boss[f.hero] && canGuard && !th.grab && !th.ub && th.t <= 12 && !open) {
+      if (!h.gdec || V.t > h.gdec.until) { const r = Math.random(); h.gdec = { mode: r < MIR.miss ? 'miss' : r < MIR.miss + MIR.plain ? 'plain' : 'perfect', until: V.t + th.t + 8 }; }
+      if (h.gdec.mode === 'plain') { k.down = true; say('GUARD'); return; }
+      if (h.gdec.mode === 'miss') mirrorMiss = true;
+    }
+    if (!mirrorMiss && th.t <= 4 && (!open || th.src === 'shot' || th.src === 'thing')) {
       if (th.grab || th.ub) {
         // COUNTER 2: a grab or an unblockable that starts slowly is hit first (a counter-hit cancels it); else get away
         if (th.src === 'body' && th.t >= first + 1 && adx <= reach && canGuard) { if (!facing) { k[to] = true; return; } HC.start(f, 'J'); runRoute(f, k); say('COUNTER-HIT (' + (th.grab ? 'grab' : 'unblockable') + ')'); return; }
@@ -264,6 +377,7 @@
     if (S.awaken >= 100 && p.awakeT <= 0 && adx > 90 && th.t > 30) { k.awaken = h.t % 2 === 1; say('POWER UP'); return; }
     // neutral: hold the spacing, charge the bar from a distance, poke with the first skill
     // stay out of the reach of a power-up burst (it knocks back anyone within 70) while the opponent has one ready
+    if (mirror && th.t > 6 && !open && FREE[p.state] && mirrorPlay(f, o, k, h, { p, q, S, adx, to, away, facing, reach, cd, say, prm })) return;
     if (burstUp && adx < 88 && !open) { const wall = away === 'left' ? p.x < 40 : p.x > V.zone.pw - 40; if (!wall) { k[away] = true; if (adx < 60 && h.t % 2) k.dash = true; say('KEEP AWAY FROM ITS BURST'); return; } }
     // PRESSURE (a play-style option, off unless a hero's tuned params turn it on): against an opponent that only waits
     // (another Nightmare, for one), a round ends on the clock and goes to whoever has more health left, so landing
@@ -277,7 +391,7 @@
       if (h.t % 2) { k.skill = true; k.down = true; }
       say('GRAB - CANNOT BE BLOCKED'); return;
     }
-    if (prm.ultOpen && FREE[p.state] && p.onGround && (S.energy >= 300 || (p.awakeT > 0 && S.energy >= 100)) && adx < prm.ultOpen && th.t > 8) {
+    if (prm.ultOpen && !mirror && FREE[p.state] && p.onGround && (S.energy >= 300 || (p.awakeT > 0 && S.energy >= 100)) && adx < prm.ultOpen && th.t > 8) {
       if (!facing) { k[to] = true; return; }
       HC.start(f, 'X'); runRoute(f, k); say('ULTIMATE - PRESSURE'); return;
     }
