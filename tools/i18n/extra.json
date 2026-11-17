@@ -723,5 +723,8 @@
   "A different stage every match.": { "es": "Un escenario distinto en cada combate.", "zh": "每场比赛换一个场地。" },
   "A / D: change stage": { "es": "A / D: cambiar escenario", "zh": "A / D：切换场地" },
   "Picture": { "es": "Imagen", "zh": "画面" },
-  "slow": { "es": "lenta", "zh": "卡顿" }
+  "slow": { "es": "lenta", "zh": "卡顿" },
+  "H: hazards on": { "es": "H: peligros activados", "zh": "H：机关开启" },
+  "H: hazards off": { "es": "H: peligros desactivados", "zh": "H：机关关闭" },
+  "Hazards off: the layout only.": { "es": "Sin peligros: solo el escenario.", "zh": "机关已关闭：只保留场地布局。" }
 }

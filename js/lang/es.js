@@ -4596,5 +4596,8 @@ SW.i18n.add('es', {
   "A different stage every match.": "Un escenario distinto en cada combate.",
   "A / D: change stage": "A / D: cambiar escenario",
   "Picture": "Imagen",
-  "slow": "lenta"
+  "slow": "lenta",
+  "H: hazards on": "H: peligros activados",
+  "H: hazards off": "H: peligros desactivados",
+  "Hazards off: the layout only.": "Sin peligros: solo el escenario."
 });

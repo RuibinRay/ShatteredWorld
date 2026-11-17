@@ -523,7 +523,9 @@ jump up onto them, stand and fight on them, drop through with S + K. Each has a 
     chains slam down on them (13, through a guard, knocks down). Step aside.
 
 They are in the Stage list (and Random). While the Stage row is chosen in the Versus menu, the help panel shows a small
-picture of the stage and a line on what it does (versus.js shares its menu rows as `V.menuRows` for this). The bots use them: they climb to a platform when their foe is above, sometimes on
+picture of the stage and a line on what it does (versus.js shares its menu rows as `V.menuRows` for this). On a stage with a
+twist, H there turns the hazards off or on (kept with the profile): off keeps the layout and the lifts, and stops the
+train, gravity shifts, the Engine's turns, cracking glass, the gale, the roots and rootlight, and the chains. The bots use them: they climb to a platform when their foe is above, sometimes on
 their own, and drop down after a foe below. They also get off the floor when the train or the rootlight is coming, and step out from under the Crown's marks: an Easy bot notices
 the warning about half the time, Normal three times in four, Hard always.
 Tested: all 64 Versus heroes in bot matches across the six stages, and a 3 vs 3, with no errors. The bots spend 13 to

@@ -18,7 +18,10 @@
 (function () {
   const SW = window.SW, G = SW.game, V = SW.versus, art = SW.art, fx = SW.fx, I = SW.input, T = 16, W = SW.W;
   if (!V || !V.STAGES || !SW.zones || !SW.zones.versus || !SW.move) return;
-  const ST = SW.stages = { on: true };
+  // on: the twists run. Off (H on the Versus menu's Stage row, kept in the profile): the layouts stay, lifts still ride
+  // and the Engine's plates stay where they start, but no train, gravity shift, gale, rootlight, chains, cracking glass
+  // or withering root
+  const ST = SW.stages = { on: !(SW.profile && SW.profile.stageHazOff) };
   const FLOOR = 14 * T, GRAV = SW.GRAV || 0.42;
   const ease = k => k < 0 ? 0 : k > 1 ? 1 : k * k * (3 - 2 * k);
   const sp = (x, y, w, kind, o) => Object.assign({ x: x * T, y: y * T, w: w * T, kind, alive: true, vy: 0 }, o || {});
@@ -173,7 +176,7 @@
     for (const p of s.plats) {
       const ox = p.x, oy = p.y;
       if (p.kind === 'lift') { p.y = Math.round((8.5 + 4 * Math.sin(s.t * 0.012 + p.phase)) * T); }
-      if (p.kind === 'glass') glass(p, s);
+      if (p.kind === 'glass' && ST.on) glass(p, s);
       if (p.kind === 'root') root(p, s, fight);
       p.vy = p.y - oy;
       if (p.x !== ox || p.y !== oy) carry(p, p.x - ox, p.y - oy);
@@ -526,8 +529,26 @@
     const twist = !id ? 'A different stage every match.' : TWIST[id] || 'Flat ground, no tricks.';
     const tw = tr(twist), cjk = SW.i18n && SW.i18n.cjk && SW.i18n.cjk();
     (cjk ? (tw.match(/.{1,21}/g) || []) : wrap(tw, 44)).forEach((l, i) => SW.text(ctx, l, tx, py + 26 + i * 11, '#ffffff', { raw: true }));
-    SW.text(ctx, 'A / D: change stage', tx, py + ph - 8, '#8a92b8');
+    if (id && TWIST[id] && id !== 'sw_noble') {   // a stage with a twist: the hazards switch
+      SW.text(ctx, tr('A / D: change stage') + '    ' + tr(ST.on ? 'H: hazards on' : 'H: hazards off'), tx, py + ph - 8, '#8a92b8', { raw: true });
+      if (!ST.on) SW.text(ctx, 'Hazards off: the layout only.', tx, py + ph - 20, '#ffb020');
+    } else SW.text(ctx, 'A / D: change stage', tx, py + ph - 8, '#8a92b8');
   }
+  function stageRowChosen() { return G.scene === 'vs' && V.phase === 'menu' && V.menuRows && V.menuRows()[V.row] === 'stage'; }
+  // H on the Stage row turns the hazards on or off (read from the raw key, on its press)
+  let hWas = false;
+  const _vu2 = V.update; V.update = function () {
+    const h = !!I.raw.KeyH;
+    if (h && !hWas && stageRowChosen()) {
+      const st = V.STAGES[V.stage];
+      if (st && TWIST[st[1]] && st[1] !== 'sw_noble') {
+        ST.on = !ST.on; SW.audio.sfx('select');
+        if (SW.profile) { SW.profile.stageHazOff = !ST.on; if (SW.saveProfile) SW.saveProfile(); }
+      }
+    }
+    hWas = h;
+    return _vu2.apply(this, arguments);
+  };
   const _vd = V.draw; V.draw = function (ctx) {
     _vd.apply(this, arguments);
     if (G.scene === 'vs' && V.phase === 'menu' && V.menuRows && V.menuRows()[V.row] === 'stage') drawPreview(ctx);

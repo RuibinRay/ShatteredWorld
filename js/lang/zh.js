@@ -4596,5 +4596,8 @@ SW.i18n.add('zh', {
   "A different stage every match.": "每场比赛换一个场地。",
   "A / D: change stage": "A / D：切换场地",
   "Picture": "画面",
-  "slow": "卡顿"
+  "slow": "卡顿",
+  "H: hazards on": "H：机关开启",
+  "H: hazards off": "H：机关关闭",
+  "Hazards off: the layout only.": "机关已关闭：只保留场地布局。"
 });
