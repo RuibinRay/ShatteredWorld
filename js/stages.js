@@ -58,7 +58,7 @@
     const d = DEF[z.theme];
     if (!d) return;
     d.tiles(z);
-    z.sw = { id: z.theme, d, plats: d.plats ? d.plats() : [], t: 0, key: null };
+    z.sw = { id: z.theme, d, plats: d.plats ? d.plats() : [], t: 0, key: null, push: 0 };
     z.decor.push({ kind: 'swstage', x: (z.w * T) / 2 });   // draws the stage's own platforms and the train (behind the fighters)
   };
 
@@ -482,8 +482,55 @@
     art.rect(ctx, '#fff3c0', head - (d > 0 ? 3 : 0), fy - 20, 3, 6); art.glow(ctx, head + d * 20, fy - 17, 40, '#fff3c0', 0.3);   // the headlight
     for (let i = 0; i < 4; i++) art.rect(ctx, '#ffffff', head - d * (TRAIN_LEN + 10 + i * 18), fy - 30 + i * 7, 12, 1);         // wind behind it
   }
+  // ================= the Versus menu: while the Stage row is chosen, a picture of the stage and what it does =================
+  const TWIST = {
+    sw_noble: 'Two low platforms and one high one. No tricks.',
+    sw_skylift: 'Two cargo lifts ride up and down, carrying whoever stands on them.',
+    sw_ballast: 'Now and then gravity drops: everyone floats, and the top decks come within reach.',
+    sw_glass: 'Glass platforms crack under whoever stands on them, shatter, and grow back.',
+    sw_zero: 'After a warning, a train crosses the floor: get up on a platform.',
+    sw_engine: 'Every fifteen seconds the Engine turns, and its plates slide into a new layout.',
+    sw_tether: 'A gale blows across the field and pushes everyone, jumps most of all.',
+    sw_roots: 'Root platforms wither and grow back. Rootlight floods the floor: get off it.',
+    sw_crown: 'The Crown marks spots on the ground, and chains slam down on them. Step aside.'
+  };
+  const pv = { id: undefined, zone: null, can: null, ctx: null };
+  function previewZone(id) {   // built once per stage shown (the same arena the match builds), kept while it stays chosen
+    if (pv.id === id) return pv.zone;
+    pv.id = id; pv.zone = null;
+    const zv = SW.zones.versus, keep = zv.theme;
+    try { zv.theme = art.themes[id] ? id : 'arena'; pv.zone = new SW.Zone('versus', G); } catch (e) { pv.zone = null; } finally { zv.theme = keep; }
+    return pv.zone;
+  }
+  function wrap(s, n) { const out = []; let line = ''; for (const w of s.split(' ')) { if (line && (line + ' ' + w).length > n) { out.push(line); line = w; } else line = line ? line + ' ' + w : w; } if (line) out.push(line); return out; }
+  function drawPreview(ctx) {
+    const st = V.STAGES[V.stage]; if (!st) return;
+    const id = st[1], x = 28, y = 154, w = 432, h = 88, pw = 144, ph = 81, px = x + 4, py = y + 4;
+    art.rect(ctx, '#0b0c1c', x, y, w, h); SW.ui.panel(ctx, x, y, w, h, '#3a3d55', 0.95);   // over the controls help while this row is chosen
+    if (id) {
+      const z = previewZone(id);
+      if (!pv.can) { const c = SW.canvas(W, SW.H); pv.can = c[0]; pv.ctx = c[1]; }
+      if (z) {
+        const fl = fx.list; fx.list = [];   // the last match's sparks are not part of the stage
+        try { z.draw(pv.ctx, { x: Math.max(0, (z.pw - W) / 2), y: Math.max(0, z.ph - SW.H) }, { player: null }); } catch (e) { /* a picture is a nicety */ } finally { fx.list = fl; }
+        ctx.save(); ctx.imageSmoothingEnabled = true; ctx.drawImage(pv.can, px, py, pw, ph); ctx.restore();
+      }
+    } else {
+      art.rect(ctx, '#1c2034', px, py, pw, ph);
+      SW.text(ctx, '?', px + pw / 2, py + ph / 2 - 10, '#f5c542', { align: 'center', scale: 3 });
+    }
+    outline(ctx, px - 1, py - 1, pw + 2, '#8a92b8'); art.rect(ctx, '#8a92b8', px - 1, py + ph, pw + 2, 1); art.rect(ctx, '#8a92b8', px - 1, py, 1, ph); art.rect(ctx, '#8a92b8', px + pw, py, 1, ph);
+    const tx = px + pw + 10;
+    const tr = SW.i18n && SW.i18n.tr ? SW.i18n.tr : s => s, name = tr(st[0]);
+    SW.text(ctx, name, tx, py + (name.length > 21 ? 8 : 4), '#f5c542', { scale: name.length > 21 ? 1 : 2, raw: true });   // a long name in small type, so it fits
+    const twist = !id ? 'A different stage every match.' : TWIST[id] || 'Flat ground, no tricks.';
+    const tw = tr(twist), cjk = SW.i18n && SW.i18n.cjk && SW.i18n.cjk();
+    (cjk ? (tw.match(/.{1,21}/g) || []) : wrap(tw, 44)).forEach((l, i) => SW.text(ctx, l, tx, py + 26 + i * 11, '#ffffff', { raw: true }));
+    SW.text(ctx, 'A / D: change stage', tx, py + ph - 8, '#8a92b8');
+  }
   const _vd = V.draw; V.draw = function (ctx) {
     _vd.apply(this, arguments);
+    if (G.scene === 'vs' && V.phase === 'menu' && V.menuRows && V.menuRows()[V.row] === 'stage') drawPreview(ctx);
     const s = V.zone && V.zone.sw;
     if (G.scene !== 'vs' || !s || !s.banner || V.phase === 'menu' || V.phase === 'pick') return;
     const b = s.banner, a = Math.min(1, b.t / 15, (b.max - b.t) / 8);

@@ -351,6 +351,11 @@ or 3 vs 3): the host is Player 1 and runs the game, the guest is Player 2.
   it (in 3 vs 3, each of their fighters); a guest who rejoins in time takes their fighter back. The guest is told when
   the host's game tab is in the background (the game pauses) or the picture stalls, and whether the host closed the room
   or the connection was lost.
+- The picture: the entrance splash, an ultimate's cut-in and a finisher change the whole screen at once, and on a real
+  connection those big frames used to arrive dropped or frozen. The host now asks for a higher bitrate from the start
+  (with a floor), marks the video as motion and keeps the frames coming (a moment's softer picture rather than skipped
+  frames). The guest's room label shows how the picture arrives (frames a second; "slow" under 15 or after a freeze).
+  The guest's own title menu can no longer draw over the host's picture.
 - Limits: one guest per room; the guest sees the game a moment late (video delay); the picture is the game's 480 x 270
   as video, so a little softer than the host's; some strict networks block direct connections, and then joining fails
   with a message; the host must keep the game's tab in front (a hidden tab pauses the game; the guest is told).
@@ -517,7 +522,8 @@ jump up onto them, stand and fight on them, drop through with S + K. Each has a 
     ten seconds or so it marks a spot under each fighter and one more (THE CROWN STRIKES); a second and a third later
     chains slam down on them (13, through a guard, knocks down). Step aside.
 
-They are in the Stage list (and Random). The bots use them: they climb to a platform when their foe is above, sometimes on
+They are in the Stage list (and Random). While the Stage row is chosen in the Versus menu, the help panel shows a small
+picture of the stage and a line on what it does (versus.js shares its menu rows as `V.menuRows` for this). The bots use them: they climb to a platform when their foe is above, sometimes on
 their own, and drop down after a foe below. They also get off the floor when the train or the rootlight is coming, and step out from under the Crown's marks: an Easy bot notices
 the warning about half the time, Normal three times in four, Hard always.
 Tested: all 64 Versus heroes in bot matches across the six stages, and a 3 vs 3, with no errors. The bots spend 13 to

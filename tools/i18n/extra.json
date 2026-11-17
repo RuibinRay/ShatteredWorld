@@ -709,5 +709,19 @@
   "GALE FROM THE WEST": { "es": "VENDAVAL DEL OESTE", "zh": "西方狂风" },
   "GALE FROM THE EAST": { "es": "VENDAVAL DEL ESTE", "zh": "东方狂风" },
   "ROOTLIGHT RISING": { "es": "SUBE LA LUZ DE RAÍZ", "zh": "根光涌起" },
-  "THE CROWN STRIKES": { "es": "LA CORONA ATACA", "zh": "王冠来袭" }
+  "THE CROWN STRIKES": { "es": "LA CORONA ATACA", "zh": "王冠来袭" },
+  "Two low platforms and one high one. No tricks.": { "es": "Dos plataformas bajas y una alta. Sin trucos.", "zh": "两个低平台和一个高平台。没有机关。" },
+  "Two cargo lifts ride up and down, carrying whoever stands on them.": { "es": "Dos elevadores de carga suben y bajan con quien esté encima.", "zh": "两台货运升降机上下往返，载着站在上面的人。" },
+  "Now and then gravity drops: everyone floats, and the top decks come within reach.": { "es": "De vez en cuando baja la gravedad: todos flotan y las cubiertas altas quedan a tu alcance.", "zh": "重力不时减弱：所有人飘浮起来，最高的甲板也能够到。" },
+  "Glass platforms crack under whoever stands on them, shatter, and grow back.": { "es": "Las plataformas de vidrio se agrietan bajo quien las pisa, se rompen y vuelven a crecer.", "zh": "玻璃平台在脚下开裂、碎掉，然后重新长出来。" },
+  "After a warning, a train crosses the floor: get up on a platform.": { "es": "Tras un aviso, un tren cruza el suelo: sube a una plataforma.", "zh": "警告之后，列车会从地面驶过：快跳上平台。" },
+  "Every fifteen seconds the Engine turns, and its plates slide into a new layout.": { "es": "Cada quince segundos el Motor gira y sus placas se mueven a una nueva disposición.", "zh": "每隔十五秒引擎转动一次，平台滑向新的布局。" },
+  "A gale blows across the field and pushes everyone, jumps most of all.": { "es": "Un vendaval cruza el campo y empuja a todos, sobre todo en el aire.", "zh": "狂风横扫原野，把所有人都往一边推，跳在空中时最明显。" },
+  "Root platforms wither and grow back. Rootlight floods the floor: get off it.": { "es": "Las plataformas de raíz se marchitan y vuelven a crecer. La luz de raíz inunda el suelo: sal de ahí.", "zh": "根须平台会枯萎再长回来。根光淹没地面时，快离开地面。" },
+  "The Crown marks spots on the ground, and chains slam down on them. Step aside.": { "es": "La Corona marca puntos en el suelo y caen cadenas sobre ellos. Apártate.", "zh": "王冠在地上标出位置，锁链随即砸下。快闪开。" },
+  "Flat ground, no tricks.": { "es": "Suelo plano, sin trucos.", "zh": "平地，没有机关。" },
+  "A different stage every match.": { "es": "Un escenario distinto en cada combate.", "zh": "每场比赛换一个场地。" },
+  "A / D: change stage": { "es": "A / D: cambiar escenario", "zh": "A / D：切换场地" },
+  "Picture": { "es": "Imagen", "zh": "画面" },
+  "slow": { "es": "lenta", "zh": "卡顿" }
 }

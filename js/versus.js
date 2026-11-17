@@ -499,6 +499,7 @@
   const menuRows = () => (V.mode === 'pvb' ? ['mode', 'fmt', 'diff', 'stage', 'gain', 'start'] : V.mode === 'pvp' ? ['mode', 'fmt', 'stage', 'gain', 'start'] : V.mode === 'rival' ? ['mode', 'diff', 'gain', 'start']
     : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start'] : solo() ? ['mode', 'fmt', 'gain', 'start'] : isTour() ? ['mode', 'tsize', 'entry', 'diff', 'tlv', 'tskip', 'speed', 'start']
     : V.dummy === 3 ? ['mode', 'dummy', 'diff', 'stage', 'start'] : ['mode', 'dummy', 'stage', 'start']);
+  V.menuRows = menuRows;   // stages.js reads it: a preview of the stage while the Stage row is chosen
   const pauseItems = () => (V.mode === 'train' ? ['resume', 'myhero', 'dummyhero', 'dummy', 'endless', 'onscreen', 'reset', 'moves', 'quit'] : V.mode === 'duel' && !V.duelO.canQuit ? ['resume', 'moves']
     : isBvb() ? ['resume', 'speed', 'moves', 'quit'] : ['resume', 'moves', 'quit']);
   // who a fighter is, in words: "Player 2", "The bot", "Bot 1"

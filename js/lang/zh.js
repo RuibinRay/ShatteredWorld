@@ -4582,5 +4582,19 @@ SW.i18n.add('zh', {
   "GALE FROM THE WEST": "西方狂风",
   "GALE FROM THE EAST": "东方狂风",
   "ROOTLIGHT RISING": "根光涌起",
-  "THE CROWN STRIKES": "王冠来袭"
+  "THE CROWN STRIKES": "王冠来袭",
+  "Two low platforms and one high one. No tricks.": "两个低平台和一个高平台。没有机关。",
+  "Two cargo lifts ride up and down, carrying whoever stands on them.": "两台货运升降机上下往返，载着站在上面的人。",
+  "Now and then gravity drops: everyone floats, and the top decks come within reach.": "重力不时减弱：所有人飘浮起来，最高的甲板也能够到。",
+  "Glass platforms crack under whoever stands on them, shatter, and grow back.": "玻璃平台在脚下开裂、碎掉，然后重新长出来。",
+  "After a warning, a train crosses the floor: get up on a platform.": "警告之后，列车会从地面驶过：快跳上平台。",
+  "Every fifteen seconds the Engine turns, and its plates slide into a new layout.": "每隔十五秒引擎转动一次，平台滑向新的布局。",
+  "A gale blows across the field and pushes everyone, jumps most of all.": "狂风横扫原野，把所有人都往一边推，跳在空中时最明显。",
+  "Root platforms wither and grow back. Rootlight floods the floor: get off it.": "根须平台会枯萎再长回来。根光淹没地面时，快离开地面。",
+  "The Crown marks spots on the ground, and chains slam down on them. Step aside.": "王冠在地上标出位置，锁链随即砸下。快闪开。",
+  "Flat ground, no tricks.": "平地，没有机关。",
+  "A different stage every match.": "每场比赛换一个场地。",
+  "A / D: change stage": "A / D：切换场地",
+  "Picture": "画面",
+  "slow": "卡顿"
 });

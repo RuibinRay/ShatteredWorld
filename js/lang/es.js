@@ -4582,5 +4582,19 @@ SW.i18n.add('es', {
   "GALE FROM THE WEST": "VENDAVAL DEL OESTE",
   "GALE FROM THE EAST": "VENDAVAL DEL ESTE",
   "ROOTLIGHT RISING": "SUBE LA LUZ DE RAÍZ",
-  "THE CROWN STRIKES": "LA CORONA ATACA"
+  "THE CROWN STRIKES": "LA CORONA ATACA",
+  "Two low platforms and one high one. No tricks.": "Dos plataformas bajas y una alta. Sin trucos.",
+  "Two cargo lifts ride up and down, carrying whoever stands on them.": "Dos elevadores de carga suben y bajan con quien esté encima.",
+  "Now and then gravity drops: everyone floats, and the top decks come within reach.": "De vez en cuando baja la gravedad: todos flotan y las cubiertas altas quedan a tu alcance.",
+  "Glass platforms crack under whoever stands on them, shatter, and grow back.": "Las plataformas de vidrio se agrietan bajo quien las pisa, se rompen y vuelven a crecer.",
+  "After a warning, a train crosses the floor: get up on a platform.": "Tras un aviso, un tren cruza el suelo: sube a una plataforma.",
+  "Every fifteen seconds the Engine turns, and its plates slide into a new layout.": "Cada quince segundos el Motor gira y sus placas se mueven a una nueva disposición.",
+  "A gale blows across the field and pushes everyone, jumps most of all.": "Un vendaval cruza el campo y empuja a todos, sobre todo en el aire.",
+  "Root platforms wither and grow back. Rootlight floods the floor: get off it.": "Las plataformas de raíz se marchitan y vuelven a crecer. La luz de raíz inunda el suelo: sal de ahí.",
+  "The Crown marks spots on the ground, and chains slam down on them. Step aside.": "La Corona marca puntos en el suelo y caen cadenas sobre ellos. Apártate.",
+  "Flat ground, no tricks.": "Suelo plano, sin trucos.",
+  "A different stage every match.": "Un escenario distinto en cada combate.",
+  "A / D: change stage": "A / D: cambiar escenario",
+  "Picture": "Imagen",
+  "slow": "lenta"
 });
