@@ -456,6 +456,15 @@ styles (Nyra and Noct arc, Isolde thrust with her staff, Brakk stomp, and so on)
 rubber arm, js/heroes4.js) and the ten heroes js/combo-flow.js already restyles are left as they were.
 `SW.clanPoses.restore()` puts the old frames back.
 
+## Sprites that look like their roster art (`js/roster-look.js`)
+
+Each hero's roster image was laid next to their sprite; where they disagreed, the sprite's rig colours were set to the
+art's: Brakk (bald, dark-skinned, grey-brown stone armour), Dyna (khaki and orange under the hard hat), Vesper (red
+scarf), Fenn (navy armour, purple glow), Tessa (copper hair), Tarn (blue top), Yara (khaki, yellow sash), Sable (purple),
+Garo (silver knight), Kova (orange, dark stripes), Taro (black mawashi), Rue (red coat, pink trousers), Fumi (black
+ninja), and the darker skin of Vega, Apis and Ryo. The other heroes already matched. Colours only; stances
+(js/clan-poses.js) stay on top. Itsuki and Bando are left as they are.
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
