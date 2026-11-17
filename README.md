@@ -425,6 +425,22 @@ Maren x1.2. Combo strength of the 20 weakest (no-energy combo, best for one bar,
 100) went up from 66-90 to 80-105 (Sable 85 to 105, Ume 88 to 103, Lin 80 to 97, Garo 66 to 80, Corvin 68 to 81).
 Checked against the fifteen regular heroes with Hard bots on both sides, same matchups before and after: the group
 went from 43% to 44% of rounds won, and every hero stayed between 25% and 57%. `SW.comboTune.on = false` turns it off.
+## Ultimates that move (`js/ult-motion.js`)
+
+Draw-only (no timing, hitbox or damage change). During an ultimate a hero used to hold one pose, "cheer", for 50-80
+frames. Now it gathers (charge), winds up (cast), strikes in rhythm (special, a4, launcher, a3, each with an
+anticipation, hit and follow-through frame and a small lunge) and ends on its own victory pose (js/herostyle.js).
+Itsuki and ultimates with their own motion are left as they were. `SW.ultMotion.on = false` turns it off.
+
+## Skill casts that move (`js/cast-motion.js`)
+
+Draw-only. Each skill slot has its own pose family (U cast > special, S + U special > a3, I a4 > launcher, S + I
+launcher > a4; the slot is read from the cooldown it starts), each cast plays anticipation, release with a small lunge
+and follow-through, a long cast keeps moving instead of holding one frame, and a pose a skill sets itself (p.pose) is
+kept but alternates between its hit and follow-through frames when held long. Measured on all heroes but Itsuki (each
+skill and ultimate, every frame drawn): moves held on one pose 30+ frames went from 46 to 7 (with js/ult-motion.js),
+and skill pairs drawn with exactly the same poses from 79 to 7. `SW.castMotion.on = false` turns it off.
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
