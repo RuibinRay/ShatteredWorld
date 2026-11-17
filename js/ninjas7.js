@@ -41,6 +41,13 @@
   // (the user, 2026-11-16: "the five moves each is one elemnt attack but overpowered"). The crown over his head lights the
   // element he used last (p.wheel); the J chain, the launcher and the sweep take their colour from it.
   const lit = (p, k) => { p.wheel = k; p.wheelT = 60; pop(p, EL[k].name, EL[k].c[0]); };
+  // each skill shows a pose of its own for as long as he stays in the cast (the user: "improve move"); it never holds
+  // him longer than the cast already does
+  function pose(p, z, anim, n) {
+    const v = new Vis(p.x, p.y, n || 18, () => {}, vv => { if (p.state !== 'cast' || p.dead) { if (p.pose && p.pose[0] === anim) p.pose = null; vv.gone = true; return; } p.pose = [anim, vv.t < 4 ? 0 : 1]; });
+    const end = v.update; v.update = function (g, zz) { end.call(this, g, zz); if (this.gone && p.pose && p.pose[0] === anim && !p.dead && p.state === 'cast') p.pose = null; };
+    z.shots.push(v);
+  }
   // a swirling funnel of wind, k = opacity, tall = rows of 3 px
   function funnel(ctx, x, y, t, k, tall) {
     for (let j = 0; j < tall; j++) {
@@ -64,7 +71,7 @@
   const S5 = {
     // U, fire: three fireballs in a fan; each bursts into flame where it lands
     fire(p, z, dmg) {
-      const e = EL[0]; lit(p, 0); sfx('shoot'); fx.ring(p.x + p.face * 14, p.y - 22, e.c[0], 4, 26, 10); emit('fire', p.x + p.face * 16, p.y - 22, 10, { dir: p.face });
+      const e = EL[0]; lit(p, 0); pose(p, z, 'a3', 12); sfx('shoot'); fx.ring(p.x + p.face * 14, p.y - 22, e.c[0], 4, 26, 10); emit('fire', p.x + p.face * 16, p.y - 22, 10, { dir: p.face });
       [-1.1, 0, 1.1].forEach((vy, k) => z.shots.push(new Later(1 + k * 3, () => { if (p.dead) return; sfx('shoot');
         shot(p, z, 'fire', { dmg: Math.round(dmg * 0.7), vx: p.face * 7.6, vy, life: 46, w: 14, h: 14, paint: paintOf(e), kx: 2, ky: -2, stun: 30, status: { burn: 4 },
           onEnd() { boom(p, 'fire', this.x, this.y, 30, Math.round(dmg * 0.5), { status: { burn: 4 }, kx: p.face * 2, ky: -3, stun: 30 }); fx.ring(this.x, this.y, '#ffd24a', 4, 40, 12); } }); })));
@@ -77,7 +84,7 @@
     },
     // I, thunder: lightning strikes the nearest enemy ahead three times, then one great bolt
     thunder(p, z, dmg) {
-      lit(p, 2); sfx('charge');
+      lit(p, 2); pose(p, z, 'special', 20); sfx('charge'); fx.ring(p.x, p.y - 44, '#ffe066', 2, 18, 12); fx.bolt(p.x, p.y - 40, p.x + rand(-4, 4), G.cam.y, '#ffe066');
       const t0 = ahead(p, z, 240), at = () => (t0 && !t0.dead ? t0.x : p.x + p.face * 90);
       [6, 13, 20].forEach(d => z.shots.push(new Later(d, () => { const x = at(), gy = floorY(z, x, p.y - 20);
         fx.bolt(x + rand(-30, 30), G.cam.y, x, gy - 10, '#ffe066'); fx.bolt(x + rand(-30, 30), G.cam.y, x, gy - 10, '#ffffff'); fx.flash('#ffffff', 2); sfx('zap'); emit('bolt', x, gy - 20, 8, { up: true });
@@ -89,16 +96,16 @@
     },
     // S+I, earth: a row of stone fangs tears out of the ground toward the enemy; the last is a mountain that throws them up
     earth(p, z, dmg) {
-      lit(p, 3); sfx('heavy'); fx.shake(4, 10);
-      const t0 = ahead(p, z, 220), dir = p.face, x0 = p.x, far = t0 ? Math.abs(t0.x - x0) : 150, n = 5, gap = Math.max(18, Math.min(34, (far - 20) / n));
-      for (let k = 0; k < n; k++) { const x = x0 + dir * (24 + k * gap); column(z, 'rock', x, floorY(z, x, p.y - 20), 3 + k * 4, Math.round(dmg * 0.6), { w: 16, h: 34 + k * 6, spike: true, cols: ROCK, atk: { ky: -3, stun: 36, heavy: true } }); }
-      const xb = t0 && !t0.dead ? t0.x : x0 + dir * (24 + n * gap);
-      column(z, 'rock', xb, floorY(z, xb, p.y - 20), 26, Math.round(dmg * 2.2), { w: 34, h: 110, spike: true, cols: ROCK, atk: { ky: -8, launch: true, stun: 60, heavy: true, breaker: true } });
-      z.shots.push(new Later(26, () => { fx.shake(12, 16); fx.flash('#c8a05a', 3); }));
+      lit(p, 3); pose(p, z, 'sweep', 16); sfx('heavy'); fx.shake(4, 10); fx.dust(p.x, p.y, 10); fx.ring(p.x, p.y - 2, '#c8a05a', 4, 30, 10);
+      const t0 = ahead(p, z, 220), dir = p.face, x0 = p.x, far = t0 ? Math.abs(t0.x - x0) : 150, n = 5, gap = Math.max(14, Math.min(34, (far - 34) / (n - 1)));   // the fangs run right up to the enemy
+      for (let k = 0; k < n; k++) { const x = x0 + dir * (24 + k * gap); column(z, 'rock', x, floorY(z, x, p.y - 20), 3 + k * 4, Math.round(dmg * 0.6), { w: 18, h: 34 + k * 6, spike: true, cols: ROCK, atk: { ky: -1.2, kx: 0, stun: 44, heavy: true } }); }
+      const xb = t0 && !t0.dead ? t0.x : x0 + dir * (24 + (n - 1) * gap + 20);
+      column(z, 'rock', xb, floorY(z, xb, p.y - 20), 22, Math.round(dmg * 2.2), { w: 40, h: 110, spike: true, cols: ROCK, atk: { ky: -8, launch: true, stun: 60, heavy: true, breaker: true } });
+      z.shots.push(new Later(22, () => { fx.shake(12, 16); fx.flash('#c8a05a', 3); }));
     },
     // W+O, water: a wave breaks out on both sides of him and sweeps everything away; he heals 10% and gets 25 energy back
     water(p, z, dmg) {
-      lit(p, 4); sfx('burst'); p.heal(Math.round(p.hpMax() * 0.1)); refund(p, 25); fx.ring(p.x, p.y - 20, '#4cc9f0', 6, 50, 14); fx.ring(p.x, p.y - 20, '#ffffff', 4, 30, 10);
+      lit(p, 4); pose(p, z, 'cheer', 16); sfx('burst'); p.heal(Math.round(p.hpMax() * 0.1)); refund(p, 25); fx.ring(p.x, p.y - 20, '#4cc9f0', 6, 50, 14); fx.ring(p.x, p.y - 20, '#ffffff', 4, 30, 10);
       [-1, 1].forEach(dir => { const hs = new Set(), gy = p.y, x0 = p.x;
         z.shots.push(new Vis(x0, gy, 30, (ctx, sx, sy, t) => {
           const k = Math.min(1, t / 4, (30 - t) / 6), hgt = Math.round(52 * k);
@@ -234,10 +241,12 @@
   }
   // W+U: a rising spiral of all five elements, one after another
   function risingFive(p, z, dmg) {
-    lit(p, 4); sfx('perfect'); fx.ring(p.x, p.y - 20, '#fff1e6', 6, 50, 12);
+    lit(p, 4); pose(p, z, 'launcher', 16); sfx('perfect'); fx.ring(p.x, p.y - 20, '#fff1e6', 6, 50, 12);
     EL.forEach((el, k) => z.shots.push(new Later(1 + k * 4, () => { if (p.dead) return; sfx(el.id === 'thunder' ? 'zap' : 'shoot');
       shot(p, z, el.st, { dmg: Math.round(dmg * 0.9 * (el.mult || 1)), x: p.x + p.face * 10, y: p.y - 16, vx: p.face * (3.6 + Math.sin(k * 1.3) * 0.8), vy: -4.4 - k * 0.35, life: 48, w: 14, h: 14,
-        paint: paintOf(el), kx: 1, ky: k === 4 ? -7 : -4.5, stun: 34, status: el.atk.status, launch: k === 4 }); })));
+        paint: paintOf(el), kx: 1, ky: k === 4 ? -7 : -4.5, stun: 34, status: el.atk.status, launch: k === 4,
+        tick(s, g, zz) { if (s.t < 8) return; const t = nearest(zz, s.x, s.y, 240); if (!t) return; const b = t.box(), dx = b.x + b.w / 2 - s.x, dy = b.y + b.h / 2 - s.y, d = Math.max(1, Math.hypot(dx, dy));
+          s.vx += (dx / d * 6.5 - s.vx) * 0.22; s.vy += (dy / d * 6.5 - s.vy) * 0.22; } }); })));
   }
   // J > U: Burning Fist. A rush wrapped in fire that ends in a blazing uppercut.
   function burningFist(p, z, dmg) {
@@ -250,7 +259,7 @@
   }
   // J > I: Thunder Palm. An open palm, then lightning comes down on whatever it touched.
   function thunderPalm(p, z, dmg) {
-    lit(p, 2); sfx('zap');
+    lit(p, 2); pose(p, z, 'a4', 14); sfx('zap');
     hit(...front(p, 46, 40, 6), Math.round(dmg * 0.8), { kx: p.face * 2.5, ky: -2, stun: 56, status: { freeze: 24 }, heavy: true, srcX: p.x });
     const x = p.x + p.face * 30; fx.ring(x, p.y - 22, '#ffe066', 4, 36, 12); emit('bolt', x, p.y - 22, 12, { dir: p.face, power: 1.4 }); fx.slash(x, p.y - 24, p.face, 1, '#ffffff', 40);
     z.shots.push(new Later(6, () => { const t = ahead(p, z, 100), tx = t ? t.x : x + p.face * 20, gy = floorY(z, tx, p.y - 20);
