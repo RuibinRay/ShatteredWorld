@@ -42,12 +42,19 @@
   SW.store.load = function () { return rawLoad.apply(this, arguments) || SG.load(); };
   SG.meta = () => ls.get(MKEY) || { finished: {} };
   const finishedAny = () => Object.keys(SG.meta().finished || {}).length > 0;
-  const VILLAIN = ['convergence'];   // the villain is not playable in this story (the user's call)
+  // the Beyond-born are the villains of this story and are not playable in it (the user's call; design section 11).
+  // Only the Director and Rue are on the planet at the start; the rest come with Vael in chapter 5.
+  const VILLAIN = ['convergence', 'vega', 'tessa', 'orin', 'noct', 'mira', 'hex', 'corvin', 'opal', 'lux', 'slick', 'apis', 'mika', 'ryo', 'itsuki', 'rue'];
   const locked = () => false;
 
   // ================= the chapters =================
   const KIND = ['Home', 'Bond', 'Rival', 'The Three-Layer War', 'The Big War', 'The Crown over the Crater'];
-  const cardOf = (id, n) => ((SG.cards && SG.cards[id]) || [])[n - 1] || [KIND[n - 1], '', ''];
+  const cardOf = (id, n) => {
+    const base = ((SG.cards && SG.cards[id]) || [])[n - 1] || [KIND[n - 1], '', ''], c = (SG.lines[id] || {})[n];
+    if (!c || !c.card) return base;
+    const z = n === 6 ? 'crater' : c.zone;
+    return [base[0], z && SW.zones[z] ? SW.zones[z].name : base[1], c.card];
+  };
   // a place named in the design -> the area on the map
   const PLACE = [[/med-lab/i, 'medlab'], [/cryo vault/i, 'cryo'], [/vent stacks/i, 'stacks'], [/proving hall/i, 'armoury'], [/burn ward/i, 'furnace'],
     [/firing gallery/i, 'range'], [/paper shrine/i, 'shrine'], [/ballast/i, 'ballast'], [/skylift/i, 'skylift'], [/skyport/i, 'skyport'],
@@ -64,7 +71,7 @@
   // the chapter as it is played: the written lines (lines-*.js) over defaults read from the chapter's card
   function chap(id, n) {
     const card = cardOf(id, n), c = Object.assign({}, (SG.lines[id] || {})[n]);
-    if (n === 6) c.zone = 'crater';
+    if (n === 6) { c.zone = 'crater'; c.foe = 'itsuki'; }
     if (!c.zone || !SW.zones[c.zone]) c.zone = placeZone(card[1]) || (n > 1 ? chap(id, n - 1).zone : 'scrapton');
     const who = heroIn(card[1]);
     if (n === 2 && !HR[c.with]) c.with = who && who !== id ? who : null;
@@ -85,7 +92,7 @@
     3: c => [{ id: 'talk', t: 'Talk to ' + nm(c.rival) + ' (E)' }, { id: 'duel', t: c.goal }],
     4: c => [{ id: 'fight', t: c.goal }],
     5: c => [{ id: 'fight', t: 'Cut through the Hollow Legion' }, { id: 'talk', t: 'Face ' + nm(c.foe) + ' (E)' }, { id: 'duel', t: c.goal }],
-    6: c => [{ id: 'fight', t: 'Hold the Crater against the Legion' }, { id: 'boss', t: c.goal }]
+    6: c => [{ id: 'fight', t: 'Hold the Crater against the Legion' }, { id: 'talk', t: 'Face Itsuki (E)' }, { id: 'duel', t: 'Beat Itsuki, the last champion' }, { id: 'boss', t: c.goal }]
   };
   const XP = [0, 120, 200, 280, 420, 560, 0], CR = [0, 60, 90, 120, 180, 240, 0];
   function setupMissions(id) {
@@ -171,13 +178,13 @@
     if (z.id !== c.zone) { G.toast('Chapter ' + n + ' goes on in ' + SW.zones[c.zone].name + '  (Esc > Mission: travel)', '#22d3ee'); return; }
     if (n === 2 && !done(2, 'fight')) placeNpc(z, c.with, () => !done(2, 'talk'));
     if (n === 3 && !done(3, 'duel')) placeNpc(z, c.rival);
-    if (n === 5 && done(5, 'fight') && !done(5, 'duel')) placeNpc(z, c.foe);
+    if ((n === 5 || n === 6) && done(n, 'fight') && !done(n, 'duel')) placeNpc(z, c.foe);
   }
   function dropNpc() { const z = G.zone, e = R.npc; if (z && e) { const i = z.ents.indexOf(e); if (i >= 0) z.ents.splice(i, 1); fx.ring(e.x, e.y - 16, '#b48cff', 4, 40, 18); } R.npc = null; }
   function placeNpc(z, who, when) {
     if (!HR[who] || R.npc) return;
     const p = G.player, s = spotNear(z, p.x, p.y, 7, p.face || 1);
-    const called = G.state.saga.ch === 5 && SG.CALLED && SG.CALLED.indexOf(who) >= 0;
+    const called = G.state.saga.ch >= 5 && SG.CALLED && SG.CALLED.indexOf(who) >= 0;
     const npc = new SW.NPC(called && SG.calledSheet ? SG.calledSheet(who) : HR[who].sheet, s.tx * T + 8, (s.ty + 1) * T, { sg: true, sgWho: who, sgCalled: called, prompt: called ? 'Face' : 'Talk', talk: () => { talk(); return null; }, when });
     z.add(npc); R.npc = npc;
     fx.ring(npc.x, npc.y - 16, HR[who].color, 4, 36, 18);
@@ -209,7 +216,7 @@
     R.wave++;
     if (R.wave >= R.list.length) {
       R.wave = -1; R.list = null; R.foes = []; R.t = 70;
-      if (n === 5 || n === 6) { G.step('SG' + n + ':fight'); G.toast(n === 5 ? 'The Legion breaks. Someone is waiting.' : 'The Legion falters...', '#b48cff'); if (n === 5) placeNpc(z, c.foe); return; }
+      if (n === 5 || n === 6) { G.step('SG' + n + ':fight'); G.toast(n === 5 ? 'The Legion breaks. Someone is waiting.' : 'The Legion falters. Itsuki is waiting.', '#b48cff'); placeNpc(z, c.foe); return; }
       say('w' + n, c.win, () => complete(n, 'fight'));
       return;
     }
@@ -243,7 +250,7 @@
   function talk() {
     const S = G.state, n = S.saga.ch, c = chap(S.hero, n);
     if (n === 2) { if (!done(2, 'talk')) say('m2', c.meet, () => { G.step('SG2:talk'); R.t = 40; }); return; }
-    if (n === 3 || n === 5) {
+    if (n === 3 || n === 5 || n === 6) {
       const who = n === 3 ? c.rival : c.foe, go = () => duel(who, n, c);
       if (!done(n, 'talk')) say('m' + n, c.meet, () => { G.step('SG' + n + ':talk'); go(); }); else go();
     }
@@ -258,12 +265,12 @@
   function duel(who, n, c) {
     const cr = story && story.crater, hero = G.state.hero;
     const o = Object.assign({ diff: 1, hpBonus: 100, rivalPower: 12, rivalHp: 200 }, cr && cr.DUEL, cr && HR[hero].legend ? cr.LEGEND : null, cr && cr.FOR && cr.FOR[hero],
-      { rival: who, title: n === 5 ? 'THE HOLLOW CROWN' : 'RIVAL DUEL', rivalName: (n === 5 ? 'CALLED: ' : '') + nm(who).toUpperCase(), stage: SG.stageFor(c.zone), canQuit: true });
+      { rival: who, title: n === 6 ? 'THE LAST CHAMPION' : n === 5 ? 'THE BIG WAR' : 'RIVAL DUEL', rivalName: (n >= 5 ? 'CHAMPION: ' : '') + nm(who).toUpperCase(), stage: SG.stageFor(c.zone), canQuit: true });
     const dl = SW.difficulty && SW.difficulty.cur && SW.difficulty.cur();
     if (dl && dl.id !== 'medium') { o.diff = dl.duelDiff; o.rivalPower = Math.round(o.rivalPower * dl.duelEdge); o.rivalHp = Math.round(o.rivalHp * dl.duelEdge); }
-    if (n === 5) { o.full = true; o.rivalHp += 100; }                    // the Called fight with everything they have
+    if (n >= 5) { o.full = true; o.rivalHp += 100; }                    // Vael's champions fight with everything they have
     if (who === 'itsuki') { o.full = true; o.rivalPower += 4; o.rivalHp += 150; }   // the strongest fighter in any world
-    const called = n === 5 && SG.CALLED && SG.CALLED.indexOf(who) >= 0 && SG.callLook;
+    const called = n >= 5 && SG.CALLED && SG.CALLED.indexOf(who) >= 0 && SG.callLook;
     untune([hero, who]);
     if (called) SG.callLook(who, true);
     const undo = () => { retune(); if (called) SG.callLook(who, false); };
@@ -275,8 +282,9 @@
     if (o.rivalPower) r.stats.power = ((1 + 0.06 * (r.stats.power || 0)) * (1 + 0.06 * o.rivalPower) - 1) / 0.06;
   }
   function afterDuel(result, n, c) {
+    if (result === 'win' && n === 6) { dropNpc(); G.step('SG6:duel'); R.t = 70; G.toast('Itsuki falls back to the Crown. The sky opens.', '#b48cff'); return; }   // then the Convergence and Vael
     if (result === 'win') { if (n === 5) dropNpc(); say('w' + n, c.win, () => complete(n, 'duel')); }
-    else say('l' + n, c.lose, () => G.toast('Talk to ' + nm(n === 3 ? c.rival : c.foe) + ' to fight again.', '#8a92b8'));
+    else say('l' + n, c.lose, () => G.toast('Face ' + nm(n === 3 ? c.rival : c.foe) + ' again (E).', '#8a92b8'));
   }
 
   // ================= moving through the story =================
@@ -333,7 +341,7 @@
     if (!sg.seen['i' + n]) { sg.seen['i' + n] = true; if (n !== 2 && n !== 3) { say('i' + n, c.intro); return; } }
     const steps = mis(n).steps.map(s => s.id);
     if (steps.indexOf('fight') >= 0 && !done(n, 'fight') && (n !== 2 || done(2, 'talk'))) { runWaves(z, n, c); return; }
-    if (n === 6 && !done(6, 'boss')) runBoss(z, c);
+    if (n === 6 && done(6, 'duel') && !done(6, 'boss')) runBoss(z, c);
   }
   const _zu = SW.Zone.prototype.update;
   SW.Zone.prototype.update = function (g) {
@@ -412,7 +420,7 @@
   const INTER = ['Four banners climbed the Halcyon Spire. On the floor of his Engine, the Director was beaten.',
     'He stepped back into its light, and the Engine took him in. What came out was the Convergence.',
     'It opened the Beyond all the way, and called. The sky over the Crater split from horizon to horizon,',
-    'and Sovereign Vael answered with the Hollow Legion: hundreds of thousands of soldiers, emptied out of the worlds he has eaten.'];
+    'and Sovereign Vael answered: the Hollow Legion, hundreds of thousands of soldiers emptied out of the worlds he has eaten, and his champions, fourteen Beyond-born who serve him.'];
   function drawInterlude(ctx) {
     ctx.globalAlpha = 0.95; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
     art.glow(ctx, W / 2, 70, 120, '#b48cff', 0.12 + 0.04 * Math.sin(SW.frame * 0.05));
@@ -462,7 +470,7 @@
 
   // ================= the title menu, and the new story's own screens =================
   const M = SG.menu = { open: false, view: 'mode', sel: 0, tab: 0, idx: 0, page: 0, t: 0, skip: false, held: null, confirm: false };
-  const REALMS = (L && L.order ? L.order.slice(0, 4) : ['sky', 'land', 'deep', 'beyond']);
+  const REALMS = (L && L.order ? L.order.slice(0, 4) : ['sky', 'land', 'deep', 'beyond']).filter(r => r !== 'beyond');
   const realm = r => (L && L.realms && L.realms[r]) || { name: r.toUpperCase(), sub: '', col: '#8fd3ff', hi: '#ffffff', desc: '' };
   const listOf = r => (L && L.ui ? L.ui.list(r) : []).filter(id => VILLAIN.indexOf(id) < 0);
   const PRO = [
@@ -585,7 +593,7 @@
     } else {
       txt(ctx, 'CHAPTER 1  -  ' + card[0].toUpperCase() + '  -  ' + card[1], 18, 188, '#8a92b8');
       let y = 200; SW.wrap(card[2], 440).slice(0, 2).forEach(l => { txt(ctx, l, 18, y, '#e8ecf4', { raw: true }); y += 10; });
-      const c3 = chap(id, 3), c5 = chap(id, 5);
+      const c3 = chap(id, 3), c5 = chap(id, 5);   // (both from the rewritten lines)
       txt(ctx, 'Rival: ' + nm(c3.rival) + '     The Big War: ' + nm(c5.foe), 18, 226, '#c8ccd8');
     }
     if (M.confirm) {

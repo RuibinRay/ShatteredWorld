@@ -167,8 +167,8 @@
           ['tessa', "There's a kinder one. I told it to you in the dark. One floor at a time. Fight me for it."]
         ],
         win: [
-          ['sys', "The hollow crown cracks. The violet drains out of her eyes."],
-          ['hero', "Tessa. I nearly dropped it. All of it."],
+          ['sys', "Tessa holds the moment still, and Nyra's song comes into it: the harbour's old steering song. The hollow crown cracks."],
+          ['hero', "Nyra. Tessa. I nearly dropped it. All of it."],
           ['tessa', "But you didn't. That's the ending I kept for you."],
           ['isa', "My seal holds the city. Let go, Vega. Just for one breath."],
           ['hero', "One breath. For the first time in a year, nobody is falling. Not even me."]
@@ -255,10 +255,10 @@
           ['vega', "He says letting go is the kind thing. Everyone falls, and then nothing is heavy."],
           ['hero', "I've seen that one. Everyone screaming, all the way down. Not that one."],
           ['vega', "Then make me hold it."],
-          ['hero', "No. I'll make you remember how to put it down."]
+          ['hero', "No. I'll hold this moment, and let Nyra's song reach you. In the one ending where it works, that's how."]
         ],
         win: [
-          ['sys', "The hollow crown over Vega cracks, and the violet drains from her eyes."],
+          ['sys', "Tessa holds the moment still. Into it comes Nyra's song, and the hollow crown over Vega cracks."],
           ['vega', "Tessa... you came back."],
           ['hero', "I always come back. One floor at a time, remember? Never all at once."],
           ['vega', "One floor at a time."]
@@ -338,7 +338,7 @@
           ['sys', "The sky splits. Vael calls every Beyond-born home, and the Hollow Legion floods the metro shafts."],
           ['vael', "Door-walker. Come home. Every door leads back to me."],
           ['hero', "Nope. I walk through doors. I don't answer them."],
-          ['hero', "Fear won't reach the ones who answered. Something else has to. Noct owes me a door. Let's see if that counts."]
+          ['hero', "Fear won't reach the ones who answered. Maybe force will. Noct owes me a door. Let's find out."]
         ],
         meet: [
           ['hero', "Noct. It's Orin. I opened your cell, remember? You never said thanks."],
@@ -346,10 +346,10 @@
           ['hero', "That's not you talking. You never say that much."]
         ],
         win: [
-          ['sys', "The hollow crown over Noct cracks, and breaks."],
-          ['noct', "...Orin. You opened my door."],
-          ['hero', "And you owed me. That's it! Fear can't break the Call. A bond can. A friend, a debt, a grudge."],
-          ['noct', "The Crown has a door. I have seen it, from the dark side."],
+          ['sys', "Every door Orin throws, Noct cuts. Force does nothing. Then Sen steps out of the dark and draws once."],
+          ['sys', "The hollow crown over Noct falls in two halves."],
+          ['hero', "Not force. Sen. His rival. Tessa's seen an ending like this. Let's ask Mira what her glass says."],
+          ['noct', "...Orin. The Crown has a door. I have seen it, from the dark side."],
           ['hero', "Course it does. Everything's a door. Show me."]
         ],
         lose: [['sys', "The Old Metro goes black. The Call pulls harder."]] },
@@ -431,7 +431,7 @@
         meet: [
           ['sen', "Noct. I swore to see your blade. Tonight I will."],
           ['hero', "There is only dark."],
-          ['sen', "Vesper is lighting lamps behind me as fast as you put them out. Look at the light, Noct. Then look at me."],
+          ['sen', "Ashka is burning behind me as fast as you cut. Look at the light, Noct. Then look at me."],
           ['hero', "...Draw."]
         ],
         win: [
@@ -526,10 +526,10 @@
           ['hero', "You're light with a crown on it. The light that wouldn't bottle, bottled. Look."]
         ],
         win: [
-          ['sys', "Mira's glass bends the white light back, and the hollow crown sees itself. It cracks."],
-          ['lux', "Mira? The Ring... did I...?"],
-          ['hero', "Still standing. A bit melted at the edges."],
-          ['hero', "Doors and light, remember? You were never meant to go where he points you."]
+          ['sys', "Mira's glass bends the white light back. The crown holds. Then Pyra walks into the white, red fire on it, and it cracks."],
+          ['hero', "There, in the glass. Not my mirror. Her. The Call is stronger than fear, but weaker than a bond."],
+          ['lux', "Mira? Pyra? The Ring... did I...?"],
+          ['hero', "Still standing. A bit melted at the edges. Doors and light, remember? Not where he points you."]
         ],
         lose: [['lux', "White. Everything white. Nothing left to reflect."]] },
       6: { goal: 'Show Vael his own reflection',
@@ -966,7 +966,7 @@
           ['hero', "Told you. Light doesn't bottle."],
           ['hero', "Opal, I'm coming. Vega, hold on. Mira, I've got a lot of light for you to bend."]
         ] },
-      5: { zone: 'noble', foe: 'yara', goal: 'Break the Call over the Noble Ring',
+      5: { zone: 'noble', foe: 'pyra', goal: 'Break the Call over the Noble Ring',
         intro: [
           ['sys', "The sky splits. Vael calls every Beyond-born home, and the Legion pours down on Aurelia."],
           ['vael', "Light. Every colour you have, in one point. Burn their Ring white."],
@@ -974,18 +974,17 @@
           ['sys', "Her eyes go violet. The Noble Ring begins to glow white-hot."]
         ],
         meet: [
-          ['yara', "Lux! You taught me light on the string. Look at me."],
-          ['hero', "Every colour in one point. White. Nothing left to see."],
-          ['yara', "Then I'll put a colour back. From a mile away."],
-          ['hero', "You never miss..."],
-          ['yara', "I'm not starting now."]
+          ['yara', "Lux! Look at me! ...She can't hear me. Pyra, she's yours. I'll pin the light."],
+          ['pyra', "Hey, sunshine. Six weeks in a bottle, me. Then they tried you. Neither of us stayed in."],
+          ['hero', "Every colour in one point. White. Nothing left to bottle."],
+          ['pyra', "Light doesn't bottle. Neither does fire. Burn with me, not for him."]
         ],
         win: [
-          ['sys', "One arrow, drawn for a whole breath. It takes the crown off her head at a mile."],
-          ['hero', "Yara? The Ring... is it...?"],
-          ['yara', "Still standing. The opera house is a bit melted."],
-          ['hero', "You shot the crown off my head. At a mile."],
-          ['yara', "You taught me."]
+          ['sys', "Yara's arrow pins the white light for one breath. Pyra walks into it, red fire on white, and the crown cracks."],
+          ['hero', "Pyra? The Ring... is it...?"],
+          ['pyra', "Still standing. The opera house is a bit melted. Nothing that won't heal."],
+          ['hero', "You walked straight into it. Nobody walks into the white."],
+          ['pyra', "Fire does. Bottled girls stick together."]
         ],
         lose: [['sys', "The Noble Ring burns whiter."], ['vael', "No colours, little light. Only white."]] },
       6: { goal: 'Hold Aurelia up with Vega',

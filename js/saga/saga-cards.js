@@ -417,7 +417,7 @@
       ["Bond","Mira and Tessa","The only ones who can follow him."],
       ["Rival","Isa, at Platform Zero","Doors opened, doors slammed."],
       ["The Three-Layer War","the Near Side","He brings the Beyond-born out of the Blank Wing."],
-      ["The Big War","he does not answer the Call","He finds the way to break it, and the door into the Crown."],
+      ["The Big War","he does not answer the Call","He goes after Noct in the Old Metro, watches force fail and a bond win, and with Tessa and Mira finds how the Call breaks, and the door into the Crown."],
       ["Finale","","He opens it. \"Wrong door.\""]
     ],
     noct: [
@@ -433,7 +433,7 @@
       ["Bond","Orin and Lux","Doors and light."],
       ["Rival","Rue, at the Observation Gallery","Reflection against copy."],
       ["The Three-Layer War","the Crater","She shows the false Kael his empty reflection."],
-      ["The Big War","she does not answer the Call","A reflection answers no one."],
+      ["The Big War","she does not answer the Call","A reflection answers no one. At the Noble Ring she holds up her glass to Lux, and sees the bond that breaks the Call."],
       ["Finale","","She shows Vael his own reflection: a crown with nothing inside. \"The reflection wins.\""]
     ],
     hex: [

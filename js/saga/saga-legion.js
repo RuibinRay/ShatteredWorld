@@ -65,7 +65,8 @@
       ['summon', { kind: 'hollow_soldier', max: 3, hp: 40 }, [2, 2]], ['slam', { col: VIOLET }, [2, 2]], ['lunge', { speed: 7.2 }, [1, 3]]] };
 
   // ================= the Called =================
-  SG.CALLED = ['vega', 'lux', 'mika', 'corvin', 'opal', 'apis', 'ryo', 'itsuki', 'noct', 'rue', 'slick', 'hex'];
+  // Vael's champions: every Beyond hero but the Convergence (design section 11: they are villains to the end)
+  SG.CALLED = ['vega', 'lux', 'mira', 'tessa', 'mika', 'corvin', 'opal', 'apis', 'ryo', 'itsuki', 'noct', 'orin', 'rue', 'slick', 'hex'];
   const SH = [['sheet', ''], ['sheetAw', '_aw'], ['sheetArmed', '_b']];
   const kept = {};
   SG.calledSheet = id => { const h = HR[id]; return h && bake('sg_called_' + id, h.sheet, 0.45) ? 'sg_called_' + id : (h && h.sheet); };
