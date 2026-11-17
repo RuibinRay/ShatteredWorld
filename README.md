@@ -476,6 +476,55 @@ forward now and then), a held guard breathes and shifts its weight, and the powe
 holds went from 344 to 12 (none over 41 frames) and guard holds from 43 to 1. Itsuki is left as he is.
 `SW.holdMotion.on = false` turns it off.
 
+## Ultimates in every hero's element (`js/ult-fx.js`)
+
+Draw-only (no damage, hitbox or timing change). While an ultimate runs, the hero's element (the skillfx style: bolt, ice,
+fire, wind, rock, water, shadow, void ...) rises off them, a glow in its colour pulses under their feet and a ring goes out
+now and then. Every ultimate hit bursts in the element where it lands, with a shockwave ring in the hero's colours and an
+extra by element family: a bolt from the sky, frost shards, embers, rock debris, a splash, a ring of dark closing in,
+rays of light, a swirl of wind, or a slash. The finishing hit (a knock-down or launch, or a hit far above the
+ultimate's usual) bursts bigger, leaves the element's sigil under the target and flashes the screen. One target takes a
+full impact at most every 4 frames, so ultimates that hit every frame stay readable.
+
+## Melee in every hero's element (`js/melee-element.js`)
+
+Draw-only. The Hidden Clans already threw their element on every hit (js/clanmelee.js); the other heroes' punches and
+blades showed none of it. Now, for every hero who is not a Hidden Clans fighter, in Versus and the story: while a melee
+hit is live the fist or blade glows in the element and sheds it along the swing; every J, W + J, S + J and air hit that
+lands bursts in the element, bigger with each hit of the combo; and the fourth J, the launcher and the sweep add a
+flourish by element family (the same families as the ultimates). One target takes a full effect at most every 3
+frames. `SW.meleeElement.on` reports it.
+
+## Tarek's Chain Prison and Bando's rubber arm (`js/ninjas3.js`, `js/heroes4.js`)
+
+- **Tarek's ultimate shows its chains.** Eight chains lock in from different angles (the screen's edges, the ceiling and
+  the floor): the hooks fly out one after another, two binding loops close round the target once all eight are set, and
+  the chains pull taut at the slam.
+- **Bando punches with a real rubber arm.** One shared renderer (`SW.rubberArm`) draws a skin-coloured arm that
+  stretches, sags and snaps back, ending in his glove. His J chain alternates shoulders, the third is an uppercut and
+  the fourth a bigger fist; the launcher, the sweep and the air string stretch the same arm. Wind-Up coils it like a
+  spring, Hundred Hands brings gloved fists in from the screen edges, and Reel In and Rubber Cannon use it too.
+
+## Itsuki, the strongest (`js/ninjas7.js`, `js/itsuki-edge.js`)
+
+Itsuki is the strongest fighter in the game on purpose; balance passes leave him out. Each of his five skills is one
+element:
+
+| Input | Skill | Element |
+|---|---|---|
+| U | Hellfire: three fireballs in a fan, each sets the enemy burning | fire |
+| S + U | Storm Seize: he rushes in inside a cyclone; in Versus whoever it reaches is seized (no guard, perfect block or break gets them out), cut five times by wind blades and thrown away. A miss leaves the cyclone where he stops | wind |
+| I | Heaven's Thunder: three strikes on the nearest enemy ahead, then one great bolt that stuns | thunder |
+| S + I | Mountain Fang: stone fangs tear out of the ground toward the enemy; the last is a mountain that throws them up | earth |
+| W + O | Great Flood: a wave on both sides, heals him 10% and gives back 25 energy, half the usual cooldown | water |
+
+His other moves are stronger and never go on cooldown: Rising Five (W + U, the five elements rise in a spiral and home
+in on the enemy), Burning Fist (J > U, a fiery rush into an uppercut), Thunder Palm (J > I, lightning on what the palm
+touched), and Five Gates (S + O: 10 s of +30% damage, no cooldowns, and the elements fire at the enemy on their own).
+His J chain, launcher, sweep and air string hit harder and reach further, each hit in an element, and every skill has a
+pose of its own. Five Calamities, his ultimate, brings all five in turn. The Nightmare bot uses Storm Seize and two
+learned routes for him (`params.itsuki` and `routes.itsuki` in `js/hardcore-data.js`).
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
