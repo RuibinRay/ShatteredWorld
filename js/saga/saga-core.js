@@ -46,7 +46,32 @@
   // the Beyond-born are the villains of this story and are not playable in it (the user's call; design section 11).
   // Only the Director and Rue are on the planet at the start; the rest come with Vael in chapter 5.
   const VILLAIN = ['convergence', 'vega', 'tessa', 'orin', 'noct', 'mira', 'hex', 'corvin', 'opal', 'lux', 'slick', 'apis', 'mika', 'ryo', 'itsuki', 'rue'];
-  const locked = () => false;
+  // design section 13: the order the stories open in, and who faces the final boss
+  const SAVIOURS = ['kael', 'nyra', 'pyra', 'gale', 'brakk', 'nami'];   // one per element; they go up into the Crown together
+  const VANGUARD = ['isolde', 'aldric', 'yara', 'sora', 'hollis', 'jax', 'tor', 'dune', 'sen', 'ferra', 'ashka', 'rook'];   // they hold the Crater
+  const BOOK1 = ['isolde', 'maren', 'kiri', 'hollis', 'tarn', 'dune', 'ferra', 'sen', 'rook'];   // open from the start
+  const roleOf = id => (SAVIOURS.indexOf(id) >= 0 ? 'saviour' : VANGUARD.indexOf(id) >= 0 ? 'vanguard' : 'holder');
+  const bookOf = id => (BOOK1.indexOf(id) >= 0 ? 1 : SAVIOURS.indexOf(id) >= 0 ? 3 : 2);
+  const ROLE_NAME = { saviour: 'Saviour', vanguard: 'Vanguard', holder: 'Holder' };
+  Object.assign(SG, { SAVIOURS, VANGUARD, BOOK1, roleOf, bookOf });
+  const finishedList = () => Object.keys(SG.meta().finished || {}).filter(h => HR[h] && VILLAIN.indexOf(h) < 0);
+  // Book I: open. Book II: opened by a finished story that names the hero as its bond or rival, or by any 6 finished
+  // stories. Book III (the saviours): 8 finished stories, at least 2 from each layer.
+  function unlockInfo(id) {
+    const fin = finishedList(), b = bookOf(id);
+    if (b === 1) return { open: true };
+    if (b === 2) {
+      if (fin.length >= 6 || fin.some(h => chap(h, 2).with === id || chap(h, 3).rival === id)) return { open: true };
+      const by = Object.keys(SG.lines).filter(h => VILLAIN.indexOf(h) < 0 && bookOf(h) < 3 && (chap(h, 2).with === id || chap(h, 3).rival === id)).map(nm);
+      const ns = by.slice(0, 3).map(x => x + "'s"), list = ns.length > 1 ? ns.slice(0, -1).join(', ') + ' or ' + ns[ns.length - 1] : ns[0];
+      return { open: false, why: (list ? 'Finish ' + list + ' story, or ' : 'Finish ') + 'any 6 stories (' + fin.length + ' done).' };
+    }
+    const per = { sky: 0, land: 0, deep: 0 }; fin.forEach(h => { const r = L && L.heroes[h] && L.heroes[h].realm; if (per[r] !== undefined) per[r]++; });
+    if (fin.length >= 8 && per.sky >= 2 && per.land >= 2 && per.deep >= 2) return { open: true };
+    return { open: false, why: 'One of the six saviours. Finish 8 stories, at least 2 from each layer (now ' + fin.length + ': Aurelia ' + per.sky + ', Surface ' + per.land + ', Deepline ' + per.deep + ').' };
+  }
+  SG.unlockInfo = unlockInfo;
+  const locked = id => !unlockInfo(id).open;
 
   // ================= the chapters =================
   const KIND = ['Home', 'Bond', 'Rival', 'The Three-Layer War', 'The Big War', 'The Crown over the Crater'];
@@ -72,7 +97,7 @@
   // the chapter as it is played: the written lines (lines-*.js) over defaults read from the chapter's card
   function chap(id, n) {
     const card = cardOf(id, n), c = Object.assign({}, (SG.lines[id] || {})[n]);
-    if (n === 6) { c.zone = 'crater'; c.foe = 'itsuki'; }
+    if (n === 6) { c.role = roleOf(id); c.zone = c.role === 'holder' ? chap(id, 1).zone : 'crater'; c.foe = c.role === 'holder' ? null : 'itsuki'; }
     if (!c.zone || !SW.zones[c.zone]) c.zone = placeZone(card[1]) || (n > 1 ? chap(id, n - 1).zone : 'scrapton');
     const who = heroIn(card[1]);
     if (n === 2 && !HR[c.with]) c.with = who && who !== id ? who : null;
@@ -93,7 +118,9 @@
     3: c => [{ id: 'talk', t: 'Talk to ' + nm(c.rival) + ' (E)' }, { id: 'duel', t: c.goal }],
     4: c => [{ id: 'fight', t: c.goal }],
     5: c => [{ id: 'fight', t: 'Cut through the Hollow Legion' }, { id: 'talk', t: 'Face ' + nm(c.foe) + ' (E)' }, { id: 'duel', t: c.goal }],
-    6: c => [{ id: 'fight', t: 'Hold the Crater against the Legion' }, { id: 'talk', t: 'Face Itsuki (E)' }, { id: 'duel', t: 'Beat Itsuki, the last champion' }, { id: 'boss', t: c.goal }]
+    6: c => (c.role === 'holder' ? [{ id: 'fight', t: "Break the Legion's last assault" }, { id: 'boss', t: c.goal }]
+      : c.role === 'vanguard' ? [{ id: 'fight', t: 'Hold the Crater against the Legion' }, { id: 'talk', t: 'Stand in Itsuki\'s way (E)' }, { id: 'duel', t: c.goal }]
+      : [{ id: 'fight', t: 'Hold the Crater against the Legion' }, { id: 'talk', t: 'Face Itsuki (E)' }, { id: 'duel', t: 'Beat Itsuki, the last champion' }, { id: 'boss', t: c.goal }])
   };
   const XP = [0, 120, 200, 280, 420, 560, 0], CR = [0, 60, 90, 120, 180, 240, 0];
   function setupMissions(id) {
@@ -182,7 +209,7 @@
     if (z.id !== c.zone) { G.toast('Chapter ' + n + ' goes on in ' + SW.zones[c.zone].name + '  (Esc > Mission: travel)', '#22d3ee'); return; }
     if (n === 2 && !done(2, 'fight')) placeNpc(z, c.with, () => !done(2, 'talk'));
     if (n === 3 && !done(3, 'duel')) placeNpc(z, c.rival);
-    if ((n === 5 || n === 6) && done(n, 'fight') && !done(n, 'duel')) placeNpc(z, c.foe);
+    if ((n === 5 || n === 6) && c.foe && done(n, 'fight') && !done(n, 'duel')) placeNpc(z, c.foe);
   }
   function dropNpc() { const z = G.zone, e = R.npc; if (z && e) { const i = z.ents.indexOf(e); if (i >= 0) z.ents.splice(i, 1); fx.ring(e.x, e.y - 16, '#b48cff', 4, 40, 18); } R.npc = null; }
   function placeNpc(z, who, when) {
@@ -220,7 +247,8 @@
     R.wave++;
     if (R.wave >= R.list.length) {
       R.wave = -1; R.list = null; R.foes = []; R.t = 70;
-      if (n === 5 || n === 6) { G.step('SG' + n + ':fight'); G.toast(n === 5 ? 'The Legion breaks. Someone is waiting.' : 'The Legion falters. Itsuki is waiting.', '#b48cff'); placeNpc(z, c.foe); return; }
+      if (n === 6 && c.role === 'holder') { G.step('SG6:fight'); G.toast('The ground shakes. Something big is coming.', '#b48cff'); return; }   // then the captain
+      if (n === 5 || n === 6) { G.step('SG' + n + ':fight'); G.toast(n === 5 ? 'The Legion breaks. Someone is waiting.' : 'The Legion falters. Itsuki is coming down.', '#b48cff'); placeNpc(z, c.foe); return; }
       say('w' + n, c.win, () => complete(n, 'fight'));
       return;
     }
@@ -250,6 +278,20 @@
     };
     R.boss = { dead: false, wait: true };   // nothing to fight while the scene plays
     if (order[k] === 'vael') say('v6', conv ? VAEL_CONV : VAEL_IN, spawn); else spawn();
+  }
+  // the Holders' finale: the Siege Walker captain leads the last assault on their home
+  function runCaptain(z, c) {
+    if (R.boss && !gone(z, R.boss)) return;
+    if (R.boss && R.boss.def) { if (R.t > 0) { R.t--; return; } R.boss = { dead: true, wait: true }; G.boss = null; SW.audio.music(z.music); say('w6', c.win, () => complete(6, 'boss')); return; }
+    if (R.boss) return;   // the scene is playing
+    const spawn = () => {
+      const p = G.player, s = spotNear(z, p.x, p.y, 10, p.face || 1), type = D.enemies.siege_captain ? 'siege_captain' : 'eliteenf';
+      R.boss = z.enemy(type, s.tx, s.ty); R.boss.state = 'chase'; G.boss = R.boss; R.t = 80;
+      const lv = G.state.level || 1, scale = Math.min(1, (lv + 6) / 20); R.boss.hp = R.boss.hpMax = Math.max(400, Math.round(R.boss.hpMax * scale));
+      SW.audio.music('boss'); fx.shake(8, 40); sfx('roar');
+    };
+    R.boss = { dead: false, wait: true };
+    say('c6', c.meet, spawn);
   }
   function talk() {
     const S = G.state, n = S.saga.ch, c = chap(S.hero, n);
@@ -286,6 +328,7 @@
     if (o.rivalPower) r.stats.power = ((1 + 0.06 * (r.stats.power || 0)) * (1 + 0.06 * o.rivalPower) - 1) / 0.06;
   }
   function afterDuel(result, n, c) {
+    if (result === 'win' && n === 6 && c.role === 'vanguard') { dropNpc(); say('w6', c.win, () => complete(6, 'duel')); return; }   // the way is held; the six go on
     if (result === 'win' && n === 6) { dropNpc(); G.step('SG6:duel'); R.t = 70; G.toast('Itsuki falls back to the Crown. The sky opens.', '#b48cff'); return; }   // then the Convergence and Vael
     if (result === 'win') { if (n === 5) dropNpc(); say('w' + n, c.win, () => complete(n, 'duel')); }
     else say('l' + n, c.lose, () => G.toast('Face ' + nm(n === 3 ? c.rival : c.foe) + ' again (E).', '#8a92b8'));
@@ -310,8 +353,12 @@
     G.saveGame();
   }
   function finish() {
-    const S = G.state, m = SG.meta();
-    m.finished = m.finished || {}; m.finished[S.hero] = true; ls.set(MKEY, m);
+    const S = G.state, m = SG.meta(), PLAY = Object.keys(SG.lines).filter(h => VILLAIN.indexOf(h) < 0), was = PLAY.filter(h => !locked(h));
+    m.finished = m.finished || {}; m.finished[S.hero] = true;
+    R.trueEnd = SAVIOURS.every(h => m.finished[h]) && !m.trueEnd; if (R.trueEnd) m.trueEnd = true;
+    ls.set(MKEY, m);
+    const opened = PLAY.filter(h => !locked(h) && was.indexOf(h) < 0).map(nm);
+    if (opened.length) G.toast('New stories open: ' + (opened.length > 6 ? opened.length + ' heroes' : opened.join(', ')), '#7dffa0');
     S.saga.phase = 'end'; S.saga.ch = 7; R.cardShown = false; R.cardT = 140;
     G.saveGame();
   }
@@ -345,7 +392,8 @@
     if (!sg.seen['i' + n]) { sg.seen['i' + n] = true; if (n !== 2 && n !== 3) { say('i' + n, c.intro); return; } }
     const steps = mis(n).steps.map(s => s.id);
     if (steps.indexOf('fight') >= 0 && !done(n, 'fight') && (n !== 2 || done(2, 'talk'))) { runWaves(z, n, c); return; }
-    if (n === 6 && done(6, 'duel') && !done(6, 'boss')) runBoss(z, c);
+    if (n === 6 && c.role === 'saviour' && done(6, 'duel') && !done(6, 'boss')) runBoss(z, c);
+    if (n === 6 && c.role === 'holder' && done(6, 'fight') && !done(6, 'boss')) runCaptain(z, c);
   }
   const _zu = SW.Zone.prototype.update;
   SW.Zone.prototype.update = function (g) {
@@ -369,7 +417,7 @@
     return s;
   };
   function newSaga(hero) {
-    if (!HR[hero] || VILLAIN.indexOf(hero) >= 0) return;
+    if (!HR[hero] || VILLAIN.indexOf(hero) >= 0 || locked(hero)) return;
     wrapZones(); setupMissions(hero);
     const h = HR[hero], keep = h.start, c = chap(hero, 1);
     h.start = { zone: c.zone, spawn: SG.SPAWN && SG.SPAWN[c.zone] };
@@ -402,12 +450,15 @@
     txt(ctx, h.name.toUpperCase(), 92, 178, h.color, { align: 'center' });
     const x = 154, wrapW = 284;
     if (end) {
-      txt(ctx, 'THE HOLLOW CROWN', x, 44, '#8a92b8');
-      txt(ctx, 'THE END', x, 58, '#f5c542', { scale: 3 });
+      txt(ctx, R.trueEnd ? 'ALL SIX SAVIOURS' : 'THE HOLLOW CROWN', x, 44, '#8a92b8');
+      txt(ctx, R.trueEnd ? 'THE PACT HOLDS' : 'THE END', x, 58, '#f5c542', { scale: R.trueEnd ? 2 : 3 });
+      if (R.trueEnd) { let yy = 84; SW.wrap('Six went up into the Crown, and the three layers held the ground under them. Thunder, song, fire, wind, earth and water: the last blow was all of them. Aurelia, the Surface and Deepline stand. Thank you for playing.', wrapW).forEach(l => { txt(ctx, l, x, yy, '#e8ecf4', { raw: true }); yy += 11; }); }
+      else {
       const q = (L && L.ui) ? L.ui.quote(S.hero) : '';
       let y = 96; SW.wrap('The Hollow Crown fell into the Crater, and the Legion went still. ' + h.name + "'s story is told.", wrapW).forEach(l => { txt(ctx, l, x, y, '#e8ecf4', { raw: true }); y += 11; });
       y += 8; if (q) SW.wrap('"' + q + '"', wrapW).forEach(l => { txt(ctx, l, x, y, h.colorHi || '#ffffff', { raw: true }); y += 11; });
-      y += 10; txt(ctx, finishedAny() ? 'Another hero, another story: New Game > The Hollow Crown.' : '', x, y, '#8a92b8');
+      y += 10; txt(ctx, 'Another hero, another story: New Game > The Hollow Crown.', x, y, '#8a92b8');
+      }
     } else {
       txt(ctx, 'CHAPTER ' + n + '  of 6', x, 44, '#8a92b8');
       txt(ctx, card[0].toUpperCase(), x, 56, '#f5c542', { scale: 2 });
@@ -491,6 +542,8 @@
     if (I.held(a)) { rp[a] = (rp[a] || 0) + 1; return rp[a] > 16 && rp[a] % 4 === 0; }
     rp[a] = 0; return false;
   }
+  // the hero select opens on the first story that can be played (Book I to start with)
+  function toPick() { M.view = 'pick'; for (let t = 0; t < REALMS.length; t++) { const ids = listOf(REALMS[t]), i = ids.findIndex(id => !locked(id)); if (i >= 0) { M.tab = t; M.idx = i; return; } } }
   function open(view) { Object.assign(M, { open: true, view, sel: 0, skip: true, page: 0, t: 0, confirm: false }); if (L && L.ui) L.ui.ensureLang(); sfx('select'); }
   function close() { M.open = false; I.keys.length = 0; }
   function update() {
@@ -499,8 +552,8 @@
     if (M.view === 'pro') {
       M.t++;
       const len = PRO[M.page].length;
-      if (I.hit('pause')) { M.view = 'pick'; sfx('select'); }
-      else if (k.ok || I.hit('jump')) { if (M.t * 0.9 < len) M.t = len * 2; else { M.page++; M.t = 0; sfx('select'); if (M.page >= PRO.length) M.view = 'pick'; } }
+      if (I.hit('pause')) { toPick(); sfx('select'); }
+      else if (k.ok || I.hit('jump')) { if (M.t * 0.9 < len) M.t = len * 2; else { M.page++; M.t = 0; sfx('select'); if (M.page >= PRO.length) toPick(); } }
       return;
     }
     // the hero select
@@ -539,7 +592,7 @@
     const r = REALMS[M.tab], R0 = realm(r), ids = listOf(r), lu = L && L.ui;
     backdrop(ctx, R0.col);
     txt(ctx, 'THE HOLLOW CROWN', 10, 4, '#ffffff', { scale: 2 });
-    txt(ctx, 'Choose who to play', W - 10, 9, '#8a92b8', { align: 'right' });
+    txt(ctx, 'Stories finished: ' + finishedList().length + ' / ' + REALMS.reduce((a, r) => a + listOf(r).length, 0), W - 10, 9, '#8a92b8', { align: 'right' });
     REALMS.forEach((t, i) => {
       const Rr = realm(t), x = 10 + i * 116, onT = M.tab === i;
       ui.panel(ctx, x, 25, 112, 15, onT ? Rr.col : '#3a3d55', onT ? 0.95 : 0.7);
@@ -561,10 +614,10 @@
     txt(ctx, lu ? lu.nameOf(id) : hh.name, 18, 166, hh.color, { scale: 2, raw: true });
     txt(ctx, hh.title, 18 + tw(lu ? lu.nameOf(id) : hh.name) * 2 + 10, 172, hh.colorHi || '#ffffff');
     if (lk) {
-      txt(ctx, 'The villain\'s storyline: the Director, who becomes the Convergence.', 18, 190, '#e8ecf4');
-      txt(ctx, 'Finish The Hollow Crown once, with any hero, to play it.', 18, 204, '#f5c542');
+      txt(ctx, 'BOOK ' + ['I', 'II', 'III'][bookOf(id) - 1] + '  -  LOCKED', 18, 190, '#8a92b8');
+      let yl = 204; SW.wrap(unlockInfo(id).why || '', 440).slice(0, 3).forEach(l => { txt(ctx, l, 18, yl, '#f5c542', { raw: true }); yl += 10; });
     } else {
-      txt(ctx, 'CHAPTER 1  -  ' + card[0].toUpperCase() + '  -  ' + card[1], 18, 188, '#8a92b8');
+      txt(ctx, 'BOOK ' + ['I', 'II', 'III'][bookOf(id) - 1] + '  -  ' + ROLE_NAME[roleOf(id)].toUpperCase() + (SG.meta().finished && SG.meta().finished[id] ? '  -  FINISHED' : '') + '  -  CHAPTER 1: ' + card[1], 18, 188, '#8a92b8');
       let y = 200; SW.wrap(card[2], 440).slice(0, 2).forEach(l => { txt(ctx, l, 18, y, '#e8ecf4', { raw: true }); y += 10; });
       const c3 = chap(id, 3), c5 = chap(id, 5);   // (both from the rewritten lines)
       txt(ctx, 'Rival: ' + nm(c3.rival) + '     The Big War: ' + nm(c5.foe), 18, 226, '#c8ccd8');

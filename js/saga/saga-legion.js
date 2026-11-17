@@ -59,6 +59,10 @@
   SG.FOES = SG.FOES || {};
   SG.FOES[3] = [0, 1, 2].map(() => ({ basic: ok(['hollow_soldier', 'hollow_soldier', 'hollow_archer', 'hollow_drone']), tough: ok(['hollow_lancer', 'hollow_walker']), cap: ok(['hollow_walker']) }));
 
+  // the Holders' finale: the captain of the Legion's last assault on their home (design section 13)
+  if (E.brute) E.siege_captain = Object.assign({}, E.brute, { name: 'SIEGE WALKER CAPTAIN', sub: "The Legion's last assault", sheet: 'sg_siege_captain', sheet2: undefined,
+    hp: Math.round(E.brute.hp * 4.5), dmg: Math.round((E.brute.dmg || 10) * 1.3), xp: 300, creds: 120, w: 22, h: 50 });
+
   // ================= Sovereign Vael =================
   E.vael = { name: 'SOVEREIGN VAEL', sub: 'The Hollow Crown', sheet: 'sg_vael', sheet2: 'sg_vael', hp: 2400, dmg: 15, speed: 1.15, xp: 900, creds: 0, idle: 22, w: 20, h: 56, counter: 1.25,
     script: [['volley', { n: 4, kind: 'crescent', col: VIOLET, speed: 4.4, gap: 12 }, [1, 2]], ['swings', { n: 3, reach: 66, col: '#e8d8ff' }, [3, 1]],
@@ -115,6 +119,7 @@
     try {
       LEGION.forEach(([id, src]) => { const s = E[src]; if (s) bake('sg_' + id, s.sheet, 0.12); });
       bake('sg_vael', 'director', 0.08, 1.5);
+      if (E.brute) bake('sg_siege_captain', E.brute.sheet, 0.1, 1.35);
     } catch (e) { console.error(e); }
     return out;
   };

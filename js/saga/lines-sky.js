@@ -93,27 +93,32 @@
           ['hero', "Again. One more verse."]
         ] },
       6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Nyra beats Itsuki, Vael's last champion, then the Convergence and Vael, and her last note brings the crown-ship down and slams the door.",
+        card: "Nyra goes up into the Crown with the other five saviours, gets past Itsuki on the path, and sings her winter into the six-element blow that brings Vael down.",
         intro: [
-          ['sys', "The Crater. Aurelia, the Surface and Deepline stand together on the rim. The Hollow Legion pours down out of the crown-ship."],
-          ['isolde', "Low, chick. Keep the voice low and the blade cold. There are a lot of them."],
-          ['hero', "Then I'll sing louder. Everyone Halcyon ever numbered, with me!"]
+          ['sys', "The Crater. The Hollow Legion pours down out of the crown-ship. Three layers hold the rim, and six go up through the middle."],
+          ['kael', "Nyra. Twice I thought you were my enemy. Today you're at my back. Don't fall behind."],
+          ['hero', "I spent a year in a tank. I'm done waiting. Pyra, Gale, Brakk, Nami: with us. Up."],
+          ['pyra', "Hot side's mine. Sing loud, ice girl, so I can hear where you are."],
+          ['hero', "Low voice, cold blade. Isolde taught me that. ...Fine. Loud, just this once."]
         ],
         meet: [
-          ['sys', "Under the Crown, a man in a long black coat waits on the path. Five elements turn around him. Nobody gets past."],
-          ['itsuki', "Itsuki. I beat five of your best in the Ash Dunes. You will be six. Step aside and you won't."],
-          ['hero', "I've stepped aside my whole life. Tank thirty-one doesn't do that any more."],
-          ['itsuki', "Then come. I'd rather learn from you than walk around you."]
+          ['sys', "At the foot of the Crown, a man in a long black coat waits on the path. Five elements turn slowly around him."],
+          ['itsuki', "Itsuki. I am the last thing between you and him. Five worlds taught me. You are six children with one each."],
+          ['hero', "Six of us, and we each kept ours. Tank thirty-one doesn't step aside any more."],
+          ['itsuki', "Then show me what you kept."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, in pieces. The crown-head, last. One note left. Winter. Shatterline."],
-          ['sys', "The last note hits Vael. His crown-ship tips and falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it. Itsuki goes last, still looking at Nyra."],
-          ['isolde', "You flew that yourself, chick. Every inch."],
+          ['sys', "Itsuki slides back across the stone, looks at the six, and steps off the path. Not beaten. Waiting to see."],
+          ['sys', "Inside the crown-ship, the Convergence and Sovereign Vael stand side by side. The six go in together."],
+          ['hero', "Kael's thunder, Pyra's fire, Gale's wind, Brakk's stone, Nami's tide. And my winter. All at once. NOW."],
+          ['sys', "Six elements strike Vael as one. The crown-ship tips and falls into the Crater, and the door to the Beyond slams shut."],
+          ['sys', "The door pulls the Legion and every champion back through it. Itsuki goes last, still looking at the six."],
+          ['sys', "The morning after. Nyra walks back into the Hydro Ward, past the empty tanks, to the beds that could not run."],
+          ['hero', "I promised Maren I'd come back for you. Here I am. Up, everyone, slowly. Nobody has a number today."],
           ['hero', "Subject thirty-one. Free."]
         ],
         lose: [
-          ['itsuki', "Good. Get up and show me that again."]
+          ['itsuki', "Not enough. Get up, singer. The other five are still waiting for you."]
         ] }
     },
 
@@ -198,23 +203,28 @@
         lose: [
           ['corvin', "The crows have landed, falconer. Time to stop flying."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Isolde beats Itsuki, then the Convergence and Vael; her falcon finds the seam, the crown-ship falls, and the door drags the champions home.",
+      6: { goal: "Hold the Crater against Itsuki",
+        card: "Isolde holds the Crater rim while Nyra and the other saviours go up, then stands in Itsuki's way with her falcon until the crown-ship falls.",
         intro: [
-          ['sys', "The Crater. The three layers stand on the rim together, and the Hollow Legion pours down from the crown-ship."],
-          ['nyra', "Low and cold, Isolde. You taught me."],
-          ['hero', "Then show me. Falcon first. Then us."]
+          ['sys', "The Crater. The Hollow Legion pours down from the crown-ship, rank on rank. The three layers hold the rim."],
+          ['sys', "Six go up through the middle of it, toward the Crown. Nyra is one of them."],
+          ['nyra', "Isolde. Will you watch me?"],
+          ['hero', "No, chick. I will be busy. You fly it yourself. Up, little one. Keep the rim clear for them."]
         ],
         meet: [
-          ['itsuki', "A falconer. Your bird is fast. I am faster, and I am not angry with anyone. Step aside."],
-          ['hero', "You beat Brann in the Dunes. That man never stops shouting. He has stopped. You will answer for that."],
-          ['itsuki', "He fought well. Five worlds taught me. Let's see if one more does."]
+          ['sys', "Halfway up, a man in a long black coat turns and comes back down the path after the six."],
+          ['itsuki', "Falconer. They are past me. I am going after them. Step aside."],
+          ['hero', "You put Brann on the sand in the Dunes. That man never stops shouting. He has stopped. You go nowhere."],
+          ['itsuki', "Then hold me, if you can. Not many have."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, down. Now the crown-head. Down, little one. Find the seam. There."],
-          ['sys', "Falcon and blade strike Vael together. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door pulls the Legion and every champion back through. The crows go with their master. Itsuki goes last."],
-          ['hero', "Nyra flew her own way through it. Aldric held. The harbour would be proud."],
+          ['sys', "Ice and talon, over and over. Itsuki looks up at the Crown, then at Isolde, and turns back up the path."],
+          ['itsuki', "Long enough. You held me long enough, falconer. That is rare."],
+          ['sys', "From the rim, Isolde watches the crown-ship tip and fall into the Crater. The door to the Beyond slams shut."],
+          ['sys', "It pulls the Legion and every champion back through. The crows go first. Itsuki goes last."],
+          ['hero', "She flew it herself. Of course she did."],
+          ['sys', "The morning after. Isolde climbs to the top of the Skyport, where the wind smells of the harbour's old sky."],
+          ['hero', "Home can wait a little. Up, little one. Show me this city from above, now that it is ours."],
           ['hero', "My falcon never misses."]
         ],
         lose: [
@@ -302,23 +312,28 @@
           ['mika', "Down you go, little wind."]
         ] },
       6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Gale beats Itsuki, then the Convergence and Vael; his dive brings the crown-ship down, and the door drags the Legion and the champions home.",
+        card: "Gale goes up into the Crown with the other five saviours, gets past Itsuki on the path, and puts the wind into the six-element blow that brings Vael down.",
         intro: [
-          ['sys', "The Crater. Sky, Surface and Deepline on one rim. The Hollow Legion pours out of the crown-ship like a waterfall."],
-          ['sora', "High route's mine. Don't follow me!"],
-          ['hero', "Following you is the whole plan, little sister."]
+          ['sys', "The Crater. The Hollow Legion pours out of the crown-ship like a waterfall. Six go up through the middle of it."],
+          ['sora', "High route's mine. Don't foll- ...No. Today you go up. I hold the rim. Go."],
+          ['hero', "Huh. No hovering. Okay. Kael, Nyra, Pyra, Brakk, Nami: the wind's carrying us. Hang on."],
+          ['brakk', "Stone does not fly, wind boy."],
+          ['hero', "It does today."]
         ],
         meet: [
-          ['itsuki', "Wind. I learned wind already, on another world. Yours is younger. Step aside."],
+          ['sys', "At the foot of the Crown, Itsuki waits on the path. The wind around Gale dies, and around Itsuki it rises."],
+          ['itsuki', "Wind. I learned it on another world. Yours is young. Step aside, all six of you."],
           ['hero', "You put Tarn on the sand in the Dunes. He'll never let me hear the end of who paid you back."],
           ['itsuki', "Then let's give him something to argue about."]
         ],
         win: [
-          ['hero', "Itsuki on his back, the Director in pieces, and one crown-head left. Updraft... and DOWN."],
-          ['sys', "Gale's dive hits Vael like a falling storm. The crown-ship falls into the Crater, and the door slams shut."],
+          ['sys', "Itsuki skids back to the edge of the path and lowers his hands. He lets the six pass. He does not look beaten."],
+          ['sys', "Inside, the Convergence and Sovereign Vael wait side by side. Six walk in together."],
+          ['nami', "Water. Kael, thunder. Pyra, fire. Brakk, stone. Nyra, sing. Gale... everything you've got."],
+          ['hero', "Updraft... and DOWN! All six, one blow!"],
+          ['sys', "Six elements hit Vael as one. The crown-ship falls into the Crater, and the door to the Beyond slams shut."],
           ['sys', "The door pulls the Legion and every champion back through it, Mika first and Itsuki last."],
-          ['sora', "You're hovering again."],
-          ['hero', "Always. And tell Bando I still owe him a kite. I'm good for it."],
+          ['hero', "Next morning Sora lands first. Bando gets his kite, Tarn gets race thirteen, and my sister gets hovered at. Forever."],
           ['hero', "The wind picked me. Not you."]
         ],
         lose: [
@@ -406,23 +421,28 @@
         lose: [
           ['vega', "Kneel, knight. Gravity always wins."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Aldric holds the line, beats Itsuki, the Convergence and Vael, and his Skysplitter brings the crown-ship down into the Crater.",
+      6: { goal: "Hold the Crater against Itsuki",
+        card: "Aldric's knights hold the Crater rim while the six go up; when Itsuki comes down after them, Aldric plants his feet on the path and holds him.",
         intro: [
-          ['sys', "The Crater. The three layers form one line on the rim. The Hollow Legion comes down from the crown-ship, rank on rank."],
+          ['sys', "The Crater. The Hollow Legion comes down from the crown-ship, rank on rank. The three layers form one line on the rim."],
           ['hero', "Knights. One more wall. Every soul behind us is a soul we swore to."],
-          ['vesper', "I lit the way down here, knight. Go and hold it."]
+          ['sys', "Six go through the line and up toward the Crown. The harbour girl from the tanks is one of them."],
+          ['hero', "Go, Nyra. The wall holds behind you. Nobody follows you up."]
         ],
         meet: [
-          ['itsuki', "A knight. You plant your feet well. I've moved mountains on another world. Step aside."],
+          ['sys', "A man in a long black coat comes back down the path after the six. The Legion parts for him."],
+          ['itsuki', "A knight. You plant your feet well. They have gone up, and I am going after them. Step aside."],
           ['hero', "I have never once stepped aside for harm. You will not be the first."],
           ['itsuki', "Good. I hoped someone here would say that."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Convergence, down. Now the crown-head. Skysplitter. Three times."],
-          ['sys', "The third strike cleaves Vael's armour. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "It drags the Legion and every champion back through. Itsuki goes last, with a nod to the knight."],
+          ['sys', "Blow after blow, and the knight does not move. Itsuki looks up at the Crown, then turns and climbs back toward it."],
+          ['itsuki', "You held. Long enough. Keep your feet, knight."],
+          ['sys', "From the rim, the knights watch the crown-ship fall into the Crater. The door to the Beyond slams shut."],
+          ['sys', "It pulls the Legion and every champion back through. Itsuki goes last, with a nod down at the knight."],
           ['hero', "We stood between. At last. Every one of us."],
+          ['sys', "The morning after. Aldric walks the wards under Vesper's lamps. His knights carry beds now, not blades."],
+          ['hero', "A falcon on the gate and the Subjects walking free. A wall again. A better one."],
           ['hero', "My oath is kept."]
         ],
         lose: [
@@ -509,22 +529,28 @@
           ['lux', "Too dim, little fire. Fade."]
         ] },
       6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Pyra out-burns Itsuki, then the Convergence and Vael; her fire brings the crown-ship down, and the door drags every champion home.",
+        card: "Pyra goes up into the Crown with the other five saviours, out-burns Itsuki on the path, and puts the fire into the six-element blow that brings Vael down.",
         intro: [
           ['sys', "The Crater. Sky, Surface and Deepline on one rim, and the Hollow Legion pouring down out of the crown-ship."],
-          ['ashka', "Sister. Together. The core burns hotter than anything in there."],
-          ['hero', "Then let's show them what Halcyon tried to bottle."]
+          ['ashka', "Go up, sister. I'll hold the rim. The core burns hotter than anything in there."],
+          ['hero', "I know. Kael, Nyra, Gale, Brakk, Nami. Six of us. Somebody try to keep up with me."],
+          ['nyra', "I remember who carried me out of the Burn Ward, Pyra. Today I carry the song."],
+          ['hero', "Deal. Hot side's mine."]
         ],
         meet: [
+          ['sys', "At the foot of the Crown, Itsuki waits on the path. A small flame turns in his palm, perfectly still."],
           ['itsuki', "Fire. I learned it first, on another world. Yours is wild. Mine isn't. Step aside."],
           ['hero', "Wild's the whole point. Nobody's bottling this one."],
           ['itsuki', "Then let's see whose fire is hotter."]
         ],
         win: [
-          ['hero', "Itsuki down. The Director in pieces. And the crown-head, last. Too hot for him too."],
-          ['sys', "Pyra's fire goes up through Vael's armour. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
+          ['sys', "Itsuki's flame gutters. He steps back off the path, almost smiling, and lets the six go in."],
+          ['sys', "Inside the crown-ship, the Convergence and Sovereign Vael stand together. Six walk in to meet them."],
+          ['hero', "Brakk, stone. Nami, water. Gale, wind. Kael, thunder. Nyra, sing. And fire. All of it. Now!"],
+          ['sys', "Six elements hit Vael as one. The crown-ship falls into the Crater, and the door to the Beyond slams shut."],
           ['sys', "The door drags back the Legion and every champion. Lux's white light goes with them. Itsuki is the last through."],
-          ['hero', "Ashka, we're both out of our bottles. Kestra... fine. The bird's big enough for two."],
+          ['sys', "The morning after. Pyra lights the old Burn Ward furnace again. This time it bakes bread."],
+          ['hero', "Ashka's on the Crater rim, watching the sky. Kestra wants fight thirteen. Elixa's still on the list. ...Lower down."],
           ['hero', "Too hot for you?"]
         ],
         lose: [
@@ -612,23 +638,27 @@
         lose: [
           ['lux', "Your light was always too small, archer. Go dark."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Yara beats Itsuki, then the Convergence and Vael; one long draw goes through Vael, and the crown-ship falls into the Crater.",
+      6: { goal: "Hold the Crater against Itsuki",
+        card: "Yara holds the Crater rim while the six go up; when Itsuki comes down after them, she keeps him on the path one arrow at a time until the Crown falls.",
         intro: [
-          ['sys', "The Crater. The three layers on one rim. The Hollow Legion pours down from the crown-ship in endless ranks."],
+          ['sys', "The Crater. The Hollow Legion pours down from the crown-ship in endless ranks. The three layers hold the rim."],
+          ['sys', "Six go up through the middle of it. Pyra is one of them, still scorched from Lux's light."],
           ['hart', "Keep your distance, Yara. I'll keep it for you."],
-          ['hero', "Every step they take toward us, my arrows hit harder. Lamp's lit."]
+          ['hero', "Then I'll keep theirs. Go, Pyra. Every step you climb, I'm watching the path behind you. Lamp's lit."]
         ],
         meet: [
-          ['itsuki', "An archer who never misses. I've heard. I learned wind on another world. It moves arrows."],
+          ['sys', "A man in a long black coat comes back down the path after the six. The arrows already in the air turn aside."],
+          ['itsuki', "An archer who never misses. I learned wind on another world. It moves arrows. Step aside."],
           ['hero', "You put Jax on the sand in the Dunes. He owes me two drinks. I'm collecting for him."],
           ['itsuki', "Then shoot, and we'll see whose wind it is."]
         ],
         win: [
-          ['hero', "Itsuki down. The Director down. One crown-head, one breath. The longest draw I've ever held."],
-          ['sys', "The arrow goes straight through Vael. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it. Itsuki is the last to go."],
-          ['hero', "Every ship I ever guided home... this is what it was for. Lights on, everybody."],
+          ['sys', "Arrow after arrow, from a mile, from ten paces. Itsuki never reaches her. At last he turns back up toward the Crown."],
+          ['itsuki', "You kept me down here long enough. They will be inside by now. Well shot."],
+          ['sys', "From the rim, Yara watches the crown-ship fall into the Crater. The door to the Beyond slams shut."],
+          ['sys', "It pulls the Legion and every champion back through. Itsuki goes last."],
+          ['sys', "The morning after. Yara climbs the Skyport tower and lights the old beacon for the first time in a year."],
+          ['hero', "Every ship, every skiff, every runaway: this way home. Jax, Hart, the drinks are on me. For once."],
           ['hero', "Meridian. Your last light."]
         ],
         lose: [
@@ -716,27 +746,24 @@
         lose: [
           ['corvin', "Wet paper. Torn wings. It is written."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, both Kiris beat Itsuki, then the Convergence and Vael; the Paper Dragon brings the crown-ship down, and the door drags the champions home.",
+      6: { goal: "Hold your home against the Legion",
+        card: "While the sky over the Crater burns, the Legion's last assault hits the Paper Shrine; both Kiris hold the wishes of the dead against a Siege Walker.",
         intro: [
-          ['sys', "The Crater. Sky, Surface and Deepline stand on one rim. The Hollow Legion pours down out of the crown-ship."],
-          ['hero', "Last delivery, Paper Post! One crane each, all the way to the crown-ship."],
-          ['sora', "High route's mine!"]
+          ['sys', "The Paper Shrine, under Deepline. Far above, the sky over the Crater burns. Down here, the Hollow Legion comes for the wishes."],
+          ['hero', "The Paper Post flew every letter up to the Crater. Somebody had to stay home and guard the shrine. Two somebodies."],
+          ['hero', "Okay, wishes. Nobody burns you. Fold, both of us!"]
         ],
         meet: [
-          ['itsuki', "Two of you. Interesting. On one world I learned to fight ten. Step aside, both of you."],
-          ['hero', "Kael says you held him longest in the Dunes. Kael doesn't say that about anybody."],
-          ['itsuki', "He was good. Show me if paper is better."]
+          ['sys', "The shrine floor shakes. A Siege Walker shoulders through the door, and the Legion forms up behind it."],
+          ['hero', "That's the big one. Paper beats rock. Probably. Let's find out!"]
         ],
         win: [
-          ['hero', "Itsuki down, the Director down, and the crown-head's left. Paper Dragon! Through everyone, both of us, twice!"],
-          ['sys', "The Paper Dragon hits Vael. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it. Itsuki is the last."],
-          ['hero', "Every wish from the shrine got carried up. Every letter got sent. Bow, other me."],
+          ['sys', "The Siege Walker goes down among the cranes. Then every Legion soldier in the shrine stops at once and goes still."],
+          ['sys', "A crane drops down the Vent Stacks into Kiri's hands, in Sora's writing: The sky's closed. They're gone. All of them."],
+          ['hero', "Gone. ...Hear that, wishes? Quiet. Real quiet."],
+          ['sys', "The morning after. Kiri folds the last wish in the shrine into a crane, and both of her carry it up into the sun."],
+          ['hero', "Every wish gets delivered. That's the Post. Next stop Vharra, the day the way home opens. With a LOT of cranes."],
           ['hero', "Folded and finished!"]
-        ],
-        lose: [
-          ['itsuki', "Two of you, and still not enough. Again."]
         ] }
     },
 
@@ -816,27 +843,24 @@
         lose: [
           ['mira', "You burned a reflection, phoenix. The reflection wins."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Kestra beats Itsuki, then the Convergence and Vael; her Phoenix Dive brings the crown-ship down, and the door drags the champions home.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault comes down into the Ballast Decks; Kestra dances the Sky Clan's fire against a Siege Walker to keep the undercroft standing.",
         intro: [
-          ['sys', "The Crater. Three layers on one rim, and the Hidden Clans' banner beside them. The Hollow Legion pours down."],
-          ['lin', "Breathe, sister. Fire first."],
-          ['hero', "Then the fan to make it worse. Sky Clan, rise!"]
+          ['sys', "The Ballast Decks. Far off, the sky over the Crater burns. Down the cables, the Hollow Legion pours into the undercroft."],
+          ['lin', "Three beams already scorched, Kestra. The city sits on those."],
+          ['hero', "Then I burn the Legion, not the beams. Sky Clan! Fire first, then the fan to make it worse."]
         ],
         meet: [
-          ['itsuki', "A dancer with fire. I learned fire first, on another world. It danced less. Step aside."],
-          ['hero', "My family danced this fire for a hundred years under a city that never knew. I'm not stepping anywhere."],
-          ['itsuki', "Then dance."]
+          ['sys', "The deck groans. A Siege Walker climbs down out of the cables, and every hollow soldier turns behind it."],
+          ['hero', "Big, slow, and made of nothing. A hundred years we danced down here. You don't get the floor."]
         ],
         win: [
-          ['hero', "Itsuki down, the Director down. The crown-head last. Phoenix Dive! Down on him like a falling sun!"],
-          ['sys', "The dive hits Vael like a falling sun. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through, Mira and her mirrors with them. Itsuki is the last."],
-          ['hero', "The undercroft can come up for good now. And Pyra? Two tails. Fine."],
+          ['sys', "The Siege Walker falls burning off the edge of the deck. Then the pylons hum a new note, and the light changes."],
+          ['sys', "Through the ballast vents, the far violet sky over the Crater closes like an eye. The Legion goes still."],
+          ['lin', "It's over. Breathe, sister."],
+          ['sys', "The morning after. The Sky Clan carries its fans up through the Noble Ring's floor, in daylight, on purpose."],
+          ['hero', "No more hiding under the gold. And Pyra owes me fight thirteen. In daylight. Where everyone can watch."],
           ['hero', "Rise again? Not you."]
-        ],
-        lose: [
-          ['itsuki', "Pretty. Not enough. Rise and try again."]
         ] }
     },
 
@@ -921,23 +945,26 @@
         lose: [
           ['mika', "Up here, kite girl, no string is long enough."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Sora beats Itsuki, then the Convergence and Vael; a thousand kites bring the crown-ship down, and the door drags the champions home.",
+      6: { goal: "Hold the Crater against Itsuki",
+        card: "Sora lets Gale go up into the Crown with the six, holds the Crater rim from the air, and keeps Itsuki on the path with a thousand kites until the Crown falls.",
         intro: [
-          ['sys', "The Crater. Sky, Surface and Deepline together on the rim. The Hollow Legion pours out of the crown-ship."],
-          ['gale', "Low route's mine. Don't follow me!"],
-          ['hero', "That's MY line! ...Fine. Paper Post, go!"]
+          ['sys', "The Crater. The Hollow Legion pours out of the crown-ship. The three layers hold the rim, and six go up the middle."],
+          ['gale', "Sora. I'm going up with them. Don't follow me."],
+          ['hero', "That's MY line. ...Go. For once I'll stay put. Paper Post, keep the sky over the rim clear!"]
         ],
         meet: [
-          ['itsuki', "Kite girl. I learned wind on another world. It does not need a string. Step aside."],
-          ['hero', "My brother says wind doesn't need anything. It just picks people. It picked us."],
+          ['sys', "A man in a long black coat comes back down the path after the six. The wind turns to follow him."],
+          ['itsuki', "Kite girl. I learned wind on another world. It does not need a string. Your brother is up there. Step aside."],
+          ['hero', "My brother says wind doesn't need anything. It picks people. It picked us. You don't go after him."],
           ['itsuki', "Then let's see who it picks today."]
         ],
         win: [
-          ['hero', "Itsuki down, the Director down, crown-head last. A Thousand Kites! Cut, cut, cut, and drop!"],
-          ['sys', "A thousand kites come down on Vael. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through, Mika too, still in the air. Itsuki goes last."],
-          ['hero', "Gale, stop hovering. Bando, fine, you saved me. Once."],
+          ['sys', "A thousand kites tangle the path. Itsuki cuts through every one, looks up, and climbs back toward the Crown."],
+          ['itsuki', "Long enough, kite girl. Your brother has his chance. Keep your string."],
+          ['sys', "From the air over the rim, Sora watches the crown-ship fall into the Crater. The door to the Beyond slams shut."],
+          ['sys', "It pulls the Legion and every champion back through, Mika still in the air. Itsuki goes last."],
+          ['sys', "The morning after. Gale lands on the rim with his hair singed, and Sora comes down to meet him. Almost."],
+          ['hero', "One toe off the ground. That's as close as it gets, brother. Now stop hovering. ...No. Don't."],
           ['hero', "Never touched the ground."]
         ],
         lose: [
@@ -1024,27 +1051,23 @@
         lose: [
           ['mika', "You missed a step, little dancer."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Coda dances past Itsuki, then the Convergence and Vael; her last ribbon brings the crown-ship down on the last toll of Oda's bell.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault hits the Noble Ring opera; Coda dances its Siege Walker down on the beat, then hears Oda's bell say the sky has closed.",
         intro: [
-          ['sys', "The Crater. The three layers stand together on the rim, and the Hollow Legion pours down from the crown-ship."],
-          ['sys', "Across the Surface, Oda's bell rings. Coda counts the tolls with her feet, the way she did as a child."],
-          ['hero', "Music, please. The finale."]
+          ['sys', "The Noble Ring opera. Far off, the sky over the Crater burns. The Hollow Legion pours in through the great doors."],
+          ['hero', "The audience is still in the boxes. Nobody leaves this house hurt. Music, please. Last act."]
         ],
         meet: [
-          ['itsuki', "A dancer. On one world they taught me thunder by rhythm. Yours is good. Step aside."],
-          ['hero', "I've stepped where I was told my whole life. This is the one step I choose."],
-          ['itsuki', "Then choose it well."]
+          ['sys', "The stage splits. A Siege Walker climbs up through the trapdoor, and the hollow soldiers fall into step behind it."],
+          ['hero', "You walk on the beat. That's your mistake. I own the beat now."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, down. The crown-head, last. Finale. Ribbons everywhere, every beat a cut."],
-          ['sys', "The last ribbon cuts on the last toll. Vael's crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it. Itsuki is the last to go."],
-          ['hero', "Oda's bell, all the way up here. One toll. I'm coming home to count the rest."],
+          ['sys', "The Siege Walker falls across the footlights. Then every hollow soldier in the house stops mid-step and goes still."],
+          ['sys', "Far below, faint through the broken roof, Oda's bell rings. Once. Coda counts it with her feet."],
+          ['hero', "One toll. The sky's closed. They're gone."],
+          ['sys', "The morning after. Coda takes the first Skylift car down, alone, with no string on any step."],
+          ['hero', "A temple, a bell, and an old man who taught me to count. I'm coming home to count the rest."],
           ['hero', "And... curtain."]
-        ],
-        lose: [
-          ['itsuki', "You lost the beat. Find it again."]
         ] }
     },
 
@@ -1126,27 +1149,25 @@
         lose: [
           ['corvin', "The house has fallen, gambler. Omen fulfilled."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Zara beats Itsuki, then the Convergence and Vael; she goes all in, the last card is a ten, and the crown-ship falls into the Crater.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault comes for the House Edge and everyone hiding in it; Zara deals with its Siege Walker, Lin behind her chair, until the sky closes.",
         intro: [
-          ['sys', "The Crater. Sky, Surface and Deepline on one rim. The Hollow Legion pours down from the crown-ship like rain."],
-          ['lin', "I'm behind your chair, Zara. As always."],
-          ['hero', "Then the House is open. Everybody in."]
+          ['sys', "The House Edge. Far off, the sky over the Crater burns. Half the Noble Ring is hiding under Zara's card tables."],
+          ['lin', "Legion on the stairs, Zara. A lot of it."],
+          ['hero', "Then the House is open, darlings. Everybody in. Nobody out but the Legion."]
         ],
         meet: [
-          ['itsuki', "A card player. I don't gamble. On five worlds, I've never needed to. Step aside."],
-          ['hero', "You beat Jax in the Dunes. He's the only man who ever stacked a deck on me. That makes it personal."],
-          ['itsuki', "Then deal."]
+          ['sys', "The doors come off their hinges. A Siege Walker ducks into the card room, and the chandeliers shake."],
+          ['hero', "Big stack, no face. Lin, behind my chair. Deal me in."]
         ],
         win: [
-          ['hero', "Itsuki, folded. The Director, folded. The crown-head's the last hand. All In. And the last card's a ten."],
-          ['sys', "Every card in the deck hits Vael. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through, Itsuki last of all."],
-          ['hero', "Lin, open the House. Drinks for everyone. Jax too. Especially Jax."],
+          ['sys', "The Siege Walker goes down across the high-stakes table. Then the Legion on the stairs stops, every one, and stands still."],
+          ['sys', "A paper crane slides under the door, in Kiri's fold: the sky over the Crater is closed. They're gone."],
+          ['lin', "You won, Zara."],
+          ['hero', "Of course I did, darling. Pour something for everyone. Put it on the House."],
+          ['sys', "The morning after. Zara counts what's left in the vault and sends every coin of it down the Skylift."],
+          ['hero', "Jax will say I finally paid my tab. Tell him not to get used to it."],
           ['hero', "The house always wins."]
-        ],
-        lose: [
-          ['itsuki', "Luck runs out. Skill doesn't. Again."]
         ] }
     },
 
@@ -1228,27 +1249,24 @@
         lose: [
           ['vega', "Even doctors fall."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Maren beats Itsuki, then the Convergence and Vael; her Spring Tide brings the crown-ship down, and the door drags the champions home.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault hits the Hydro Ward, where the patients who cannot run are still in bed; Maren stays in the room and holds off its Siege Walker.",
         intro: [
-          ['sys', "The Crater. The three layers stand together on the rim. The Hollow Legion pours down out of the crown-ship."],
-          ['nami', "I'm on your back, doctor. Like always."],
-          ['hero', "Good. Those soldiers were people once, Nami. Husks, by the million. Somebody made them that way."]
+          ['sys', "The Hydro Ward. Far off, the sky over the Crater burns. The Hollow Legion comes down the corridor, bed by bed."],
+          ['hero', "Beds four through nine still can't walk. Neither can half the ward. Then I'm not leaving the room."],
+          ['hero', "Tide's coming in. The doctor is in."]
         ],
         meet: [
-          ['itsuki', "A doctor. You heal what I break. That will take you a long time. Step aside."],
-          ['hero', "Ivo and Brann came off the Dunes on stretchers. I set their bones. I've seen your work. Now see mine."],
-          ['itsuki', "Fair."]
+          ['sys', "The ward doors buckle. A Siege Walker ducks into the room, and the water in the basins begins to shake."],
+          ['hero', "This is a hospital. Lower your voice."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, down. The crown-head, last. Spring Tide. In four times, and out."],
-          ['sys', "The tide goes in through Vael's armour. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it. Itsuki goes last."],
+          ['sys', "Maren's tide drives the Siege Walker back through the doors and down. Then the Legion in the corridor goes still."],
+          ['sys', "Through the ward windows, the far violet sky over the Crater closes. The light on the beds turns plain and warm."],
           ['hero', "Somebody check the wards. ...They're breathing. All of them."],
+          ['sys', "The morning after. Nyra comes back, as she promised, with a crowd of freed Subjects to carry the beds out."],
+          ['hero', "Everyone out, into the sun, slowly. Me last. Then I sleep for a week."],
           ['hero', "Doctor's orders: rest."]
-        ],
-        lose: [
-          ['itsuki', "Heal yourself first. Then again."]
         ] }
     },
 
@@ -1329,27 +1347,24 @@
         lose: [
           ['mira', "Your flasks are glass, chemist. Glass is mine."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Elixa beats Itsuki, then the Convergence and Vael; her Magnum Opus brings the crown-ship down, and the door drags the champions home.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault hits the Burn Ward labs, where Elixa is brewing her cure for the Husks; she defends the work and burns down its Siege Walker.",
         intro: [
-          ['sys', "The Crater. Sky, Surface and Deepline on one rim. The Hollow Legion pours down out of the crown-ship."],
-          ['hero', "Husks, by the million. Same symptoms, same cause, same kind of engine."],
-          ['ume', "The spores are ready. Your cure, chemist. Throw it."]
+          ['sys', "The Burn Ward labs. Far off, the sky over the Crater burns. The Hollow Legion pours in through the broken windows."],
+          ['hero', "Twelve flasks of Ume's spores. A cure for the Husks, half finished. Nobody touches my bench."],
+          ['hero', "Red burns, blue freezes. Green, today, for anything hollow that comes near my cure."]
         ],
         meet: [
-          ['itsuki', "An alchemist. I learned earth and water on two worlds. You mix them in a glass. Step aside."],
-          ['hero', "You beat five people in the Ash Dunes. I'd love to know how. Professionally."],
-          ['itsuki', "Then watch closely."]
+          ['sys', "The floor cracks. A Siege Walker shoulders through the Burn Ward wall, and the flasks on the bench start to rattle."],
+          ['hero', "A very large sample. Fascinating. Hold still."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, down. The crown-head, last. Magnum Opus. Every colour, every reaction."],
-          ['sys', "Every flask hits Vael at once. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it, Itsuki last of all."],
-          ['hero', "Pyra, cross me off the list. Maren, check the flasks. Ume, more spores. Lots more."],
+          ['sys', "Every colour at once. The Siege Walker goes down in the smoke, and the Legion behind it stops dead."],
+          ['sys', "Through the smoke, the light changes. The violet over the Crater is gone. The sky has closed."],
+          ['hero', "They're gone. Good. Back to work. The Husks are still waiting on the feed lines."],
+          ['sys', "The morning after. Elixa carries her first finished flask down to the feed lines, with Ume's spores and Maren's hands."],
+          ['hero', "One Husk, one dose. Breathing. ...Blinking? Write it down. Write everything down."],
           ['hero', "Results: conclusive."]
-        ],
-        lose: [
-          ['itsuki', "Interesting reaction. Not enough. Again."]
         ] }
     },
 
@@ -1434,27 +1449,24 @@
         lose: [
           ['tessa', "I've seen this ending before. You lose here."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Isa beats Itsuki, then the Convergence and Vael; her Binding Script holds Vael as the crown-ship falls, and Kessen seals the door.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault hits the Archive, where the Subjects' names are written; Isa seals the stacks against its Siege Walker until the sky closes.",
         intro: [
-          ['sys', "The Crater. The three layers stand together on the rim. The Hollow Legion pours down out of the crown-ship."],
-          ['lin', "Your brush hand, Isa. I have it."],
-          ['hero', "Always. And Sen holds the Deepline line. One word, one line. Ready."]
+          ['sys', "The Archive. Far off, the sky over the Crater burns. The Hollow Legion breaks in among the stacks."],
+          ['hero', "Every name I gave back with the Final Word is written here. Hollow hands don't touch them."],
+          ['hero', "One line. Nobody crosses it."]
         ],
         meet: [
-          ['itsuki', "A scholar. Your ink holds a city's laws. It won't hold me. Step aside."],
-          ['hero', "I drew a line in the Old Metro that Sen couldn't cross. You beat five people in the Dunes. Let's see."],
-          ['itsuki', "Draw it."]
+          ['sys', "The shelves topple. A Siege Walker wades through the paper toward the names, and the soldiers follow in its wake."],
+          ['hero', "That page is not yours. Nothing in this room is."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, down. The crown-head, last. Binding Script. Every letter of his name. Hold."],
-          ['sys', "The script binds Vael where he stands. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it. Itsuki goes last. Kessen seals what is left."],
-          ['hero', "Sen, I'll write you tonight. One line will do."],
+          ['sys', "The seal closes around the Siege Walker, and it falls among the stacks. Then the Legion stops mid-stride and goes still."],
+          ['sys', "A paper crane drifts in through the high window and lands on the open ledger. Kiri's fold. The sky has closed."],
+          ['hero', "Gone, all of them. And not one name lost."],
+          ['sys', "The morning after. Isa sits at her desk with fresh ink and an empty page."],
+          ['hero', "Sen. One line, as always: It held. Come up and see the names. ...Two lines. He'll forgive me."],
           ['hero', "Written, sealed, done."]
-        ],
-        lose: [
-          ['itsuki', "Your line moved. Draw it again."]
         ] }
     },
 
@@ -1534,27 +1546,25 @@
         lose: [
           ['mika', "Too slow, quiet one. Under the moons, I'm faster."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Lin beats Itsuki, then the Convergence and Vael; her Hundred Palms seal every seam, and the crown-ship falls into the Crater.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault pours down the cables into the Ballast Decks; Lin seals its Siege Walker strike by strike and keeps the undercroft and the Clan safe.",
         intro: [
-          ['sys', "The Crater. Three layers on one rim, and the Hidden Clans' banner beside them. The Hollow Legion pours down."],
-          ['kestra', "Fire first, sister!"],
-          ['hero', "Then the fan. Then me. Zara, Isa: stay behind me."]
+          ['sys', "The Ballast Decks. Far off, the sky over the Crater burns. The Hollow Legion climbs down the cables into the undercroft."],
+          ['kestra', "Let me burn them, Lin. Just a little. Just all of them."],
+          ['hero', "Not near the beams. Breathe, sister. I'll be quiet about it."]
         ],
         meet: [
-          ['itsuki', "Soft hands. I've met soft hands on another world. They hit hardest. Step aside."],
-          ['hero', "You beat Ivo in the Dunes. He trains before dawn to get past my seals. He'll want to know how you got past him."],
-          ['itsuki', "Then let's both learn something."]
+          ['sys', "A Siege Walker drops onto the deck. The beams groan under it, and the Clan's children run for the stair."],
+          ['hero', "Loud. Very loud. I only need to hear the fifth step."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, down. The crown-head, last. Hundred Palms. Every seam, every point. Sealed."],
-          ['sys', "Vael's armour seizes, seam by seam. His crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through it. Itsuki is the last to go."],
-          ['hero', "The Clan can come up. Nobody needs to hide under the gold any more."],
+          ['sys', "Five strikes, five sealed points. The Siege Walker kneels and does not rise. Then the Legion on the cables goes still."],
+          ['sys', "The pylons change their hum. Through the ballast vents the violet over the Crater closes, and plain daylight comes in."],
+          ['kestra', "That's it? That's the end of the world? I didn't even get to burn anything."],
+          ['hero', "You burned three beams. ...It's over, Kestra."],
+          ['sys', "The morning after. Lin walks the Clan up the hidden stair into the Noble Ring, past Zara's door, in daylight."],
+          ['hero', "A hundred years under the floor. Nobody hides now. Ivo can find me before dawn, if he wants a fourth try."],
           ['hero', "Breathe out."]
-        ],
-        lose: [
-          ['itsuki', "Soft. Not soft enough. Again."]
         ] }
     },
 
@@ -1638,27 +1648,23 @@
         lose: [
           ['corvin', "Every lamp goes out, lamplighter."]
         ] },
-      6: { goal: "Bring down the Hollow Crown",
-        card: "At the Crater, Vesper beats Itsuki, then the Convergence and Vael; a thousand cuts bring the crown-ship down, and Kessen seals the door behind it.",
+      6: { goal: "Hold your home against the Legion",
+        card: "The Legion's last assault hits the Night Ward and its dark alleys; Vesper lights every lamp and cuts its Siege Walker down where nobody sees her coming.",
         intro: [
-          ['sys', "The Crater. Sky, Surface and Deepline on one rim. The Hollow Legion pours down out of the crown-ship."],
-          ['aldric', "Seventy-seven. Light the way. We will hold it."],
-          ['hero', "Every lamp I have. Go."]
+          ['sys', "The Night Ward. Far off, the sky over the Crater burns. The Hollow Legion pours into the dark lower alleys."],
+          ['hero', "Thirty lamps by dawn, the first night. Tonight, every lamp in the Ward, and a red scarf between them."]
         ],
         meet: [
-          ['itsuki', "I can't see you. Nobody has hidden from me since my second world. Step out, or I'll bring you out."],
-          ['hero', "I'm already behind you. I lit the harbour for years and nobody saw who."],
-          ['itsuki', "Then I'll learn to see."]
+          ['sys', "A Siege Walker stamps down the alley, crushing the lamps one by one under its feet."],
+          ['hero', "You're putting out my lamps. Nobody does that."]
         ],
         win: [
-          ['hero', "Itsuki, down. The Director, down. The crown-head, last. Thousand Cuts. Already at the next lamp."],
-          ['sys', "A red scarf, a thousand cuts. Vael's crown-ship falls into the Crater, and the door to the Beyond slams shut."],
-          ['sys', "The door drags the Legion and every champion back through. Itsuki goes last. Kessen seals what is left."],
-          ['hero', "Somebody has to light the Crater now. I'll do it. Nobody needs to know who."],
+          ['sys', "A red scarf, a thousand cuts. The Siege Walker falls in the last dark alley. Then the Legion goes still."],
+          ['sys', "Up on the Ward roofs, Vesper watches the far violet over the Crater close. The night is only night again."],
+          ['hero', "Over. Nobody saw who. Good."],
+          ['sys', "The morning after. The Night Ward's doors stand open. Nobody locks Subject 77 in. Nobody needs to."],
+          ['hero', "Tonight I'll light the lamps anyway. Aldric's knights will be looking for who. Let them look."],
           ['hero', "You never saw me."]
-        ],
-        lose: [
-          ['itsuki', "There. I see you now. Again."]
         ] }
     }
 
