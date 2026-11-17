@@ -726,5 +726,6 @@
   "slow": { "es": "lenta", "zh": "卡顿" },
   "H: hazards on": { "es": "H: peligros activados", "zh": "H：机关开启" },
   "H: hazards off": { "es": "H: peligros desactivados", "zh": "H：机关关闭" },
-  "Hazards off: the layout only.": { "es": "Sin peligros: solo el escenario.", "zh": "机关已关闭：只保留场地布局。" }
+  "Hazards off: the layout only.": { "es": "Sin peligros: solo el escenario.", "zh": "机关已关闭：只保留场地布局。" },
+  "One ultimate left": { "es": "Te queda una definitiva", "zh": "剩余一次终极技" }
 }

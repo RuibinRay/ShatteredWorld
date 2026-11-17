@@ -552,6 +552,15 @@ The three invasion stages: Hard bot matches with no errors, 23 to 27% of a fight
 standing fighter about 30 px a second and a falling one about 80; Hard bots took 5 chain hits from 18 marks.
 versus.js shares its stage list (`V.STAGES`) so this file can add to it.
 
+## Awakening in Versus (`js/vsawaken.js`)
+
+In Versus an awakening (O) now holds one ultimate: the ultimate plays out, then the hero goes back to normal (or the
+awakening runs out of time first, as before). While awakened an ultimate costs much less than 300 energy, so one
+awakening used to hold several. The label "One ultimate left" shows under the awakened fighter's bars. The awaken meter
+also fills at half the rate per hit (taken or landed) in Versus. Training's endless mode is unchanged, and so is the
+story. Tested in bot matches: the awakening ends the frame after its ultimate; in one sample the meter gained 0.41 per
+point of damage against 0.61 before.
+
 ## How hits and shots read (`js/combatfeel.js`)
 
 - **Hit flash.** A fighter who was hit used to turn into a solid white silhouette for 7 to 10 frames (the 4-frame flash

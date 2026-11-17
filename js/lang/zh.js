@@ -4599,5 +4599,6 @@ SW.i18n.add('zh', {
   "slow": "卡顿",
   "H: hazards on": "H：机关开启",
   "H: hazards off": "H：机关关闭",
-  "Hazards off: the layout only.": "机关已关闭：只保留场地布局。"
+  "Hazards off: the layout only.": "机关已关闭：只保留场地布局。",
+  "One ultimate left": "剩余一次终极技"
 });

@@ -4599,5 +4599,6 @@ SW.i18n.add('es', {
   "slow": "lenta",
   "H: hazards on": "H: peligros activados",
   "H: hazards off": "H: peligros desactivados",
-  "Hazards off: the layout only.": "Sin peligros: solo el escenario."
+  "Hazards off: the layout only.": "Sin peligros: solo el escenario.",
+  "One ultimate left": "Te queda una definitiva"
 });
