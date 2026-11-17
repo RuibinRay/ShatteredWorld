@@ -432,7 +432,7 @@
     ctx.globalAlpha = 0.45; art.rect(ctx, '#05060c', 0, y0, W, H - y0); ctx.globalAlpha = 1;
     for (let k = 7; k < items.length; k++) txt(ctx, (k === ui.title.sel ? '> ' : '  ') + items[k][0], W / 2 - 40, 150 + k * 14, k === ui.title.sel ? '#f5c542' : '#ffffff');
     txt(ctx, 'W / S: choose    J or Enter: select', W / 2, 260, '#8a92b8', { align: 'center' });
-    txt(ctx, 'First playable build - Act 1', W - 6, 260, '#5a6078', { align: 'right' });
+    txt(ctx, 'The Hollow Crown', W - 6, 260, '#5a6078', { align: 'right' });
   };
 
   // Versus: M on the hero select opens that hero's story

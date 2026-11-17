@@ -4,9 +4,11 @@
 // their memory. The story runs: the three layers at war, then the Convergence (shown between chapters 4 and 5), then
 // the big war against the Hollow Legion. The Convergence is the villain and is never playable here. Design: "Shattered Worlds - New Story Mode.md" in the game folder.
 //
-// It runs alongside the first story mode until it replaces it:
-//   - New Game asks which story; Continue asks which save when both exist. Its own save slot
-//     (shattered-worlds-saga-v1); the first story's save is never touched.
+// It is the game's only story mode: the first story mode was removed (the user's call, 2026-11-17).
+//   - New Game goes straight to its prologue and hero select; Continue loads its save (shattered-worlds-saga-v1).
+//     The first story's save is left in the browser untouched, but nothing loads it any more.
+//   - The first story's files stay loaded: its map areas, enemies, bosses, art and duel balance are what this story
+//     is built on (and some Versus stages use them). Its own scenes, missions and menus never run.
 //   - It plays on the same map, "clean": the first story's people, triggers, bosses, shards and locked doors are taken
 //     out of every area while a Hollow Crown game is running (see clean()), and its dialogue cannot start.
 //   - A chapter: a card (js/saga/saga-cards.js), then the hero is taken to the chapter's area, the opening lines play,
@@ -39,7 +41,7 @@
   SW.store.save = function (o) { if (o && o.saga) return ls.set(SKEY, o); return _save.apply(this, arguments); };
   SG.load = () => ls.get(SKEY);
   const rawLoad = SW.store.load;   // the first story's save only
-  SW.store.load = function () { return rawLoad.apply(this, arguments) || SG.load(); };
+  SW.store.load = function () { return SG.load(); };   // the only story's save (the first story's is no longer loaded)
   SG.meta = () => ls.get(MKEY) || { finished: {} };
   const finishedAny = () => Object.keys(SG.meta().finished || {}).length > 0;
   // the Beyond-born are the villains of this story and are not playable in it (the user's call; design section 11).
@@ -524,7 +526,7 @@
     if (k.up && i >= 8) i -= 8;
     if (i !== M.idx) { M.idx = Math.max(0, Math.min(n - 1, i)); sfx('move'); }
     if (k.ok && ids[M.idx]) { if (locked(ids[M.idx])) { sfx('deny'); } else { M.confirm = true; sfx('select'); } }
-    else if (k.back) { M.view = 'mode'; M.sel = 0; sfx('back'); }
+    else if (k.back) { close(); sfx('back'); }
   }
 
   // ---- drawing ----
@@ -613,9 +615,11 @@
     M.held = null;
     if (!M.open && G.scene === 'title' && !G.overlay && !(SW.stories && SW.stories.open) && I.ok()) {
       const it = ui.titleItems(G)[ui.title.sel], a = it && it[1];
-      if (a === 'new') open('mode');
-      else if (a === 'continue' && SG.load()) { if (rawLoad()) open('cont'); else { M.held = I.now; I.now = {}; continueSaga(); return out; } }
+      if (a === 'new') open('pro');
+      else if (a === 'continue' && SG.load()) { M.held = I.now; I.now = {}; continueSaga(); return out; }
     }
+    // nothing reaches the first story's hero select or prologue any more; if anything still tries, it gets this story's
+    if (!M.open && (G.scene === 'select' || G.scene === 'prologue')) { G.scene = 'title'; open('pro'); }
     if (M.open) {
       try { update(); } catch (e) { console.error(e); M.open = false; }
       M.held = I.now; I.now = {};
