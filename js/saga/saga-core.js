@@ -258,8 +258,8 @@
   }
   // chapter 6: the Convergence and Sovereign Vael, one after the other - the last two engines (the Convergence's
   // own storyline fights Vael alone: he turns on him at the end)
-  const VAEL_IN = [['sys', 'The sky over the Crater splits. Something the size of a city lowers itself through the gap: a crown with nothing inside it.'],
-    ['vael', 'The little engine is spent. It was only ever a door.'], ['vael', 'I have emptied nine worlds. Kneel, and yours ends quietly.']];
+  const VAEL_IN = [['sys', 'The sky above the Crater tears open. A crown the size of a city lowers itself through the wound, and there is nothing inside it.'],
+    ['vael', 'Your little engine is spent. It was never a king, only a door, and I have walked through it.'], ['vael', 'I have unmade nine worlds. Yours is but a candle in my wake. Kneel, and it will go out gently.']];
   const VAEL_CONV = [['vael', 'You opened the door, little engine. Did you think I would knock?'], ['vael', 'Kneel. Your throne was always going to be a feed line.']];
   function runBoss(z, c) {
     const conv = G.state.hero === 'convergence', order = (conv ? ['vael'] : ['convergence', 'vael']).filter(t => D.enemies[t]);
@@ -461,10 +461,10 @@
     if (end) {
       txt(ctx, R.trueEnd ? 'ALL SIX SAVIOURS' : 'THE HOLLOW CROWN', x, 44, '#8a92b8');
       txt(ctx, R.trueEnd ? 'THE PACT HOLDS' : 'THE END', x, 58, '#f5c542', { scale: R.trueEnd ? 2 : 3 });
-      if (R.trueEnd) { let yy = 84; SW.wrap('Six went up into the Crown, and the three layers held the ground under them. Thunder, song, fire, wind, earth and water: the last blow was all of them. Aurelia, the Surface and Deepline stand. Thank you for playing.', wrapW).forEach(l => { txt(ctx, l, x, yy, '#e8ecf4', { raw: true }); yy += 11; }); }
+      if (R.trueEnd) { let yy = 84; SW.wrap('Six went up into the Crown while three layers held the ground beneath them. Thunder, song, fire, wind, earth and water fell as one blow. The sky is quiet now. Aurelia, the Surface and Deepline stand. Thank you for playing.', wrapW).forEach(l => { txt(ctx, l, x, yy, '#e8ecf4', { raw: true }); yy += 11; }); }
       else {
       const q = (L && L.ui) ? L.ui.quote(S.hero) : '';
-      let y = 96; SW.wrap('The Hollow Crown fell into the Crater, and the Legion went still. ' + h.name + "'s story is told.", wrapW).forEach(l => { txt(ctx, l, x, y, '#e8ecf4', { raw: true }); y += 11; });
+      let y = 96; SW.wrap('The Hollow Crown fell into the Crater and the Legion went still, like an army at last allowed to rest. ' + h.name + "'s story is told.", wrapW).forEach(l => { txt(ctx, l, x, y, '#e8ecf4', { raw: true }); y += 11; });
       y += 8; if (q) SW.wrap('"' + q + '"', wrapW).forEach(l => { txt(ctx, l, x, y, h.colorHi || '#ffffff', { raw: true }); y += 11; });
       y += 10; txt(ctx, 'Another hero, another story: New Game > The Hollow Crown.', x, y, '#8a92b8');
       }
@@ -481,10 +481,10 @@
   };
 
   // between chapters 4 and 5: the three-layer war ends at the Engine Core, and the big war begins
-  const INTER = ['Four banners climbed the Halcyon Spire. On the floor of his Engine, the Director was beaten.',
-    'He stepped back into its light, and the Engine took him in. What came out was the Convergence.',
-    'It opened the Beyond all the way, and called. The sky over the Crater split from horizon to horizon,',
-    'and Sovereign Vael answered: the Hollow Legion, hundreds of thousands of soldiers emptied out of the worlds he has eaten, and his champions, fourteen Beyond-born who serve him.'];
+  const INTER = ['Four banners climbed the Halcyon Spire, and on the floor of his own Engine the Director fell.',
+    'He stepped back into its light the way a man steps into the sea. What walked out was the Convergence.',
+    'It opened the Beyond as wide as the sky and called into the dark. Over the Crater, the heavens split along a seam.',
+    'Sovereign Vael answered. Behind him came the Hollow Legion, hundreds of thousands strong, emptied out of every world he has eaten, and fourteen champions born beyond the dark.'];
   function drawInterlude(ctx) {
     ctx.globalAlpha = 0.95; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
     art.glow(ctx, W / 2, 70, 120, '#b48cff', 0.12 + 0.04 * Math.sin(SW.frame * 0.05));
@@ -538,12 +538,12 @@
   const realm = r => (L && L.realms && L.realms[r]) || { name: r.toUpperCase(), sub: '', col: '#8fd3ff', hi: '#ffffff', desc: '' };
   const listOf = r => (L && L.ui ? L.ui.list(r) : []).filter(id => VILLAIN.indexOf(id) < 0);
   const PRO = [
-    '2091. The Ashfall War burns the world in forty-one days.\nThe rich rise to Aurelia, a gold city on anti-gravity pylons.\nThe poor go down into the old metro lines: Deepline.\nEveryone else is left on the Surface.',
-    'A handful of families refuse to choose.\nBy a mountain fire they swear the Pact of Three Layers:\nthe Hidden Clans, living in all three layers\nto keep them from killing each other.',
-    "2187. Halcyon's Convergence Engine runs at full power.\nIt tears two worlds into ours: Vharra, the storm steppe,\nand the Frozen Harbour. Their people land everywhere,\nand they remember everything they lost.",
-    'The Engine tears one more hole: into the Beyond,\nthe dark between worlds. It never closes.\nHalcyon hunts whoever has power, numbers them as Subjects,\nand drains them into the Engine. What is left is a Husk.',
-    'And far away, on the other side of the dark,\nsomething hears the Engine turning.',
-    '64 heroes. 64 stories. One war.\nChoose who you are.'
+    "2091. The Ashfall War burns the world down in forty-one days.\nThe rich climb into the sky and call it Aurelia,\na city of gold held up on humming pylons.\nThe poor go down into the dead metro and call it Deepline.\nEveryone else is left on the Surface, with the ash.",
+    "A handful of families will not choose.\nAround a fire on a mountain they swear the Pact of Three Layers:\nto live in the sky, on the ground and under it,\nand keep the three from killing one another.\nA monk rings a bell over the oath. He has not spoken since.",
+    "2187. Halcyon wakes the Convergence Engine.\nIt tears two worlds into ours: Vharra, the storm steppe,\nand the Frozen Harbour. Their people fall into all three layers.\nThey remember everything. Every name. Every grave.",
+    "The Engine tears one more hole, into the Beyond,\nthe dark between the worlds, and the hole never heals.\nHalcyon hunts anyone with power, gives them a number,\nand feeds them to the Engine. What comes back is a Husk.",
+    "Something faceless crawls through that hole and learns to wear us.\nAnd far beyond it, in the dark,\nsomething vast hears the Engine turning, and turns toward it.",
+    "Forty-eight heroes. Forty-eight stories. One war.\nChoose who you will be."
   ];
   const rp = {};
   function rep(a) {
