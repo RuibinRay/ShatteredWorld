@@ -36,13 +36,16 @@
     else { art.disc(ctx, '#4cc9f0', x, y, 5); art.rect(ctx, '#ffffff', x - 2, y - 3, 2, 2); }
   };
   const bolt = (p, z, e, dmg, o) => shot(p, z, e.st, Object.assign({ dmg: Math.round(dmg * (e.mult || 1)), vx: p.face * 7.5, life: 40, w: 12, h: 12, paint: paintOf(e), kx: (e.atk.kx || 1.5), ky: e.atk.ky, stun: e.atk.stun || 24, status: e.atk.status, heavy: e.atk.heavy }, o));
+  // the villain's head (the user: 'his is the final strongest evil villain', then 'remove his crown, change it for horns'
+  // and 'calm eye'): two dark curved horns through long white hair; one red eye glowing under a heavy lid (S = lid, g = glow)
+  if (art.HEADS) art.HEADS.hollowcrown = ['.M.....M...', '.MM...MM...', '..MhhhMh...', 'hhhhhhhhhhh', 'HHhhssssssh', 'HHhssssSss.', 'HHhssssgss.', '.HHSsssssss', '.HHSssssss.', '..H.Sssss..'];
   if (art.HEADS) art.HEADS.fivefold = ['.h.h.h.h...', '.hhhhhhhh..', 'hhhhhhhhhh.', '.mmmmmmmmg.', '.Hhhsssss..', '.Hhsssesss.', '.Hssssesss.', '..Sssssssss', '..Sssssss..', '...Sssss...'];
 
   clan('itsuki', {
-    hero: { name: 'Itsuki', alias: 'Five Paths', title: 'Master of Five', energy: 'Chi', color: '#f4a261', colorHi: '#fff1e6', element: 'Five elements', sig: 'The Wheel', combo: 'fist', route: 'kael', pitch: 420, trait: 'wheel', blurb: 'Fire, wind, thunder, earth, water.\nHe learned them all, in that order.' },
+    hero: { name: 'Itsuki', alias: 'Five Paths', title: 'Champion of the Hollow Crown', energy: 'Chi', color: '#ff2a4a', colorHi: '#ffd6de', element: 'Five elements', sig: 'The Wheel', combo: 'fist', route: 'kael', pitch: 420, trait: 'wheel', blurb: 'Five paths.\nEvery one of them ends at his feet.' },
     style: { name: 'fire' },
     moves: {
-      u: { id: 'element_bolt', name: 'Element Bolt', dmg: 11, desc: 'A bolt of your current element. Every skill is cast in your current element, then the wheel turns: fire burns, wind throws far, thunder stuns, earth hits 30% harder, water heals you and closes the circle for 25 energy. Hold W to aim up.',
+      u: { id: 'element_bolt', name: 'Element Bolt', dmg: 11, desc: 'A bolt of your current element. Every skill is cast in your current element, then the wheel turns: fire burns, wind throws far, thunder stuns, earth hits 30% harder, water heals you and closes the circle for 25 energy. Hold W: all five elements rise in a spiral.',
         cast(p, z, dmg, up) { const e = take(p); sfx(e.id === 'thunder' ? 'zap' : 'shoot'); bolt(p, z, e, dmg, { vy: up ? -4.5 : 0 }); } },
       su: { id: 'element_step', name: 'Element Step', dmg: 13, desc: 'Dash through the enemy wrapped in your current element.',
         cast(p, z, dmg) { const e = take(p); dash(p, z, e.st, { n: 12, step: 7, dmg: Math.round(dmg * (e.mult || 1)), atk: atkOf(e, p.face, { stun: e.atk.stun || 30 }) }); } },
@@ -77,11 +80,11 @@
     },
     // the fourth J throws a burst of the current element (without turning the wheel)
     fin(p, z, d) { const e = cur(p); emit(e.st, p.x + p.face * 26, p.y - 22, 12, { dir: p.face }); hit(p.face > 0 ? p.x + 8 : p.x - 58, p.y - 36, 50, 30, Math.round(d * (e.mult || 1)), atkOf(e, p.face, { kx: (e.atk.kx || 2) * p.face, stun: e.atk.stun || 24, srcX: p.x })); },
-    lines: [['Five paths. One end.', '五つの道、ひとつの終わり。', 'Cinco caminos. Un final.', '五条道路，一个终点。'], ['Fire, wind, thunder, earth, water. Done.', '火、風、雷、土、水。終わりだ。', 'Fuego, viento, trueno, tierra, agua. Hecho.', '火、风、雷、土、水。结束了。'], ['The wheel always turns.', '輪は必ず回る。', 'La rueda siempre gira.', '轮回从不停歇。']],
-    rig: { head: 'fivefold', c: { skin: '#e0b090', hair: '#1a1a24', acc: '#ff6b35', glow: '#4cc9f0', top: '#2b2d42', arm: '#2b2d42', fore: '#f4a261', hand: '#e0b090', pants: '#1a1a24', boots: '#7dffb2', belt: '#ffe066', chest: '#4cc9f0', trail: '#c8a05a' }, trailLen: 4 }, borrow: 'kael',
+    lines: [['Kneel. All five of them already have.', 'ひざまずけ。五つとも、もうそうした。', 'Arrodíllate. Los cinco ya lo hicieron.', '跪下。五行早已向我臣服。'], ['Fire, wind, thunder, earth, water. And then nothing.', '火、風、雷、土、水。そして、無。', 'Fuego, viento, trueno, tierra, agua. Y luego, nada.', '火、风、雷、土、水。然后，一无所有。'], ['The wheel turns for me now.', '輪は今、俺のために回る。', 'La rueda ahora gira para mí.', '如今，五行之轮只为我而转。']],
+    rig: { head: 'hollowcrown', c: { skin: '#d6c6cc', hair: '#ecebf4', hairD: '#9a94b4', acc: '#a83248', accD: '#5a1424', glow: '#ff2a4a', eye: '#ff2a4a', top: '#3a1426', arm: '#2c1222', fore: '#7a1430', hand: '#d6c6cc', pants: '#1e1428', boots: '#4a0c1e', belt: '#ff2a4a', chest: '#9d4edd', trail: '#7a1fff' }, trailLen: 4 }, borrow: 'kael',
     tr: {
-      'Master of Five': ['Maestro de los Cinco', '五行宗师'], 'Five elements': ['Cinco elementos', '五行'], 'The Wheel': ['La Rueda', '五行轮'], 'Fire, wind, thunder, earth, water.': ['Fuego, viento, trueno, tierra, agua.', '火、风、雷、土、水。'], 'He learned them all, in that order.': ['Los aprendió todos, en ese orden.', '他全都学会了，就按这个顺序。'],
-      'Element Bolt': ['Proyectil Elemental', '元素弹'], 'A bolt of your current element. Every skill is cast in your current element, then the wheel turns: fire burns, wind throws far, thunder stuns, earth hits 30% harder, water heals you and closes the circle for 25 energy. Hold W to aim up.': ['Un proyectil de tu elemento actual. Cada habilidad usa tu elemento actual y luego la rueda gira: el fuego quema, el viento lanza lejos, el trueno aturde, la tierra pega un 30% más fuerte y el agua te cura y cierra el círculo por 25 de energía. Mantén W para apuntar arriba.', '一发当前元素的弹。每个技能都以当前元素施放，然后五行轮转动：火会灼烧，风把人吹远，雷会击晕，土伤害提升30%，水为你治疗并在转满一圈时返还25点能量。按住W向上瞄准。'],
+      'Champion of the Hollow Crown': ['Campeón de la Corona Hueca', '空冠的勇士'], 'Five paths.': ['Cinco caminos.', '五条道路。'], 'Every one of them ends at his feet.': ['Todos terminan a sus pies.', '每一条都终结在他脚下。'], 'Five elements': ['Cinco elementos', '五行'], 'The Wheel': ['La Rueda', '五行轮'], 'Fire, wind, thunder, earth, water.': ['Fuego, viento, trueno, tierra, agua.', '火、风、雷、土、水。'], 'He learned them all, in that order.': ['Los aprendió todos, en ese orden.', '他全都学会了，就按这个顺序。'],
+      'Element Bolt': ['Proyectil Elemental', '元素弹'], 'A bolt of your current element. Every skill is cast in your current element, then the wheel turns: fire burns, wind throws far, thunder stuns, earth hits 30% harder, water heals you and closes the circle for 25 energy. Hold W: all five elements rise in a spiral.': ['Un proyectil de tu elemento actual. Cada habilidad usa tu elemento actual y luego la rueda gira: el fuego quema, el viento lanza lejos, el trueno aturde, la tierra pega un 30% más fuerte y el agua te cura y cierra el círculo por 25 de energía. Mantén W: los cinco elementos suben en espiral.', '一发当前元素的弹。每个技能都以当前元素施放，然后五行轮转动：火会灼烧，风把人吹远，雷会击晕，土伤害提升30%，水为你治疗并在转满一圈时返还25点能量。按住W：五行元素螺旋升起。'],
       'Element Step': ['Paso Elemental', '元素步'], 'Dash through the enemy wrapped in your current element.': ['Atraviesas al enemigo envuelto en tu elemento actual.', '裹着当前元素冲穿敌人。'],
       'Element Pillar': ['Pilar Elemental', '元素之柱'], 'A pillar of your current element bursts up under the nearest enemy ahead. Smashes cracked walls.': ['Un pilar de tu elemento actual brota bajo el enemigo más cercano delante de ti. Rompe muros agrietados.', '一根当前元素的柱子从前方最近的敌人脚下喷出。能击碎裂墙。'],
       'Five Seals': ['Cinco Sellos', '五印'], 'Cast all five seals in order, fire, wind, thunder, earth and water, each with its own effect. The wheel stays where it is.': ['Lanzas los cinco sellos en orden, fuego, viento, trueno, tierra y agua, cada uno con su efecto. La rueda no se mueve.', '按火、风、雷、土、水的顺序施放五道封印，各有各的效果。五行轮不会转动。'],
@@ -91,6 +94,109 @@
     },
     ultTr: ['las cinco a la vez, una tras otra: cae el fuego, sopla un vendaval, golpea el trueno, se rompe la tierra y llega la inundación.', '五行齐至，一个接一个：天火坠落、狂风呼啸、雷霆劈下、大地崩裂、洪水涌来。']
   });
-  // Versus balance (versus.js V.tune), fitted with tools/versus-balance.js against the fifteen regular heroes, both sides, bots on Normal: untuned 43%, with this table about 48%.
-  if (SW.versus && SW.versus.tune) Object.assign(SW.versus.tune, { itsuki: 1.09 });
+  // ================= the strongest fighter in the game (the user's call, 2026-11-17) =================
+  // "make the 5 element guy extremely overpowered ... he will be strongest character in this game". He is not balanced
+  // on purpose. In Versus: 2.2x damage (skills 1.7x on top), 60% more health, a third less damage taken, faster energy, half cooldowns. His
+  // melee is his own (every J hit in an element, his own S+J, W+J, air string and W+U), and he looks the part. He is
+  // locked until every other locked hero is open (the user: "his goal of unlock is to unlock all previous unlock players").
+  const IT = 'itsuki', P = SW.Player.prototype, CB = D.combat, vsOn = () => G.scene === 'vs';
+  const isIt = p => !!(p && p.G && p.G.state && p.G.state.hero === IT);
+  if (V && V.tune) V.tune.itsuki = 2.2;
+  const _hp = P.hpMax; P.hpMax = function () { const v = _hp.apply(this, arguments); return vsOn() && isIt(this) ? Math.round(v * 1.6) : v; };
+  const _th = P.takeHit; P.takeHit = function (atk, g) { if (vsOn() && isIt(this) && atk && atk.dmg) atk = Object.assign({}, atk, { dmg: Math.max(1, Math.round(atk.dmg * 0.65)) }); return _th.apply(this, [atk].concat([].slice.call(arguments, 1))); };
+  ['element_bolt', 'element_step', 'element_pillar', 'five_seals', 'wheel_turns', 'five_calamities'].forEach(id => { if (D.abilities[id]) D.abilities[id].dmg = Math.round(D.abilities[id].dmg * 1.7); });
+  if (SW.moves && SW.moves.CD_FOR && SW.moves.CD) [['element_bolt', 'u'], ['element_step', 'su'], ['element_pillar', 'i'], ['five_seals', 'si']].forEach(([id, s]) => { SW.moves.CD_FOR[id] = Math.round((SW.moves.CD_FOR[id] || SW.moves.CD[s] || 60) * 0.5); });
+
+  // ---------- his own melee ----------
+  // the J chain: harder, longer and taller, each hit in an element (fire, wind, thunder, earth)
+  const CI = CB['clan_' + IT];
+  if (CI) CI.forEach((a, i) => { a.dmg = Math.round(a.dmg * 1.5); a.box = [a.box[0], a.box[1] - 6, a.box[2] + 14, a.box[3] + 8]; a.itsEl = i % 5; a.itsMove = 'j'; });
+  const LAUNCH = Object.assign({}, CB.launcher, { dmg: 14, box: [0, -60, 44, 60], stun: 50, itsMove: 'launcher' });                 // W+J: a rising pillar of his element
+  const SWEEP = Object.assign({}, CB.sweep, { dmg: 13, box: [2, -16, 66, 16], stun: 46, itsMove: 'sweep' });                       // S+J: a wave of earth along the floor
+  const AIRS = CB.air.map((a, i) => Object.assign({}, a, { dmg: Math.round(a.dmg * 1.6), box: [-4, -54, (a.box[2] || 32) + 14, 56], itsMove: 'air' + i, itsEl: [1, 2, 3][i] }));   // wind, thunder, earth crash
+  const _sa = P.startAttack;
+  P.startAttack = function (def, air) {
+    if (!isIt(this)) return _sa.apply(this, arguments);
+    const k = CB.air.indexOf(def);
+    def = def === CB.launcher ? LAUNCH : def === CB.sweep ? SWEEP : k >= 0 ? AIRS[k] : def;
+    const r = _sa.call(this, def, air);
+    this.itsFx = false;   // the element burst fires once per swing, on its first hit
+    const el = EL[def.itsMove === 'launcher' || def.itsMove === 'sweep' ? ((this.wheel || 0) % 5) : (def.itsEl || 0) % 5];
+    fx.slash(this.x + this.face * 16, this.y - (def.itsMove === 'sweep' ? 8 : 24), this.face, (def.slash || 1), el.c[0], 46);
+    return r;
+  };
+  // the bursts on a hit: J hits throw their element, the launcher raises a pillar, the sweep sends a wave, the air string crackles and crashes
+  function meleeHit(p, e) {
+    const a = p.atk, z = p.G.zone; if (!a || !a.itsMove || p.itsFx || (p.state !== 'attack' && p.state !== 'airatk')) return;
+    p.itsFx = true;
+    const b = e.box ? e.box() : { x: e.x - 7, y: e.y - 30, w: 14, h: 30 }, cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+    if (a.itsMove === 'launcher') {
+      const el = cur(p); emit(el.st, cx, cy + 10, 16, { up: true, power: 1.6 }); fx.ring(cx, cy, el.c[0], 6, 46, 12); sfx('burst');
+      column(z, el.st, e.x, floorY(z, e.x, p.y - 20), 2, 4, { w: 24, h: 96, atk: { ky: -7.4, launch: true, stun: 50 } });
+    } else if (a.itsMove === 'sweep') {
+      emit('rock', cx, b.y + b.h, 14, { dir: p.face, power: 1.4 }); fx.shake(4, 8); fx.dust(cx, b.y + b.h, 8); sfx('heavy');
+      for (let k = 1; k <= 3; k++) z.shots.push(new Later(k * 5, () => { const x = p.x + p.face * (40 + k * 26); emit('rock', x, p.y - 4, 6, { up: true }); fx.dust(x, p.y, 4); hit(x - 14, p.y - 22, 28, 22, 4, { ky: -3.4, kx: p.face * 1, stun: 34, down: true, srcX: p.x }); }));
+    } else {
+      const el = EL[(a.itsEl || 0) % 5];
+      emit(el.st, cx, cy, 12, { dir: p.face, power: 1.3 }); fx.ring(cx, cy, el.c[0], 4, 30, 10);
+      if (el.id === 'thunder') fx.bolt(cx, G.cam.y, cx, cy, '#ffe066');
+      if (a.itsMove === 'air2') { fx.shake(6, 10); sfx('explode'); boom(p, 'rock', cx, cy + 10, 40, 6, { ky: 4, stun: 30, down: true }); }
+    }
+  }
+  // W+U: a rising spiral of all five elements, one after another
+  function risingFive(p, z, dmg) {
+    sfx('perfect'); fx.ring(p.x, p.y - 20, '#fff1e6', 6, 50, 12);
+    EL.forEach((el, k) => z.shots.push(new Later(1 + k * 4, () => { if (p.dead) return; sfx(el.id === 'thunder' ? 'zap' : 'shoot');
+      shot(p, z, el.st, { dmg: Math.round(dmg * 0.7 * (el.mult || 1)), x: p.x + p.face * 10, y: p.y - 16, vx: p.face * (3.6 + Math.sin(k * 1.3) * 0.8), vy: -4.4 - k * 0.35, life: 48, w: 14, h: 14,
+        paint: paintOf(el), kx: 1, ky: k === 4 ? -7 : -4.5, stun: 34, status: el.atk.status, launch: k === 4 }); })));
+  }
+  // element_bolt with W held is the spiral now
+  const ub = D.abilities.element_bolt && SW.casts && SW.casts.element_bolt;
+  if (ub) SW.casts.element_bolt = function (p, z, dmg, up) { if (up) { take(p); return risingFive(p, z, dmg); } return ub.apply(this, arguments); };
+
+  // ---------- how he looks: five orbs circle him, his strikes leave afterimages in his element ----------
+  const T0 = N.TRAITS && N.TRAITS.wheel;
+  if (T0) {
+    const t0 = T0.tick, m0 = T0.mark;
+    T0.hit = function (p, atk, e) { if (e && !e.dead) meleeHit(p, e); };
+    T0.tick = function (p, g, z) {
+      if (t0) t0.apply(this, arguments);
+      if (vsOn() && SW.frame % 10 === 0) refund(p, 1.5);   // chi flows back on its own
+      // the villain: crimson and violet afterimages on every strike, dark smoke always rising off him
+      if ((p.state === 'attack' || p.state === 'airatk') && p.atk && p.atk.itsMove && SW.frame % 3 === 0) fx.ghost(p.sheet(), p.pose ? p.pose[0] : p.atk.anim, p.pose ? p.pose[1] : 1, p.x, p.y, p.face < 0, SW.frame % 6 < 3 ? '#ff2a4a' : '#7a1fff');
+      if (!p.dead && SW.frame % 3 === 0) fx.list.push({ k: 'p', x: p.x + rand(-9, 9), y: p.y - rand(0, 8), vx: rand(-0.3, 0.3), vy: -rand(0.5, 1.2), g: 0, life: 28, max: 28, col: SW.frame % 15 === 0 ? '#ff2a4a' : SW.frame % 9 === 0 ? '#3a0a28' : '#120814', s: 3 });
+    };
+    T0.mark = function (ctx, p, x, y, g) {
+      if (m0) m0.apply(this, arguments);
+      const t = SW.frame * 0.06, w = (p.wheel || 0) % 5;
+      art.glow(ctx, x, y - 20, 30, '#ff2a4a', 0.06 + 0.03 * Math.sin(SW.frame * 0.08));   // a red menace about him
+      // the five elements, corrupted, turn above his head like a hollow crown: dark cores ringed in their colour, the
+      // current one larger; the ones passing behind him are dimmer (they used to circle his body and hid the sprite)
+      EL.forEach((e, i) => { const a = t + i * 1.2566, ox = Math.round(Math.cos(a) * 13), oy = Math.round(Math.sin(a) * 3), big = i === w, r = big ? 3 : 2, back = Math.sin(a) < 0;
+        ctx.globalAlpha = back ? 0.5 : 1;
+        art.disc(ctx, '#0a0610', x + ox, y - 46 + oy, r); art.ring(ctx, e.c[0], x + ox, y - 46 + oy, r);
+        if (big) art.rect(ctx, '#ff2a4a', x + ox, y - 46 + oy, 1, 1);
+        ctx.globalAlpha = 1; });
+    };
+  }
+
+  // ---------- the lock: open only when every other locked hero is open ----------
+  const _lk = SW.lockedVs;
+  const othersLocked = () => (_lk ? D.heroOrder.filter(h => h !== IT && _lk(h)).length : 0);
+  if (_lk) SW.lockedVs = id => (id === IT ? othersLocked() > 0 || _lk(IT) : _lk(id));
+  if (V && V.draw) {
+    const _vd = V.draw; V.draw = function (ctx, g) {
+      _vd.apply(this, arguments);
+      if (V.phase !== 'pick' || !V.pick || D.heroOrder[V.pick[V.step]] !== IT || !SW.lockedVs || !SW.lockedVs(IT)) return;
+      const n = othersLocked(), text = SW.text, ui = SW.ui;
+      ui.panel(ctx, 6, 230, W - 12, 34, '#f4a261', 0.97);
+      text(ctx, 'ITSUKI - THE STRONGEST - LOCKED', 12, 234, '#f4a261');
+      text(ctx, n > 0 ? 'Unlock every other hero first. Still locked: {0}'.replace('{0}', n) : 'Unlock every other hero first.', 12, 244, '#ffffff');
+      text(ctx, 'A D W S: choose another', 12, 254, '#8a92b8');
+    };
+  }
+  if (SW.i18n && SW.i18n.add) {
+    SW.i18n.add('es', { 'ITSUKI - THE STRONGEST - LOCKED': 'ITSUKI - EL MÁS FUERTE - BLOQUEADO', 'Unlock every other hero first. Still locked: {0}': 'Desbloquea primero a todos los demás héroes. Aún bloqueados: {0}', 'Unlock every other hero first.': 'Desbloquea primero a todos los demás héroes.' });
+    SW.i18n.add('zh', { 'ITSUKI - THE STRONGEST - LOCKED': 'ITSUKI·最强者·未解锁', 'Unlock every other hero first. Still locked: {0}': '先解锁其他所有英雄。仍未解锁：{0}', 'Unlock every other hero first.': '先解锁其他所有英雄。' });
+  }
 })();

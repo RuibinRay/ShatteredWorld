@@ -92,7 +92,7 @@
   P.update = function () {
     const st0 = this.state, a0 = this.atk, vy0 = this.vy, C = SW.data.combat;
     const r = _pu.apply(this, arguments);
-    if (C && st0 === 'attack' && a0 === C.launcher && this.state === 'jump') this.ljT = 30;
+    if (C && st0 === 'attack' && a0 && (a0 === C.launcher || (a0.launch && a0.anim === 'launcher')) && this.state === 'jump') this.ljT = 30;   // a hero's own launcher (Itsuki) counts too
     if (this.ljT > 0) {
       this.ljT--;
       if (st0 === 'jump' && vy0 < -3 && this.vy > vy0 + 1) this.vy = vy0 + 0.42;   // undo the short-hop cut
