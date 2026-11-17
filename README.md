@@ -439,7 +439,7 @@ long wind-ups, so World Rend became unguardable and the openings after Last Ligh
 
 ## Story stages in Versus (`js/stages.js`)
 
-Six new stages, each a place from the story, with platforms at several heights in the manner of a platform fighter:
+Nine stages, each a place from the story, with platforms at several heights in the manner of a platform fighter:
 jump up onto them, stand and fight on them, drop through with S + K. Each has a twist:
 - **The Noble Ring** (Act 5): the tournament stage. Two low platforms and one high one, no tricks.
 - **The Skylift** (Act 5): two cargo lifts ride up and down on either side, carrying whoever stands on them.
@@ -451,13 +451,24 @@ jump up onto them, stand and fight on them, drop through with S + K. Each has a 
   crosses the floor. Anyone on the floor takes a heavy hit (14, through a guard); the platforms are safe.
 - **The Engine Core** (Act 5): every fifteen seconds the Engine turns (the new layout blinks first) and its four plates
   slide into a new arrangement, carrying whoever stands on them.
+- Three from the Hollow Crown's invasion (the new story mode's last chapters):
+  - **The Tether Fields**: every ten to fourteen seconds, after GALE FROM THE WEST (or EAST), a gale blows for five
+    seconds. It pushes everyone the same way: a little on the ground, less in guard, most in the air.
+  - **The Heartroot**: the four root platforms each wither (they shake and dry out first), drop away and grow back
+    five seconds later. Every twenty seconds or so the rootlight floods the floor (ROOTLIGHT RISING): for about three
+    seconds, anyone on the floor takes 6 and is popped up, again every 40 frames. No root lets go while it is coming.
+  - **The Crown over the Crater**: the Hollow Crown hangs in the sky and its legion marches along the far rim. Every
+    ten seconds or so it marks a spot under each fighter and one more (THE CROWN STRIKES); a second and a third later
+    chains slam down on them (13, through a guard, knocks down). Step aside.
 
 They are in the Stage list (and Random). The bots use them: they climb to a platform when their foe is above, sometimes on
-their own, and drop down after a foe below. They also get off the floor when the train is coming: an Easy bot notices
+their own, and drop down after a foe below. They also get off the floor when the train or the rootlight is coming, and step out from under the Crown's marks: an Easy bot notices
 the warning about half the time, Normal three times in four, Hard always.
 Tested: all 64 Versus heroes in bot matches across the six stages, and a 3 vs 3, with no errors. The bots spend 13 to
 43% of a fight on platforms. Riding, dropping through, shattering, the train (14 to whoever is on the floor, nothing to
 whoever is up on a platform), low gravity (a jump of 34 px becomes 111) and the Engine's turn were each checked.
+The three invasion stages: Hard bot matches with no errors, 23 to 27% of a fight on platforms; the gale moves a
+standing fighter about 30 px a second and a falling one about 80; Hard bots took 5 chain hits from 18 marks.
 versus.js shares its stage list (`V.STAGES`) so this file can add to it.
 
 ## How hits and shots read (`js/combatfeel.js`)

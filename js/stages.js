@@ -8,6 +8,10 @@
 //   The Glass Sea       (Act 3)  glass platforms crack under whoever stands on them, shatter, and grow back
 //   Platform Zero       (Act 1)  after a warning, a train crosses the floor: get up on a platform or take a heavy hit
 //   The Engine Core     (Act 5)  every fifteen seconds the Engine turns and its platforms slide into a new layout
+//   The Tether Fields   (invasion) a gale blows across the field from one side: fighters are pushed, jumps most of all
+//   The Heartroot       (invasion) root platforms wither and grow back; rootlight floods the floor: get off it
+//   The Crown over      (invasion) the Hollow Crown hangs over the Crater and its legion marches behind; it marks
+//     the Crater                   spots on the ground, and chains slam down on them
 // Lifts, glass and the Engine's plates are platforms of this file's own (not tiles): fighters land on them from above,
 // stand on them, ride them and drop through them like any other platform. The bots climb and drop to reach their foe,
 // and get out of the train's way. SW.stages.on = false: the twists stop (the layouts stay).
@@ -34,7 +38,12 @@
       plats: () => [sp(5, 11, 5, 'glass'), sp(16, 11, 6, 'glass'), sp(28, 11, 5, 'glass'), sp(10, 8, 5, 'glass'), sp(23, 8, 5, 'glass'), sp(16, 5, 6, 'glass')] },
     sw_zero:    { name: 'Platform Zero', base: 'platform', tiles(z) { z.plat(3, 11, 6); z.plat(14, 11, 10); z.plat(29, 11, 6); z.plat(9, 8, 5); z.plat(24, 8, 5); } },
     sw_engine:  { name: 'The Engine Core', base: 'a3_enginecore', tiles() {},
-      plats: () => ENGINE[0].map(([x, y]) => sp(x, y, 5, 'engine')) }
+      plats: () => ENGINE[0].map(([x, y]) => sp(x, y, 5, 'engine')) },
+    // the Hollow Crown's invasion (the new story's chapters 5-6): three of the places it falls on
+    sw_tether:  { name: 'The Tether Fields', base: 'tether', tiles(z) { z.plat(4, 11, 6); z.plat(28, 11, 6); z.plat(15, 9, 8); z.plat(8, 6, 4); z.plat(26, 6, 4); } },
+    sw_roots:   { name: 'The Heartroot', base: 'heart', tiles(z) { z.plat(16, 5, 6); },
+      plats: () => [sp(4, 11, 6, 'root', { ph: 0 }), sp(28, 11, 6, 'root', { ph: 330 }), sp(10, 8, 5, 'root', { ph: 160 }), sp(23, 8, 5, 'root', { ph: 490 })] },
+    sw_crown:   { name: 'The Crown over the Crater', base: 'vs_crater', tiles(z) { z.plat(6, 11, 5); z.plat(27, 11, 5); z.plat(15, 8, 8); } }
   };
   ST.DEF = DEF;
   Object.keys(DEF).forEach(id => {
@@ -59,7 +68,11 @@
     if (!s) return _mv.apply(this, arguments);
     if (s.lowG && !a.onGround) a.vy -= GRAV * 0.55;   // the ballast has shifted: everything airborne floats
     const py = a.y;
+    const gust = s.push && a instanceof SW.Player && !a.dead ? s.push * (a.onGround ? (a.state === 'guard' ? 0.25 : 0.6) : 1.35) : 0;   // the gale
+    const vx0 = a.vx;
+    if (gust) a.vx = vx0 + gust;
     _mv.apply(this, arguments);
+    if (gust && a.vx === vx0 + gust) a.vx = vx0;   // the push moves you, it doesn't stay in your speed (unless a wall stopped it)
     if (a.swDrop > 0) a.swDrop--;
     a.swPlat = null;
     if (a.vy < 0 || a.swDrop > 0 || a.drop > 0 || a.dead) return;
@@ -87,22 +100,26 @@
     let best = null;
     const z = V.zone, cost = (x, y) => Math.abs(x - p.x) + (p.y - y) * 0.5;
     for (let ty = Math.floor(p.y / T) - 1; ty > 0 && p.y - ty * T <= reach; ty--) for (let tx = 0; tx < z.w; tx++) if (z.grid[ty][tx] === '=' && z.grid[ty - 1][tx] !== '=') { const x = tx * T + 8, y = ty * T, c = cost(x, y); if (p.y - y >= 20 && (!best || c < best.c)) best = { x, y, c }; }
-    for (const q of s.plats) if (q.alive && !(q.kind === 'glass' && q.load > 30) && p.y - q.y >= 20 && p.y - q.y <= reach) { const x = SW.clamp(p.x, q.x + 14, q.x + q.w - 14), c = cost(x, q.y); if (!best || c < best.c) best = { x, y: q.y, c, q }; }
+    for (const q of s.plats) if (q.alive && !(q.kind === 'glass' && q.load > 30) && !(q.kind === 'root' && q.st !== 'up') && p.y - q.y >= 20 && p.y - q.y <= reach) { const x = SW.clamp(p.x, q.x + 14, q.x + q.w - 14), c = cost(x, q.y); if (!best || c < best.c) best = { x, y: q.y, c, q }; }
     return best;
   }
-  const danger = s => !!(s.train && (s.train.warn > 0 || s.train.run));
-  // whether this bot heeds the train's warning: Easy about half the time, Normal three in four, Hard always
-  const heeds = (f, s) => { const tn = s.train; if (!tn.heed) tn.heed = {}; if (tn.heed[f.i] === undefined) { const d = V.mode === 'bvb' && f.i === 1 ? V.diff2 : V.diff; tn.heed[f.i] = Math.random() < [0.45, 0.75, 1, 1][d | 0]; } return tn.heed[f.i]; };
+  const floorHaz = s => s.train || s.flood;   // the hazards that sweep the floor: the train, the rootlight
+  const danger = s => { const h = floorHaz(s); return !!(h && (h.warn > 0 || h.run)); };
+  // whether this bot heeds a warning: Easy about half the time, Normal three in four, Hard always (asked once per warning)
+  const heeds = (f, h) => { if (!h.heed) h.heed = {}; if (h.heed[f.i] === undefined) { const d = V.mode === 'bvb' && f.i === 1 ? V.diff2 : V.diff; h.heed[f.i] = Math.random() < [0.45, 0.75, 1, 1][d | 0]; } return h.heed[f.i]; };
   const quiet = () => { ['attack', 'skill', 'special', 'awaken', 'dash', 'throw', 'down', 'charge', 'guard'].forEach(k => { I.now[k] = false; I.consume(k); }); };   // held and remembered presses alike
   function botHelp(p, f, s) {
     const foe = V.f[1 - f.i] && V.f[1 - f.i].p;
     if (!foe || f.stunT > 0 || p.state === 'hurt') { f.swGoal = null; return; }
     const dy = foe.y - p.y, adx = Math.abs(foe.x - p.x), onFloor = p.y >= FLOOR - 1, reach = s.lowG ? 170 : 92;
+    // the Crown's marks: step out from under a chain
+    const ch = s.chains;
+    if (ch && ch.warn > 0 && heeds(f, ch)) { const m = ch.xs.find(x => Math.abs(x - p.x) < 28); if (m !== undefined) { f.swGoal = null; quiet(); hold(p.x < m ? -1 : 1); return; } }
     // a climb in progress: run under the platform, jump, jump again near the top, and stop once standing on it
     let g = f.swGoal;
     if (g && (--g.t <= 0 || (p.onGround && p.y <= g.y + 2))) g = f.swGoal = null;
     if (!g) {
-      const want = (danger(s) && onFloor && heeds(f, s)) || (dy < -30 && adx < 140 && p.onGround && Math.random() < 0.06)
+      const want = (danger(s) && onFloor && heeds(f, floorHaz(s))) || (dy < -30 && adx < 140 && p.onGround && Math.random() < 0.06)
         || (p.onGround && onFloor && adx > 70 && Math.random() < (s.lowG ? 0.03 : 0.008));
       if (want) { const t = platAbove(s, p, reach); if (t) g = f.swGoal = { x: t.x, y: t.y, q: t.q, t: 110, jumped: 0 }; }
     }
@@ -143,6 +160,10 @@
     if (s.id === 'sw_zero') s.train = { next: 600, warn: 0, x: 0, dir: 1, run: false, hit: new Set() };
     if (s.id === 'sw_ballast') s.grav = { next: 720, warn: 0, left: 0 };
     if (s.id === 'sw_engine') s.eng = { at: 0, next: 900, warn: 0, from: null, to: null, k: 0 };
+    s.push = 0;
+    if (s.id === 'sw_tether') s.wind = { next: 540, warn: 0, left: 0, dir: Math.random() < 0.5 ? 1 : -1 };
+    if (s.id === 'sw_roots') s.flood = { next: 780, warn: 0, left: 0, run: false };
+    if (s.id === 'sw_crown') s.chains = { next: 600, warn: 0, run: 0, xs: [], hit: null };
   }
   const fighters = () => V.f.map(f => f.p).filter(p => p && !p.dead);
   function carry(p, dx, dy) { for (const q of fighters()) if (q.swPlat === p) { q.x += dx; q.y += dy; } }
@@ -153,12 +174,16 @@
       const ox = p.x, oy = p.y;
       if (p.kind === 'lift') { p.y = Math.round((8.5 + 4 * Math.sin(s.t * 0.012 + p.phase)) * T); }
       if (p.kind === 'glass') glass(p, s);
+      if (p.kind === 'root') root(p, s, fight);
       p.vy = p.y - oy;
       if (p.x !== ox || p.y !== oy) carry(p, p.x - ox, p.y - oy);
     }
     if (s.train && fight) train(s, z);
     if (s.grav && fight) gravity(s, z);
     if (s.eng && fight) engine(s);
+    if (s.wind && fight) wind(s);
+    if (s.flood && fight) flood(s);
+    if (s.chains && fight) chains(s);
     if (s.banner && --s.banner.t <= 0) s.banner = null;
   }
   const banner = (s, text, col, t) => { s.banner = { text, col, t: t || 120, max: t || 120 }; };
@@ -230,6 +255,90 @@
     }
     if (--e.next <= 0) { e.warn = 120; banner(s, 'THE ENGINE TURNS', '#ffd24a', 120); }
   }
+  // a stage hazard hits a fighter (as the train does: counted as that fighter's own hit taken)
+  function stageHit(f, atk) {
+    const p = f.p, keep = [G.state, G.player]; G.state = f.state; G.player = p;
+    try { p.takeHit(Object.assign({ team: 'enemy', hitSet: new Set(), quiet: true, unblockable: true }, atk), G); } finally { G.state = keep[0]; G.player = keep[1]; }
+  }
+  // --- the Tether Fields: the gale ---
+  function wind(s) {
+    const w = s.wind;
+    if (w.left > 0) {
+      s.push = w.dir * Math.min(1, w.left / 30, (300 - w.left) / 20);   // it builds, blows, and dies away
+      if (s.t % 2 === 0) fx.list.push({ k: 'p', x: G.cam.x + (w.dir > 0 ? -4 : W + 4), y: G.cam.y + 20 + Math.random() * 200, vx: w.dir * (5 + Math.random() * 3), vy: (Math.random() - 0.5) * 0.4, g: 0, life: 90, max: 90, col: Math.random() < 0.3 ? '#f0d8a8' : '#ffffff', s: 1, a: 0.6 });
+      if (--w.left === 0) { s.push = 0; w.next = 600 + Math.floor(Math.random() * 240); w.dir = Math.random() < 0.5 ? 1 : -1; }
+      return;
+    }
+    if (w.warn > 0) { if (--w.warn === 0) { w.left = 300; SW.audio.sfx('dash'); } else if (w.warn % 30 === 0 && fx.list.length < 400) for (let i = 0; i < 4; i++) fx.list.push({ k: 'p', x: G.cam.x + Math.random() * W, y: FLOOR - 2, vx: w.dir * 1.5, vy: -0.3, g: 0, life: 30, max: 30, col: '#f0d8a8', s: 1, a: 0.6 }); return; }
+    if (--w.next <= 0) { w.warn = 90; banner(s, w.dir > 0 ? 'GALE FROM THE WEST' : 'GALE FROM THE EAST', '#bfe8ff', 120); }
+  }
+  // --- the Heartroot: roots wither and grow back ---
+  const ROOT_UP = 600;
+  function root(p, s, fight) {
+    if (p.st === undefined) { p.st = 'up'; p.k = ROOT_UP + p.ph; }
+    if (!fight) return;
+    if (p.st === 'up' && s.flood && (s.flood.warn > 0 || s.flood.run)) return;   // no root lets go while the rootlight is out
+    if (--p.k > 0) {
+      if (p.st === 'wither' && p.k % 10 === 0) fx.list.push({ k: 'p', x: p.x + Math.random() * p.w, y: p.y + 4, vx: 0, vy: 0.6, g: 0.1, life: 24, max: 24, col: '#6a5a3a', s: 1 });
+      return;
+    }
+    if (p.st === 'up') { p.st = 'wither'; p.k = 90; }
+    else if (p.st === 'wither') {
+      p.st = 'gone'; p.k = 240; p.alive = false; SW.audio.sfx('block');
+      for (const q of fighters()) if (q.swPlat === p) { q.swPlat = null; q.onGround = false; }
+      for (let i = 0; i < 10; i++) fx.list.push({ k: 'p', x: p.x + Math.random() * p.w, y: p.y + 2, vx: (Math.random() - 0.5) * 2, vy: 0.5, g: 0.2, life: 28, max: 28, col: i % 2 ? '#6a5a3a' : '#4a5a2a', s: 2 });
+    } else if (p.st === 'gone') { p.st = 'grow'; p.k = 40; }
+    else { p.st = 'up'; p.k = ROOT_UP; p.alive = true; }
+  }
+  // --- the Heartroot: the rootlight floods the floor ---
+  function flood(s) {
+    const fl = s.flood;
+    if (fl.run) {
+      if (s.t % 3 === 0) fx.list.push({ k: 'p', x: G.cam.x + Math.random() * W, y: FLOOR - 1, vx: 0, vy: -0.8 - Math.random(), g: 0, life: 40, max: 40, col: Math.random() < 0.4 ? '#eaffd0' : '#9ad890', s: 1, a: 0.8 });
+      V.f.forEach(f => {
+        const p = f.p;
+        if (!p || p.dead || !p.onGround || p.y < FLOOR - 1 || p.swPlat || (p.swBurn || 0) > s.t) return;
+        p.swBurn = s.t + 40;
+        stageHit(f, { dmg: 6, kx: 0, ky: -5, stun: 18 });
+        fx.spark(p.x, p.y - 6, '#b8ff40', 8, 2);
+      });
+      if (--fl.left <= 0) { fl.run = false; fl.next = 900 + Math.floor(Math.random() * 180); }
+      return;
+    }
+    if (fl.warn > 0) { if (--fl.warn === 0) { fl.run = true; fl.left = 200; SW.audio.sfx('awaken'); fx.shake(2, 10); } else if (fl.warn % 24 === 0) SW.audio.sfx('deny'); return; }
+    if (--fl.next <= 0) { fl.warn = 120; fl.heed = null; banner(s, 'ROOTLIGHT RISING', '#9ad890', 120); }
+  }
+  // --- the Crown over the Crater: chains slam down on marked spots ---
+  const CHAIN_FALL = 8, CHAIN_RUN = 44;
+  function chains(s, z) {
+    const c = s.chains;
+    if (c.run > 0) {
+      const k = CHAIN_RUN - c.run;   // frames since the drop
+      if (k === CHAIN_FALL) { SW.audio.sfx('explode'); fx.shake(4, 10); c.xs.forEach(x => { for (let i = 0; i < 8; i++) fx.list.push({ k: 'p', x: x + (Math.random() - 0.5) * 16, y: FLOOR - 2, vx: (Math.random() - 0.5) * 3, vy: -Math.random() * 2.5, g: 0.2, life: 26, max: 26, col: i % 2 ? '#b48cff' : '#5a4a3a', s: 2 }); }); }
+      if (k >= CHAIN_FALL - 2 && k <= CHAIN_FALL + 6) V.f.forEach(f => {
+        const p = f.p;
+        if (!p || p.dead || c.hit.has(p)) return;
+        const x = c.xs.find(cx => Math.abs(cx - p.x) < 14);
+        if (x === undefined) return;
+        c.hit.add(p);
+        stageHit(f, { dmg: 13, kx: (p.x < x ? -1 : 1) * 4, ky: -6, stun: 34, heavy: true, down: true, srcX: x });
+        fx.spark(p.x, p.y - 18, '#b48cff', 12, 3);
+      });
+      if (--c.run === 0) c.next = 540 + Math.floor(Math.random() * 180);
+      return;
+    }
+    if (c.warn > 0) {
+      if (--c.warn === 0) { c.run = CHAIN_RUN; c.hit = new Set(); SW.audio.sfx('heavy'); }
+      else if (c.warn % 20 === 0) SW.audio.sfx('deny');
+      return;
+    }
+    if (--c.next <= 0) {   // one mark under each fighter (where they stand now) and one more somewhere else
+      const pw = V.zone.pw || V.zone.w * T, cl = x => SW.clamp(Math.round(x), 24, pw - 24);
+      c.xs = fighters().map(p => cl(p.x + (Math.random() - 0.5) * 16));
+      c.xs.push(cl(40 + Math.random() * (pw - 80)));
+      c.warn = 80; c.heed = null; banner(s, 'THE CROWN STRIKES', '#b48cff', 100);
+    }
+  }
 
   // ================= drawing =================
   const _dd = SW.Zone.prototype.drawDecor; SW.Zone.prototype.drawDecor = function (ctx, d, cx, cy) {
@@ -237,10 +346,98 @@
     const s = this.sw;
     if (!s) return;
     const th = art.themes[this.theme] || {};
+    if (s.id === 'sw_crown') drawCrown(ctx, s, cx, cy);
+    if (s.id === 'sw_tether') drawTethers(ctx, s, cx, cy);
     for (const p of s.plats) drawPlat(ctx, p, p.x - cx, p.y - cy, th, s);
     if (s.eng && s.eng.warn > 0 && s.eng.warn % 16 < 10) ENGINE[(s.eng.at + 1) % ENGINE.length].forEach(([x, y]) => outline(ctx, x * T - cx, y * T - cy, 5 * T, '#ffd24a'));
     if (s.train) drawTrain(ctx, s, cx, cy);
+    if (s.flood) drawFlood(ctx, s, cx, cy);
+    if (s.chains) drawChains(ctx, s, cx, cy);
   };
+  // the Hollow Crown: a crown the size of a city with nothing inside it, and the Hollow Legion marching on the far rim
+  function drawCrown(ctx, s, cx, cy) {
+    const x0 = Math.round(W / 2 - cx * 0.12 + 18), y0 = Math.round(44 - cy * 0.1 + Math.sin(SW.frame * 0.01) * 2), rx = 140, ry = 11;
+    const lit = s.chains && (s.chains.warn > 0 || s.chains.run > 0) ? 1 : 0;
+    art.glow(ctx, x0, y0, 120, '#b48cff', 0.10 + 0.08 * lit);
+    ctx.save(); ctx.lineCap = 'round';
+    const band = (col, lw) => {
+      ctx.strokeStyle = col; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.ellipse(x0, y0 + 12, rx, ry, 0, 0, Math.PI * 2); ctx.stroke();   // the band
+      ctx.beginPath();
+      for (let i = 0; i <= 8; i++) {   // the points: tall in front, shorter toward the back
+        const a = Math.PI * (i / 8), bx = x0 - Math.cos(a) * rx, by = y0 + 12 + Math.sin(a) * ry * 0.2, h = 20 + Math.sin(a) * 26;
+        ctx.moveTo(bx - 10, by); ctx.lineTo(bx, by - h); ctx.lineTo(bx + 10, by);
+      }
+      ctx.stroke();
+    };
+    band('#140a24', 6); band(lit ? '#d8c0ff' : '#8a6ac8', 2);
+    ctx.restore();
+    for (let i = 0; i < 7; i++) { const a = Math.PI * (i + 0.5) / 7, px = x0 - Math.cos(a) * rx, py = y0 + 12 + Math.sin(a) * ry; art.rect(ctx, '#f0e0ff', Math.round(px), Math.round(py), 2, 2); }   // hollow lights on the band
+    // the legion: two ranks of small dark soldiers with violet eyes, marching along the crater's far rim (the lit band
+    // of the backdrop), dark against it
+    const ly = Math.round(98 - cy * 0.3), step = Math.floor(SW.frame / 10) % 2;
+    for (let r = 0; r < 2; r++) {
+      const off = (SW.frame * (0.25 + r * 0.1) + r * 7) % 10, yy = ly + r * 7, par = 0.3 + r * 0.05;
+      ctx.globalAlpha = 0.75 + r * 0.2;
+      for (let x = -10 - ((cx * par) % 10) + off; x < W + 10; x += 10) {
+        const xx = Math.round(x), bob = (Math.floor(x / 10) + step) % 2;
+        art.rect(ctx, '#140a20', xx, yy + bob, 3, 6); art.rect(ctx, '#140a20', xx + (step ? 0 : 1), yy + 6, 1, 2); art.rect(ctx, '#140a20', xx + (step ? 2 : 1), yy + 6, 1, 2);
+        art.rect(ctx, '#140a20', xx + 3, yy - 5 + bob, 1, 10);   // spear
+        art.rect(ctx, '#e0c0ff', xx + 1, yy + 1 + bob, 1, 1);    // eyes
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  // the Tether Fields: tethers as thick as towers rising from anchor stones into the clouds; they sway in a gale
+  function drawTethers(ctx, s, cx, cy) {
+    const sway = s.push * 10;
+    for (const [ax, lean] of [[110, 40], [330, -30], [520, 25]]) {
+      const bx = Math.round(ax - cx * 0.6), by = Math.round(FLOOR - cy), tx = bx + lean + sway;
+      art.line(ctx, '#3a2818', bx, by, tx, -10, 9); art.line(ctx, '#8a6a4a', bx, by, tx, -10, 6); art.line(ctx, '#c8a070', bx - 2, by, tx - 2, -10, 1);
+      art.line(ctx, '#4a8a4a', bx + 3, by, tx + 3, -10, 2);   // the rootlight pipe clamped along it
+      for (let k = 0.15; k < 1; k += 0.2) { const px = Math.round(bx + (tx - bx) * k), py = Math.round(by + (-10 - by) * k); art.rect(ctx, '#5a4a3a', px - 5, py, 11, 3); }   // clamps
+      art.rect(ctx, '#5a4a3a', bx - 14, by - 10, 28, 10); art.rect(ctx, '#8a7a5a', bx - 14, by - 10, 28, 2);   // the anchor stone
+    }
+    if (!s.push) return;
+    const a = Math.abs(s.push), d = Math.sign(s.push);   // streaks of the gale, racing across
+    for (let i = 0; i < 18; i++) {
+      const sp0 = 7 + (i * 5) % 6, len = 18 + (i * 13) % 26, y = 24 + (i * 53) % 190;
+      let x = (SW.frame * sp0 + i * 97) % (W + 60) - 30; if (d < 0) x = W - x;
+      ctx.globalAlpha = a * (0.35 + 0.25 * (i % 3) / 2); art.rect(ctx, i % 4 ? '#ffffff' : '#f0d8a8', Math.round(x - (d > 0 ? len : 0)), y, len, 1);
+    }
+    ctx.globalAlpha = 1;
+  }
+  function drawFlood(ctx, s, cx, cy) {
+    const fl = s.flood, fy = FLOOR - cy;
+    if (fl.warn > 0) { if (fl.warn % 24 < 12) { ctx.globalAlpha = 0.5; art.rect(ctx, '#9ad890', 0, fy - 2, W, 2); ctx.globalAlpha = 1; } return; }
+    if (!fl.run) return;
+    const a = Math.min(1, fl.left / 20, (200 - fl.left) / 10);
+    ctx.globalAlpha = 0.35 * a; art.rect(ctx, '#b8ff40', 0, fy - 10, W, 10); ctx.globalAlpha = 0.8 * a; art.rect(ctx, '#eaffd0', 0, fy - 2, W, 2);
+    for (let i = 0; i < W; i += 6) { const h = 3 + Math.round(3 * Math.sin(SW.frame * 0.2 + i * 0.3)); art.rect(ctx, '#9ad890', i, fy - 2 - h, 2, h); }
+    ctx.globalAlpha = 1; art.glow(ctx, W / 2, fy, 260, '#b8ff40', 0.12 * a);
+  }
+  function drawChains(ctx, s, cx, cy) {
+    const c = s.chains, fy = FLOOR - cy;
+    if (c.warn > 0) {
+      const on = c.warn % 16 < 10;
+      for (const x of c.xs) {
+        const xx = Math.round(x - cx);
+        art.glow(ctx, xx, fy - 2, 22, '#b48cff', on ? 0.4 : 0.2);
+        if (on) { art.rect(ctx, '#d8c0ff', xx - 12, fy - 2, 24, 2); art.rect(ctx, '#d8c0ff', xx - 1, fy - 8, 2, 4); }
+        ctx.globalAlpha = 0.25; art.rect(ctx, '#b48cff', xx, 0, 1, fy); ctx.globalAlpha = 1;   // where it will fall
+      }
+      return;
+    }
+    if (c.run <= 0) return;
+    const k = CHAIN_RUN - c.run, down = k < CHAIN_FALL ? k / CHAIN_FALL : k > CHAIN_RUN - 12 ? (CHAIN_RUN - k) / 12 : 1, head = Math.round(fy * down);
+    for (const x of c.xs) {
+      const xx = Math.round(x - cx);
+      art.glow(ctx, xx, head / 2, 30, '#b48cff', 0.12);
+      for (let y = head - 10, n = 0; y > -8; y -= 7, n++) { if (n % 2) art.rect(ctx, '#3a2a5a', xx - 3, y, 6, 6), art.rect(ctx, '#c8b0f0', xx - 3, y, 6, 1); else art.rect(ctx, '#8a6ac8', xx - 1, y - 1, 2, 8); }   // links
+      art.rect(ctx, '#1c1030', xx - 8, head - 12, 16, 12); art.rect(ctx, '#d8c0ff', xx - 8, head - 12, 16, 2); art.rect(ctx, '#b48cff', xx - 2, head - 8, 4, 4);   // the weight
+      if (k >= CHAIN_FALL && k < CHAIN_FALL + 10) art.glow(ctx, xx, fy - 4, 40, '#b48cff', 0.35);
+    }
+  }
   function outline(ctx, x, y, w, col) { art.rect(ctx, col, x, y, w, 1); art.rect(ctx, col, x, y + 5, w, 1); art.rect(ctx, col, x, y, 1, 6); art.rect(ctx, col, x + w - 1, y, 1, 6); }
   function drawPlat(ctx, p, x, y, th, s) {
     x = Math.round(x); y = Math.round(y);
@@ -255,6 +452,16 @@
       ctx.globalAlpha = 0.55 * a; art.rect(ctx, '#bfe8ff', x + shake, y, p.w, 6); ctx.globalAlpha = 0.9 * a; art.rect(ctx, '#ffffff', x + shake, y, p.w, 1); ctx.globalAlpha = 1;
       const gl = (SW.frame * 2 + p.x) % (p.w + 40) - 20; if (gl > 0 && gl < p.w - 4) art.rect(ctx, '#ffffff', x + gl + shake, y + 2, 4, 2);   // a glint runs along
       if (p.load > 40) { const n = p.load > 60 ? 4 : 2; for (let i = 0; i < n; i++) { const cx0 = x + ((p.x * 7 + i * 37) % (p.w - 10)) + 5; art.line(ctx, '#ffffff', cx0, y, cx0 + (i % 2 ? 4 : -4), y + 5, 1); } }
+    } else if (p.kind === 'root') {
+      if (p.st === 'gone') return;
+      const grow = p.st === 'grow' ? 1 - p.k / 40 : 1, w = Math.max(2, Math.round(p.w * grow)), x0 = x + Math.round((p.w - w) / 2);
+      const shake = p.st === 'wither' && p.k < 45 ? (SW.frame % 2 ? 1 : -1) : 0, dry = p.st === 'wither' ? 1 - p.k / 90 : 0;
+      if (p.st === 'grow') ctx.globalAlpha = 0.4 + 0.6 * grow;
+      art.rect(ctx, '#2a1e10', x0 + shake, y, w, 9); art.rect(ctx, dry > 0.5 ? '#6a5a3a' : '#4a5a2a', x0 + shake, y, w, 3); art.rect(ctx, '#9a8a5a', x0 + shake, y, w, 1);
+      for (let i = 5; i < w - 4; i += 9) { art.rect(ctx, '#2a1e10', x0 + i + shake, y + 9, 2, 3 + (i * 7) % 5); }   // root hairs hanging below
+      const pulse = 0.5 + 0.5 * Math.sin(SW.frame * 0.08 + p.x * 0.03);
+      if (dry < 0.6) { ctx.globalAlpha *= (1 - dry) * (0.5 + 0.5 * pulse); art.rect(ctx, '#9ad890', x0 + 3 + shake, y + 5, w - 6, 1); ctx.globalAlpha = 1; art.glow(ctx, x0 + w / 2, y + 5, 20, '#7dff9a', 0.08 * (1 - dry)); }
+      ctx.globalAlpha = 1;
     } else if (p.kind === 'engine') {
       art.rect(ctx, '#2a1e10', x, y, p.w, 8); art.rect(ctx, '#c89a40', x, y, p.w, 3); art.rect(ctx, '#fff3c0', x, y, p.w, 1);
       const pulse = 0.5 + 0.5 * Math.sin(SW.frame * 0.1 + p.x * 0.05);
@@ -281,6 +488,7 @@
     if (G.scene !== 'vs' || !s || !s.banner || V.phase === 'menu' || V.phase === 'pick') return;
     const b = s.banner, a = Math.min(1, b.t / 15, (b.max - b.t) / 8);
     if ((b.max - b.t) % 24 > 16 && b.t > 30) return;   // it blinks while it warns
+    ctx.globalAlpha = a * 0.6; art.rect(ctx, '#05060c', 0, 41, W, 20);   // a dark strip, so it reads over any backdrop
     ctx.globalAlpha = a; SW.text(ctx, b.text, W / 2, 46, b.col, { align: 'center', scale: 2 }); ctx.globalAlpha = 1;
   };
 })();

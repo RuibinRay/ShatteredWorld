@@ -4577,5 +4577,10 @@ SW.i18n.add('es', {
   "Their game tab is in the background.": "Su pestaña del juego está en segundo plano.",
   "Waiting for the host's picture...": "Esperando la imagen del anfitrión...",
   "Their connection may be slow.": "Puede que su conexión sea lenta.",
-  "The connection to the room was lost.": "Se perdió la conexión con la sala."
+  "The connection to the room was lost.": "Se perdió la conexión con la sala.",
+  "The Crown over the Crater": "La Corona sobre el Cráter",
+  "GALE FROM THE WEST": "VENDAVAL DEL OESTE",
+  "GALE FROM THE EAST": "VENDAVAL DEL ESTE",
+  "ROOTLIGHT RISING": "SUBE LA LUZ DE RAÍZ",
+  "THE CROWN STRIKES": "LA CORONA ATACA"
 });

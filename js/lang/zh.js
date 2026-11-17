@@ -4577,5 +4577,10 @@ SW.i18n.add('zh', {
   "Their game tab is in the background.": "对方的游戏标签页在后台。",
   "Waiting for the host's picture...": "正在等待房主的画面……",
   "Their connection may be slow.": "对方的网络可能较慢。",
-  "The connection to the room was lost.": "与房间的连接已断开。"
+  "The connection to the room was lost.": "与房间的连接已断开。",
+  "The Crown over the Crater": "陨坑上空的王冠",
+  "GALE FROM THE WEST": "西方狂风",
+  "GALE FROM THE EAST": "东方狂风",
+  "ROOTLIGHT RISING": "根光涌起",
+  "THE CROWN STRIKES": "王冠来袭"
 });

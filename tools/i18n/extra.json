@@ -704,5 +704,10 @@
   "Their game tab is in the background.": { "es": "Su pestaña del juego está en segundo plano.", "zh": "对方的游戏标签页在后台。" },
   "Waiting for the host's picture...": { "es": "Esperando la imagen del anfitrión...", "zh": "正在等待房主的画面……" },
   "Their connection may be slow.": { "es": "Puede que su conexión sea lenta.", "zh": "对方的网络可能较慢。" },
-  "The connection to the room was lost.": { "es": "Se perdió la conexión con la sala.", "zh": "与房间的连接已断开。" }
+  "The connection to the room was lost.": { "es": "Se perdió la conexión con la sala.", "zh": "与房间的连接已断开。" },
+  "The Crown over the Crater": { "es": "La Corona sobre el Cráter", "zh": "陨坑上空的王冠" },
+  "GALE FROM THE WEST": { "es": "VENDAVAL DEL OESTE", "zh": "西方狂风" },
+  "GALE FROM THE EAST": { "es": "VENDAVAL DEL ESTE", "zh": "东方狂风" },
+  "ROOTLIGHT RISING": { "es": "SUBE LA LUZ DE RAÍZ", "zh": "根光涌起" },
+  "THE CROWN STRIKES": { "es": "LA CORONA ATACA", "zh": "王冠来袭" }
 }
