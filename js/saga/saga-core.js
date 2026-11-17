@@ -269,7 +269,7 @@
   function duel(who, n, c) {
     const cr = world && world.crater, hero = G.state.hero;
     const o = Object.assign({ diff: 1, hpBonus: 100, rivalPower: 12, rivalHp: 200 }, cr && cr.DUEL, cr && HR[hero].legend ? cr.LEGEND : null, cr && cr.FOR && cr.FOR[hero],
-      { rival: who, title: n === 6 ? 'THE LAST CHAMPION' : n === 5 ? 'THE BIG WAR' : 'RIVAL DUEL', rivalName: (n >= 5 ? 'CHAMPION: ' : '') + nm(who).toUpperCase(), stage: SG.stageFor(c.zone), canQuit: true });
+      { rival: who, title: n === 6 ? 'THE LAST CHAMPION' : n === 5 ? 'THE BIG WAR' : 'RIVAL DUEL', rivalName: (n >= 5 ? 'CHAMPION: ' : '') + nm(who).toUpperCase(), stage: n >= 5 && c.zone === 'crater' && SW.art.themes.sw_crown ? 'sw_crown' : SG.stageFor(c.zone), canQuit: true });
     const dl = SW.difficulty && SW.difficulty.cur && SW.difficulty.cur();
     if (dl && dl.id !== 'medium') { o.diff = dl.duelDiff; o.rivalPower = Math.round(o.rivalPower * dl.duelEdge); o.rivalHp = Math.round(o.rivalHp * dl.duelEdge); }
     if (n >= 5) { o.full = true; o.rivalHp += 100; }                    // Vael's champions fight with everything they have
