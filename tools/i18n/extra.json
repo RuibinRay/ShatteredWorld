@@ -697,5 +697,12 @@
   "TRAIN INCOMING": { "es": "TREN EN CAMINO", "zh": "列车来袭" },
   "GRAVITY SHIFT": { "es": "CAMBIO DE GRAVEDAD", "zh": "重力转移" },
   "GRAVITY RETURNS": { "es": "VUELVE LA GRAVEDAD", "zh": "重力恢复" },
-  "THE ENGINE TURNS": { "es": "EL MOTOR GIRA", "zh": "引擎运转" }
+  "THE ENGINE TURNS": { "es": "EL MOTOR GIRA", "zh": "引擎运转" },
+  "Player 2 is back.": { "es": "El Jugador 2 ha vuelto.", "zh": "玩家 2 回来了。" },
+  "Player 2 left: a bot plays for them.": { "es": "El Jugador 2 se fue: un bot juega en su lugar.", "zh": "玩家 2 离开了：由机器人代打。" },
+  "The host's game is paused.": { "es": "La partida del anfitrión está en pausa.", "zh": "房主的游戏已暂停。" },
+  "Their game tab is in the background.": { "es": "Su pestaña del juego está en segundo plano.", "zh": "对方的游戏标签页在后台。" },
+  "Waiting for the host's picture...": { "es": "Esperando la imagen del anfitrión...", "zh": "正在等待房主的画面……" },
+  "Their connection may be slow.": { "es": "Puede que su conexión sea lenta.", "zh": "对方的网络可能较慢。" },
+  "The connection to the room was lost.": { "es": "Se perdió la conexión con la sala.", "zh": "与房间的连接已断开。" }
 }

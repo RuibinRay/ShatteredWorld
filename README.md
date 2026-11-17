@@ -347,9 +347,13 @@ or 3 vs 3): the host is Player 1 and runs the game, the guest is Player 2.
   own hero; menus stay with the host.
 - The room number is looked up through PeerJS's public matching server; no game data goes through it. The passcode is
   checked by the host's browser, and five wrong tries lock the room for a minute.
+- If the guest leaves during a match, or their connection goes silent for 6 seconds, a bot plays Player 2 to the end of
+  it (in 3 vs 3, each of their fighters); a guest who rejoins in time takes their fighter back. The guest is told when
+  the host's game tab is in the background (the game pauses) or the picture stalls, and whether the host closed the room
+  or the connection was lost.
 - Limits: one guest per room; the guest sees the game a moment late (video delay); the picture is the game's 480 x 270
   as video, so a little softer than the host's; some strict networks block direct connections, and then joining fails
-  with a message; the host must keep the game's tab in front (a hidden tab stops drawing, so the guest's picture freezes).
+  with a message; the host must keep the game's tab in front (a hidden tab pauses the game; the guest is told).
 - While a guest is in the room, Versus stays on Player vs Player, and on the guest's turn of the hero select only the
   guest's buttons move their cursor. A hero still locked on the host's game is refused there (the unlock-code box would
   ask the host's keyboard, not the guest).

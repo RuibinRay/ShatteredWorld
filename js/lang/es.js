@@ -4570,5 +4570,12 @@ SW.i18n.add('es', {
   "TRAIN INCOMING": "TREN EN CAMINO",
   "GRAVITY SHIFT": "CAMBIO DE GRAVEDAD",
   "GRAVITY RETURNS": "VUELVE LA GRAVEDAD",
-  "THE ENGINE TURNS": "EL MOTOR GIRA"
+  "THE ENGINE TURNS": "EL MOTOR GIRA",
+  "Player 2 is back.": "El Jugador 2 ha vuelto.",
+  "Player 2 left: a bot plays for them.": "El Jugador 2 se fue: un bot juega en su lugar.",
+  "The host's game is paused.": "La partida del anfitrión está en pausa.",
+  "Their game tab is in the background.": "Su pestaña del juego está en segundo plano.",
+  "Waiting for the host's picture...": "Esperando la imagen del anfitrión...",
+  "Their connection may be slow.": "Puede que su conexión sea lenta.",
+  "The connection to the room was lost.": "Se perdió la conexión con la sala."
 });

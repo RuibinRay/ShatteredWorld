@@ -4570,5 +4570,12 @@ SW.i18n.add('zh', {
   "TRAIN INCOMING": "列车来袭",
   "GRAVITY SHIFT": "重力转移",
   "GRAVITY RETURNS": "重力恢复",
-  "THE ENGINE TURNS": "引擎运转"
+  "THE ENGINE TURNS": "引擎运转",
+  "Player 2 is back.": "玩家 2 回来了。",
+  "Player 2 left: a bot plays for them.": "玩家 2 离开了：由机器人代打。",
+  "The host's game is paused.": "房主的游戏已暂停。",
+  "Their game tab is in the background.": "对方的游戏标签页在后台。",
+  "Waiting for the host's picture...": "正在等待房主的画面……",
+  "Their connection may be slow.": "对方的网络可能较慢。",
+  "The connection to the room was lost.": "与房间的连接已断开。"
 });

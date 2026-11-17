@@ -9,6 +9,9 @@
 //   The guest also picks their own hero. Menus stay with the host.
 //   The room number is only looked up through PeerJS's public matching server; no game data goes through it. The
 //   passcode is checked by the host's browser; five wrong tries lock the room for a minute.
+//   If the guest leaves (or goes silent for 6 s) during a match, a bot plays Player 2 to the end of it; a guest who
+//   rejoins in time takes their fighter back. If the host's game tab goes to the background (the game pauses), or the
+//   picture stalls, the guest is told why.
 //   Limits: one guest per room; the guest sees the game a moment late (a video delay, usually well under a fifth of a
 //   second); some strict networks block direct connections, and then joining fails with a message.
 (function () {
@@ -89,19 +92,31 @@
           if (ON.conn && ON.conn !== conn) { conn.send({ t: 'no', why: 'full' }); return setTimeout(() => conn.close(), 300); }
           if (Date.now() < lockedUntil) { conn.send({ t: 'no', why: 'locked' }); return setTimeout(() => conn.close(), 300); }
           if (pass && String(d.pass || '') !== pass) { if (++wrong >= 5) { wrong = 0; lockedUntil = Date.now() + 60000; } conn.send({ t: 'no', why: 'pass' }); return setTimeout(() => conn.close(), 300); }
-          ON.conn = conn; wrong = 0; conn.send({ t: 'ok' });
+          ON.conn = conn; wrong = 0; ON.lastMsg = Date.now(); conn.send({ t: 'ok' }); conn.send({ t: document.hidden ? 'away' : 'back' });
+          if (ON.botP2) { ON.botP2 = false; if (V.f && V.f[1]) V.f[1].bot = false; toast(tr('Player 2 is back.')); }   // back in time to take their fighter back
           stream = stream || hostStream(); ON.call = peer.call(conn.peer, stream);
           hide(); setChip(tr('Room') + ' ' + code + ' - ' + tr('Player 2 is here'));
           if (G.scene === 'title') { G.overlay = null; V.open(G); V.mode = 'pvp'; }
-        } else if (d.t === 'k' && conn === ON.conn && d.a && typeof d.a === 'object') { const r = {}; ACTIONS.forEach(a => { if (d.a[a]) r[a] = true; }); ON.remote = r; }
+        } else if (conn === ON.conn) ON.lastMsg = Date.now();
+        if (d.t === 'k' && conn === ON.conn && d.a && typeof d.a === 'object') { const r = {}; ACTIONS.forEach(a => { if (d.a[a]) r[a] = true; }); ON.remote = r; }
       });
-      conn.on('close', () => { if (conn !== ON.conn) return; ON.conn = null; ON.remote = {}; clearP2(); setChip(tr('Room') + ' ' + code + ' - ' + tr('Player 2 left')); });
+      conn.on('close', () => {
+        if (conn !== ON.conn) return;
+        ON.conn = null; ON.remote = {}; clearP2(); setChip(tr('Room') + ' ' + code + ' - ' + tr('Player 2 left'));
+        if (inMatch() && V.f[1]) { ON.botP2 = true; V.f[1].bot = true; toast(tr('Player 2 left: a bot plays for them.')); }   // the match goes on
+      });
     });
   }
   const clearP2 = () => { Object.keys(P2).forEach(a => { I.raw[P2[a]] = false; }); };
+  const inMatch = () => G.scene === 'vs' && V.f && V.f[0] && ['menu', 'pick', 'order'].indexOf(V.phase) < 0;
+  let note = null;
+  function toast(text) { note = { text, t: 240 }; }
+  document.addEventListener('visibilitychange', () => { if (ON.role === 'host' && ON.conn) try { ON.conn.send({ t: document.hidden ? 'away' : 'back' }); } catch (e) { /* closed */ } });
   let fed = {}, denied = false;
   // every tick on the host: the guest's buttons become Player 2's keys; on the hero select the guest picks for themself
   const _iu = I.update; I.update = function () {
+    if (ON.role === 'host' && ON.botP2) { if (!inMatch()) ON.botP2 = false; else if (V.f[1] && !V.f[1].bot) V.f[1].bot = true; }   // in 3 vs 3, each next fighter too
+    if (ON.role === 'host' && ON.conn && Date.now() - (ON.lastMsg || 0) > 6000) { try { ON.conn.close(); } catch (e) { /* gone */ } }   // silent for 6 s: gone
     if (ON.role === 'host' && ON.conn) {
       const r = ON.remote, inFight = G.scene === 'vs' && V.f && ['intro', 'fight', 'ko'].indexOf(V.phase) >= 0;
       Object.keys(P2).forEach(a => { I.raw[P2[a]] = !!(inFight && (r[a] || (r.throw && (a === 'attack' || a === 'dash')))); });
@@ -123,7 +138,7 @@
   const _ti = ui.titleItems; ui.titleItems = function (g) { const a = _ti.apply(this, arguments); const i = a.findIndex(x => x[1] === 'versus'); a.splice(i >= 0 ? i + 1 : a.length, 0, ['Online', 'online']); return a; };
 
   // ================= joining =================
-  let video = null, sendT = null, last = '', beat = 0;
+  let video = null, sendT = null, last = '', beat = 0, hostAway = false, seenT = -1, seenAt = 0, byeSeen = false;
   function join(code, p) {
     leave(true);
     show('<h2>' + esc(tr('JOIN A ROOM')) + '</h2><p>' + esc(tr('Looking for the room...')) + '</p>');
@@ -134,8 +149,8 @@
     peer.on('open', () => {
       const conn = peer.connect(PREFIX + code, { reliable: true }); ON.conn = conn;
       conn.on('open', () => conn.send({ t: 'hello', pass: p || '' }));
-      conn.on('data', d => { if (d && d.t === 'no') { clearTimeout(timer); fail(d.why === 'pass' ? tr('Wrong passcode.') : d.why === 'locked' ? tr('Too many wrong passcodes. Try again in a minute.') : tr('That room already has two players.')); } });
-      conn.on('close', () => { if (ON.role === 'guest' && video) { leave(true); menu(tr('The host closed the room.')); } });
+      conn.on('data', d => { if (d && (d.t === 'away' || d.t === 'back')) { hostAway = d.t === 'away'; return; } if (d && d.t === 'bye') { byeSeen = true; return; } if (d && d.t === 'no') { clearTimeout(timer); fail(d.why === 'pass' ? tr('Wrong passcode.') : d.why === 'locked' ? tr('Too many wrong passcodes. Try again in a minute.') : tr('That room already has two players.')); } });
+      conn.on('close', () => { if (ON.role === 'guest' && video) { const why = byeSeen ? tr('The host closed the room.') : tr('The connection to the room was lost.'); leave(true); menu(why); } });
     });
     peer.on('call', call => {
       clearTimeout(timer); ON.call = call; call.answer();
@@ -148,27 +163,45 @@
         setChip(tr('Room') + ' ' + code + ' - ' + tr('You are Player 2'));
         sendT = setInterval(() => {   // the guest's buttons, sent when they change (and twice a second anyway)
           _iu.call(I); const a = {}; ACTIONS.forEach(k => { if (I.now[k]) a[k] = 1; });
-          const key = Object.keys(a).join(','); if (key !== last || beat++ % 30 === 0) { last = key; try { ON.conn.send({ t: 'k', a }); } catch (e) { /* closed */ } }
+          const key = Object.keys(a).join(','), now = Date.now(); if (key !== last || now - beat > 1000) { last = key; beat = now; try { ON.conn.send({ t: 'k', a }); } catch (e) { /* closed */ } }
+          if (video.currentTime !== seenT) { seenT = video.currentTime; seenAt = now; }
         }, 16);
       });
     });
   }
   // the guest's screen is the host's picture (the guest's own game sits on its title screen, not ticking)
   const _dt = ui.drawTitle; ui.drawTitle = function (ctx) {
-    if (ON.role === 'guest' && video) { ctx.imageSmoothingEnabled = false; if (video.readyState >= 2) ctx.drawImage(video, 0, 0, SW.W, SW.H); else SW.art.rect(ctx, '#05060c', 0, 0, SW.W, SW.H); return; }
+    if (ON.role === 'guest' && video) {
+      ctx.imageSmoothingEnabled = false; if (video.readyState >= 2) ctx.drawImage(video, 0, 0, SW.W, SW.H); else SW.art.rect(ctx, '#05060c', 0, 0, SW.W, SW.H);
+      const stalled = seenAt && Date.now() - seenAt > 2500;
+      if (hostAway || stalled) {   // say why the picture has stopped
+        ctx.globalAlpha = 0.7; SW.art.rect(ctx, '#05060c', 0, SW.H / 2 - 24, SW.W, 48); ctx.globalAlpha = 1;
+        SW.text(ctx, hostAway ? "The host's game is paused." : "Waiting for the host's picture...", SW.W / 2, SW.H / 2 - 12, '#f5c542', { align: 'center' });
+        SW.text(ctx, hostAway ? 'Their game tab is in the background.' : 'Their connection may be slow.', SW.W / 2, SW.H / 2 + 4, '#c8ccd8', { align: 'center' });
+      }
+      return;
+    }
     return _dt.apply(this, arguments);
   };
 
   function leave(quiet) {
     const wasGuest = ON.role === 'guest' && video;
     if (sendT) { clearInterval(sendT); sendT = null; }
-    try { if (ON.call) ON.call.close(); } catch (e) { /* gone */ } try { if (ON.conn) ON.conn.close(); } catch (e) { /* gone */ } try { if (ON.peer) ON.peer.destroy(); } catch (e) { /* gone */ }
+    const c = ON.conn, call = ON.call, peer = ON.peer, shut = () => { try { if (call) call.close(); } catch (e) { /* gone */ } try { if (c) c.close(); } catch (e) { /* gone */ } try { if (peer) peer.destroy(); } catch (e) { /* gone */ } };
+    if (ON.role === 'host' && c) { try { c.send({ t: 'bye' }); } catch (e) { /* gone */ } setTimeout(shut, 300); }   // the goodbye first, so the guest can tell a closed room from a lost line
+    else shut();
     if (video) { try { video.srcObject = null; video.remove(); } catch (e) { /* gone */ } video = null; }
     if (ON.role === 'host') clearP2();
-    ON.role = null; ON.peer = null; ON.conn = null; ON.call = null; ON.code = null; ON.remote = {}; last = '';
+    ON.role = null; ON.peer = null; ON.conn = null; ON.call = null; ON.code = null; ON.remote = {}; ON.botP2 = false; last = ''; hostAway = false; seenT = -1; seenAt = 0; byeSeen = false;
     setChip('');
     if (wasGuest) { G.manual = !!G.manualKeep; try { SW.audio.setVol(); } catch (e) { /* none */ } try { G.toTitle(); } catch (e) { /* none */ } }
     if (!quiet) hide();
   }
+  const _vd = V.draw; V.draw = function (ctx) {
+    _vd.apply(this, arguments);
+    if (!note) return;
+    if (--note.t <= 0) { note = null; return; }
+    ctx.globalAlpha = Math.min(1, note.t / 20); SW.art.rect(ctx, '#05060c', SW.W / 2 - 150, 58, 300, 14); SW.text(ctx, note.text, SW.W / 2, 61, '#f5c542', { align: 'center' }); ctx.globalAlpha = 1;
+  };
   ON.leave = leave; ON.menu = menu;
 })();
