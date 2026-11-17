@@ -169,7 +169,38 @@
   });
   ULT.chain_prison = (p, z, foes, dmg) => {
     if (p.st === 6) { fx.flash(BRASS[1], 8); sfx('roar'); }
-    if (p.st >= 8 && p.st <= 58) foes.forEach(e => { const b = e.box(), cx = b.x + b.w / 2, cy = b.y + b.h / 2, k = Math.min(1, (p.st - 8) / 8); z.shots.push(new Vis(0, 0, 1, ctx => { const sx = Math.round(cx - G.cam.x), sy = Math.round(cy - G.cam.y); chainLine(ctx, 0, sy - 10, Math.round(sx * k), sy - 10 + Math.round(10 * k)); chainLine(ctx, W, sy + 10, Math.round(W - (W - sx) * k), sy + 10 - Math.round(10 * k)); })); });
+    // the chains (the user: "for tarek ult show the chains", then "multiple chains locking in different angle"): eight
+    // chains shoot in one after another from the arena's edges, ceiling and floor, each hooks a different point of the
+    // body, they rattle on every hit and pull taut for the slam. (They used to be drawn by 1-frame Vis that were removed
+    // before they were ever drawn, so nothing showed.)
+    // from: where on screen it comes from ([fx, fy] as a share of the screen, or 'f' = the floor beside the target);
+    // to: where it locks on, as a share of the body box from its centre
+    const LOCKS = [
+      { from: [0, 0.35], to: [-0.5, -0.3] }, { from: [1, 0.3], to: [0.5, -0.25] }, { from: [0.22, 0], to: [-0.2, -0.5] }, { from: [0.8, 0], to: [0.25, -0.45] },
+      { from: [0, 0.75], to: [-0.45, 0.25] }, { from: [1, 0.8], to: [0.45, 0.3] }, { from: ['f', -70], to: [-0.2, 0.5] }, { from: ['f', 70], to: [0.2, 0.5] }];
+    if (p.st === 8) foes.forEach(e => {
+      const v = new Vis(0, 0, 999, (ctx, x0, y0, t) => {
+        const b = e.box(), sx = Math.round(b.x + b.w / 2 - G.cam.x), sy = Math.round(b.y + b.h / 2 - G.cam.y), H0 = SW.H, gy = Math.round(b.y + b.h - G.cam.y);
+        const jig = p.st >= 16 && p.st <= 58 && p.st % 6 < 2 ? 1 : 0, slam = p.st >= 58 ? Math.min(1, (p.st - 58) / 2) : 0;
+        let locked = 0;
+        LOCKS.forEach((L, i) => {
+          const k = Math.min(1, Math.max(0, (t - i * 2) / 6)); if (k <= 0) return;   // one after another, 6 frames each
+          const ax = L.from[0] === 'f' ? sx + L.from[1] : Math.round(L.from[0] * W), ay = L.from[0] === 'f' ? gy + 2 : Math.round(L.from[1] * H0 - (L.from[1] > 0.5 ? 0 : slam * 20));
+          const tx = sx + Math.round(L.to[0] * (b.w + 4)) + (i % 2 ? jig : -jig), ty = sy + Math.round(L.to[1] * b.h) + jig, hx = Math.round(ax + (tx - ax) * k), hy = Math.round(ay + (ty - ay) * k);
+          chainLine(ctx, ax, ay, hx, hy);
+          if (k < 1) { art.disc(ctx, BRASS[0], hx, hy, 3); art.rect(ctx, BRASS[1], hx - 1, hy - 1, 2, 2); }   // the hook in flight
+          else { locked++; art.disc(ctx, BRASS[0], hx, hy, 2); if (t - i * 2 - 6 < 3) { ctx.globalAlpha = 0.8; art.ring(ctx, BRASS[1], hx, hy, 5); ctx.globalAlpha = 1; } }   // set, with a glint as it bites
+        });
+        if (locked < LOCKS.length) return;
+        // once every hook is set, two loops of chain bind the body tight (links behind it dimmer)
+        [-8, 6].forEach((dy, j) => { const rx = b.w / 2 + 4, w0 = t * 0.12 + j * 1.7;
+          for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2 + w0; ctx.globalAlpha = Math.sin(a) < 0 ? 0.45 : 1;
+            art.rect(ctx, i % 2 ? BRASS[2] : '#adb5bd', sx + Math.round(Math.cos(a) * rx) - 1, sy + dy + Math.round(Math.sin(a) * 3) + jig, 3, 2); }
+          ctx.globalAlpha = 1; });
+      });
+      v.tick = vv => { if (p.state !== 'ult' || p.dead || e.dead || p.st > 61) vv.gone = true; };
+      z.shots.push(v);
+    });
     if (every(p, 16, 52, 6)) { sfx('block'); foes.forEach(e => hurt(e, dmg, { ky: 0, kx: 0, stun: 30, status: { freeze: 20 } })); }
     if (p.st === 60) { fx.flash(BRASS[0], 8); fx.shake(12, 18); sfx('explode'); foes.forEach(e => { const b = e.box(); fx.dust(b.x + b.w / 2, b.y + b.h, 12); hurt(e, dmg * 4, { ky: -7, down: true, stun: 50 }); }); }
   };
