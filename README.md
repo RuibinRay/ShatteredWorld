@@ -441,6 +441,17 @@ kept but alternates between its hit and follow-through frames when held long. Me
 skill and ultimate, every frame drawn): moves held on one pose 30+ frames went from 46 to 7 (with js/ult-motion.js),
 and skill pairs drawn with exactly the same poses from 79 to 7. `SW.castMotion.on = false` turns it off.
 
+## The Hidden Clans in stances of their own (`js/clan-poses.js`)
+
+Draw-only. The Hidden Clans had their own colours and heads but moved exactly like Kael (one shared skeleton pose set).
+Each clan fighter's frames are now baked from poses bent to their fighting style (the swing js/herostyle.js gives them):
+palm (open-handed strikes from a low stance), claw (hunched, raking), fan (wound up high, flung through), wave (the
+lash), stomp (wide and low, stamping kicks), spiral (body twisting, high kicks), cross (both arms together), pulse (both
+palms out), arc (big cutting swings) and thrust (a lunge), with a small difference of its own for every fighter, idle
+stances included; launchers, sweeps and air hits keep their direction. anim2.js's in-between frames are baked from the
+same poses. 29 fighters: Itsuki and the ten heroes js/combo-flow.js already restyles are left as they were.
+`SW.clanPoses.restore()` puts the old frames back.
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
