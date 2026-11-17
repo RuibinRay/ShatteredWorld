@@ -135,7 +135,9 @@
     if (open) { I.now = {}; }
     return out;
   };
-  const _ti = ui.titleItems; ui.titleItems = function (g) { const a = _ti.apply(this, arguments); const i = a.findIndex(x => x[1] === 'versus'); a.splice(i >= 0 ? i + 1 : a.length, 0, ['Online', 'online']); return a; };
+  // Online goes just above the last line (Controls), never above Difficulty: difficulty.js reads the selected row from
+  // its own (shorter) list, so a line put in above it would make choosing Online change the difficulty instead.
+  const _ti = ui.titleItems; ui.titleItems = function (g) { const a = _ti.apply(this, arguments); a.splice(Math.max(0, a.length - 1), 0, ['Online', 'online']); return a; };
 
   // ================= joining =================
   let video = null, sendT = null, last = '', beat = 0, hostAway = false, seenT = -1, seenAt = 0, byeSeen = false;
