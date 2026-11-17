@@ -388,6 +388,8 @@
     } catch (e) { console.error(e); S.open = false; }
   }
   S.draw = draw;
+  // shared with the new story mode's hero select (js/saga/saga-core.js), so both screens look alike
+  L.ui = { face, splash, backdrop, tightName, nameOf, quote, ensureLang, list };
 
   // ================= hooks =================
   // the keys: while the screen is open it owns them, and nothing under it sees a press

@@ -146,7 +146,7 @@
     itsuki: { realm: 'beyond', quote: 0,
       origin: `Born between worlds. Learned five elements on five of them.`,
       role: `Closer of tears, student of five worlds`,
-      look: `Spiky black hair under a red headband, a dark blue gi with a gold sash, and five floating orbs of fire, wind, lightning, earth and water circling him.`,
+      look: `Long white hair with two dark crimson horns growing through it, calm half-lidded eyes that glow a soft red, and a long black coat with a crimson core. The five elements turn in the air around him.`,
       story: [
         `Fire, wind, thunder, earth, water: he learned them all, in that order, on five different worlds. Itsuki and his sworn brother Ryo walk between worlds closing the tears that engines leave behind, and on every world he stays long enough to learn one thing from its best.`,
         `Every skill is cast in his current element, then the wheel turns: Element Bolt, Element Step, Element Pillar, Five Seals, The Wheel Turns. On the near side he went looking for the best of each. He found a boy called Kael throwing thunder in Deepline and challenged him on the spot. He found Gale's wind and asked to be taught; Gale asked to be paid.`,

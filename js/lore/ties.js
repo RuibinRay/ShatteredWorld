@@ -24,7 +24,7 @@
     // ---- Kael and Nyra, and the people round them ----
     ['kael', 'nyra', 'rival', 'rival', `Halcyon said she sold out the tunnels. One fight in the Crater, and he knew it was a lie.`, `The Deepline boy she was told to fear. The only one who never lied to her.`],
     ['kael', 'rook', 'friend', 'friend', `His brother from the slums. Never once fought alone, even before the clones.`, `Brother from the Deepline slums. The only person louder than Rook.`],
-    ['kael', 'fenn', 'mentor', 'student', `Read the storm-eye on his jacket and told him where he came from. Big brother, uninvited.`, `A kid with Vharra's storm in his hair. Fenn decided to keep him alive. It is a full-time job.`],
+    ['kael', 'fenn', 'mentor', 'student', `Knew the storm-eye on his jacket for Vharra's, and him for kin. Big brother, uninvited.`, `A kid with Vharra's storm in his hair. Fenn decided to keep him alive. It is a full-time job.`],
     ['kael', 'sable', 'rival', 'rival', `Thinks Deepline has one thunder too many. He agrees: hers.`, `Throws lightning loudly, everywhere, at everything. Deepline has one thunder too many.`],
     ['kael', 'ferra', 'debt', 'saved', `Pulled him out from under a car door in the Crusher Yard and called him salvage.`, `The best thing she ever pulled out of the trash. She tells him it was the car door.`],
     ['kael', 'itsuki', 'rival', 'rival', `A stranger from another world who wants to learn thunder by losing to it. Not yet.`, `The thunder of this world. Challenged on sight. Still undecided.`],
@@ -151,5 +151,16 @@
     ['mika', 'sora', 'rival', 'rival', `Rides a kite and thinks that counts as flying. Stays up almost as long.`, `Stays in the air longer than Sora. Sora cannot stand it.`],
     ['mika', 'ryo', 'love', 'love', `Light and dark need someone between them. She stays at his side.`, `Came through the tear beside him, and has not left it.`],
     ['ryo', 'itsuki', 'family', 'family', `Sworn brother. Wants to rush. Between them, they are usually on time.`, `Sworn brother. Wants to wait. Between them, they are usually on time.`]
+  );
+  // ---- added after the story audit (2026-11-17): a story names the other hero, so they get a tie ----
+  L.ties.push(
+    ['brakk', 'tor', 'friend', 'friend', `Another wall that wants to be the hardest thing on the mountain. Brakk lets him and Taro argue about it.`, `A mountain that walked up through rock. Thinks Tor and Taro are both very loud.`],
+    ['sen', 'pell', 'enemy', 'wary', `Sold the students who trusted him. Sen took one of them in, and keeps his sword between her and him.`, `A swordsman who teaches in a rusted metro car. He took in the student Pell sold.`],
+    ['oda', 'pell', 'enemy', 'wary', `The smiling mask that took a little girl from his temple. The bell has not forgiven him.`, `A monk who only rings a bell. Pell took his best pupil up to the sky anyway.`],
+    ['convergence', 'rue', 'partner', 'enemy', `Its faces. Any face it needed, for a whole season.`, `Wore every face it asked for, and never once her own. Not any more.`],
+    ['kael', 'rue', 'enemy', 'wary', `Wore his face to set the Sky against Deepline. He has not decided what to do about that.`, `Wore his face once, for the Director. It never fit.`],
+    ['nyra', 'rue', 'enemy', 'wary', `Wore her face to turn Deepline against the Sky. Nyra wants it back.`, `Wore her face once, to sell out the tunnels. Nyra looked at her as if she understood.`],
+    ['noct', 'rue', 'wary', 'wary', `The faceless thing in the next cell of the Blank Wing. He kept watch on it for a year.`, `The cell beside hers. He never wore a face either, and she never managed to copy him.`],
+    ['mika', 'itsuki', 'friend', 'friend', `Wants to close every tear today. She keeps up with him easily, from above.`, `Came through the tear beside him and Ryo, and has still not touched the ground.`]
   );
 })();

@@ -13,8 +13,8 @@
       role: `Street kid of the Crusher Yard`,
       look: `Shaggy white hair under a cyan headband, a long red scarf, a sleeveless slate-blue scrap jacket and bandaged forearms, amber lightning crackling round his fists.`,
       story: [
-        `He woke in the Crusher Yard trash heap with no name, static in his hair and a stubbornness he could not explain. Ferra found him under a car door and decided he was salvage. The slum kids called him Sparks. Rook called him brother by the end of the first week.`,
-        `Spark Dart, Thunder Totem, a Breaker Rush through walls and a Magnet Grip up them. A hunter in a wolf-pelt hood saw the storm-eye scratched on his jacket and told him where it came from: Vharra, the grass, the thunderheads. Fenn has looked after him ever since. Sable of the Lantern Cell thinks one Deepliner with lightning is plenty.`,
+        `The tear dropped him in the Crusher Yard trash heap with static in his hair and a stubbornness nobody could explain. Ferra found him under a car door and decided he was salvage. The slum kids called him Sparks. Rook called him brother by the end of the first week.`,
+        `Spark Dart, Thunder Totem, a Breaker Rush through walls and a Magnet Grip up them. A hunter in a wolf-pelt hood saw the storm-eye of Vharra scratched on his jacket and knew a child of the storm clans when he saw one. Fenn has looked after him ever since. Sable of the Lantern Cell thinks one Deepliner with lightning is plenty.`,
         `Halcyon told him an escaped Subject called Nyra had sold out the tunnels. He believed it, for one fight. The Director dropped him in the trash and called it an accident; Kael climbed out. When Skyfall hammers every enemy on the screen:`] },
 
     ashka: { realm: 'deep', quote: 0,
