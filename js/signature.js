@@ -192,6 +192,11 @@
   });
   sg('bando', 'rubber_cannon', 'Rubber Cannon', 24, 'He winds himself all the way back, then fires himself across the room fist first.', (p, z, d) => {
     const hs = new Set(); sfx('charge');
+    // fist first: his rubber arm (heroes4.js) is pulled back while he winds up, then leads him across the room
+    const sc = art.sheets[p.sheet()], col = (sc && sc.cfg && sc.cfg.c && (sc.cfg.c.fore || sc.cfg.c.skin)) || '#d8a878';
+    if (SW.rubberArm) z.shots.push({ t: 0, update() { if (++this.t > 30 || p.dead || p.state !== 'cast') this.gone = true; }, draw(ctx, cam) {
+      const f = p.face, sx = Math.round(p.x + f * 4 - cam.x), sy = Math.round(p.y - 22 - cam.y), reach = this.t < 10 ? -10 - this.t : 30;
+      SW.rubberArm(ctx, sx, sy, sx + f * reach, sy + (this.t < 10 ? -2 : 0), { col: (sc && sc.cfg && sc.cfg.c && sc.cfg.c.skin) || col, glove: col, r: 7, t: this.t, out: this.t >= 10, impact: hs.size > 0 }); } });
     z.shots.push(new Drive(p, 30, t => {
       if (t < 10) { p.vx = -p.face * 0.6; if (t % 2) K.gather('impact', p.x, p.y - 18, 2, 20); return; }
       if (t === 10) { sfx('dash'); fx.shake(3, 6); }

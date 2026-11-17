@@ -338,7 +338,8 @@
     z.shots.push(new Vis(p.x, p.y, 64, (ctx, x, y, t, v) => {
       if (!arm) return;
       const ox = v.x - x, oy = v.y - y, x0 = Math.round(arm[0] - ox), yy = Math.round(arm[1] - oy), x1 = Math.round(arm[2] - ox);
-      art.line(ctx, '#0a0a12', x0, yy, x1, yy, 5); art.line(ctx, col, x0, yy, x1, yy, 3); art.disc(ctx, '#0a0a12', x1, yy, 7); art.disc(ctx, col, x1, yy, 6);
+if (SW.rubberArm) SW.rubberArm(ctx, x0, yy, x1, yy, { col: p.G && art.sheets[p.sheet()] && art.sheets[p.sheet()].cfg ? (art.sheets[p.sheet()].cfg.c.skin || col) : col, glove: col, r: 6, t: v.t, out: !got, impact: got && v.t % 6 < 2 });   // Bando's rubber arm (heroes4.js)
+      else { art.line(ctx, '#0a0a12', x0, yy, x1, yy, 5); art.line(ctx, col, x0, yy, x1, yy, 3); art.disc(ctx, '#0a0a12', x1, yy, 7); art.disc(ctx, col, x1, yy, 6); }
     }, v => { if (!arm && v.t > 2) v.gone = true; }));
   });
   mv('aldric', 'vanguard', 'Vanguard', 7, 'Shoulder down and charge. Everything in the way is carried along, then cut loose with one great stroke. Smashes cracked walls.', (p, z, dmg) => {

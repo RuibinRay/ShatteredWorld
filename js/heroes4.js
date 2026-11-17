@@ -125,7 +125,31 @@
   const light = e => !e.isBoss && !e.isProxy && !(e.def && e.def.heavy);
   const part = (x, y, col, vx, vy, life, s) => fx.list.push({ k: 'p', x, y, vx: vx || 0, vy: vy || 0, g: 0, life: life || 14, max: life || 14, col, s: s || 2 });
   const door = (x, y, col) => { fx.ring(x, y, col || '#e04dff', 3, 20, 12); for (let i = 0; i < 8; i++) part(x + SW.rand(-4, 4), y + SW.rand(-16, 16), i % 2 ? col || '#e04dff' : '#ffffff', SW.rand(-0.6, 0.6), SW.rand(-1, 1), 16); };
+  const skinCol = p => { const s = art.sheets[p.sheet()], c = s && s.cfg && s.cfg.c; return (c && c.skin) || '#d8a878'; };
   const armCol = p => { const s = art.sheets[p.sheet()], c = s && s.cfg && s.cfg.c; return (c && (c.fore || c.skin)) || '#d8a878'; };
+  // Bando's rubber arm (the user: "improve bando melee it looks bad"; it was a flat line with a dot on the end). While it
+  // flies out it bows and ripples; when it lands it pulls taut. A dark outline, a highlight along the top, a sleeve at the
+  // shoulder, a green wrist band, a big gloved fist with knuckles, speed lines behind the fist, a burst when it lands.
+  // o: { col, r (fist size), t (frame, for the ripple), out (still flying), slack (0-1), impact (it just connected) }
+  const rubberArm = SW.rubberArm = function (ctx, sx, sy, tx, ty, o) {
+    const col = o.col || '#d8a878', r = o.r || 5, dx = tx - sx, dy = ty - sy, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+    const amp = o.out ? Math.min(6, L / 16) * (o.slack === undefined ? 1 : o.slack) : 0, N = Math.max(3, Math.round(L / 6)), pts = [];
+    for (let i = 0; i <= N; i++) { const k = i / N, w = Math.sin(k * Math.PI) * amp * Math.sin(k * 9 - (o.t || 0) * 1.3); pts.push([Math.round(sx + dx * k + nx * w), Math.round(sy + dy * k + ny * w)]); }
+    const seg = (c, w, oy) => { for (let i = 0; i < N; i++) art.line(ctx, c, pts[i][0], pts[i][1] + (oy || 0), pts[i + 1][0], pts[i + 1][1] + (oy || 0), w); };
+    const glove = o.glove || col;
+    const aw = Math.max(4, Math.round(r * 0.55)), kz = Math.max(2, Math.round(r / 3)), bz = Math.max(2, Math.round(r / 3));   // a bigger fist gets a thicker arm
+    seg('#0a0a12', aw + 2); seg(col, aw); ctx.globalAlpha = 0.7; seg(o.hi || '#fff1dc', 1, -1); ctx.globalAlpha = 1;
+    art.disc(ctx, '#0a0a12', sx, sy, 4); art.disc(ctx, o.top || '#2a6a5a', sx, sy, 3);   // the sleeve
+    if (o.out && L > 28) { ctx.globalAlpha = 0.55; for (let j = -1; j <= 1; j += 2) { const bx = tx + nx * j * (r + 2), by = ty + ny * j * (r + 2); art.line(ctx, '#ffffff', Math.round(bx - ux * (r + 16)), Math.round(by - uy * (r + 16)), Math.round(bx - ux * (r + 4)), Math.round(by - uy * (r + 4)), 1); } ctx.globalAlpha = 1; }
+    const wx = Math.round(tx - ux * (r + 1)), wy = Math.round(ty - uy * (r + 1));
+    art.disc(ctx, '#0a0a12', wx, wy, bz + 1); art.disc(ctx, o.band || '#b6e84a', wx, wy, bz);   // the wrist band
+    art.disc(ctx, '#0a0a12', tx, ty, r + 2); art.disc(ctx, glove, tx, ty, r + 1);         // the glove
+    const kn = art.shade ? art.shade(glove, 0.72) : '#a07850';
+    for (let k = -1; k <= 1; k++) art.rect(ctx, kn, Math.round(tx + ux * (r - kz / 2) + nx * k * (r - kz)) - (kz >> 1), Math.round(ty + uy * (r - kz / 2) + ny * k * (r - kz)) - (kz >> 1), kz, kz);   // knuckles
+    if (r >= 8) art.line(ctx, kn, Math.round(tx - nx * (r - 2)), Math.round(ty - ny * (r - 2)), Math.round(tx + ux * (r - 3) - nx * (r - 4)), Math.round(ty + uy * (r - 3) - ny * (r - 4)), 1);   // the thumb, on a big fist
+    art.rect(ctx, '#ffffff', Math.round(tx - ux - nx * (r - 2)) - 1, Math.round(ty - uy - ny * (r - 2)) - 1, 2, 1);   // shine
+    if (o.impact) { ctx.globalAlpha = 0.85; art.ring(ctx, '#ecffc0', Math.round(tx + ux * 4), Math.round(ty + uy * 4), r + 6); for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + 0.6; art.rect(ctx, '#ffffff', Math.round(tx + ux * 4 + Math.cos(a) * (r + 9)) - 1, Math.round(ty + uy * 4 + Math.sin(a) * (r + 9)) - 1, 3, 3); } ctx.globalAlpha = 1; }
+  };
 
   // ---------- things the abilities put in the world ----------
   class Later { constructor(n, fn) { this.n = n; this.fn = fn; } update(g, z) { if (--this.n <= 0) { this.gone = true; this.fn(g, z); } } draw() {} }
@@ -149,7 +173,7 @@
     draw(ctx, cam) { art.draw(ctx, this.sheet, 'guard', 0, this.x - cam.x, this.y - cam.y, this.flip, { alpha: 0.65, flash: this.t % 10 < 2 || this.life - this.t < 14 }); }
   }
   class Arm {    // a fist on the end of a very long arm: goes out until it hits something, then snaps back
-    constructor(p, dmg, o) { Object.assign(this, { p, dmg, dir: p.face, t: 0, len: 0, max: 150, speed: 13, ang: 0, r: 5, back: false, hs: new Set(), col: armCol(p) }, o || {}); sfx('swing'); }
+    constructor(p, dmg, o) { Object.assign(this, { p, dmg, dir: p.face, t: 0, len: 0, max: 150, speed: 13, ang: 0, r: 5, back: false, hs: new Set(), col: skinCol(p), glove: armCol(p) }, o || {}); sfx('swing'); }
     tip() { return [this.p.x + this.dir * (8 + this.len * Math.cos(this.ang)), this.p.y - 22 + this.len * Math.sin(this.ang)]; }
     update(g, z) {
       const p = this.p; this.t++;
@@ -162,16 +186,23 @@
       if (n) { fx.shake(3, 6); sfx('heavy'); }
       if ((n && !this.pierce) || wall || this.len >= this.max) { this.back = true; if (this.onEnd) this.onEnd(g, z, n ? Array.from(this.hs)[0] : null, wall, q); }
     }
-    draw(ctx, cam) { const p = this.p, sx = p.x + this.dir * 5 - cam.x, sy = p.y - 22 - cam.y, q = this.tip(), tx = Math.round(q[0] - cam.x), ty = Math.round(q[1] - cam.y); art.line(ctx, '#0a0a12', sx, sy, tx, ty, 5); art.line(ctx, this.col, sx, sy, tx, ty, 3); art.disc(ctx, '#0a0a12', tx, ty, this.r + 1); art.disc(ctx, this.col, tx, ty, this.r); }
+    draw(ctx, cam) { const p = this.p, sx = Math.round(p.x + this.dir * 5 - cam.x), sy = Math.round(p.y - 22 - cam.y), q = this.tip(), tx = Math.round(q[0] - cam.x), ty = Math.round(q[1] - cam.y); if (this.hs.size && !this.hitT) this.hitT = this.t; rubberArm(ctx, sx, sy, tx, ty, { col: this.col, glove: this.glove, r: this.r + 1, t: this.t, out: !this.back, slack: this.back ? 0 : 1, impact: this.hitT && this.t - this.hitT < 4 }); }
   }
   class ArmFx {  // the arm drawn on Bando's ordinary punches
-    constructor(p, def) { this.p = p; this.def = def; this.t = 0; this.col = armCol(p); }
-    update() { const a = this.def; if (++this.t > a.hitEnd + 4 || this.p.atk !== a || this.p.dead) this.gone = true; }
+    // kind: 'jab' (J chain, n = which hit), 'up' (W+J), 'low' (S+J), 'air'. The fist goes no further than the hit box reaches.
+    constructor(p, def, kind, n) { this.p = p; this.def = def; this.t = 0; this.col = skinCol(p); this.glove = armCol(p); this.kind = kind || 'jab'; this.n = n || 0; }
+    update() { const a = this.def; if (++this.t > a.hitEnd + 5 || this.p.atk !== a || this.p.dead) this.gone = true; }
     draw(ctx, cam) {
-      const p = this.p, a = this.def;
-      if (this.t < a.hitAt - 1) return;
-      const k = this.t <= a.hitEnd ? 1 : Math.max(0, 1 - (this.t - a.hitEnd) / 4), sx = p.x + p.face * 5 - cam.x, sy = Math.round(p.y + a.box[1] + a.box[3] / 2 - cam.y), tx = Math.round(sx + p.face * (a.box[0] + a.box[2] - 8) * k);
-      art.line(ctx, '#0a0a12', sx, sy, tx, sy, 5); art.line(ctx, this.col, sx, sy, tx, sy, 3); art.disc(ctx, '#0a0a12', tx, sy, 5); art.disc(ctx, this.col, tx, sy, 4);
+      const p = this.p, a = this.def, b = a.box, f = p.face, kind = this.kind, n = this.n;
+      if (this.t < a.hitAt - 2) return;
+      // out: a short wind-up, then the full reach, then it snaps home with a little overshoot
+      const prog = this.t < a.hitAt ? 0.3 : this.t <= a.hitEnd ? 1 : Math.max(0, 1 - (this.t - a.hitEnd) / 5) * (this.t === a.hitEnd + 1 ? 1.06 : 1);
+      const upper = kind === 'up' || (kind === 'jab' && n === 2), sh = kind === 'jab' ? (n % 2 ? 3 : -2) : 0;
+      const sx = Math.round(p.x + f * 4 - cam.x), sy = Math.round(p.y - 22 + sh - cam.y);
+      const tipY = upper ? b[1] + (kind === 'jab' ? -6 : 8) : kind === 'low' ? b[1] + b[3] - 5 : kind === 'air' ? b[1] + b[3] / 2 + 5 : b[1] + b[3] / 2;
+      const ex = sx + f * (b[0] + b[2] - 8), ey = Math.round(p.y + tipY - cam.y), tx = Math.round(sx + (ex - sx) * prog), ty = Math.round(sy + (ey - sy) * prog);
+      if (p.connected && !this.hitT) this.hitT = this.t;
+      rubberArm(ctx, sx, sy, tx, ty, { col: this.col, glove: this.glove, r: kind === 'jab' && n === 3 ? 7 : 5, t: this.t, out: this.t < a.hitAt + 1, slack: 0.8, impact: this.hitT && this.t - this.hitT < 3 });
     }
   }
   class Rush {   // carries its owner in a straight line, cutting once on the way
@@ -303,7 +334,11 @@
         else if (e || wall) zz.shots.push(new Rush(p, dmg, { dir: this.dir, dist: Math.max(16, Math.abs(q[0] - p.x) - 14), speed: 11, atk: { kx: this.dir * 5, ky: -3, down: true } }));
       } }));
     },
-    wind_up(p, z, dmg) { z.shots.push(new Later(10, () => { fx.shake(6, 12); z.shots.push(new Arm(p, dmg, { max: 104, speed: 21, r: 13, pierce: true, atk: { kx: p.face * 7, ky: -3, down: true, breaker: true, stun: 36 } })); })); for (let i = 0; i < 3; i++) fx.ring(p.x - p.face * 8, p.y - 24, '#ecffc0', 16 - i * 4, 4, 8 + i * 3); },
+    wind_up(p, z, dmg) { const col = skinCol(p), glove = armCol(p), f = p.face; z.shots.push({ t: 0, update() { if (++this.t > 10 || p.dead) this.gone = true; }, draw(ctx, cam) {
+      const cx = Math.round(p.x - f * 10 - cam.x), cy = Math.round(p.y - 24 - cam.y); let px = Math.round(p.x + f * 4 - cam.x), py = cy + 2;
+      for (let i = 0; i < 16; i++) { const a = i * 0.9 + this.t * 0.9, r = 3 + i * 0.45, x = Math.round(cx - f * i * 0.7 + Math.cos(a) * r), y = Math.round(cy + Math.sin(a) * r); art.line(ctx, '#0a0a12', px, py, x, y, 5); art.line(ctx, col, px, py, x, y, 3); px = x; py = y; }
+      art.disc(ctx, '#0a0a12', px, py, 7); art.disc(ctx, glove, px, py, 6); } });
+      z.shots.push(new Later(10, () => { fx.shake(6, 12); z.shots.push(new Arm(p, dmg, { max: 104, speed: 21, r: 13, pierce: true, atk: { kx: p.face * 7, ky: -3, down: true, breaker: true, stun: 36 } })); })); for (let i = 0; i < 3; i++) fx.ring(p.x - p.face * 8, p.y - 24, '#ecffc0', 16 - i * 4, 4, 8 + i * 3); },
     // Aldric
     cleave(p, z, dmg) {
       sfx('heavy'); fx.shake(4, 8); fx.slash(p.x + p.face * 14, p.y - 24, p.face, 1, '#fff0c0', 52); fx.dust(p.x + p.face * 30, p.y, 8);
@@ -396,7 +431,7 @@
     },
     hundred_hands(p, z, foes, dmg) {
       const col = armCol(p);
-      if (every(p, 8, 60, 3)) { const tg = foes.length ? foes[(p.st / 3 | 0) % foes.length] : null, x = tg ? tg.x + SW.rand(-10, 10) : G.cam.x + SW.rand(30, W - 30), y = tg ? tg.y - tg.h / 2 + SW.rand(-8, 8) : p.y - SW.rand(10, 70), sx = SW.rand(0, 1) < 0.5 ? G.cam.x - 10 : G.cam.x + W + 10; fx.list.push({ k: 'b', pts: [[sx, y + SW.rand(-30, 30)], [x, y]], col, life: 6, max: 6 }); fx.ring(x, y, col, 3, 12, 6); sfx('swing'); }
+      if (every(p, 8, 60, 3)) { const tg = foes.length ? foes[(p.st / 3 | 0) % foes.length] : null, x = tg ? tg.x + SW.rand(-10, 10) : G.cam.x + SW.rand(30, W - 30), y = tg ? tg.y - tg.h / 2 + SW.rand(-8, 8) : p.y - SW.rand(10, 70), sx = SW.rand(0, 1) < 0.5 ? G.cam.x - 10 : G.cam.x + W + 10; const y0 = y + SW.rand(-40, 40); z.shots.push({ t: 0, update() { if (++this.t > 7) this.gone = true; }, draw(ctx, cam) { const k = Math.min(1, this.t / 3), r = Math.max(0, 1 - (this.t - 4) / 3); rubberArm(ctx, Math.round(sx - cam.x), Math.round(y0 - cam.y), Math.round(sx + (x - sx) * k * (this.t > 4 ? r : 1) - cam.x), Math.round(y0 + (y - y0) * k * (this.t > 4 ? r : 1) - cam.y), { col: skinCol(p), glove: col, r: 6, t: this.t, out: this.t < 3, impact: this.t === 3 }); } }); fx.ring(x, y, col, 3, 12, 6); sfx('swing'); }
       if (every(p, 8, 60, 6)) foes.forEach(e => hurt(e, dmg, { ky: -1.5, stun: 30 }));
       if (p.st === 66) { fx.flash('#ecffc0', 8); fx.shake(10, 16); sfx('explode'); foes.forEach(e => { fx.ring(e.x, e.y - e.h / 2, col, 6, 40, 12); hurt(e, dmg * 4, { ky: -7, down: true }); }); }
     },
@@ -493,7 +528,13 @@
   const _dm = P.dmgMul; P.dmgMul = function () { const h = this.G.hero(); return _dm.call(this) * (h.legend ? MIGHT : 1) * (this.ambushT > 0 ? h.ambush || 1.5 : 1); };
   const _hm = P.hpMax; P.hpMax = function () { return Math.round(_hm.call(this) * (this.G.hero().legend ? TOUGH : 1)); };
   const _ng = G.newGame; G.newGame = function (hero) { _ng(hero); if (G.state && G.player && HR[hero] && HR[hero].legend) G.state.hp = G.player.hpMax(); };   // a legend starts at full (larger) health
-  const _sa = P.startAttack; P.startAttack = function (def, air) { _sa.call(this, def, air); const g = this.G; if (g.hero().trait === 'reach' && g.zone && C.stretch.indexOf(def) >= 0) g.zone.shots.push(new ArmFx(this, def)); };
+  const _sa = P.startAttack; P.startAttack = function (def, air) {
+    _sa.call(this, def, air); const g = this.G; if (!g.zone || g.hero().trait !== 'reach') return;
+    const i = C.stretch.indexOf(def), a = this.atk || def;
+    if (i >= 0) g.zone.shots.push(new ArmFx(this, a, 'jab', i));
+    else if (g.state.hero === 'bando' && (def === C.launcher || def === C.sweep || (C.air && C.air.indexOf(def) >= 0)))   // his W+J, S+J and air string stretch too
+      g.zone.shots.push(new ArmFx(this, a, def === C.launcher ? 'up' : def === C.sweep ? 'low' : 'air'));
+  };
   const _pd = P.draw; P.draw = function (ctx, cam, g) {
     const h = g.hero();
     if (this.phaseT > 0) { ctx.globalAlpha = 0.4 + 0.1 * Math.sin(this.t * 0.4); _pd.call(this, ctx, cam, g); ctx.globalAlpha = 1; art.ring(ctx, h.color, Math.round(this.x - cam.x), Math.round(this.y - cam.y - 16), 18 + (this.t % 12)); return; }
