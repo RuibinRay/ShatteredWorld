@@ -282,7 +282,12 @@
   // the Holders' finale: the Siege Walker captain leads the last assault on their home
   function runCaptain(z, c) {
     if (R.boss && !gone(z, R.boss)) return;
-    if (R.boss && R.boss.def) { if (R.t > 0) { R.t--; return; } R.boss = { dead: true, wait: true }; G.boss = null; SW.audio.music(z.music); say('w6', c.win, () => complete(6, 'boss')); return; }
+    if (R.boss && R.boss.def) {
+      if (R.t > 0) { R.t--; return; }
+      R.boss = { dead: true, wait: true }; G.boss = null; SW.audio.music(z.music);
+      const mm = SG.meta(); mm.captain = true; ls.set(MKEY, mm); if (SG.checkMilestones) SG.checkMilestones();   // js/saga/saga-unlocks.js
+      say('w6', c.win, () => complete(6, 'boss')); return;
+    }
     if (R.boss) return;   // the scene is playing
     const spawn = () => {
       const p = G.player, s = spotNear(z, p.x, p.y, 10, p.face || 1), type = D.enemies.siege_captain ? 'siege_captain' : 'eliteenf';
@@ -357,6 +362,7 @@
     m.finished = m.finished || {}; m.finished[S.hero] = true;
     R.trueEnd = SAVIOURS.every(h => m.finished[h]) && !m.trueEnd; if (R.trueEnd) m.trueEnd = true;
     ls.set(MKEY, m);
+    if (SG.checkMilestones) SG.checkMilestones();   // Versus heroes earned in this story (js/saga/saga-unlocks.js)
     const opened = PLAY.filter(h => !locked(h) && was.indexOf(h) < 0).map(nm);
     if (opened.length) G.toast('New stories open: ' + (opened.length > 6 ? opened.length + ' heroes' : opened.join(', ')), '#7dffa0');
     S.saga.phase = 'end'; S.saga.ch = 7; R.cardShown = false; R.cardT = 140;
@@ -373,6 +379,7 @@
   SG.travel = () => { if (on() && G.state.saga.phase === 'play') travel(chap(G.state.hero, G.state.saga.ch).zone); };
 
   // every frame of play (from the area's update, which runs whenever the game is not paused)
+  const fighting = () => (R.wave >= 0 && R.foes.some(e => !e.dead)) || !!(G.boss && !G.boss.dead) || !!(R.boss && (R.boss.def || R.boss.wait));
   function tick(z) {
     const S = G.state, sg = S.saga;
     if (R.zone !== z) newZone(z);
@@ -389,6 +396,8 @@
     if (sg.phase !== 'play' || G.busy() || !G.player || G.player.dead) return;
     const n = sg.ch, c = chap(S.hero, n);
     if (z.id !== c.zone) return;
+    // while a fight of the chapter is on, its area's exits hold the hero in (the old story used arena gates for this)
+    if (z._sgLock !== z) { z._sgLock = z; z.exits.forEach(e => { e.need = () => !(on() && G.state.saga.phase === 'play' && fighting()); e.msg = 'Not now: the fight is here.'; }); }
     if (!sg.seen['i' + n]) { sg.seen['i' + n] = true; if (n !== 2 && n !== 3) { say('i' + n, c.intro); return; } }
     const steps = mis(n).steps.map(s => s.id);
     if (steps.indexOf('fight') >= 0 && !done(n, 'fight') && (n !== 2 || done(2, 'talk'))) { runWaves(z, n, c); return; }
