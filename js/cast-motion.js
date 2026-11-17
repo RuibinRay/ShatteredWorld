@@ -45,7 +45,8 @@
   const _ad = art.draw;
   art.draw = function (ctx, id, anim, fi, x, y, flip, o) {
     const p = cur;
-    if (p && anim === 'cast' && !p.pose) {
+    // the plain cast frame: also when a skill set a pose the sheet does not draw (Slick's I asks for 'down', the cast frame shows)
+    if (p && anim === 'cast' && (!p.pose || p.pose[0] !== 'cast')) {
       const s = pick(p._cmSlot || 'u', SW.frame - (p._cmStart || SW.frame));
       if (s[2] && SW.anim && !SW.anim.tf) SW.anim.tf = { dx: (flip ? -1 : 1) * s[2], sx: 1, sy: 1 };
       if (CM.trace) CM.trace(s[0], s[1]);   // for measuring (tools)

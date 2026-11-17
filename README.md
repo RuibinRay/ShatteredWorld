@@ -430,7 +430,7 @@ went from 43% to 44% of rounds won, and every hero stayed between 25% and 57%. `
 Draw-only (no timing, hitbox or damage change). During an ultimate a hero used to hold one pose, "cheer", for 50-80
 frames. Now it gathers (charge), winds up (cast), strikes in rhythm (special, a4, launcher, a3, each with an
 anticipation, hit and follow-through frame and a small lunge) and ends on its own victory pose (js/herostyle.js).
-Itsuki and ultimates with their own motion are left as they were. `SW.ultMotion.on = false` turns it off.
+An ultimate that holds one strike frame of its own (Noct's and the Convergence's slash, Tessa's storm) strikes in rhythm instead. Itsuki is left as he was. `SW.ultMotion.on = false` turns it off.
 
 ## Skill casts that move (`js/cast-motion.js`)
 
