@@ -39,7 +39,7 @@
     }
   }
   class Geyser {    // a column erupting from the floor (dmg 0 = effect only)
-    constructor(x, y, dmg, col) { Object.assign(this, { x, y, dmg, t: 0, col: col || '#ff5a1f' }); }
+    constructor(x, y, dmg, col) { Object.assign(this, { x, y, dmg, t: 0, col: col || '#ff5a1f' }); this.hz = { x, half: 16, at: 6 }; }   // hz: where and when it erupts (js/hardcore.js reads it)
     update(g) {
       this.t++;
       if (this.t === 6) { SW.audio.sfx('burst'); fx.shake(3, 6); if (this.dmg) SW.strike(g, { team: 'player', x: this.x - 16, y: this.y - 96, w: 32, h: 96, dmg: this.dmg, kx: 0, ky: -7.5, stun: 40, energy: true, heavy: true, status: { burn: 4 }, hitSet: new Set(), srcX: this.x, quiet: true }); }

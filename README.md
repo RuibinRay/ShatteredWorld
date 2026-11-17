@@ -363,6 +363,62 @@ or 3 vs 3): the host is Player 1 and runs the game, the guest is Player 2.
   (about 40 ms of video buffer), the guest leaving and rejoining, and the host closing the room. Also checked on the
   published site over HTTPS. Not yet tested between two different networks or on phones.
 
+## Nightmare bots (`js/hardcore.js`, `js/hardcore-data.js`)
+
+Versus bots have a fourth level: Easy, Normal, Hard, **Nightmare** (built under the name Hardcore, which the files and
+tools keep). A Nightmare bot gets no extra damage, health or speed; it presses buttons like anyone else, with perfect
+reading and timing:
+
+- **Perfect guard, every time.** It knows when the next hit will land (a swing's first active frame, a shot's flight
+  time, every frame each hero's other moves and ultimate hit on, where a void column or a geyser will erupt, where a
+  bomb or comet dropping from above will burst) and raises its guard 0-4 frames before, so its blocks are perfect
+  blocks and the attacker is stunned. Against summons that keep biting it pulses the guard so every block stays
+  perfect, but never lets go in the last frames before an explosive lands. Throws are always broken; unblockables are
+  jumped; armed mines are jumped over; it backs off a ring of orbiting blades (Ferra's Scrap Halo) until it ends.
+- **Punish and counter.** A stunned or hit opponent eats the strongest combo route its hero has for the energy and
+  cooldowns it has right now (waiting for a target juggled too high to come down). It counter-hits slow grabs and
+  unblockables, braces with Oathkeeper (Aldric) a few frames before a hit so the counter fires, punishes whiffed
+  moves, throws an opponent sitting in guard, stays out of a ready power-up burst and keeps its own ultimate for a
+  stunned target.
+- **Stages.** On the platform stages it jumps up or drops through to punish, and steps off cracking glass. It ignores
+  the Platform Zero train on purpose: the train does 14 damage, and climbing away from it lost more rounds.
+- **Trained.** `tools/hardcore-train.js` learns when every move lands (Hard vs Hard rounds on every stage), searches
+  combo routes for every hero against a stunned dummy (beam search; a route must hold from 16, 22 and 30 px away), and
+  tunes each hero's style (spacing, pokes, charging, slipping, throws) in tournaments. Every match runs at normal game
+  speed: one game frame per tick. `HT.fluency(hero)` scores how well a hero's combos hold (J chain, skills that link
+  off J J J, air hits after the launcher, no-energy damage). Results: the Gauntlet (every Nightmare hero against all 63 others on Hard, on
+  random stages) 4,025 of 4,032 rounds won, with 90% health left on average; the Legends Cup (every hero against the ten
+  legends on Hard) 627 of 630; Nightmare against Nightmare: both guard perfectly, so most rounds
+  go to the clock and are decided on health; firing the ultimate as pressure decides 30% of them (16% without).
+  New heroes: `HT.trainNew()` trains every hero the data does not cover yet, so a fighter added later joins in. The
+  boss fight against the Convergence on Nightmare gives the boss 1.6x health and 1.35x damage.
+- **Tournaments.** The tournament menu has a Bot levels row: Same (all at the Bots level), Mixed (a random level each),
+  Rising (Easy in the first round up to Nightmare in the final) or Set each (A / D and W / S on the bracket set the two
+  bots' levels for the next match).
+- **Recommended combos.** Versus Training shows three for the hero you play: the strongest with no energy, the
+  strongest for one bar or less, and the strongest of all, with their damage.
+- **Watch it.** `tools/hardcore-watch.js` plays Nightmare against Hard live at 1x, with what the bot reads and decides
+  drawn over the fight; `HW.recordAll()` plays every hero in turn on random stages and saves what it sees
+  (recordings/hardcore-live.json and a per-hero report); `HW.lab()` plays every hero's trained combos on a dummy.
+
+## Combos after the air string (`js/combo-landing.js`)
+
+In Versus, J J J W+J > K > J J J now carries on when the hero lands: the third air hit still spikes the target down,
+but pushes it only 0.6 sideways instead of 2.6, so it lands within reach of the first ground J. Before, only eleven
+heroes with a long first J could follow up; now all 64 can (61-64 from 16, 22 or 30 px away). No hit does more damage:
+the combo just goes on (the average best no-energy combo went from 61 to 98, measured at normal speed). The ten
+weakest heroes against fifteen regulars, Hard bots both sides: 41% of rounds before, 43% after.
+
+## Heavier J chains (`js/combo-tune.js`)
+
+In Versus only, normal attacks (J chain, launcher, sweep, air hits; not skills or ultimates) hit harder for the heroes
+whose J J J J did least: Fenn x1.5, Corvin x1.4, Convergence x1.45, Rook x1.3, Maren and Garo x1.15, and x1.1 for
+Apis, Hart, Mika, Kova, Kestra, Ivo, Isolde, Thorne, Vesper, Kiri and Lux. J J J J for Fenn went from 21 to 34,
+Corvin 25 to 36, Rook 28 to 36. Checked against the fifteen regular heroes with Hard bots on both sides (90 rounds each,
+same matchups with and without): the group went from 39% to 42% of rounds won (an average hero gets 43-47% against
+that pool), Fenn 37% to 51%, Corvin 42% to 50%, Convergence 21% to 35%; none above 51%. `SW.comboTune.on = false`
+turns it off.
+
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,

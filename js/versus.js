@@ -21,9 +21,19 @@
   // Entry "Play": you pick a hero and play your own matches against the bots; "Watch": bots only. Every other match is
   // bot against bot at the menu's bot level, watched at the chosen speed, or settled at once with "Bot matches: Skip".
   const TSIZE = [['8 heroes', 8], ['16 heroes', 16], ['32 heroes', 32], ['64 heroes', 64], ['All heroes', 0]], ENTRY = ['Play', 'Watch'], TSKIP = ['Watch', 'Skip'];
-  if (SW.i18n && SW.i18n.add) { SW.i18n.add('es', { '32 heroes': '32 héroes', '64 heroes': '64 héroes' }); SW.i18n.add('zh', { '32 heroes': '32 名英雄', '64 heroes': '64 名英雄' }); }   // while a duel runs V.mode is 'duel'
+  if (SW.i18n && SW.i18n.add) { SW.i18n.add('es', { '32 heroes': '32 héroes', '64 heroes': '64 héroes' }); SW.i18n.add('zh', { '32 heroes': '32 名英雄', '64 heroes': '64 名英雄' }); }
+  // tournament bot levels: all at the Bots level, a random level each, rising round by round (Easy first, Nightmare
+  // final), or set by hand for each bot on the bracket before its match
+  const TLV = ['Same', 'Mixed', 'Rising', 'Set each'];   // while a duel runs V.mode is 'duel'
   const SPEEDS = [['Normal', 1], ['Fast', 2], ['Very fast', 4]];
   const lvOf = f => (f.lv !== undefined ? f.lv : V.diff);   // a bot's level: its own in Bot vs Bot, else the menu's
+  // a tournament bot's level (see TLV): its own, or by round when rising
+  function tourLv(id) {
+    const T = V.tour; if (!T) return V.diff;
+    if ((V.tlv || 0) === 2) { const rounds = Math.round(Math.log2(T.size)), r = T.cur ? T.cur.r : 0; return Math.min(3, Math.round(3 * r / Math.max(1, rounds - 1))); }
+    return T.lv && T.lv[id] !== undefined ? T.lv[id] : V.diff;
+  }
+  V.tourLv = tourLv;
   const isTour = () => V.mode === 'tour';
   const isBvb = () => V.mode === 'bvb' || (isTour() && !!V.tourBots);   // a tournament match between two bots plays as Bot vs Bot
   // Format (Player vs Bot, Player vs Player, Bot vs Bot): 1 vs 1 is best of three; 3 vs 3 is a team battle. Each side picks
@@ -59,14 +69,14 @@
   ['vs_crater', 'vs_spire', 'vs_foundry'].forEach(n => { const im = new Image(); im.onload = () => { art.bg[n] = im; }; im.src = 'assets/bg/' + n + '.png'; });
   STAGES.push(['Crater Rim', 'vs_crater'], ['Aurelia Spire', 'vs_spire'], ['Deep Foundry', 'vs_foundry'], ['Hidden Gorge', 'vs_clans']);   // vs_clans: theme and backdrop in ninja-core.js
   V.STAGES = STAGES;   // other files add stages of their own (stages.js)
-  const DIFF = ['Easy', 'Normal', 'Hard'];
+  const DIFF = ['Easy', 'Normal', 'Hard', 'Nightmare'];   // Nightmare (level 3): js/hardcore.js plays it
   // Energy in Versus comes from fighting, not from standing still. GAIN is the menu's "Energy gain" row: [label, multiplier].
   // Per frame: PASSIVE trickle, CHARGE while holding attack + jump (the story charges at 1.25). Per hit landed: HIT_MELEE for
   // a combo hit, HIT_SKILL for a skill / special / summon hit, nothing during the ultimate. The fighter who is hit gets HIT_TAKEN x damage.
   const GAIN = [['Slow', 0.6], ['Normal', 1], ['Fast', 1.6]], PASSIVE = 0.045, CHARGE = 0.6, HIT_MELEE = 10, HIT_SKILL = 3, HIT_TAKEN = 0.5;
   // Perfect block (guard in the last few frames before a hit): frames the attacker is stunned, and how often a bot's
   // well-timed guard counts as perfect on Easy / Normal / Hard.
-  const STUN_MELEE = 60, STUN_RANGED = 30, BOT_PERFECT = [0.1, 0.25, 0.45], BOT_PERFECT_GAP = 180;   // and never two within three seconds
+  const STUN_MELEE = 60, STUN_RANGED = 30, BOT_PERFECT = [0.1, 0.25, 0.45, 1], BOT_PERFECT_GAP = 180;   // and never two within three seconds
   // Versus balance table: every hit a hero lands in Versus is multiplied by their entry; heroes not listed deal normal
   // damage. The story itself is not affected (and the Crater duel switches the table off for its two fighters).
   // The ten legend heroes are NOT listed, by the user's choice: they are meant to be super strong and stay that way here
@@ -113,7 +123,7 @@
     const train = V.mode === 'train', fresh = p.state !== 'hurt';
     const dmg = me && me !== f ? Math.max(1, Math.round(atk.dmg * (V.tune[me.hero] || 1))) : atk.dmg;   // Versus balance table (TUNE)
     if (train) f.state.hp = Math.max(f.state.hp, dmg + 1);   // nobody is knocked out in Training
-    if (f.bot && p.state === 'guard' && p.guardT <= 6 && (Math.random() > BOT_PERFECT[lvOf(f)] || V.t - (f.pfT === undefined ? -999 : f.pfT) < BOT_PERFECT_GAP)) p.guardT = 7;   // a bot does not get every perfect block
+    if (f.bot && p.state === 'guard' && p.guardT <= 6 && (Math.random() > BOT_PERFECT[lvOf(f)] || (lvOf(f) < 3 && V.t - (f.pfT === undefined ? -999 : f.pfT) < BOT_PERFECT_GAP))) p.guardT = 7;   // a bot does not get every perfect block
     const r = p.takeHit(Object.assign({}, atk, { dmg, src: null, srcX: atk.srcX === undefined ? (me ? me.p.x : p.x) : atk.srcX }), G);
     if (r === 'perfect') { V.perfects = (V.perfects || 0) + 1; f.pfT = V.t; }
     if (train && r !== 'none') f.hitT = V.t;
@@ -162,6 +172,7 @@
   function sideFighter(s, idx) {   // side 0 (left) or 1 (right) of a Versus match, hero by its index in D.heroOrder
     const f = makeFighter(s, D.heroOrder[idx], s === 0 ? isBvb() : V.mode !== 'pvp');
     if (isBvb()) f.lv = s ? V.diff2 : V.diff;
+    if (isTour() && V.tour && f.bot) f.lv = tourLv(f.hero);
     if (isArc() && s === 1) f.lv = RUNG_LV[V.arc.rung];
     if (isSurv() && s === 1) { const k = V.sv.n + 1; f.lv = k <= 3 ? 0 : k <= 8 ? 1 : 2; f.state.hpBonus += SURV_HP * Math.max(0, k - 10); }
     return f;
@@ -230,7 +241,8 @@
     const half = size / 2, byes = size - ent.length, two = Math.max(0, byes - half), one = byes - two * 2;
     const kinds = shuffled(Array.from({ length: half }, (x, i) => (i < two ? 2 : i < two + one ? 1 : 0))), slots = [];
     kinds.forEach(k => { const pair = k === 2 ? [null, null] : k === 1 ? [ent.shift(), null] : [ent.shift(), ent.shift()]; if (k === 1 && Math.random() < 0.5) pair.reverse(); slots.push(pair[0], pair[1]); });
-    V.tour = { size, R: [slots], me, cur: null, last: null, done: false, champ: null };
+    V.tour = { size, R: [slots], me, cur: null, last: null, done: false, champ: null, lv: {} };
+    slots.forEach(id => { if (id) V.tour.lv[id] = (V.tlv || 0) === 1 ? Math.random() * 4 | 0 : V.diff; });
     settle(); V.phase = 'bracket'; V.t = 0;
   }
   function setWin(r, m, w) {
@@ -354,7 +366,7 @@
 
   // ---------- bot ----------
   // ult: how readily it fires a full bar; charge: how much it stands back to charge (energy now comes quickly from fighting)
-  const LV = [{ react: 0.2, aggr: 0.45, every: 14, ult: 0.15, charge: 0.25 }, { react: 0.55, aggr: 0.75, every: 8, ult: 0.5, charge: 0.6 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }];
+  const LV = [{ react: 0.2, aggr: 0.45, every: 14, ult: 0.15, charge: 0.25 }, { react: 0.55, aggr: 0.75, every: 8, ult: 0.5, charge: 0.6 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }];
   function botThink(f, o, k) {
     const p = f.p, q = o.p, S = f.state, c = LV[lvOf(f)], ai = f.ai || (f.ai = { plan: 'approach', t: 0, n: 0 }), R = Math.random;
     if (V.phase !== 'fight' || p.dead) return;
@@ -394,7 +406,7 @@
       case 'throw': if (!turn()) { if (adx > 22) k[to] = true; else if (ai.n < 4) { k.attack = true; k.dash = true; } } break;
     }
   }
-  V.breakChance = f => [0.15, 0.35, 0.6][lvOf(f)];   // how often a bot breaks a throw (js/throw.js)
+  V.breakChance = f => [0.15, 0.35, 0.6, 1][lvOf(f)];   // how often a bot breaks a throw (js/throw.js)
   function dummyThink(f, o, k) {   // the Training partner
     const p = f.p, dx = o.p.x - p.x;
     if (V.dummy === 3) return botThink(f, o, k);
@@ -485,7 +497,7 @@
   }
   // ---------- menu rows, pause, move list ----------
   const menuRows = () => (V.mode === 'pvb' ? ['mode', 'fmt', 'diff', 'stage', 'gain', 'start'] : V.mode === 'pvp' ? ['mode', 'fmt', 'stage', 'gain', 'start'] : V.mode === 'rival' ? ['mode', 'diff', 'gain', 'start']
-    : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start'] : solo() ? ['mode', 'fmt', 'gain', 'start'] : isTour() ? ['mode', 'tsize', 'entry', 'diff', 'tskip', 'speed', 'start']
+    : isBvb() ? ['mode', 'fmt', 'diff', 'diff2', 'stage', 'gain', 'speed', 'start'] : solo() ? ['mode', 'fmt', 'gain', 'start'] : isTour() ? ['mode', 'tsize', 'entry', 'diff', 'tlv', 'tskip', 'speed', 'start']
     : V.dummy === 3 ? ['mode', 'dummy', 'diff', 'stage', 'start'] : ['mode', 'dummy', 'stage', 'start']);
   const pauseItems = () => (V.mode === 'train' ? ['resume', 'myhero', 'dummyhero', 'dummy', 'endless', 'onscreen', 'reset', 'moves', 'quit'] : V.mode === 'duel' && !V.duelO.canQuit ? ['resume', 'moves']
     : isBvb() ? ['resume', 'speed', 'moves', 'quit'] : ['resume', 'moves', 'quit']);
@@ -538,12 +550,13 @@
       const d = (right ? 1 : 0) - (left ? 1 : 0), id = rows[V.row];
       if (d) {
         if (id === 'mode') { V.mode = MODES[(MODES.findIndex(m => m[0] === V.mode) + MODES.length + d) % MODES.length][0]; V.row = 0; }
-        else if (id === 'diff') V.diff = (V.diff + 3 + d) % 3;
-        else if (id === 'diff2') V.diff2 = (V.diff2 + 3 + d) % 3;
+        else if (id === 'diff') V.diff = (V.diff + 4 + d) % 4;
+        else if (id === 'diff2') V.diff2 = (V.diff2 + 4 + d) % 4;
         else if (id === 'fmt') V.fmt = 1 - V.fmt;
         else if (id === 'tsize') V.tsize = (V.tsize + TSIZE.length + d) % TSIZE.length;
         else if (id === 'entry') V.entry = 1 - V.entry;
         else if (id === 'tskip') V.tskip = 1 - V.tskip;
+        else if (id === 'tlv') V.tlv = ((V.tlv || 0) + TLV.length + d) % TLV.length;
         else if (id === 'speed') V.speed = (V.speed + SPEEDS.length + d) % SPEEDS.length;
         else if (id === 'dummy') V.dummy = (V.dummy + DUMMY.length + d) % DUMMY.length;
         else if (id === 'stage') V.stage = (V.stage + STAGES.length + d) % STAGES.length;
@@ -604,6 +617,12 @@
       if (V.t > 60 && (ok || back)) { SW.audio.sfx('back'); V.phase = 'menu'; }
     } else if (V.phase === 'bracket') {   // tournament: J plays, watches or settles the next match; Esc leaves the tournament
       V.t++;
+      const T = V.tour, cur = T && !T.done ? (T.cur || settle()) : null;   // Set each: A / D the left bot's level, W / S the right one's
+      if (cur && (V.tlv || 0) === 3) {
+        const bump = (id, d) => { if (!id || id === T.me) return; T.lv[id] = ((T.lv[id] === undefined ? V.diff : T.lv[id]) + 4 + d) % 4; SW.audio.sfx('move'); };
+        if (left || right) bump(cur.a, right ? 1 : -1);
+        if (up || down) bump(cur.b, up ? 1 : -1);
+      }
       if (V.t > 12 && ok) { SW.audio.sfx('select'); if (V.tour.done) V.phase = 'menu'; else tourNext(); }
       else if (back) { SW.audio.sfx('back'); V.phase = 'menu'; V.tour = null; }
     } else if (V.phase === 'result' && isTour()) {
@@ -735,7 +754,7 @@
       text(ctx, V.mode === 'train' ? 'Practise against a dummy: no timer, endless energy, moves on screen.' : V.mode === 'rival' ? 'One fall, no clock, at the Crater: you against the lead hero of the other road.'
         : isTour() ? 'A knockout bracket, best of three. Fight your way to the title, or watch the bots.'
         : isArc() ? 'Climb six stages against ever harder bots. A legend waits at the top.' : isSurv() ? 'Beat as many bots as you can. Every tenth one is a legend.' : team3() ? 'Teams of three. When a hero falls, the next one steps in.' : isBvb() ? 'Sit back and watch two bots fight, best of three.' : 'Two heroes, best of three. Every hero is available here.', W / 2, 52, '#bfe8ff', { align: 'center' });
-      const label = { mode: ['Mode', MODES.find(m => m[0] === V.mode)[1]], fmt: ['Format', FORMATS[V.fmt]], tsize: ['Bracket', TSIZE[V.tsize][0]], entry: ['Your entry', ENTRY[V.entry]], tskip: ['Bot matches', TSKIP[V.tskip]], diff: [isBvb() ? 'Bot 1 level' : 'Bot level', DIFF[V.diff]], diff2: ['Bot 2 level', DIFF[V.diff2]], speed: ['Speed', SPEEDS[V.speed][0]], dummy: ['Dummy', DUMMY[V.dummy]], stage: ['Stage', STAGES[V.stage][0]], gain: ['Energy gain', GAIN[V.gain][0]], start: ['Choose heroes', ''] };
+      const label = { mode: ['Mode', MODES.find(m => m[0] === V.mode)[1]], fmt: ['Format', FORMATS[V.fmt]], tsize: ['Bracket', TSIZE[V.tsize][0]], entry: ['Your entry', ENTRY[V.entry]], tskip: ['Bot matches', TSKIP[V.tskip]], tlv: ['Bot levels', TLV[V.tlv || 0]], diff: [isBvb() ? 'Bot 1 level' : 'Bot level', DIFF[V.diff]], diff2: ['Bot 2 level', DIFF[V.diff2]], speed: ['Speed', SPEEDS[V.speed][0]], dummy: ['Dummy', DUMMY[V.dummy]], stage: ['Stage', STAGES[V.stage][0]], gain: ['Energy gain', GAIN[V.gain][0]], start: ['Choose heroes', ''] };
       const rows = menuRows().map(id => label[id]);
       rows.forEach((r, i) => { const on = V.row === i, y = 70 + i * (rows.length > 7 ? 11 : rows.length > 5 ? 12 : 16);   /* Bot vs Bot's seven rows stay above the help panel */ text(ctx, (on ? '> ' : '  ') + r[0], 130, y, on ? '#f5c542' : '#ffffff'); if (r[1]) text(ctx, '<  ' + r[1] + '  >', 240, y, on ? '#ffffff' : '#8a92b8'); });
       ui.panel(ctx, 28, 154, 432, 88, '#3a3d55', 0.7);
@@ -817,7 +836,9 @@
     if (T.done) hint = 'J / Enter: Versus menu';
     else if (cur) {
       const mine = T.me && (cur.a === T.me || cur.b === T.me);
-      hint = 'Next: ' + D.heroes[cur.a].name + ' v ' + D.heroes[cur.b].name + '      J / Enter: ' + (mine ? 'fight' : V.tskip ? 'settle it' : 'watch') + '      Esc: leave';
+      const lvl = id => (id === T.me ? '' : ' (' + DIFF[tourLv(id)] + ')');
+      hint = 'Next: ' + D.heroes[cur.a].name + lvl(cur.a) + ' v ' + D.heroes[cur.b].name + lvl(cur.b) + '      J / Enter: ' + (mine ? 'fight' : V.tskip ? 'settle it' : 'watch') + '      Esc: leave';
+      if ((V.tlv || 0) === 3) text(ctx, 'Set each: A / D left bot level, W / S right bot level', W / 2, 238, '#ffe066', { align: 'center' });
     }
     if (hint) text(ctx, hint, W / 2, 248, '#8a92b8', { align: 'center' });
   }

@@ -52,7 +52,7 @@
   // a void column: a line on the floor for `warn` frames, then it erupts
   function column(p, z, x, warn, dmg, o) {
     const gy = ground(z, x, p.y);
-    z.shots.push({ t: 0, team: 'player', update() {
+    z.shots.push({ t: 0, team: 'player', hz: { x, half: 10, at: warn }, update() {   // hz: where and when it erupts (js/hardcore.js reads it)
       this.t++;
       if (this.t < warn && this.t % 3 === 0 && K) K.add('void', x + rand(-6, 6), gy - 2, 0, rand(-1.2, -0.4), { life: 10 });
       if (this.t === warn) { hit(p, x - 10, gy - 110, 20, 110, dmg, Object.assign({ kx: p.face * 1.4, ky: -4.6, srcX: x }, o)); if (K) K.emit('void', x, gy - 30, 6, { up: true }); sfx('burst'); }
@@ -87,7 +87,7 @@
   // S + I and W + O go through moves.js and signature.js
   if (SW.moves && SW.moves.BURST) SW.moves.BURST[ID] = { id: 'engine_light', cast(p, z, dmg) {
     const y0 = p.y; p.vy = -4.6; p.onGround = false; sfx('awaken'); fx.flash('#ffffff', 6);
-    z.shots.push({ t: 0, update() {
+    z.shots.push({ t: 0, hz: { get x() { return p.x; }, half: 76, at: 18 }, update() {
       this.t++;
       if (this.t < 18) { if (K && this.t % 2 === 0) K.gather('void', p.x, p.y - 20, 3, 46); if (this.t % 6 === 0) fx.ring(p.x, p.y - 20, '#ffffff', 70, 12, 10); return; }
       if (this.t === 18) {
@@ -101,7 +101,7 @@
   } };
   if (SW.signature && SW.signature.SIG) SW.signature.SIG[ID] = { id: 'engine_collapse', cast(p, z, dmg) {
     const x = p.x + p.face * 64, y = p.y - 20, r = 48; sfx('tele');
-    z.shots.push({ t: 0, update() {
+    z.shots.push({ t: 0, hz: { x, half: 48, at: 48, every: 12 }, update() {
       this.t++;
       foesOf(z).forEach(e => { const dx = x - e.x, d = Math.abs(dx); if (d < r && Math.abs(e.y - e.h / 2 - y) < r && !e.isBoss) { try { e.x += Math.sign(dx) * Math.min(d, 2); } catch (er) { e.vx = Math.sign(dx) * 2; } } });
       if (this.t % 12 === 0) hit(p, x - 28, y - 28, 56, 56, dmg, { kx: 0, ky: -0.5, stun: 16, srcX: x, heavy: false });
@@ -128,14 +128,14 @@
   const _ng = G.newGame; G.newGame = function () { return withoutIt(_ng, this, arguments); };
 
   // ================= the boss fight =================
-  const HPM = [0.7, 0.9, 1.3], DMM = [0.8, 0.95, 1.15];   // by bot level (Easy, Normal, Hard), against Versus fighters
+  const HPM = [0.7, 0.9, 1.3, 1.6], DMM = [0.8, 0.95, 1.15, 1.35];   // by bot level (Easy, Normal, Hard, Nightmare), against Versus fighters
   let boss = null, setFor = null;
   const bossMode = () => V.mode === 'pvb' && V.fmt !== 1 && V.f && V.f.length === 2 && V.f[1].hero === ID;
   function setup() {
     const a = V.f[0], b = V.f[1], z = V.zone;
     setFor = a.p;
     a.ents = a.ents.filter(e => !e.isProxy); b.ents = [];
-    const lv = SW.clamp(V.diff === undefined ? 1 : V.diff, 0, 2);
+    const lv = SW.clamp(V.diff === undefined ? 1 : V.diff, 0, 3);
     boss = SW.spawnEnemy('convergence', b.p.x, b.p.y);
     boss.hp = boss.hpMax = Math.round(boss.hpMax * HPM[lv]); boss.def = Object.assign({}, boss.def, { dmg: Math.round(boss.def.dmg * DMM[lv]) });
     boss.ax0 = 24; boss.ax1 = (z.pw || W) - 24; boss.state = 'chase'; boss.dormant = true; boss.face = -1; boss.vsBoss = true;
