@@ -15,10 +15,13 @@
     dummy: 0, endless: true, showMoves: true, paused: false, pRow: 0, pPage: null, pWho: 0, diff2: 1, speed: 0, tsize: 0, entry: 0, tskip: 0, tourBots: false, tour: null, fmt: 0, team: [[], []], ti: [0, 0], oRow: 0, oCol: 0, oMark: null };
   // Bot vs Bot: nobody plays, two bots fight each other (each with its own level); Esc > Speed runs it faster
   const MODES = [['pvb', 'Player vs Bot'], ['pvp', 'Player vs Player'], ['bvb', 'Bot vs Bot'], ['tour', 'Tournament'], ['arcade', 'Arcade'], ['surv', 'Survival'], ['train', 'Training'], ['rival', 'Rival Duel']];
-  // Tournament: a knockout bracket of 8, 16 or every open hero (byes fill it up to 16 or 32), 1 vs 1, best of three.
+  // Tournament: a knockout bracket of 8, 16, 32, 64 or every open hero, 1 vs 1, best of three. The draw is random every
+  // time: who enters (when there are more open heroes than places), where each one is placed, and which matches get the
+  // byes when there are fewer heroes than places (spread over the whole bracket, never stacked in one half).
   // Entry "Play": you pick a hero and play your own matches against the bots; "Watch": bots only. Every other match is
   // bot against bot at the menu's bot level, watched at the chosen speed, or settled at once with "Bot matches: Skip".
-  const TSIZE = [['8 heroes', 8], ['16 heroes', 16], ['All heroes', 0]], ENTRY = ['Play', 'Watch'], TSKIP = ['Watch', 'Skip'];   // while a duel runs V.mode is 'duel'
+  const TSIZE = [['8 heroes', 8], ['16 heroes', 16], ['32 heroes', 32], ['64 heroes', 64], ['All heroes', 0]], ENTRY = ['Play', 'Watch'], TSKIP = ['Watch', 'Skip'];
+  if (SW.i18n && SW.i18n.add) { SW.i18n.add('es', { '32 heroes': '32 héroes', '64 heroes': '64 héroes' }); SW.i18n.add('zh', { '32 heroes': '32 名英雄', '64 heroes': '64 名英雄' }); }   // while a duel runs V.mode is 'duel'
   const SPEEDS = [['Normal', 1], ['Fast', 2], ['Very fast', 4]];
   const lvOf = f => (f.lv !== undefined ? f.lv : V.diff);   // a bot's level: its own in Bot vs Bot, else the menu's
   const isTour = () => V.mode === 'tour';
@@ -222,9 +225,11 @@
   function startTour(meIdx) {
     const me = meIdx === undefined ? null : D.heroOrder[meIdx], want = TSIZE[V.tsize][1];
     const pool = shuffled(tourOpen().filter(id => id !== me)), n = Math.min(want || 64, pool.length + (me ? 1 : 0));
-    const size = want || (n <= 8 ? 8 : n <= 16 ? 16 : n <= 32 ? 32 : 64), ent = shuffled((me ? [me] : []).concat(pool).slice(0, n));
-    let byes = size - ent.length; const slots = [];
-    for (let i = 0; i < size / 2; i++) { slots.push(ent.length ? ent.shift() : null); slots.push(byes > 0 ? (byes--, null) : ent.length ? ent.shift() : null); }
+    const fit = n <= 8 ? 8 : n <= 16 ? 16 : n <= 32 ? 32 : 64, size = want ? Math.min(want, fit) : fit, ent = shuffled((me ? [me] : []).concat(pool).slice(0, n));
+    // byes go to random matches anywhere in the bracket: one per match while that is enough, two only when it has to be
+    const half = size / 2, byes = size - ent.length, two = Math.max(0, byes - half), one = byes - two * 2;
+    const kinds = shuffled(Array.from({ length: half }, (x, i) => (i < two ? 2 : i < two + one ? 1 : 0))), slots = [];
+    kinds.forEach(k => { const pair = k === 2 ? [null, null] : k === 1 ? [ent.shift(), null] : [ent.shift(), ent.shift()]; if (k === 1 && Math.random() < 0.5) pair.reverse(); slots.push(pair[0], pair[1]); });
     V.tour = { size, R: [slots], me, cur: null, last: null, done: false, champ: null };
     settle(); V.phase = 'bracket'; V.t = 0;
   }
