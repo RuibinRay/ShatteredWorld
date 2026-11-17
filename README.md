@@ -402,6 +402,14 @@ reading and timing:
 - **Tournaments.** The tournament menu has a Bot levels row: Same (all at the Bots level), Mixed (a random level each),
   Rising (Easy in the first round up to Nightmare in the final) or Set each (A / D and W / S on the bracket set the two
   bots' levels for the next match).
+- **Saved tournaments.** A tournament in progress is saved to localStorage (`shattered-worlds-tournament-v1`, apart from
+  the profile and the story slot) at the draw and after every finished match: the bracket, every result so far, the bot
+  levels, your hero and the menu settings it was started with. While a save exists the Versus menu shows "Continue
+  tournament" above the Mode row (W from Mode, or S from the last row); J brings back the bracket with your next match.
+  Esc on the bracket leaves the tournament and keeps the save; a match left halfway (Esc > quit, or the page closed) is not
+  counted: it is fought again from its start.
+  Starting a new tournament while one is saved asks first. The save is cleared when the tournament ends or your hero is
+  knocked out. The code is in `js/tour-save.js` (it only wraps `V.update` and `V.draw`).
 - **Recommended combos.** Versus Training shows three for the hero you play: the strongest with no energy, the
   strongest for one bar or less, and the strongest of all, with their damage.
 - **Watch it.** `tools/hardcore-watch.js` plays Nightmare against Hard live at 1x, with what the bot reads and decides
@@ -844,8 +852,8 @@ would even the rest out.
   in Versus, up to 32; byes fill the bracket). Your entry: Play (pick a hero; you fight your own matches, always on the
   left) or Watch (bots only). Every other match is bot against bot at the menu's bot level: watched at the chosen speed,
   or settled at once in silence with "Bot matches: Skip". The bracket screen is two-sided (the final meets in the middle),
-  shows each result, the next match and the champion; Esc > quit in a match forfeits your own match (a bot match goes to
-  whoever leads). The code is in `js/versus.js` (`startTour`, `settle`, `tourNext`, `drawBracket`).
+  shows each result, the next match and the champion; Esc > quit in a match leaves it unplayed (the tournament is kept;
+  see Saved tournaments). The code is in `js/versus.js` (`startTour`, `settle`, `tourNext`, `drawBracket`).
   **Arcade** (one player, 1 vs 1 or 3 vs 3): six stages against bots that get harder (Easy, Easy, Normal, Normal, Hard,
   Hard); each stage is a full match against a random hero or team, and the last is led by a legend at the Aurelia Spire.
   A lost stage can be continued (the stage is fought again; continues are counted). The clock counts fighting time

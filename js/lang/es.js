@@ -4600,5 +4600,9 @@ SW.i18n.add('es', {
   "H: hazards on": "H: peligros activados",
   "H: hazards off": "H: peligros desactivados",
   "Hazards off: the layout only.": "Sin peligros: solo el escenario.",
-  "One ultimate left": "Te queda una definitiva"
+  "One ultimate left": "Te queda una definitiva",
+  "Continue tournament": "Continuar torneo",
+  "Start a new tournament?": "¿Empezar un torneo nuevo?",
+  "Your saved tournament will be lost.": "Se perderá tu torneo guardado.",
+  "J / Enter: start new    Esc: keep it": "J / Enter: empezar de nuevo    Esc: conservarlo"
 });

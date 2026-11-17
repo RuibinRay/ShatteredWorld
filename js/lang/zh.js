@@ -4600,5 +4600,9 @@ SW.i18n.add('zh', {
   "H: hazards on": "H：机关开启",
   "H: hazards off": "H：机关关闭",
   "Hazards off: the layout only.": "机关已关闭：只保留场地布局。",
-  "One ultimate left": "剩余一次终极技"
+  "One ultimate left": "剩余一次终极技",
+  "Continue tournament": "继续锦标赛",
+  "Start a new tournament?": "开始新的锦标赛？",
+  "Your saved tournament will be lost.": "已保存的锦标赛将会丢失。",
+  "J / Enter: start new    Esc: keep it": "J / Enter：开始新的    Esc：保留"
 });
