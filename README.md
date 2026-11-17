@@ -414,16 +414,17 @@ heroes with a long first J could follow up; now all 64 can (61-64 from 16, 22 or
 the combo just goes on (the average best no-energy combo went from 61 to 98, measured at normal speed). The ten
 weakest heroes against fifteen regulars, Hard bots both sides: 41% of rounds before, 43% after.
 
-## Heavier J chains (`js/combo-tune.js`)
+## Heavier J chains and skills (`js/combo-tune.js`)
 
-In Versus only, normal attacks (J chain, launcher, sweep, air hits; not skills or ultimates) hit harder for the heroes
-whose J J J J did least: Fenn x1.5, Corvin x1.4, Convergence x1.45, Rook x1.3, Maren and Garo x1.15, and x1.1 for
-Apis, Hart, Mika, Kova, Kestra, Ivo, Isolde, Thorne, Vesper, Kiri and Lux. J J J J for Fenn went from 21 to 34,
-Corvin 25 to 36, Rook 28 to 36. Checked against the fifteen regular heroes with Hard bots on both sides (90 rounds each,
-same matchups with and without): the group went from 39% to 42% of rounds won (an average hero gets 43-47% against
-that pool), Fenn 37% to 51%, Corvin 42% to 50%, Convergence 21% to 35%; none above 51%. `SW.comboTune.on = false`
-turns it off.
-
+In Versus only, for the heroes whose combos hit lightest. Normal attacks (J chain, launcher, sweep, air hits) hit
+harder: Fenn x1.65, Corvin x1.7, Rook, Convergence x1.45, Garo x1.35, Maren x1.3, Pell, Sable x1.25, Mika x1.25,
+Hex, Lin, Brann, Ume, Isolde, Thorne x1.2, Isa, Hart, Kova, Kestra, Ivo x1.15, Apis, Vesper, Kiri, Lux x1.1. Skill hits
+(energy moves, not ultimates) hit harder for skills that connected after J J J but added little: Pell, Garo x1.6, Mika
+x1.5, Corvin, Hex, Fenn, Brann, Ume x1.4, Rook, Lin, Thorne, Isolde, Kova, Hart, Isa, Opal x1.3, Kestra x1.25,
+Maren x1.2. Combo strength of the 20 weakest (no-energy combo, best for one bar, J J J J, against the roster middle =
+100) went up from 66-90 to 80-105 (Sable 85 to 105, Ume 88 to 103, Lin 80 to 97, Garo 66 to 80, Corvin 68 to 81).
+Checked against the fifteen regular heroes with Hard bots on both sides, same matchups before and after: the group
+went from 43% to 44% of rounds won, and every hero stayed between 25% and 57%. `SW.comboTune.on = false` turns it off.
 ## The Versus entrance (`js/vsintro.js`)
 
 When a new pair of fighters meets (the first round of a match, each new Arcade or Survival opponent, each 3 vs 3 swap,
