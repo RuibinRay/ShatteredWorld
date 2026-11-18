@@ -285,6 +285,8 @@
     }
     const th = threat(f, o), canGuard = p.onGround && (FREE[p.state] || p.state === 'guard'), cd = p.cd || {};
     const mirror = HC.opt.mirrorShow && o.bot && HC.is(o);
+    // with an empty bar an ultimate cannot be blocked (js/ult-guard.js): get away from it like any unblockable
+    if (q.state === 'ult' && S.energy < 1 && SW.ultGuard && SW.ultGuard.on) th.ub = true;
     // a ring of blades around the opponent (Ferra's Scrap Halo, I: four blades orbiting 36 px out for six seconds): anyone
     // inside is cut and interrupted every 14 frames, so a combo into it breaks. A route that is not a throw stops
     const aura = o.shots.find(s => s.isHalo && !s.gone && (s.t || 0) < 352);
