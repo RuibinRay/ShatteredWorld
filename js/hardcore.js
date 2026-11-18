@@ -116,12 +116,13 @@
   const TOK = {
     J: { key: 'attack' }, A: { key: 'attack' }, L: { key: 'attack', mod: 'up' }, W: { key: 'attack', mod: 'down' }, K: { key: 'jump' },
     U: { key: 'skill', slot: 'u' }, u: { key: 'skill', mod: 'down', slot: 'su' }, I: { key: 'special', slot: 'i' }, i: { key: 'special', mod: 'down', slot: 'si' },
-    X: { key: 'special', mod: 'up' }, T: { key: 'attack', also: 'dash' }
+    X: { key: 'special', mod: 'up' }, T: { key: 'attack', also: 'dash' },
+    O: { key: 'awaken', mod: 'up', slot: 'wo' }, M: { key: 'awaken', mod: 'down' }   // W+O signature, S+O timed power-up (js/hardcore-skill.js)
   };
   HC.TOK = TOK;
-  HC.notation = r => r.split('').map(c => ({ J: 'J', A: 'J', L: 'W+J', W: 'S+J', K: 'K', U: 'U', u: 'S+U', I: 'I', i: 'S+I', X: 'W+I', T: 'J+L', F: 'STEP' })[c]).reduce((s, t, i, a) => {
+  HC.notation = r => r.split('').map(c => ({ J: 'J', A: 'J', L: 'W+J', W: 'S+J', K: 'K', U: 'U', u: 'S+U', I: 'I', i: 'S+I', X: 'W+I', T: 'J+L', F: 'STEP', O: 'W+O', M: 'S+O' })[c]).reduce((s, t, i, a) => {
     const prev = r[i - 1], c = r[i];
-    const sep = i === 0 ? '' : (c === 'K' || prev === 'K') ? ' > ' : (/[UuIiX]/.test(c) ? ' > ' : ' ');
+    const sep = i === 0 ? '' : (c === 'K' || prev === 'K') ? ' > ' : (/[UuIiXOM]/.test(c) ? ' > ' : ' ');
     return s + sep + t;
   }, '');
   const sig = (p, S) => [p.state, p.atk, p.st, S.energy, p.airCombo, p.combo];
@@ -229,11 +230,15 @@
       case 'rush': case 'string': {
         if (adx > reach + 2) { k[to] = true; if (adx > reach + 30 && h.t % 2) k.dash = true; say('RUSH IN'); if (t > 60) pl.until = now; return true; }
         const free = (HC.data.routes[f.hero] || []).filter(x => x.cost === 0 && !/[TX]/.test(x.r)).sort((a, b) => b.dmg - a.dmg)[0];
-        const r = MIR.boss[f.hero] ? 'J' : free ? free.r : 'JJJ';   // a boss throws one J: if it lands, the confirm starts its one-opening chain
+        // a boss throws one J: if it lands, the confirm starts its one-opening chain. Others, with a bar to spend, now and
+        // then go in with the strongest route they can pay for (its skills come out if the first hits land)
+        const paid = S.energy >= 75 && Math.random() < 0.45 ? HC.bestRoute(f) : null;
+        const r = MIR.boss[f.hero] ? 'J' : paid || (free ? free.r : 'JJJ');
         HC.start(f, r); h.mr = 26; h.lastA = 'hit'; runRoute(f, k); pl.until = now; say('STRING  ' + HC.notation(r)); return true;
       }
       case 'jumpin': if (t < 3) { k.jump = true; k[to] = true; say('JUMP IN'); return true; } pl.until = now; return false;
       case 'poke': {
+        if (HC.ext && HC.ext('poke', f, o, k, c)) { pl.until = now; h.mr = 12; h.lastA = 'hit'; return true; }
         const slots = ['u', 'su', 'i', 'si'], start = (h.pk = ((h.pk || 0) + 1) % 4);
         for (let n = 0; n < 4; n++) {
           const sl = slots[(start + n) % 4];
@@ -264,7 +269,7 @@
     const p = f.p, q = o.p, S = f.state, h = f.hc || (f.hc = { t: 0 }), prm = h.prm || (h.prm = HC.params(f.hero));
     h.t = (h.t || 0) + 1;
     if (!q || q.dead || p.dead) return;
-    if (HC.test) { runRoute(f, k); return; }   // the trainer runs routes on their own
+    if (HC.test) { if (f.labKeys) Object.assign(k, f.labKeys); runRoute(f, k); return; }   // the trainer runs routes on their own (the move lab can hold keys for a dummy)
     const dx = q.x - p.x, adx = Math.abs(dx), to = dx > 0 ? 'right' : 'left', away = dx > 0 ? 'left' : 'right', facing = (dx > 0 ? 1 : -1) === p.face;
     // how long the opponent stays helpless: a perfect-block stun, or the hit-stun of what we just landed
     // open: stunned, or still reeling from a hit; a target knocked into the air stays helpless until it lands, however
@@ -300,6 +305,10 @@
       else { h.r = null; h.tk = null; say(q.state === 'slip' ? 'IT SLIPPED OUT - DEFEND' : 'COMBO DROPPED'); }
     }
     const reach = reachOf(p), first = firstHit(p);
+    // what this hero knows about its own moves and the opponent's (js/hardcore-skill.js): HC.ext(stage, ...) returns true
+    // when it pressed something. c: the readings the stages share
+    const X = HC.ext, c = X && { p, q, S, h, th, open, openT, adx, dx, to, away, facing, reach, first, cd, say, prm, mirror, canGuard, ultUp };
+    if (X && X('react', f, o, k, c)) return;
     // COUNTER 1: a brace that answers whatever hits it (Aldric's Oathkeeper, S + U): set it a few frames before the hit
     const brace = COUNTER_SLOT[f.hero];
     if (brace && th.src === 'body' && th.t >= 2 && th.t <= 14 && !open && canGuard && !(cd[brace.slot] > 0) && S.energy >= brace.cost && !(p.riposteT > 0)) {
@@ -338,6 +347,7 @@
         if (canGuard) { k.down = true; say('BLADES AROUND IT - GUARD'); return; }
       } else if (adx < 150) { if (!facing) k[to] = true; say('BLADES AROUND IT - WAIT IT OUT'); return; }
     }
+    if (X && X('read', f, o, k, c)) return;
     if (p.state === 'guard' && th.t > 4) { say('WAIT'); return; }   // let the guard drop and wait for the next swing
     // punish: a stunned or hit opponent eats the best route this hero has right now
     if (open && q.state !== 'dead') {
@@ -348,7 +358,7 @@
       if (dy > 28 && q.onGround && p.onGround && openT > 24) { k.down = true; k.jump = h.t % 2 === 1; if (adx > 20) k[to] = true; say('OPEN BELOW - DROP DOWN'); return; }
       if (adx > reach) {
         const travel = (adx - reach) / (adx > 70 ? 5.8 : 2.1);
-        if (travel + first > openT) { say('TOO FAR TO PUNISH'); return; }   // it will be up before we get there: do not run into it
+        if (travel + first > openT) { if (X && X('far', f, o, k, c)) return; say('TOO FAR TO PUNISH'); return; }   // it will be up before we get there: do not run into it
         k[to] = true; if (adx > 70 && h.t % 2) k.dash = true; say((o.stunT > 0 ? 'STUNNED' : 'OPEN') + ' - RUN IN'); return;
       }
       // a ground route only connects with both feet down and the target in reach of a ground swing: a target juggled
@@ -366,6 +376,7 @@
     const rec = recovery(q);
     if (rec > 0 && th.t > 6 && q.state !== 'guard') {
       const need = Math.max(0, adx - reach) / 5.8 + 6;
+      if (!(rec > need) && X && FREE[p.state] && X('whiff', f, o, k, Object.assign(c, { rec }))) return;
       if (rec > need && FREE[p.state]) {
         if (!facing) { k[to] = true; return; }
         if (adx > reach) { k[to] = true; if (adx > reach + 20) k.dash = h.t % 2 === 1; say('WHIFF - RUN IN'); return; }
@@ -379,6 +390,7 @@
     if (S.awaken >= 100 && p.awakeT <= 0 && adx > 90 && th.t > 30) { k.awaken = h.t % 2 === 1; say('POWER UP'); return; }
     // neutral: hold the spacing, charge the bar from a distance, poke with the first skill
     // stay out of the reach of a power-up burst (it knocks back anyone within 70) while the opponent has one ready
+    if (X && th.t > 6 && !open && FREE[p.state] && X('neutral', f, o, k, c)) return;
     if (mirror && th.t > 6 && !open && FREE[p.state] && mirrorPlay(f, o, k, h, { p, q, S, adx, to, away, facing, reach, cd, say, prm })) return;
     if (burstUp && adx < 88 && !open) { const wall = away === 'left' ? p.x < 40 : p.x > V.zone.pw - 40; if (!wall) { k[away] = true; if (adx < 60 && h.t % 2) k.dash = true; say('KEEP AWAY FROM ITS BURST'); return; } }
     // PRESSURE (a play-style option, off unless a hero's tuned params turn it on): against an opponent that only waits
@@ -424,6 +436,7 @@
     return a && a.box ? a.box[0] + a.box[2] + 2 : 28;
   }
   HC.think = think;
+  Object.assign(HC, { runRoute, recovery, reachOf: p => reachOf(p), firstHit: p => firstHit(p), FREE, QUIET, bestRoute: f => bestRoute(f) });
   // heroes with a counter skill: which slot it is on, its cost and name (read from each hero's kit, so a new hero with one
   // of these abilities picks it up too)
   const COUNTERS = ['riposte'], COUNTER_SLOT = {};
