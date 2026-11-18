@@ -41,9 +41,16 @@
   }
   function resume() {
     const s = load(); if (!s) return;
-    Object.assign(V, s.set);
+    // a Bots level or level mode picked in the menu wins over the saved one (the user: "after i selected nightmare i
+    // entered the tournament and its still hard vs hard"): then every bot takes it (Same and Set each: the menu's level;
+    // Mixed: a new random one each; Rising goes by round anyway). Nothing picked (the menu starts at Normal on every page
+    // load, so only a real change counts): the saved levels stay, hand-set ones included
+    const diff = V.diff, tlv = V.tlv || 0, changed = TS.picked && (diff !== s.set.diff || tlv !== (s.set.tlv || 0));
+    Object.assign(V, s.set, changed ? { diff, tlv } : {});
+    TS.picked = false;
     V.mode = 'tour'; V.tourBots = false; V.row = 0;
     V.tour = { size: s.tour.size, R: s.tour.R.map(r => r.slice()), me: s.tour.me || null, cur: null, last: s.tour.last || null, done: false, champ: null, lv: Object.assign({}, s.tour.lv) };
+    if (changed) Object.keys(V.tour.lv).forEach(id => { V.tour.lv[id] = tlv === 1 ? Math.random() * 4 | 0 : diff; });
     TS.T = V.tour; TS.sig = JSON.stringify(V.tour.R); TS.on = false;
     V.phase = 'bracket'; V.t = 0;
   }
@@ -88,7 +95,9 @@
       sfx('back');
       return;
     }
+    const d0 = V.diff, l0 = V.tlv || 0, inMenu = V.phase === 'menu';
     const r = _vu.apply(this, arguments);
+    if (inMenu && V.phase === 'menu' && (V.diff !== d0 || (V.tlv || 0) !== l0)) TS.picked = true;   // the Bots level or level mode changed by hand
     track();
     return r;
   };
