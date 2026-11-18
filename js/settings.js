@@ -56,10 +56,11 @@
   const keepVol = () => { if (S.sfx !== A.vol.sfx || S.music !== A.vol.music) { S.sfx = A.vol.sfx; S.music = A.vol.music; save(); A.setVol(); } };
 
   // ---------- title screen > Settings ----------
-  const ROWS = SW.touch ? ['lang', 'touch', 'full', 'fs', 'sfx', 'music', 'back'] : ['lang', 'full', 'sfx', 'music', 'back'];   // fs: full screen on rotate (js/touch.js)
+  const ROWS = SW.touch ? ['lang', 'touch', 'full', 'fs', 'sfx', 'music', 'combos', 'back'] : ['lang', 'full', 'sfx', 'music', 'combos', 'back'];   // fs: full screen on rotate (js/touch.js)
   const TOUCH = [['auto', 'Auto'], ['on', 'On'], ['off', 'Off']];   // js/touch.js: Auto shows the controls on touchscreens
   const st = SW.settings = { row: 0 };
   st.open = function () { st.row = 0; };
+  st.recCombos = () => S.recCombos === true;   // Versus Training: the RECOMMENDED COMBOS box (js/hardcore.js); off unless chosen here
   st.update = function (g) {
     const d = (I.hit('right') ? 1 : 0) - (I.hit('left') ? 1 : 0), id = ROWS[st.row];
     if (I.back() || I.hit('pause') || (I.ok() && id === 'back')) { g.overlay = null; SW.audio.sfx('back'); keepVol(); return; }
@@ -76,6 +77,7 @@
       SW.audio.sfx('move');
     }
     if (id === 'fs' && (d || I.ok())) { SW.touch.setAutoFs(!SW.touch.autoFs); SW.audio.sfx('move'); }
+    if (id === 'combos' && (d || I.ok())) { S.recCombos = !st.recCombos(); save(); SW.audio.sfx('move'); }
     if (id === 'sfx' && d) { A.vol.sfx = SW.clamp(Math.round((A.vol.sfx + d * 0.1) * 10) / 10, 0, 1); A.setVol(); SW.audio.sfx('select'); }
     if (id === 'music' && d) { A.vol.music = SW.clamp(Math.round((A.vol.music + d * 0.1) * 10) / 10, 0, 1); A.setVol(); }
     keepVol();
@@ -91,13 +93,14 @@
     if (bg) ctx.drawImage(bg, 0, 0); else art.rect(ctx, '#0b0c1c', 0, 0, W, H);
     ctx.globalAlpha = 0.82; art.rect(ctx, '#05060c', 0, 0, W, H); ctx.globalAlpha = 1;
     text(ctx, 'SETTINGS', W / 2, 30, '#f5c542', { align: 'center', scale: 2 });
-    const label = { lang: 'Language', touch: 'Touch controls', full: 'Full screen', fs: 'Full screen on rotate', sfx: 'Sound effects', music: 'Music', back: 'Back' };
+    const label = { lang: 'Language', touch: 'Touch controls', full: 'Full screen', fs: 'Full screen on rotate', sfx: 'Sound effects', music: 'Music', combos: 'Recommended combos', back: 'Back' };
     ROWS.forEach((id, i) => {
       const on = st.row === i, y = 84 + i * (ROWS.length > 6 ? 19 : 22), c = on ? '#f5c542' : '#ffffff';
       text(ctx, (on ? '> ' : '  ') + label[id], 120, y, c);
       if (id === 'lang') valueRow(ctx, 250, y, on, x => text(ctx, langName(), x, y, on ? '#ffffff' : '#bfe8ff', { raw: true }));
       if (id === 'touch') valueRow(ctx, 250, y, on, x => text(ctx, (TOUCH.find(t => t[0] === SW.touch.mode) || TOUCH[0])[1], x, y, on ? '#ffffff' : '#bfe8ff'));
       if (id === 'full') valueRow(ctx, 250, y, on, x => text(ctx, SW.touch && SW.touch.isFs() ? 'On' : 'Off', x, y, on ? '#ffffff' : '#bfe8ff'));
+      if (id === 'combos') valueRow(ctx, 250, y, on, x => text(ctx, st.recCombos() ? 'On' : 'Off', x, y, on ? '#ffffff' : '#bfe8ff'));
       if (id === 'fs') valueRow(ctx, 250, y, on, x => text(ctx, SW.touch.autoFs ? 'On' : 'Off', x, y, on ? '#ffffff' : '#bfe8ff'));
       if (id === 'sfx' || id === 'music') valueRow(ctx, 250, y, on, x => {
         const v = Math.round(A.vol[id === 'sfx' ? 'sfx' : 'music'] * 10);

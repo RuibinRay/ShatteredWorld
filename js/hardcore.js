@@ -498,7 +498,7 @@
     return _upd.call(this, g, z);
   };
 
-  // ================= recommended combos, in Versus Training =================
+  // ================= recommended combos, in Versus Training (Settings > Recommended combos; off by default) =================
   // three picks: the strongest with no energy, the strongest for one bar (100) or less, and the strongest of all
   HC.recommend = hero => {
     const list = HC.data.routes[hero] || [], best = lim => list.filter(R => R.cost <= lim).sort((a, b) => b.dmg - a.dmg)[0];
@@ -510,6 +510,7 @@
   V.draw = function (ctx) {
     _draw.apply(this, arguments);
     if (V.mode !== 'train' || V.phase !== 'fight' || V.paused || !V.f[0] || V.showMoves === false) return;
+    if (!(SW.settings && SW.settings.recCombos && SW.settings.recCombos())) return;   // shown only when turned on in Settings (js/settings.js)
     const list = HC.recommend(V.f[0].hero);
     if (!list.length) return;
     const x = 8, y = 178, w = 300;
@@ -524,7 +525,7 @@
   const art = () => SW.art;
   // its few words, in the game's other languages (kept here so the shared language files need no change)
   if (SW.i18n && SW.i18n.add) {
-    SW.i18n.add('es', { 'Bot levels': 'Niveles de bots', 'Same': 'Igual', 'Mixed': 'Mezclado', 'Rising': 'En aumento', 'Set each': 'Uno por uno', 'Set each: A / D left bot level, W / S right bot level': 'Uno por uno: A / D nivel del bot izquierdo, W / S del derecho', 'Nightmare': 'Pesadilla', 'RECOMMENDED COMBOS': 'COMBOS RECOMENDADOS', '{0} dmg, {1} energy': '{0} de daño, {1} de energía', '{0} dmg, no energy': '{0} de daño, sin energía' });
-    SW.i18n.add('zh', { 'Bot levels': '机器人难度', 'Same': '统一', 'Mixed': '随机', 'Rising': '逐轮提升', 'Set each': '逐个设置', 'Set each: A / D left bot level, W / S right bot level': '逐个设置：A / D 左侧机器人难度，W / S 右侧机器人难度', 'Nightmare': '噩梦', 'RECOMMENDED COMBOS': '推荐连招', '{0} dmg, {1} energy': '{0}伤害，{1}能量', '{0} dmg, no energy': '{0}伤害，无需能量' });
+    SW.i18n.add('es', { 'Bot levels': 'Niveles de bots', 'Same': 'Igual', 'Mixed': 'Mezclado', 'Rising': 'En aumento', 'Set each': 'Uno por uno', 'Set each: A / D left bot level, W / S right bot level': 'Uno por uno: A / D nivel del bot izquierdo, W / S del derecho', 'Nightmare': 'Pesadilla', 'RECOMMENDED COMBOS': 'COMBOS RECOMENDADOS', 'Recommended combos': 'Combos recomendados', '{0} dmg, {1} energy': '{0} de daño, {1} de energía', '{0} dmg, no energy': '{0} de daño, sin energía' });
+    SW.i18n.add('zh', { 'Bot levels': '机器人难度', 'Same': '统一', 'Mixed': '随机', 'Rising': '逐轮提升', 'Set each': '逐个设置', 'Set each: A / D left bot level, W / S right bot level': '逐个设置：A / D 左侧机器人难度，W / S 右侧机器人难度', 'Nightmare': '噩梦', 'RECOMMENDED COMBOS': '推荐连招', 'Recommended combos': '推荐连招', '{0} dmg, {1} energy': '{0}伤害，{1}能量', '{0} dmg, no energy': '{0}伤害，无需能量' });
   }
 })();
