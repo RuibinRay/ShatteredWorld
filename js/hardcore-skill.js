@@ -47,6 +47,7 @@
   // is the hero ready to throw tk now: energy, cooldown, and (for W+O) a signature at all
   function ready(f, tk) {
     const p = f.p, S = f.state, cd = p.cd || {}, m = (MD[f.hero] || {})[tk];
+    if (tk !== 'X' && HC.saving && (HC.saving(f) || (HC.ultReady(f) && !(p.awakeT > 0)))) return false;   // the bar is kept for the ultimate (js/hardcore.js, the ultimate plan)
     if (!m && tk !== 'M') return false;
     if (tk === 'X') return S.energy >= 300 || (p.awakeT > 0 && S.energy >= 100);
     if (tk === 'O' && !SIG[f.hero]) return false;
@@ -204,7 +205,7 @@
         if (!KS.skills || !p.onGround || boss) return false;
         const S = f.state, now = V.t;
         // the timed power mode, out of the opponent's reach, with a bar to spare for the combos it powers
-        if (ready(f, 'M') && c.adx > 130 && c.th.t > 30 && (S.energy >= 200 || p.awakeT > 0) && !(q.state === 'ult')) {
+        if (ready(f, 'M') && c.adx > 130 && c.th.t > 30 && p.awakeT > 0 && S.energy >= 200 && !(q.state === 'ult')) {   // awake: the ultimate costs a bar, so a bar can go on it
           HC.start(f, 'M'); h.mr = 4; HC.runRoute(f, k); c.say('POWER UP - ' + nameOf(f.hero, 'M')); return true;
         }
         // zoning: from where a skill reaches and is safe, now and then (and never with the bar needed for the combos)

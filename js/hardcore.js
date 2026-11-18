@@ -143,10 +143,21 @@
     if (n.ult && !(S.energy >= 300 || (p.awakeT > 0 && S.energy >= 100))) return false;
     return n.slots.every(s => !(cd[s] > 4));
   }
+  // THE ULTIMATE PLAN (the user, 2026-11-18: "why nightmare dont use ult"). Measured: a Nightmare bot had a full bar only
+  // 3-6% of the time and fired 0.24-0.5 ultimates a round, because slips (60 a time), skill combos, zoning and the power
+  // mode spent the bar as it filled, and a full bar went into a combo. Now, from ULT.save energy it saves (free combos
+  // only, no zoning or power mode; from ULT.noSlip no slips either), and with the bar full it opens with the ultimate on
+  // any opening: a stun, a combo that landed, a whiff
+  // Tuned on 190 rounds against Hard bots: saving from 180 (no slips from 270) gave 1.04 ultimates a round but 96.8% won;
+  // from 240 with slips kept, 0.87 a round (95% land) and 98.4% won, as before the plan (no saving: 0.76, 99.5%)
+  const ULT = HC.ULT = { save: 240, noSlip: 999 };
+  const ultReady = f => f.state.energy >= 300 || (f.p.awakeT > 0 && f.state.energy >= 100);
+  const saving = f => { const prm = (f.hc && f.hc.prm) || HC.params(f.hero); return !!prm.ultIn && !ultReady(f) && !(f.p.awakeT > 0) && f.state.energy >= ULT.save; };
+  HC.ultReady = ultReady; HC.saving = saving;
   function bestRoute(f) {
-    const list = HC.data.routes[f.hero] || DEFAULT_ROUTES;
+    const list = HC.data.routes[f.hero] || DEFAULT_ROUTES, save = saving(f) || ultReady(f);
     let best = null;
-    for (const R of list) if (affordable(f, R) && (!best || R.dmg > best.dmg)) best = R;
+    for (const R of list) if (affordable(f, R) && !(save && R.cost > 0) && (!best || R.dmg > best.dmg)) best = R;
     return best ? best.r : 'JJJ';
   }
   const DEFAULT_ROUTES = [{ r: 'JJJJ', dmg: 30, cost: 0 }, { r: 'JJJU', dmg: 34, cost: 25 }, { r: 'JJJI', dmg: 40, cost: 50 }, { r: 'JJJu', dmg: 36, cost: 40 }];
@@ -284,7 +295,8 @@
       h.mr = 0; h.plan = null;
       // (in the mirror show nobody slips out of a boss's combo: Itsuki's chain is meant to finish)
       const bossCombo = HC.opt.mirrorShow && o.bot && HC.is(o) && MIR.boss[o.hero];
-      if (prm.slip && !bossCombo && S.energy >= 60 && !(f.stunT > 0) && !open) { k.down = true; if (h.t % 2) k.dash = true; say('HIT - SLIP OUT'); }
+      const keepBar = prm.ultIn && S.energy >= ULT.noSlip && !(p.awakeT > 0);   // nearly full: take the hits (they fill it) and keep it for the ultimate
+      if (prm.slip && !bossCombo && !keepBar && S.energy >= 60 && !(f.stunT > 0) && !open) { k.down = true; if (h.t % 2) k.dash = true; say('HIT - SLIP OUT'); }
       else say('HIT');
       h.r = null; return;
     }
@@ -369,7 +381,7 @@
       if (HC.opt.stepIn && o.stunT > 0 && adx > 26 && FREE[p.state] && (adx - 24) / 2.1 + first + 6 < openT) { k[to] = true; say('STUNNED - STEP IN CLOSE'); return; }
       if (first > openT + 1) return;
       let r = bestRoute(f);
-      if (prm.ultIn && S.energy >= 300 && o.stunT > 10) r = 'X';
+      if (prm.ultIn && ultReady(f) && (o.stunT > 10 || openT > 6)) r = 'X';
       HC.start(f, r); runRoute(f, k); say((o.stunT > 0 ? 'PUNISH STUN  ' : 'CONFIRM  ') + HC.notation(r)); return;
     }
     // whiff punish: the opponent is stuck in the end of a move that missed
@@ -380,7 +392,7 @@
       if (rec > need && FREE[p.state]) {
         if (!facing) { k[to] = true; return; }
         if (adx > reach) { k[to] = true; if (adx > reach + 20) k.dash = h.t % 2 === 1; say('WHIFF - RUN IN'); return; }
-        const r = bestRoute(f); HC.start(f, r); h.whiffT = HC.opt.whiff ? first + 4 : 0; runRoute(f, k); say('WHIFF PUNISH  ' + HC.notation(r)); return;
+        const r = prm.ultIn && ultReady(f) && rec > 14 ? 'X' : bestRoute(f); HC.start(f, r); h.whiffT = HC.opt.whiff ? first + 4 : 0; runRoute(f, k); say('WHIFF PUNISH  ' + HC.notation(r)); return;
       }
     }
     if (!FREE[p.state] && p.state !== 'dash') return;
