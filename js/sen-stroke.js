@@ -3,7 +3,8 @@
 // going to have the strongest ult in the game and the best animation and longest duration, highest damage, improved
 // animation and even close up when he use it"). Loaded after the hero files and the ultimate effects; only wraps.
 // Before: three passes and one cut, 71 frames like every ultimate, 180 damage (Itsuki's was the highest, 355).
-// Now it runs 230 frames (every other ultimate: 71) and deals about 420 to a fresh target:
+// Now it runs 230 frames (every other ultimate: 71) and takes 77% of the target's full health (the user, 2026-11-17: "reduce
+// the ult damage a bit, lets say it takes 77% of total life"; it was about 420, more than a fighter's whole bar):
 //   st 14        the breath: an eye-flash seizes everyone on screen (Versus: the opponent cannot act until the end)
 //   st 30-70     CLOSE-UP 1: the camera pushes in on Sen, letterbox bars, his hand on the hilt, a glint in his eye
 //   st 72-149    eight passes across the screen, each leaving afterimages and a cut that hangs in the air on the target
@@ -17,8 +18,11 @@
   const A = D.abilities, N = SW.ninja, K = SW.skillfx, W = SW.W, H = SW.H, rand = SW.rand, text = SW.text;
   if (!P || !A.single_stroke || !N || !N.hurt) return;
   const LEN = 230, SEIZE = 14, PASS0 = 72, PASSES = 8, GAP = 11, SHEATHE = 160, CUT = 188;
-  const U = { seize: 0.5, pass: 0.75, cut: 11 };   // damage, in units of the ultimate's base damage (16 x his skill multiplier)
-  const SS = SW.senStroke = { on: true, LEN, U };
+  // Versus: each hit is a share of the opponent's full health (3% + 8 x 4.5% + 38% = 77%). A story enemy has no such bar
+  // to measure against, so there it is in units of the ultimate's base damage (16 x his skill multiplier), the same
+  // 10.5 units that 77% of a fighter's health comes to
+  const SHARE = { seize: 0.03, pass: 0.045, cut: 0.38 }, U = { seize: 0.3, pass: 0.45, cut: 6.6 };
+  const SS = SW.senStroke = { on: true, LEN, U, SHARE, total: 0.77 };
   const PINK = '#ffa0c0', PALE = '#ffe4ee';
   const sfx = n => SW.audio.sfx(n);
   const isSen = g => !!(g && g.state && g.state.hero === 'sen');
@@ -30,6 +34,15 @@
   const vsFoe = p => (G.scene === 'vs' && V && V.f && V.f.length === 2 ? V.f.find(f => f.p !== p) : null);
   // health left on a target (Versus fighter or story enemy), so a pass never takes the last point
   function hpOf(e) { const f = N.fighterOf ? N.fighterOf(e) : null; return f ? f.state.hp : e.hp; }
+  // a fighter's full health, read in its own context (hpMax depends on whose state is current)
+  function maxHp(f) { const keep = G.state; G.state = f.state; try { return f.p.hpMax(); } finally { G.state = keep; } }
+  // (the final stroke takes what is left of the 77%, so rounding on the way does not add up past it)
+  function amount(p, e, part, u) {
+    const f = N.fighterOf ? N.fighterOf(e) : null;
+    if (!f) return Math.round(u * U[part]);
+    const m = maxHp(f), r = k => Math.round(m * SHARE[k]);
+    return part === 'cut' ? Math.round(m * SS.total) - r('seize') - PASSES * r('pass') : r(part);
+  }
   function cut(p, e, dmg, o, lethal) {
     const f = N.fighterOf ? N.fighterOf(e) : null;
     if (f) f.p.juggle = 0;   // the game's juggle limit (versus.js) would end it early
@@ -55,7 +68,7 @@
     if (st === 8) { sfx('charge'); fx.ring(p.x, p.y - 20, PALE, 30, 4, 20); }
     if (st === SEIZE) {   // the breath: an eye-flash
       sfx('perfect'); fx.flash(PALE, 6); fx.ring(p.x, p.y - 26, '#ffffff', 4, 120, 18);
-      live.forEach(e => { fx.ring(e.x, e.y - 18, PINK, 30, 6, 14); cut(p, e, Math.round(u * U.seize), { ky: 0, kx: 0, stun: 60 }); });
+      live.forEach(e => { fx.ring(e.x, e.y - 18, PINK, 30, 6, 14); cut(p, e, amount(p, e, 'seize', u), { ky: 0, kx: 0, stun: 60 }); });
     }
     if (st > 16 && st < 70 && st % 3 === 0) emit(p.x + rand(-40, 40), p.y - rand(0, 60), 1, { up: true, spread: 0.6, power: 0.5 });   // petals gathering
     // the eight passes
@@ -71,7 +84,7 @@
         const ang = rand(-0.9, 0.9) + (k % 2 ? Math.PI / 2 : 0);
         S.cuts.push({ e, a: ang, l: rand(16, 30), dx: rand(-5, 5), dy: rand(-8, 8) });
         fx.slash(e.x, e.y - e.h / 2, side, 1 + (k % 3), k % 2 ? PINK : '#ffffff', 34);
-        cut(p, e, Math.round(u * U.pass), { ky: -0.6, kx: 0, stun: 36 });
+        cut(p, e, amount(p, e, 'pass', u), { ky: -0.6, kx: 0, stun: 36 });
       });
       fx.shake(3, 4);
     }
@@ -90,7 +103,7 @@
         for (let i = 0; i < 6; i++) fx.slash(cx + rand(-8, 8), cy + rand(-10, 10), i % 2 ? 1 : -1, 1 + (i % 3), i % 2 ? PINK : '#ffffff', 50);
         fx.ring(cx, cy, '#ffffff', 6, 90, 22); fx.ring(cx, cy, PINK, 4, 60, 18);
         for (let i = 0; i < 40; i++) emit(cx, cy, 1, { power: 2.2, spread: 1 });
-        cut(p, e, Math.round(u * U.cut), { ky: -7, kx: -S.side * 2, launch: true, down: true, stun: 50 }, true);
+        cut(p, e, amount(p, e, 'cut', u), { ky: -7, kx: -S.side * 2, launch: true, down: true, stun: 50 }, true);
       });
       S.cuts.length = 0;
     }
