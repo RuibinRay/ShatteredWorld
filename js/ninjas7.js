@@ -67,25 +67,35 @@
       paint: (ctx, sx, sy, t, v, a) => funnel(ctx, sx, sy, t, a, 30) });
     z.shots.push(new Later(40, () => { hit(x - 34, gy - 90, 68, 90, Math.round(dmg * 0.9), { kx: dir * 9, ky: -5, stun: 46, heavy: true, srcX: x - dir * 30 }); fx.ring(x, gy - 40, '#eafff4', 6, 60, 14); emit('wind', x, gy - 40, 16, { dir, power: 1.8 }); sfx('burst'); }));
   }
-  SW.itsukiKit = { funnel, cyclone };   // js/itsuki-edge.js draws the storm grab with these
+  // reach and thunder (the user, 2026-11-17: "reduce itsuki thunder skill damage and increase range in all his skill in versus
+  // and for story when fighting him his range is ultra long"). In Versus every skill of his reaches 1.4x as far and his thunder
+  // (Heaven's Thunder, Thunder Palm) hits 25% softer; in a story duel against him (SW.versus.duel with itsukiBoss) the reach
+  // is 2.6x. Outside Versus nothing changes.
+  const REACH = { vs: 1.4, boss: 2.6 }, THUNDER = 0.75;
+  const reach = p => { const f = G && G.scene === 'vs' && V && V.f && V.f.find(x => x.p === p);   // the fighter's own state (G.state swaps between them)
+    if (!f || !f.state || f.state.hero !== 'itsuki') return 1;
+    return V.mode === 'duel' && V.duelO && V.duelO.itsukiBoss ? REACH.boss : REACH.vs; };
+  const zap = (p, d) => (reach(p) > 1 ? Math.max(1, Math.round(d * THUNDER)) : d);
+  SW.itsukiKit = { funnel, cyclone, reach };   // js/itsuki-edge.js draws the storm grab with these (and stretches its rush by reach)
   const S5 = {
     // U, fire: three fireballs in a fan; each bursts into flame where it lands
     fire(p, z, dmg) {
       const e = EL[0]; lit(p, 0); pose(p, z, 'a3', 12); sfx('shoot'); fx.ring(p.x + p.face * 14, p.y - 22, e.c[0], 4, 26, 10); emit('fire', p.x + p.face * 16, p.y - 22, 10, { dir: p.face });
       [-1.1, 0, 1.1].forEach((vy, k) => z.shots.push(new Later(1 + k * 3, () => { if (p.dead) return; sfx('shoot');
-        shot(p, z, 'fire', { dmg: Math.round(dmg * 0.7), vx: p.face * 7.6, vy, life: 46, w: 14, h: 14, paint: paintOf(e), kx: 2, ky: -2, stun: 30, status: { burn: 4 },
+        shot(p, z, 'fire', { dmg: Math.round(dmg * 0.7), vx: p.face * 7.6, vy: vy / reach(p), life: Math.round(46 * reach(p)), w: 14, h: 14, paint: paintOf(e), kx: 2, ky: -2, stun: 30, status: { burn: 4 },
           onEnd() { boom(p, 'fire', this.x, this.y, 30, Math.round(dmg * 0.5), { status: { burn: 4 }, kx: p.face * 2, ky: -3, stun: 30 }); fx.ring(this.x, this.y, '#ffd24a', 4, 40, 12); } }); })));
     },
     // S+U, wind. In Versus it is Storm Seize (js/itsuki-edge.js): the rush seizes whoever it reaches; a rush that reaches
     // no one leaves this cyclone where he stops. Elsewhere (no Versus) he dashes through and leaves the cyclone behind.
     wind(p, z, dmg) {
       lit(p, 1);
-      dash(p, z, 'wind', { n: 14, step: 8, every: 5, dmg: Math.round(dmg * 0.45), atk: { kx: p.face * 1.5, ky: -1.5, stun: 34 }, end(q, zz) { cyclone(q, zz, dmg, q.x - q.face * 30, -q.face); } });
+      dash(p, z, 'wind', { n: Math.round(14 * reach(p)), step: 8, every: 5, dmg: Math.round(dmg * 0.45), atk: { kx: p.face * 1.5, ky: -1.5, stun: 34 }, end(q, zz) { cyclone(q, zz, dmg, q.x - q.face * 30, -q.face); } });
     },
     // I, thunder: lightning strikes the nearest enemy ahead three times, then one great bolt
     thunder(p, z, dmg) {
       lit(p, 2); pose(p, z, 'special', 20); sfx('charge'); fx.ring(p.x, p.y - 44, '#ffe066', 2, 18, 12); fx.bolt(p.x, p.y - 40, p.x + rand(-4, 4), G.cam.y, '#ffe066');
-      const t0 = ahead(p, z, 240), at = () => (t0 && !t0.dead ? t0.x : p.x + p.face * 90);
+      const k = reach(p), t0 = ahead(p, z, 240 * k), at = () => (t0 && !t0.dead ? t0.x : p.x + p.face * 90 * k);
+      dmg = zap(p, dmg);
       [6, 13, 20].forEach(d => z.shots.push(new Later(d, () => { const x = at(), gy = floorY(z, x, p.y - 20);
         fx.bolt(x + rand(-30, 30), G.cam.y, x, gy - 10, '#ffe066'); fx.bolt(x + rand(-30, 30), G.cam.y, x, gy - 10, '#ffffff'); fx.flash('#ffffff', 2); sfx('zap'); emit('bolt', x, gy - 20, 8, { up: true });
         hit(x - 16, gy - 84, 32, 84, Math.round(dmg * 0.45), { stun: 32, status: { freeze: 10 }, ky: -1.5, srcX: x, breaker: true }); })));
@@ -97,7 +107,7 @@
     // S+I, earth: a row of stone fangs tears out of the ground toward the enemy; the last is a mountain that throws them up
     earth(p, z, dmg) {
       lit(p, 3); pose(p, z, 'sweep', 16); sfx('heavy'); fx.shake(4, 10); fx.dust(p.x, p.y, 10); fx.ring(p.x, p.y - 2, '#c8a05a', 4, 30, 10);
-      const t0 = ahead(p, z, 220), dir = p.face, x0 = p.x, far = t0 ? Math.abs(t0.x - x0) : 150, n = 5, gap = Math.max(14, Math.min(34, (far - 34) / (n - 1)));   // the fangs run right up to the enemy
+      const rk = reach(p), t0 = ahead(p, z, 220 * rk), dir = p.face, x0 = p.x, far = t0 ? Math.abs(t0.x - x0) : 150 * rk, n = 5, gap = Math.max(14, Math.min(34 * rk, (far - 34) / (n - 1)));   // the fangs run right up to the enemy
       for (let k = 0; k < n; k++) { const x = x0 + dir * (24 + k * gap); column(z, 'rock', x, floorY(z, x, p.y - 20), 3 + k * 4, Math.round(dmg * 0.6), { w: 18, h: 34 + k * 6, spike: true, cols: ROCK, atk: { ky: -1.2, kx: 0, stun: 44, heavy: true } }); }
       const xb = t0 && !t0.dead ? t0.x : x0 + dir * (24 + (n - 1) * gap + 20);
       column(z, 'rock', xb, floorY(z, xb, p.y - 20), 22, Math.round(dmg * 2.2), { w: 40, h: 110, spike: true, cols: ROCK, atk: { ky: -8, launch: true, stun: 60, heavy: true, breaker: true } });
@@ -106,13 +116,14 @@
     // W+O, water: a wave breaks out on both sides of him and sweeps everything away; he heals 10% and gets 25 energy back
     water(p, z, dmg) {
       lit(p, 4); pose(p, z, 'cheer', 16); sfx('burst'); p.heal(Math.round(p.hpMax() * 0.1)); refund(p, 25); fx.ring(p.x, p.y - 20, '#4cc9f0', 6, 50, 14); fx.ring(p.x, p.y - 20, '#ffffff', 4, 30, 10);
+      const wk = reach(p);
       [-1, 1].forEach(dir => { const hs = new Set(), gy = p.y, x0 = p.x;
         z.shots.push(new Vis(x0, gy, 30, (ctx, sx, sy, t) => {
           const k = Math.min(1, t / 4, (30 - t) / 6), hgt = Math.round(52 * k);
           for (let i = 0; i < 26; i += 2) { const hh = Math.max(0, Math.round(hgt * (1 - i / 30) + Math.sin(t * 0.6 + i) * 2)), xx = sx - dir * i;
             art.rect(ctx, '#0f4c75', xx, sy - hh, 2, hh); art.rect(ctx, '#1b6e9e', xx, sy - hh, 2, Math.round(hh * 0.5)); art.rect(ctx, i < 6 ? '#ffffff' : '#4cc9f0', xx, sy - hh - 2, 2, 3); }
           if (t % 2 === 0) art.rect(ctx, '#eafcff', sx + dir * 2, sy - hgt - 4, 2, 2);
-        }, v => { v.x = x0 + dir * v.t * 6; if (v.t % 2 === 0) emit('water', v.x, gy - 20, 2, { up: true });
+        }, v => { v.x = x0 + dir * v.t * 6 * wk; if (v.t % 2 === 0) emit('water', v.x, gy - 20, 2, { up: true });
           hit(v.x - 14, gy - 54, 28, 54, Math.round(dmg * 1.4), { hitSet: hs, kx: dir * 6, ky: -3.4, stun: 40, heavy: true, srcX: v.x - dir * 20 }); })); });
     }
   };
@@ -243,15 +254,15 @@
   function risingFive(p, z, dmg) {
     lit(p, 4); pose(p, z, 'launcher', 16); sfx('perfect'); fx.ring(p.x, p.y - 20, '#fff1e6', 6, 50, 12);
     EL.forEach((el, k) => z.shots.push(new Later(1 + k * 4, () => { if (p.dead) return; sfx(el.id === 'thunder' ? 'zap' : 'shoot');
-      shot(p, z, el.st, { dmg: Math.round(dmg * 0.9 * (el.mult || 1)), x: p.x + p.face * 10, y: p.y - 16, vx: p.face * (3.6 + Math.sin(k * 1.3) * 0.8), vy: -4.4 - k * 0.35, life: 48, w: 14, h: 14,
+      shot(p, z, el.st, { dmg: Math.round(dmg * 0.9 * (el.mult || 1)), x: p.x + p.face * 10, y: p.y - 16, vx: p.face * (3.6 + Math.sin(k * 1.3) * 0.8), vy: -4.4 - k * 0.35, life: Math.round(48 * reach(p)), w: 14, h: 14,
         paint: paintOf(el), kx: 1, ky: k === 4 ? -7 : -4.5, stun: 34, status: el.atk.status, launch: k === 4,
-        tick(s, g, zz) { if (s.t < 8) return; const t = nearest(zz, s.x, s.y, 240); if (!t) return; const b = t.box(), dx = b.x + b.w / 2 - s.x, dy = b.y + b.h / 2 - s.y, d = Math.max(1, Math.hypot(dx, dy));
+        tick(s, g, zz) { if (s.t < 8) return; const t = nearest(zz, s.x, s.y, 240 * reach(p)); if (!t) return; const b = t.box(), dx = b.x + b.w / 2 - s.x, dy = b.y + b.h / 2 - s.y, d = Math.max(1, Math.hypot(dx, dy));
           s.vx += (dx / d * 6.5 - s.vx) * 0.22; s.vy += (dy / d * 6.5 - s.vy) * 0.22; } }); })));
   }
   // J > U: Burning Fist. A rush wrapped in fire that ends in a blazing uppercut.
   function burningFist(p, z, dmg) {
     lit(p, 0); sfx('dash');
-    dash(p, z, 'fire', { n: 8, step: 6, dmg: Math.round(dmg * 0.6), atk: { kx: p.face * 1, ky: -1, stun: 34, status: { burn: 3 } }, end(q, zz) {
+    dash(p, z, 'fire', { n: Math.round(8 * reach(p)), step: 6, dmg: Math.round(dmg * 0.6), atk: { kx: p.face * 1, ky: -1, stun: 34, status: { burn: 3 } }, end(q, zz) {
       const x = q.x + q.face * 22, y = q.y - 24;
       boom(q, 'fire', x, y, 34, Math.round(dmg * 1.1), { ky: -7.2, launch: true, stun: 50, status: { burn: 4 }, kx: q.face * 1 });
       fx.slash(q.x + q.face * 16, q.y - 30, q.face, 1, '#ffd24a', 52); fx.ring(x, y, '#ff6b35', 6, 50, 14); fx.flash('#ff6b35', 2);
@@ -260,9 +271,10 @@
   // J > I: Thunder Palm. An open palm, then lightning comes down on whatever it touched.
   function thunderPalm(p, z, dmg) {
     lit(p, 2); pose(p, z, 'a4', 14); sfx('zap');
-    hit(...front(p, 46, 40, 6), Math.round(dmg * 0.8), { kx: p.face * 2.5, ky: -2, stun: 56, status: { freeze: 24 }, heavy: true, srcX: p.x });
+    const k = reach(p); dmg = zap(p, dmg);
+    hit(...front(p, Math.round(46 * k), 40, 6), Math.round(dmg * 0.8), { kx: p.face * 2.5, ky: -2, stun: 56, status: { freeze: 24 }, heavy: true, srcX: p.x });
     const x = p.x + p.face * 30; fx.ring(x, p.y - 22, '#ffe066', 4, 36, 12); emit('bolt', x, p.y - 22, 12, { dir: p.face, power: 1.4 }); fx.slash(x, p.y - 24, p.face, 1, '#ffffff', 40);
-    z.shots.push(new Later(6, () => { const t = ahead(p, z, 100), tx = t ? t.x : x + p.face * 20, gy = floorY(z, tx, p.y - 20);
+    z.shots.push(new Later(6, () => { const t = ahead(p, z, 100 * k), tx = t ? t.x : x + p.face * 20, gy = floorY(z, tx, p.y - 20);
       fx.bolt(tx + rand(-20, 20), G.cam.y, tx, gy - 8, '#ffe066'); fx.bolt(tx + rand(-20, 20), G.cam.y, tx, gy - 8, '#ffffff'); fx.flash('#ffffff', 3); fx.shake(6, 8); sfx('explode');
       hit(tx - 20, gy - 80, 40, 80, Math.round(dmg * 0.9), { stun: 60, status: { freeze: 30 }, ky: -3, heavy: true, srcX: tx }); }));
   }
@@ -316,7 +328,7 @@
       if (vsOn() && SW.frame % 10 === 0) refund(p, 1.5);   // chi flows back on its own
       if (p.modeT > 0) {   // the five gates are open
         if (p.cd) Object.keys(p.cd).forEach(k => { p.cd[k] = 0; });
-        if (SW.frame % 36 === 0) { const t = nearest(z, p.x, p.y - 16, 220), e = EL[(SW.frame / 36 | 0) % 5];
+        if (SW.frame % 36 === 0) { const t = nearest(z, p.x, p.y - 16, 220 * reach(p)), e = EL[(SW.frame / 36 | 0) % 5];
           if (t) { const dx = t.x - p.x, dy = (t.y - 16) - (p.y - 46), d = Math.max(1, Math.hypot(dx, dy));
             shot(p, z, e.st, { x: p.x, y: p.y - 46, vx: dx / d * 6.5, vy: dy / d * 6.5, dmg: Math.round(6 * p.skillMul()), life: 50, w: 10, h: 10, paint: paintOf(e), kx: 1.2, ky: -1.5, stun: 22, status: e.atk.status }); } }
       }

@@ -73,7 +73,8 @@
   // Energy in Versus comes from fighting, not from standing still. GAIN is the menu's "Energy gain" row: [label, multiplier].
   // Per frame: PASSIVE trickle, CHARGE while holding attack + jump (the story charges at 1.25). Per hit landed: HIT_MELEE for
   // a combo hit, HIT_SKILL for a skill / special / summon hit, nothing during the ultimate. The fighter who is hit gets HIT_TAKEN x damage.
-  const GAIN = [['Slow', 0.6], ['Normal', 1], ['Fast', 1.6]], PASSIVE = 0.045, CHARGE = 0.6, HIT_MELEE = 10, HIT_SKILL = 3, HIT_TAKEN = 0.5;
+  // the user (2026-11-17): "improve versus meter earn rate by 35%" -> every setting earns 1.35x what it used to
+  const GAIN = [['Slow', 0.6 * 1.35], ['Normal', 1.35], ['Fast', 1.6 * 1.35]], PASSIVE = 0.045, CHARGE = 0.6, HIT_MELEE = 10, HIT_SKILL = 3, HIT_TAKEN = 0.5;
   // Perfect block (guard in the last few frames before a hit): frames the attacker is stunned, and how often a bot's
   // well-timed guard counts as perfect on Easy / Normal / Hard.
   const STUN_MELEE = 60, STUN_RANGED = 30, BOT_PERFECT = [0.1, 0.25, 0.45, 1], BOT_PERFECT_GAP = 180;   // and never two within three seconds

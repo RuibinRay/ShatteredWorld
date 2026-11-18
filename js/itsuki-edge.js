@@ -45,7 +45,7 @@
           vv => { const who = me.held ? me.foe.p : me.p; if (who) { vv.x = who.x; vv.y = who.y; } if (me.gone) vv.gone = true; });
         z.shots.push(v);
       }
-      if (!this.held) {   // the rush: up to 12 frames, 7 px a frame
+      if (!this.held) {   // the rush: up to 12 frames (longer with his reach, ninjas7.js), 7 px a frame
         p.pose = ['dash', 0];
         for (let s = 0; s < 7; s++) { if (z.hit(p.x + d * (p.w / 2 + 1), p.y - p.h + 2, 1, p.h - 4)) break; p.x += d; }
         if (this.t % 2 && fx.ghost) fx.ghost(p.sheet(), 'dash', 0, p.x, p.y, d < 0);
@@ -54,7 +54,7 @@
           this.held = 1; q.atk = null; q.castFn = null; q.enter('hurt'); q.hurtLen = HOLD + 6; f.stunT = Math.max(f.stunT || 0, HOLD + 2);
           if (typeof q.phaseT === 'number') q.phaseT = 0;
           fx.flash('#ff2a4a', 5); fx.text(q.x, q.y - 58, 'SEIZED', '#ffd6de'); SW.audio.sfx('heavy');
-        } else if (this.t >= 12) { this.gone = true; p.pose = null; p.enter(p.onGround ? 'idle' : 'fall'); if (KIT) KIT.cyclone(p, z, this.dmg, p.x + d * 24, d); }
+        } else if (this.t >= Math.round(12 * (KIT && KIT.reach ? KIT.reach(p) : 1))) { this.gone = true; p.pose = null; p.enter(p.onGround ? 'idle' : 'fall'); if (KIT) KIT.cyclone(p, z, this.dmg, p.x + d * 24, d); }
         return;
       }
       // held: the target hangs in the storm in front of him, helpless, while five wind blades cut them

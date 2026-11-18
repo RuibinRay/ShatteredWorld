@@ -165,7 +165,15 @@
   }
   function clean(z) {
     z.triggers.length = 0;
-    z.hints = z.hints.filter(h => !/memor|shard/i.test(h.text || ''));
+    // old-story hints: memories, shards and the Med-Lab terminal go; a home area's skill tip names the hero being played,
+    // not the area's first hero, and drops the puzzle it pointed at (the story takes those gates out)
+    z.hints = z.hints.filter(h => !/memor|shard|terminal is up/i.test(h.text || '')).map(h => {
+      if (!/^Hold J \+ K: charge energy\nU: /.test(h.text || '')) return h;
+      const o = {}; Object.keys(h).forEach(k => { if (k !== 'text') o[k] = h[k]; });
+      Object.defineProperty(o, 'text', { enumerable: true, get: () => { const hr = G.state && SW.data.heroes[G.state.hero], a = hr && hr.kit && SW.data.abilities[hr.kit[0]];
+        return 'Hold J + K: charge energy\nU: ' + (a ? a.name : 'your skill'); } });
+      return o;
+    });
     z.exits.forEach(e => { delete e.need; });
     z.ents = z.ents.filter(keepEnt);
     // the way back into the Hidden Village from the places beside it
@@ -320,7 +328,7 @@
     const dl = SW.difficulty && SW.difficulty.cur && SW.difficulty.cur();
     if (dl && dl.id !== 'medium') { o.diff = dl.duelDiff; o.rivalPower = Math.round(o.rivalPower * dl.duelEdge); o.rivalHp = Math.round(o.rivalHp * dl.duelEdge); }
     if (n >= 5) { o.full = true; o.rivalHp += 100; }                    // Vael's champions fight with everything they have
-    if (who === 'itsuki') { o.full = true; o.rivalPower += 4; o.rivalHp += 150; }   // the strongest fighter in any world
+    if (who === 'itsuki') { o.full = true; o.rivalPower += 4; o.rivalHp += 150; o.itsukiBoss = true; }   // the strongest fighter in any world: ultra-long reach (ninjas7.js) and a shield (saga-shield.js)
     const called = n >= 5 && SG.CALLED && SG.CALLED.indexOf(who) >= 0 && SG.callLook;
     untune([hero, who]);
     if (called) SG.callLook(who, true);
@@ -333,6 +341,7 @@
     if (o.rivalPower) r.stats.power = ((1 + 0.06 * (r.stats.power || 0)) * (1 + 0.06 * o.rivalPower) - 1) / 0.06;
   }
   function afterDuel(result, n, c) {
+    if (result === 'win' && n === 3) { const mm = SG.meta(); if (!mm.rival) { mm.rival = true; ls.set(MKEY, mm); if (SG.checkMilestones) SG.checkMilestones(); } }   // Kiri's unlock (saga-unlocks.js)
     if (result === 'win' && n === 6 && c.role === 'vanguard') { dropNpc(); say('w6', c.win, () => complete(6, 'duel')); return; }   // the way is held; the six go on
     if (result === 'win' && n === 6) { dropNpc(); G.step('SG6:duel'); R.t = 70; G.toast('Itsuki falls back to the Crown. The sky opens.', '#b48cff'); return; }   // then the Convergence and Vael
     if (result === 'win') { if (n === 5) dropNpc(); say('w' + n, c.win, () => complete(n, 'duel')); }
