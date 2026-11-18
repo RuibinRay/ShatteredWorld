@@ -34,6 +34,17 @@
     return T.lv && T.lv[id] !== undefined ? T.lv[id] : V.diff;
   }
   V.tourLv = tourLv;
+  // Set each: the levels last set on the bracket stick (the user: "after adjusting difficulty i want that until changed
+  // again for the following matches"). T.stick = [left bot's, right bot's]: every match not fought yet takes them (its
+  // first entry the left one), and a match whose two fighters are not known yet takes them when it comes up
+  function applyStick(T) {
+    if (!T || !T.stick || (V.tlv || 0) !== 3) return;
+    for (let r = 0; T.R[r] && T.R[r].length > 1; r++) for (let m = 0; m < T.R[r].length / 2; m++) {
+      if (T.R[r + 1] && T.R[r + 1][m] !== undefined) continue;   // fought (or a bye moved on)
+      [T.R[r][m * 2], T.R[r][m * 2 + 1]].forEach((id, s) => { if (id && id !== T.me && T.stick[s] !== undefined) T.lv[id] = T.stick[s]; });
+    }
+  }
+  V.applyStick = applyStick;
   const isTour = () => V.mode === 'tour';
   const isBvb = () => V.mode === 'bvb' || (isTour() && !!V.tourBots);   // a tournament match between two bots plays as Bot vs Bot
   // Format (Player vs Bot, Player vs Player, Bot vs Bot): 1 vs 1 is best of three; 3 vs 3 is a team battle. Each side picks
@@ -622,9 +633,10 @@
       V.t++;
       const T = V.tour, cur = T && !T.done ? (T.cur || settle()) : null;   // Set each: A / D the left bot's level, W / S the right one's
       if (cur && (V.tlv || 0) === 3) {
-        const bump = (id, d) => { if (!id || id === T.me) return; T.lv[id] = ((T.lv[id] === undefined ? V.diff : T.lv[id]) + 4 + d) % 4; SW.audio.sfx('move'); };
-        if (left || right) bump(cur.a, right ? 1 : -1);
-        if (up || down) bump(cur.b, up ? 1 : -1);
+        applyStick(T);   // a match that has just come up takes the levels set before
+        const bump = (id, d, s) => { if (!id || id === T.me) return; T.lv[id] = ((T.lv[id] === undefined ? V.diff : T.lv[id]) + 4 + d) % 4; (T.stick || (T.stick = []))[s] = T.lv[id]; applyStick(T); SW.audio.sfx('move'); };
+        if (left || right) bump(cur.a, right ? 1 : -1, 0);
+        if (up || down) bump(cur.b, up ? 1 : -1, 1);
       }
       if (V.t > 12 && ok) { SW.audio.sfx('select'); if (V.tour.done) V.phase = 'menu'; else tourNext(); }
       else if (back) { SW.audio.sfx('back'); V.phase = 'menu'; V.tour = null; }

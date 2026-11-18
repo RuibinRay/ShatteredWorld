@@ -23,7 +23,7 @@
   }
   function save(T) {
     const s = { v: 1, at: Date.now(), set: { tsize: V.tsize, entry: V.entry, diff: V.diff, tlv: V.tlv || 0, tskip: V.tskip, speed: V.speed },
-      tour: { size: T.size, R: T.R, me: T.me, last: T.last, lv: T.lv } };
+      tour: { size: T.size, R: T.R, me: T.me, last: T.last, lv: T.lv, stick: T.stick || null } };
     const str = JSON.stringify(s);
     try { localStorage.setItem(KEY, str); TS.cache = JSON.parse(str); } catch (e) { /* private window: no save */ }   // a copy: the live bracket's arrays keep changing
   }
@@ -51,15 +51,18 @@
     V.mode = 'tour'; V.tourBots = false; V.row = 0;
     V.tour = { size: s.tour.size, R: s.tour.R.map(r => r.slice()), me: s.tour.me || null, cur: null, last: s.tour.last || null, done: false, champ: null, lv: Object.assign({}, s.tour.lv) };
     if (changed) Object.keys(V.tour.lv).forEach(id => { V.tour.lv[id] = tlv === 1 ? Math.random() * 4 | 0 : diff; });
-    TS.T = V.tour; TS.sig = JSON.stringify(V.tour.R); TS.on = false;
+    else if (s.tour.stick) V.tour.stick = s.tour.stick.slice();   // Set each: the levels set on the bracket keep sticking
+    TS.T = V.tour; TS.sig = sigOf(V.tour); TS.on = false;
     V.phase = 'bracket'; V.t = 0;
   }
+  // what a save has to keep up with: the results, and the bot levels (Set each changes them on the bracket)
+  const sigOf = T => JSON.stringify([T.R, T.lv, T.stick || null]);
   // after each frame on the bracket screen: save a changed bracket, clear a finished one
   function track() {
     const T = V.tour;
     if (V.mode !== 'tour' || !T || V.phase !== 'bracket' || T.cur || T === TS.dead) return;
     if (T.done || knockedOut(T)) { clear(); TS.dead = T; return; }
-    const sig = JSON.stringify(T.R);
+    const sig = sigOf(T);
     if (T === TS.T && sig === TS.sig) return;
     save(T); TS.T = T; TS.sig = sig;
   }
