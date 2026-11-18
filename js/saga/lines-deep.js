@@ -9,6 +9,7 @@
     // ---------------------------------------------------------------- KAEL
     kael: {
       1: { zone: 'yard', goal: "Climb out of the Crusher Yard",
+        card: "The air over the Crusher Yard splits like wet canvas, a boy falls out of a thunderstorm, and Ferra decides he is worth salvaging.",
         intro: [
           ['sys', "The Crusher Yard. The air over the trash heap splits like wet canvas, and a boy falls out of a thunderstorm."],
           ['hero', "Vharra. Thunderheads. The storm clans. I know exactly where I'm from, and it never smelled like this."],
@@ -22,6 +23,7 @@
           ['hero', "It's Kael. ...Fine. Sparks. Don't wear it out."],
           ['hero', "Halcyon wants the storm in a jar. Let them find out what thunder does to glass."]] },
       2: { zone: 'slums', with: 'fenn', goal: "Hold the Slums with Fenn and Rook",
+        card: "Kael carved Vharra's storm-eye into Deepline tin so he would not forget which sky dropped him; a hunter from the steppe reads it and becomes his brother.",
         meet: [
           ['fenn', "That storm-eye scratched on your jacket. Who carved Vharra's mark into Deepline tin?"],
           ['hero', "Me. So I never forget which sky dropped me. You're from the steppe too?"],
@@ -34,6 +36,7 @@
           ['rook', "Don't work on him too much. Loud is our whole plan."],
           ['hero', "One week, two brothers. Deepline's better than it smells."]] },
       3: { zone: 'crater', rival: 'nyra', goal: "Duel Nyra at the Crater",
+        card: "Halcyon tells Kael that a Subject named Nyra sold out the tunnels, and under a bruised violet sky he meets a girl who was told the same of him.",
         meet: [
           ['sys', "The Crater, under a bruised violet sky. Halcyon says an escaped Subject called Nyra sold out the tunnels."],
           ['hero', "Nyra. They say you sold Halcyon every hideout in Deepline, one door at a time."],
@@ -108,6 +111,7 @@
     // ---------------------------------------------------------------- ASHKA
     ashka: {
       1: { zone: 'core', goal: "Burn back the Sump's wardens",
+        card: "Half of Deepline sleeps warm because one prisoner in the Core Sump is in pain, and for a year three taps have come down the pipes to say someone knows.",
         intro: [
           ['sys', "The Core Sump, the bottom of everything. The furnace that warms Deepline burns on one prisoner. Subject 60."],
           ['hero', "At home I tended the vents beneath the Frozen Harbour. Red, warm, patient. No one chained them."],
@@ -118,6 +122,7 @@
           ['sys', "Far above the Sump, three taps come ringing down the pipes. Tap. Tap. Tap."],
           ['hero', "Still here, boiler man. Still burning."]] },
       2: { zone: 'core', with: 'fumi', goal: "Hold the Sump with Fumi",
+        card: "After a year of tapping, the boiler man climbs down to the bottom of everything, and Ashka hears her own name spoken aloud at last.",
         meet: [
           ['fumi', "...Hello. It's me. The tapping. I came down the boiler shaft. It took a year to find the hatch."],
           ['hero', "You are larger than your taps. And quieter."],
@@ -130,6 +135,7 @@
           ['hero', "I have waited a year on a chain. I can wait on a pressure gauge."],
           ['sys', "The vents roar. Fire is pouring down them from somewhere far above, and it is not hers."]] },
       3: { zone: 'core', rival: 'pyra', goal: "Face the fire in the vents",
+        card: "A girl drops out of the vents in a shower of burning ash, and before either learns the other is from the Harbour, they fight to see who burns hotter.",
         meet: [
           ['sys', "A girl drops out of the vent in a shower of burning ash. The Burn Ward's fire has run all the way down."],
           ['pyra', "Another furnace? Halcyon built one down here too? I just burned theirs down to the bolts."],
@@ -201,6 +207,7 @@
     // ---------------------------------------------------------------- DYNA
     dyna: {
       1: { zone: 'works', goal: "Clear the Scrapworks, loudly",
+        card: "On Vharra she turned the festival sky gold; in the Scrapworks every problem is a demolition job, and Halcyon's collection crew is a problem.",
         intro: [
           ['sys', "The Scrapworks. On Vharra she turned the festival sky gold. In Deepline, every problem is a demolition job."],
           ['hero', "Problem: Halcyon sent a collection crew for the girl who makes things go boom. Solution: boom."],
@@ -210,6 +217,7 @@
           ['hero', "Look at that crater. Look at the lip on it. That's a good one."],
           ['hero', "Halcyon wants my bombs in a jar? Tell them to bring a bigger jar. And earplugs."]] },
       2: { zone: 'works', with: 'mako', goal: "Test the suit with Mako",
+        card: "Dyna needs someone who can stand beside her work without falling over, and Mako has built a suit that nothing will ever crush again.",
         meet: [
           ['mako', "You're the bomb girl. I've got a suit with a cannon on it. Cannon's empty."],
           ['hero', "A suit? I need somebody who can stand next to my work without falling over. Can it take a blast?"],
@@ -222,6 +230,7 @@
           ['hero', "Never better. Hey, Mako. Fumi says there's a door under his boilers, and a woman locked in a furnace behind it."],
           ['hero', "That door needs a mountain of pressure and the biggest bang I've ever made. I want it."]] },
       3: { zone: 'works', rival: 'jax', goal: "Show Jax a fuse",
+        card: "Jax rides down from Mile Zero to meet a girl with no sense of timing, and Dyna teaches the cowboy exactly how long three seconds are.",
         meet: [
           ['jax', "Rode all the way down from Mile Zero. Folks up top say you've got no sense of timing."],
           ['hero', "And you're a bomb with a slow fuse, cowboy. I offered to show you a real one."],
@@ -286,6 +295,7 @@
     // ---------------------------------------------------------------- BANDO
     bando: {
       1: { zone: 'docks', goal: "Hold Dockside Nine",
+        card: "At Dockside Nine everything is out of reach except to Bando, who will tell you about the kite whether or not you ask.",
         intro: [
           ['sys', "Dockside Nine, the last wharf on the Drowned Line. Everything here is out of reach. Except to him."],
           ['hero', "Did I ever tell you about the kite? Festival day on Vharra, one little girl, one tall tree, one very long arm..."],
@@ -297,6 +307,7 @@
           ['citizen', "You're telling this one tomorrow too, aren't you."],
           ['hero', "Every day. Right after the kite. It's tradition."]] },
       2: { zone: 'docks', with: 'dyna', goal: "Reach through Dyna's holes",
+        card: "Halcyon bricks up Bando's cargo tunnel, Dyna offers him a hole, and through it drifts a paper kite from the girl he swears he saved.",
         meet: [
           ['dyna', "Bando! Halcyon bricked up the old cargo tunnel with your crates behind it. Want a hole?"],
           ['hero', "I always want a hole. You blow it, I reach through it."],
@@ -309,6 +320,7 @@
           ['hero', "Reeled him in, then let go. It's called physics."],
           ['hero', "Write back to Sora for me, Dyna. Tell her the arm's still long, and the story's still true."]] },
       3: { zone: 'docks', rival: 'tarek', goal: "Settle the reach with Tarek",
+        card: "Tarek comes down to Dockside Nine with a chain to measure whose reach is longer, and Bando makes very sure everybody is watching.",
         meet: [
           ['tarek', "So this is Dockside Nine. I hear you've been telling the Surface your reach beats mine."],
           ['hero', "Telling everybody. Every day. You came down to measure? I invited you. Bring a tape?"],
@@ -372,6 +384,7 @@
     // ---------------------------------------------------------------- FERRA
     ferra: {
       1: { zone: 'yard', goal: "Defend the Crusher Yard",
+        card: "Everything Aurelia throws away comes to rest in the Crusher Yard, and Ferra, whose cradle every tool once turned to face, decides what is worth saving.",
         intro: [
           ['sys', "The Crusher Yard. Everything Aurelia throws away comes to rest here, and Ferra decides what is worth saving."],
           ['hero', "The night I was born, every tool on the smithy wall turned to face my cradle. Down here, every scrap does."],
@@ -382,6 +395,7 @@
           ['kael', "Ferra! I heard banging! Did you need... oh. You didn't need."],
           ['hero', "Never have, Sparks. Go sort the copper. And keep out from under car doors."]] },
       2: { zone: 'shafts', with: 'garo', goal: "Meet Garo in the hidden tunnel",
+        card: "For years Ferra's steel has gone up the hidden tunnels and Garo's bread has come down, and tonight Halcyon's lamps give the trade a face.",
         meet: [
           ['sys', "The tunnels no map shows. Steel goes up, bread comes down. Tonight, Halcyon's lamps are in the tunnel."],
           ['garo', "You'd be Ferra. Nobody else's steel comes cut that clean."],
@@ -393,6 +407,7 @@
           ['hero', "Take it up. Make something honest of it. Steel up, bread down, same as always."],
           ['garo', "Same as always. Only now I know whose face to thank."]] },
       3: { zone: 'yard', rival: 'vex', goal: "Settle pull and push with Vex",
+        card: "Vex left her Yard half-taught to prove that pull and push are one force, and now he walks back in to prove it on his old teacher.",
         meet: [
           ['vex', "Ferra. Still sorting scrap into little piles? Pull and push are one force. I proved it, across the tunnel."],
           ['hero', "You proved you can't take a lesson without arguing with it. You left half-taught."],
@@ -463,6 +478,7 @@
     // ---------------------------------------------------------------- SEN
     sen: {
       1: { zone: 'dojo', goal: "Keep the Rust Dojo clean",
+        card: "The Rust Dojo is a dead metro car scrubbed until it shines, and its master asks the men Halcyon sends for him to take off their boots.",
         intro: [
           ['sys', "The Rust Dojo: a dead metro car, scrubbed until it shines. The cleanest room underground."],
           ['hero', "One line of ink. One falling leaf. My teacher on the steppe waited for me to see. I am still looking."],
@@ -473,6 +489,7 @@
           ['hero', "Draw. Done."],
           ['hero', "Now the floor must be swept again."]] },
       2: { zone: 'dojo', with: 'sable', goal: "Teach Sable the Flash Step",
+        card: "Pell sold the Lantern Cell, and Sable comes to the Rust Dojo for a lesson that takes seven days of silence and one sentence to teach.",
         meet: [
           ['sable', "Pell sold us. I ran. My Flash Step is fast, but it isn't true. Teach me."],
           ['hero', "..."],
@@ -557,6 +574,7 @@
     // ---------------------------------------------------------------- ROOK
     rook: {
       1: { zone: 'slums', goal: "Never fight alone in the Slums",
+        card: "Rook of the Lantern Cell never fights alone, not even when he is alone, and Halcyon has come back for the boy who held the door.",
         intro: [
           ['sys', "The Deepline Slums. Rook never fights alone. Not even when he is alone."],
           ['hero', "Lantern Cell, loudest member, reporting for duty! And the second loudest! And the third! Twin Rush!"],
@@ -567,6 +585,7 @@
           ['kael', "Rook! You started without me? Again?"],
           ['hero', "Never without you, brother. I just started with me. There's lots of me."]] },
       2: { zone: 'slums', with: 'kael', goal: "Hold the Slums with Kael",
+        card: "Halcyon is building a cage on the stairs of the Slums, and Rook and Kael, brothers out of the trash, decide which way its door opens.",
         meet: [
           ['kael', "Rook. Halcyon's building a cage on the stairs. A big one."],
           ['hero', "For us? Flattering. Oh, and Kiri's crane came down the Stacks. She says a Subject in the Sky can see Husks."],
@@ -579,6 +598,7 @@
           ['hero', "Pell had a key once. A key to the Engine. He bought it with us."],
           ['kael', "Then we make him give back the change."]] },
       3: { zone: 'pit', rival: 'pell', goal: "Face Pell at the Pit Arena",
+        card: "In the Pit Arena the sensei who taught Rook his clones, and sold the Cell for a key, has kept his student's seat warm.",
         meet: [
           ['pell', "Rook. My best student. You have come to the Pit at last. I kept your seat warm."],
           ['hero', "You taught me the clones. Then you sold the Cell for a key. My clones held that door until they were smoke."],
@@ -649,6 +669,7 @@
     // ---------------------------------------------------------------- SABLE
     sable: {
       1: { zone: 'slums', goal: "Strike first in the Slums",
+        card: "In the Slums under the Skylift's roots it is quiet, then the air begins to hum, and for the first of Halcyon's men it is already over.",
         intro: [
           ['sys', "The Deepline Slums, under the Skylift's roots. Quiet. Then the air begins to hum."],
           ['agent', "Lantern Cell runaway, the quiet one. Take her now, before she does anything."],
@@ -658,6 +679,7 @@
           ['hero', "Static has to go somewhere."],
           ['hero', "Pell sold us for a key. Every hand he ever hired, I go through. Then his."]] },
       2: { zone: 'dojo', with: 'sen', goal: "Earn one lesson from Sen",
+        card: "Sable's Flash Step is fast but not true, so she sits seven days in silence at the Rust Dojo while Sen sweeps, waiting for one lesson.",
         meet: [
           ['hero', "Sen. Pell sold the Cell, and I ran. My Flash Step is fast. It isn't true. Teach me."],
           ['sen', "..."],
@@ -669,6 +691,7 @@
           ['hero', "I was. Thank you, sensei. The real kind of sensei."],
           ['sen', "Go. Run at him, if you must. But run well."]] },
       3: { zone: 'slums', rival: 'kael', goal: "One thunder in Deepline",
+        card: "Deepline has one thunder too many, and the quiet girl with the purple lightning and the loud boy with the white settle in public whose sky it is.",
         meet: [
           ['kael', "Hey! Quiet girl! You're the one with the purple lightning, right?"],
           ['hero', "And you throw yours everywhere. Loudly. At everything. Deepline has one thunder too many."],
@@ -729,6 +752,7 @@
     // ---------------------------------------------------------------- MORO
     moro: {
       1: { zone: 'metro', goal: "Keep the Old Metro quiet",
+        card: "In the long dark between two station lamps of the Old Metro, Moro is having a very good sleep, and Halcyon has come to wake him.",
         intro: [
           ['sys', "The Old Metro, in the long dark between two station lamps. Moro would rather not fight at all."],
           ['hero', "I was asleep. It was a very good sleep. You owe me the end of it."],
@@ -738,6 +762,7 @@
           ['hero', "Shadow Snare. Hold still. There. Everybody's resting now."],
           ['hero', "Pell taught us shadows are for hiding. He was wrong. Shadows are for holding."]] },
       2: { zone: 'slums', with: 'rook', goal: "Carry the Cell with Rook",
+        card: "Rook has been extra loud all week because the door he held still burns behind his eyes, and Moro, who notices, offers to carry it.",
         meet: [
           ['rook', "Moro! Moro moro moro. You awake? Halcyon's in the Slums! We need you!"],
           ['hero', "Awake. Mostly. You've been extra loud all week. What's wrong?"],
@@ -749,6 +774,7 @@
           ['hero', "Didn't hear you. You weren't loud enough."],
           ['sable', "Three of us. The Cell's still a Cell."]] },
       3: { zone: 'ward', rival: 'vesper', goal: "Catch Vesper on the Night roofs",
+        card: "Every night a red scarf walks through Moro's shadows in muddy boots, and at last he climbs to the Night Ward roofs to make her knock.",
         meet: [
           ['sys', "The Night Ward roofs, Aurelia. Moro has climbed up through his own shadow, after a red scarf that keeps walking through it."],
           ['vesper', "You followed me up. That's new. Usually you just sigh at me."],
@@ -812,6 +838,7 @@
     // ---------------------------------------------------------------- PELL
     pell: {
       1: { zone: 'pit', goal: "Hold court at the Pit Arena",
+        card: "In the Pit Arena Pell, sensei of the Lantern Cell, smiles behind porcelain, and for ten years he has also been the Director's spymaster.",
         intro: [
           ['sys', "The Pit Arena. Pell, sensei of the Lantern Cell, smiles behind porcelain. For ten years he has also been the Director's spymaster."],
           ['director', "Pell. Your report is late, and I do not keep slack strings. A squad is coming to test the tension."],
@@ -822,6 +849,7 @@
           ['director', "Noted. Keep the layers apart, Pell. A city that looks down never looks up at my Engine."],
           ['hero', "Of course. Balance."]] },
       2: { zone: 'blank', with: 'rue', goal: "Bring Rue out of the Blank Wing",
+        card: "In the Blank Wing, where nothing casts a shadow, Pell finds a shape with no face and teaches it to wear anyone's, and never asks for its own.",
         meet: [
           ['sys', "The Blank Wing, Aurelia. White walls, white light, no shadows anywhere. In one cell, a shape with no face."],
           ['hero', "Hello, little nothing. They tell me you become whatever you look at."],
@@ -834,6 +862,7 @@
           ['hero', "Beautiful. My finest pupil, and I've had you an hour."],
           ['sys', "Not once does he ask her what her own face looks like."]] },
       3: { zone: 'pit', rival: 'rook', goal: "Teach Rook one last lesson",
+        card: "Rook comes to the Pit to collect for the whole Lantern Cell, and Pell, who sold it for a key, faces the loudest and most loyal of his students.",
         meet: [
           ['rook', "Pell! You sold us. The whole Cell, for a key. I've come to collect."],
           ['hero', "Rook. My best student. Always the loudest, and the most loyal. Such a waste of both."],
@@ -895,6 +924,7 @@
     // ---------------------------------------------------------------- THORNE
     thorne: {
       1: { zone: 'rootways', goal: "Tend the garden of bone",
+        card: "The dead of the Ashfall War lie in rows beneath the oldest part of Deepline, and Thorne keeps them like a garden, borders and all.",
         intro: [
           ['sys', "The catacombs beneath the oldest part of Deepline. The dead of the Ashfall War lie here, planted in rows like a garden."],
           ['hero', "Good evening. Do mind the borders. The ribs are flowering beautifully this year."],
@@ -917,6 +947,7 @@
           ['vesna', "Always. And no, I'm not charging you. I never will. Tell no one."]],
         card: "Halcyon sends men down the stair in the middle of Sunday tea, and Thorne and Vesna defend the catacombs between one cup and the next." },
       3: { zone: 'rootways', rival: 'ume', goal: "Duel Ume among the bones",
+        card: "Every spring Thorne's cuttings go up to the Glowwild and Ume's pollen comes down to the catacombs, and this year Ume comes down herself.",
         meet: [
           ['ume', "Thorne. I came down to see your famous garden. Your cuttings arrive every spring, so very polite."],
           ['hero', "And your pollen arrives every spring, so very effective. The whole catacomb sneezed for a week."],
@@ -978,6 +1009,7 @@
     // ---------------------------------------------------------------- VEX
     vex: {
       1: { zone: 'yard', goal: "Defend the yard across the tunnel",
+        card: "Across the tunnel from Ferra's stands a smaller yard, Vex's own, bought with Vesna's money, and every brick in it still owes interest.",
         intro: [
           ['sys', "The yard across the tunnel from Ferra's. Smaller. Vex's own. Bought with Vesna's money, and every brick still owes her."],
           ['hero', "Pull and push. One force, pointed two ways. Ferra never saw it. That's why I've got a yard of my own."],
@@ -988,6 +1020,7 @@
           ['citizen', "Vesna's runner is at the gate. She says the interest is due today."],
           ['hero', "...Charge pending."]] },
       2: { zone: 'docks', with: 'mako', goal: "Tune Mako's magnets",
+        card: "Mako's suit pulls left, and Vex, who kept only one friend from the Yard, tunes its magnets on the dock while Halcyon comes to watch.",
         meet: [
           ['mako', "Vex. Suit pulls left. Magnets."],
           ['hero', "Your magnets always need tuning. You build too fast. Hold still. Let me feel the field."],
@@ -1000,6 +1033,7 @@
           ['hero', "Ferra built most of it. I made it work. Don't tell her I said the first part."],
           ['mako', "I'll tell her both parts."]] },
       3: { zone: 'yard', rival: 'ferra', goal: "Prove pull and push to Ferra",
+        card: "Vex walks back into Ferra's Yard to show his old teacher that pull and push are one force, and finds she has watched every fight he ever had.",
         meet: [
           ['ferra', "Vex. You walked back into my Yard. Bold."],
           ['hero', "I came to show you. Pull and push are one thing. I built a whole yard proving it."],
@@ -1062,6 +1096,7 @@
     // ---------------------------------------------------------------- VESNA
     vesna: {
       1: { zone: 'market', goal: "Collect in the Red Quarter",
+        card: "Every debt in Deepline is written in one red book in one careful hand, and Halcyon wants the Ledger, because every name in it is a lever.",
         intro: [
           ['sys', "The Neon Market's Red Quarter. Every debt in Deepline is written in one red book, in one careful hand."],
           ['hero', "Everything has a price. Nobody in Deepline has ever paid me late twice."],
@@ -1071,6 +1106,7 @@
           ['hero', "Collected. In red. I'll bill your Director for the stains."],
           ['hero', "Halcyon's page grows longer every day. One day I collect all of it, with interest."]] },
       2: { zone: 'rootways', with: 'thorne', goal: "Keep Sunday tea with Thorne",
+        card: "Every Sunday Vesna brings the cups and Thorne the tea, and this Sunday Halcyon comes down the stair to read the rest of the Ledger.",
         meet: [
           ['hero', "Thorne. Sunday. I brought the cups."],
           ['thorne', "And I the tea. You look tired, my dear. Is the Ledger heavy today?"],
@@ -1083,6 +1119,7 @@
           ['hero', "Nor ever will. Tell no one. I have a reputation."],
           ['thorne', "Who would I tell? My guests are very discreet."]] },
       3: { zone: 'market', rival: 'maren', goal: "Settle the bill with Maren",
+        card: "The Tide Doctor has been giving blood away for free, which is dreadful for business, and in the Red Quarter Vesna calls in the account.",
         meet: [
           ['maren', "Vesna. I've seen your bills. The ones paid in blood. You call this bookkeeping?"],
           ['hero', "Doctor. You give it all away for free. Do you know what that does to a market?"],
@@ -1146,6 +1183,7 @@
     // ---------------------------------------------------------------- FUMI
     fumi: {
       1: { zone: 'waterworks', goal: "Keep the boilers running",
+        card: "Fumi keeps half of Deepline from freezing in the boilers above the Core Sump, and every night, under the floor, someone taps back.",
         intro: [
           ['sys', "The Waterworks, the boilers above the Core Sump. Fumi keeps half of Deepline from freezing, and says very little about it."],
           ['hero', "Pressure's good. Pumps are good. The tapping's... still there. Every night. Under the floor."],
@@ -1156,6 +1194,7 @@
           ['sys', "When the steam thins, Fumi kneels by the pipe and taps three times. Three taps answer."],
           ['hero', "I'm coming down. Soon. Hold on a little longer."]] },
       2: { zone: 'core', with: 'ashka', goal: "Find the voice in the pipes",
+        card: "At the end of a year of tapping, Fumi climbs down the boiler shaft to meet the woman whose pain has kept his pipes warm.",
         meet: [
           ['sys', "Fumi climbs down the boiler shaft into the Core Sump, at the end of a whole year of tapping."],
           ['ashka', "...You. The tapping. So the boiler man has a face."],
@@ -1167,6 +1206,7 @@
           ['hero', "Next time I come back with enough pressure to blow that door into the next layer. Partners?"],
           ['ashka', "I burn. You boil. Partners."]] },
       3: { zone: 'waterworks', rival: 'mako', goal: "Test Mako's boiler to bursting",
+        card: "Mako's suit boiler is running hot again, and Fumi, who has stopped it cooking him twice, agrees to hit it until something pops.",
         meet: [
           ['mako', "Fumi. Suit's boiler's running hot again. Dyna wants a full pressure test."],
           ['hero', "Full pressure. On a suit with a man inside. You trust me that much?"],
@@ -1229,6 +1269,7 @@
     // ---------------------------------------------------------------- MAKO
     mako: {
       1: { zone: 'docks', goal: "Hold the docks in the suit",
+        card: "Mako was crushed under a crate at Dockside Nine once and promised himself never again, so he built a suit, and kept building.",
         intro: [
           ['sys', "Dockside Nine. Mako was crushed under a crate once, and made himself one promise: never again."],
           ['hero', "Built a suit. Then kept building. New plating this week."],
@@ -1239,6 +1280,7 @@
           ['citizen', "Mako! The crates! The stack's coming down!"],
           ['hero', "Got it. Not this time, crate."]] },
       2: { zone: 'yard', with: 'dyna', goal: "Keep the suit alive",
+        card: "Halcyon has dented the plating, cooked the boiler and bent the magnets, and everyone who keeps Mako's suit alive gathers in one yard.",
         meet: [
           ['dyna', "Mako. You look like a crate fell on you. Again."],
           ['hero', "Halcyon tested it. Plating dented. Boiler cooking. Magnets pulling left."],
@@ -1251,6 +1293,7 @@
           ['hero', "Only you. Always only you."],
           ['hero', "Thanks. All of you. The suit's only as strong as the hands that keep it."]] },
       3: { zone: 'works', rival: 'dyna', goal: "Take Dyna's blast test",
+        card: "Dyna has built the biggest bombs of her life for one blast test, and if Mako's suit holds against these, it holds against anything.",
         meet: [
           ['dyna', "Blast test, big man. Biggest bombs I've ever built. If the suit holds this, it holds anything."],
           ['hero', "And if it doesn't hold?"],
@@ -1313,6 +1356,7 @@
     // ---------------------------------------------------------------- NAMI
     nami: {
       1: { zone: 'choir', goal: "Keep the Drowned Line",
+        card: "The sea took Nami once in the flooded tunnels at the bottom of Deepline and gave her back with its cold still in her, and the Director wants to know how.",
         intro: [
           ['sys', "The Drowned Line, the flooded tunnels at the bottom of Deepline. The sea took Nami once, and gave her back with its patience."],
           ['hero', "Grey and cold, I know. The Line's still in me. It's quieter than it looks."],
@@ -1323,6 +1367,7 @@
           ['sys', "Fumi's pumps thump overhead like a slow heart. The Line stays where it is."],
           ['hero', "Good. Stay. Nobody else goes under while I'm watching."]] },
       2: { zone: 'waterworks', with: 'maren', goal: "Guard Maren on the Line",
+        card: "The doctor who argued with the sea for a whole night comes down to check the water lines, and Nami, who owes her everything, stands guard.",
         meet: [
           ['maren', "Nami. They let me down to check the water lines. I promised I'd be quick."],
           ['hero', "You're never quick. You stop for every cough. I'll guard you."],
