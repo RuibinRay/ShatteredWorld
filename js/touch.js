@@ -104,6 +104,21 @@
     padOn = want; pad.style.display = want ? 'grid' : 'none';
     for (const b of btns) b.el.style.visibility = want ? 'hidden' : '';
   }, 80);
+  // Versus (the user, 2026-11-17: "phone when watch mode no buttons only esc and no map for versus"): no Map button
+  // anywhere in Versus, and while two bots fight (Bot vs Bot, or a tournament match you watch) only Esc is left, with no
+  // joystick. Menus, results and the pause menu keep the buttons they need to move around.
+  const SCREENS = ['menu', 'pick', 'bracket', 'ladder', 'order', 'result'];
+  let vsKey = '';
+  setInterval(() => {
+    const V = SW.versus, vs = !!(T.on() && G.scene === 'vs' && V);
+    const watch = vs && !V.paused && SCREENS.indexOf(V.phase) < 0 && !!V.f && V.f.length === 2 && V.f.every(f => f && f.bot);
+    const key = watch ? 'watch' : vs ? 'vs' : '';
+    if (key === vsKey) return;
+    vsKey = key;
+    for (const b of btns) b.el.style.display = (watch && b.a !== 'pause') || (vs && b.a === 'map') ? 'none' : '';
+    zone.style.display = watch ? 'none' : '';
+    if (watch) { sid = null; show(false); setDir(0, 0); for (const k in T.held) T.held[k] = false; }   // nothing stays pressed
+  }, 80);
   root.appendChild(rot);   // the "turn sideways" note covers the buttons too
   // floating joystick: put a thumb down anywhere on the left, drag to move; down is guard, up aims and climbs
   let sid = null, ox = 0, oy = 0, R = 50;
