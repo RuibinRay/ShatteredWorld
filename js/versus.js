@@ -870,7 +870,11 @@
       const L = T.last, wn = D.heroes[L.w].name, ln = D.heroes[L.w === L.a ? L.b : L.a].name, s = L.w === L.a ? L.sa + '-' + L.sb : L.sb + '-' + L.sa;
       text(ctx, wn + ' beat ' + ln + ' ' + s, W / 2, 232, '#bfe8ff', { align: 'center' });
     }
-    if (cur) text(ctx, 'Next: ' + D.heroes[cur.a].name + ' v ' + D.heroes[cur.b].name + '      J / Enter: ' + (T.me && (cur.a === T.me || cur.b === T.me) ? 'fight' : V.tskip ? 'settle it' : 'watch') + '      Esc: leave', W / 2, 248, '#8a92b8', { align: 'center' });
+    if (cur) {   // the bot levels and the Set each hint, as on the tree (the round of 64 showed neither, so its levels looked fixed)
+      const lvl = id => (id === T.me ? '' : ' (' + DIFF[tourLv(id)] + ')');
+      text(ctx, 'Next: ' + D.heroes[cur.a].name + lvl(cur.a) + ' v ' + D.heroes[cur.b].name + lvl(cur.b) + '      J / Enter: ' + (T.me && (cur.a === T.me || cur.b === T.me) ? 'fight' : V.tskip ? 'settle it' : 'watch') + '      Esc: leave', W / 2, 248, '#8a92b8', { align: 'center' });
+      if ((V.tlv || 0) === 3) text(ctx, 'Set each: A / D left bot level, W / S right bot level', W / 2, 238, '#ffe066', { align: 'center' });
+    }
   }
   function drawSurvival(ctx) {   // the run is over
     const S = V.sv, bg = art.bg.title, b = survBest()[S.mine.length === 3 ? '3v3' : '1v1'];
