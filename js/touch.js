@@ -106,8 +106,10 @@
   }, 80);
   // Versus (the user, 2026-11-17: "phone when watch mode no buttons only esc and no map for versus"): no Map button
   // anywhere in Versus, and while two bots fight (Bot vs Bot, or a tournament match you watch) only Esc is left, with no
-  // joystick. Menus, results and the pause menu keep the buttons they need to move around.
+  // joystick. Menus, results and the pause menu keep the buttons they need to move around. Then ("and a small j for
+  // select"): a small J (Select) sits beside Esc while watching, in the corner the Map button uses elsewhere.
   const SCREENS = ['menu', 'pick', 'bracket', 'ladder', 'order', 'result'];
+  const jBtn = btns.find(b => b.a === 'attack'), jHome = { x: jBtn.x, y: jBtn.y, s: jBtn.s, w: jBtn.w }, mapB = btns.find(b => b.a === 'map');
   let vsKey = '';
   setInterval(() => {
     const V = SW.versus, vs = !!(T.on() && G.scene === 'vs' && V);
@@ -115,7 +117,9 @@
     const key = watch ? 'watch' : vs ? 'vs' : '';
     if (key === vsKey) return;
     vsKey = key;
-    for (const b of btns) b.el.style.display = (watch && b.a !== 'pause') || (vs && b.a === 'map') ? 'none' : '';
+    Object.assign(jBtn, watch ? { x: mapB.x, y: mapB.y, s: mapB.s, w: 'Select' } : jHome);
+    lang = null; layout();
+    for (const b of btns) b.el.style.display = (watch && b.a !== 'pause' && b.a !== 'attack') || (vs && b.a === 'map') ? 'none' : '';
     zone.style.display = watch ? 'none' : '';
     if (watch) { sid = null; show(false); setDir(0, 0); for (const k in T.held) T.held[k] = false; }   // nothing stays pressed
   }, 80);
@@ -224,7 +228,8 @@
     const L = SW.i18n, cur = L ? L.lang : 'en';
     if (cur === lang && L && L.dict[cur] !== undefined) return;
     lang = cur;
-    for (const b of btns) b.el.lastChild.textContent = L ? L.tr(b.w) : b.w;
+    const SEL = { es: 'Elegir', zh: '选择' };   // the watch-mode J (not in the language files yet)
+    for (const b of btns) b.el.lastChild.textContent = b.w === 'Select' && SEL[cur] ? SEL[cur] : L ? L.tr(b.w) : b.w;
     rot.textContent = L ? L.tr('Turn your phone sideways to play.') : 'Turn your phone sideways to play.';
   }
   setInterval(() => { if (T.on()) labels(); }, 500);
