@@ -669,7 +669,11 @@
         if (lw > 0) art.rect(ctx, f.lagT > 20 ? '#ffffff' : '#ff9a5a', left ? bx + hw : bx + 190 - hw - lw, 10, lw, 9);
       }
       art.rect(ctx, S.hp / mx < 0.3 ? '#ff5a5a' : '#6fe89a', left ? bx : bx + 190 - hw, 10, hw, 9); art.rect(ctx, '#ffffff', left ? bx : bx + 190 - hw, 10, hw, 1);
-      text(ctx, V.mode === 'duel' ? duelName(i) : (isBvb() ? 'BOT ' + (i + 1) + ' ' : f.bot ? (V.mode === 'train' ? 'DUMMY ' : 'BOT ') : 'P' + (i + 1) + ' ') + h.name.toUpperCase(), left ? bx : bx + 190, 1, h.color, { align: left ? 'left' : 'right' });   // y 1: clear of the top edge
+      const nm = V.mode === 'duel' ? duelName(i) : (isBvb() ? 'BOT ' + (i + 1) + ' ' : f.bot ? (V.mode === 'train' ? 'DUMMY ' : 'BOT ') : 'P' + (i + 1) + ' ') + h.name.toUpperCase();
+      // a bot's level beside its name, in its colour (Easy green ... Nightmare red): the fight never showed how hard the bot was
+      const lv = f.bot && V.mode !== 'duel' && V.mode !== 'train' ? DIFF[lvOf(f)] : '', lvw = lv ? SW.textW(SW.i18n ? SW.i18n.tr(lv) : lv) + 5 : 0;
+      text(ctx, nm, left ? bx : bx + 190 - lvw, 1, h.color, { align: left ? 'left' : 'right' });   // y 1: clear of the top edge
+      if (lv) text(ctx, lv, left ? bx + SW.textW(nm) + 5 : bx + 190, 1, ['#7dffb2', '#c8d0ff', '#ffb347', '#ff5a7a'][lvOf(f)] || '#8a92b8', { align: left ? 'left' : 'right' });
       for (let k = 0; k < 3; k++) { const e = SW.clamp((S.energy - k * 100) / 100, 0, 1), ex = left ? bx + k * 34 : bx + 190 - 32 - k * 34; art.rect(ctx, '#05060c', ex - 1, 21, 34, 6); art.rect(ctx, '#22202e', ex, 22, 32, 4); art.rect(ctx, e >= 1 ? h.colorHi : h.color, left ? ex : ex + 32 - Math.round(32 * e), 22, Math.round(32 * e), 4); }
       const aw = SW.clamp(S.awaken / 100, 0, 1), ax = left ? bx + 106 : bx + 4;
       art.rect(ctx, '#05060c', ax - 1, 22, 82, 4); art.rect(ctx, f.p.awakeT > 0 ? h.colorHi : aw >= 1 && SW.frame % 16 < 8 ? '#ffffff' : '#8b5cf6', left ? ax : ax + 80 - Math.round(80 * aw), 23, Math.round(80 * aw), 2);
@@ -830,7 +834,7 @@
       text(ctx, 'CHAMPION', W / 2, 98, '#f5c542', { align: 'center' });
       text(ctx, h.name.toUpperCase(), W / 2, 112, h.colorHi, { align: 'center', scale: 2 });
       if (T.me) text(ctx, T.champ === T.me ? 'YOU WON THE TOURNAMENT!' : 'Better luck next time.', W / 2, 136, T.champ === T.me ? '#7dffa0' : '#8a92b8', { align: 'center' });
-    } else text(ctx, '?', W / 2, 108, '#5a6078', { align: 'center', scale: 2 });
+    } else { text(ctx, '?', W / 2, 108, '#5a6078', { align: 'center', scale: 2 }); nextPanel(ctx, T, cur, W / 2, 128, true); }
     if (T.last) {
       const L = T.last, wn = D.heroes[L.w].name, ln = D.heroes[L.w === L.a ? L.b : L.a].name, s = L.w === L.a ? L.sa + '-' + L.sb : L.sb + '-' + L.sa;
       text(ctx, wn + ' beat ' + ln + ' ' + s, W / 2, 232, '#bfe8ff', { align: 'center' });
@@ -845,20 +849,38 @@
     }
     if (hint) text(ctx, hint, W / 2, 248, '#8a92b8', { align: 'center' });
   }
+  // each bot's level in its colour (Easy green, Normal pale blue, Hard orange, Nightmare red). On a phone the "Next" line at
+  // the bottom sits under the joystick, so the bracket shows the levels where they can be seen: a square before every bot
+  // in the round of 64, and the next match with both levels in the clear middle of the screen
+  const LV_COL = ['#7dffb2', '#c8d0ff', '#ffb347', '#ff5a7a'];
+  const lvCol = id => LV_COL[tourLv(id)] || '#8a92b8';
+  // x: its centre, or (atLeft) its left edge. On a phone the touch buttons fill the right side and the bottom
+  function nextPanel(ctx, T, cur, x, y, stacked, atLeft) {
+    if (!cur || cur.a === undefined || cur.b === undefined || cur.a === null || cur.b === null) return;
+    const who = id => D.heroes[id].name.toUpperCase(), lv = id => (id === T.me ? 'YOU' : DIFF[tourLv(id)]), lc = id => (id === T.me ? '#22d3ee' : lvCol(id));
+    const parts = [[stacked ? 'NEXT' : 'NEXT MATCH:', '#8a92b8'], [who(cur.a), D.heroes[cur.a].color], [lv(cur.a), lc(cur.a)], ['v', '#5a6078'], [who(cur.b), D.heroes[cur.b].color], [lv(cur.b), lc(cur.b)]];
+    if (stacked) { parts.forEach(([t, c], i) => text(ctx, t, x, y + i * 10, c, { align: 'center' })); return; }   // the tree leaves only a narrow middle
+    const tw = t => SW.textW(SW.i18n ? SW.i18n.tr(t) : t), total = parts.reduce((n, q) => n + tw(q[0]) + 6, -6);
+    const x0 = atLeft ? x : Math.round(x - total / 2);
+    ctx.globalAlpha = 0.85; art.rect(ctx, '#05060c', x0 - 4, y - 4, total + 8, 15); ctx.globalAlpha = 1;
+    let cx = x0; parts.forEach(([t, c]) => { text(ctx, t, cx, y, c); cx += tw(t) + 6; });
+  }
   // a 64 bracket's first round: its matches in four columns (byes listed underneath), then the tree takes over
   function drawRoundList(ctx, T, cur, nm) {
     const list = T.R[0], next = T.R[1] || [], pairs = [], byes = [];
     for (let m = 0; m < list.length / 2; m++) { const a = list[m * 2], b = list[m * 2 + 1]; if (a && b) pairs.push(m); else if (a || b) byes.push(a || b); }
     text(ctx, 'ROUND OF 64', W / 2, 22, '#8a92b8', { align: 'center' });
+    { let lx = 8; DIFF.forEach((d, k) => { art.rect(ctx, LV_COL[k], lx, 23, 4, 4); lx += 6; text(ctx, d, lx, 22, LV_COL[k]); lx += SW.textW(SW.i18n ? SW.i18n.tr(d) : d) + 7; }); }   // the colours' key
     const rows = Math.ceil(pairs.length / 3), colX = [8, 166, 324];
     pairs.forEach((m, k) => {
       const a = list[m * 2], b = list[m * 2 + 1], w = next[m], x = colX[Math.floor(k / rows)], y = 36 + (k % rows) * 12, live = cur && cur.r === 0 && cur.m === m;
       const shade = id => (w !== undefined && w !== id ? '#4a4e66' : live ? '#ffffff' : D.heroes[id].color);
       let cx = x;
       if (live) { text(ctx, '>', cx, y, '#f5c542'); }
-      cx += 7; text(ctx, nm(a), cx, y, shade(a)); cx += SW.textW(nm(a)) + 4;
+      const sq = id => { if (id !== T.me) { art.rect(ctx, '#05060c', cx - 1, y, 6, 6); art.rect(ctx, lvCol(id), cx, y + 1, 4, 4); } cx += 6; };   // its level
+      cx += 7; sq(a); text(ctx, nm(a), cx, y, shade(a)); cx += SW.textW(nm(a)) + 4;
       text(ctx, 'v', cx, y, '#5a6078'); cx += SW.textW('v') + 4;
-      text(ctx, nm(b), cx, y, shade(b));
+      sq(b); text(ctx, nm(b), cx, y, shade(b));
       if (T.me && (a === T.me || b === T.me)) art.rect(ctx, '#22d3ee', x + 7, y + 8, 4, 1);
     });
     if (byes.length) {
@@ -870,6 +892,7 @@
       const L = T.last, wn = D.heroes[L.w].name, ln = D.heroes[L.w === L.a ? L.b : L.a].name, s = L.w === L.a ? L.sa + '-' + L.sb : L.sb + '-' + L.sa;
       text(ctx, wn + ' beat ' + ln + ' ' + s, W / 2, 232, '#bfe8ff', { align: 'center' });
     }
+    nextPanel(ctx, T, cur, 8, 196, false, true);
     if (cur) {   // the bot levels and the Set each hint, as on the tree (the round of 64 showed neither, so its levels looked fixed)
       const lvl = id => (id === T.me ? '' : ' (' + DIFF[tourLv(id)] + ')');
       text(ctx, 'Next: ' + D.heroes[cur.a].name + lvl(cur.a) + ' v ' + D.heroes[cur.b].name + lvl(cur.b) + '      J / Enter: ' + (T.me && (cur.a === T.me || cur.b === T.me) ? 'fight' : V.tskip ? 'settle it' : 'watch') + '      Esc: leave', W / 2, 248, '#8a92b8', { align: 'center' });
