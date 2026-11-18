@@ -406,7 +406,9 @@
       case 'approach': k[to] = true; if (adx > 140 && ai.n === 2 && R() < 0.5) k.dash = true; if (q.y < p.y - 40 && ai.n % 30 < 8) k.jump = true; break;
       case 'jumpin': k[to] = true; if (ai.n < 10) k.jump = true; else if (ai.n % 6 < 2) k.attack = true; break;
       case 'retreat': k[away] = true; if (ai.n === 1) k.dash = true; break;
-      case 'combo': if (!facing || adx > 30) k[to] = true; if (ai.n % 7 < 2) k.attack = true; if (ai.n > 24 && !save && S.energy >= 25 && R() < 0.08) k.skill = true; break;
+      // a J string that has landed (two hits in) goes into a skill: U out of a landed hit costs nothing (js/combo-fluency.js),
+      // so every bot combo uses one (the user: "make it 100% combo at least use a skill")
+      case 'combo': if (!facing || adx > 30) k[to] = true; if (ai.n % 7 < 2) k.attack = true; if ((ai.n > 24 && !save && S.energy >= 25 && R() < 0.08) || (p.state === 'attack' && p.connected && (p.combo || 0) >= 2 && ai.n % 7 >= 2 && ai.n % 7 < 4)) { if ((p.cd || {}).u > 0 && S.energy >= 50 && !((p.cd || {}).i > 0)) k.special = true; else k.skill = true; } break;   // U cooling down: I instead
       case 'launcher': if (!turn()) { k.up = true; if (ai.n > 2 && ai.n < 6) k.attack = true; if (ai.n > 12) k.jump = true; } break;
       case 'sweep': if (!turn()) { k.down = true; if (ai.n > 2 && ai.n < 6) k.attack = true; } break;
       case 'skill': if (!turn() && ai.n < 4) k.skill = true; break;

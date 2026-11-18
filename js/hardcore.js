@@ -158,7 +158,7 @@
     const list = HC.data.routes[f.hero] || DEFAULT_ROUTES, save = saving(f) || ultReady(f);
     let best = null;
     for (const R of list) if (affordable(f, R) && !(save && R.cost > 0) && (!best || R.dmg > best.dmg)) best = R;
-    return best ? best.r : 'JJJ';
+    return best ? best.r : 'JJJU';   // every combo ends in a skill (U out of a landed J is free: js/combo-fluency.js)
   }
   const DEFAULT_ROUTES = [{ r: 'JJJJ', dmg: 30, cost: 0 }, { r: 'JJJU', dmg: 34, cost: 25 }, { r: 'JJJI', dmg: 40, cost: 50 }, { r: 'JJJu', dmg: 36, cost: 40 }];
   function runRoute(f, k) {
@@ -178,8 +178,16 @@
         if (FREE[p.state]) { k[dir] = true; if (gap > reachOf(p) + 24 && h.tk.n <= 2 && !h.tk.d) { k.dash = true; h.tk.d = 1; } }   // a wide gap: one dash in (walking let the stun run out)
         return true;
       }
-      const T = TOK[tk];
+      let T = TOK[tk];
       if (!T) { h.ri++; continue; }
+      // a skill that is not ready (its cooldown, the energy) is swapped for one that is, so the combo still uses a skill
+      if (T.slot) {
+        if (!h.tk) {
+          const cd = p.cd || {}, cost = { u: 25, su: 50, i: 50, si: 100, wo: 75 }, ok = t => { const o = TOK[t]; return o && o.slot && !(cd[o.slot] > 0) && S.energy >= (t === 'U' && p.state === 'attack' && p.connected ? 0 : cost[o.slot]); };
+          h.subAt = h.ri; h.sub = ok(tk) ? null : ['U', 'u', 'I', 'i', 'O'].find(ok) || null;
+        }
+        if (h.subAt === h.ri && h.sub) T = TOK[h.sub];
+      }
       if (!h.tk) h.tk = { n: 0, b: sig(p, S) };
       if (h.tk.n > 0 && accepted(tk, h.tk.b, p, S)) { h.ri++; h.tk = null; continue; }
       h.tk.n++;
@@ -244,7 +252,7 @@
         // a boss throws one J: if it lands, the confirm starts its one-opening chain. Others, with a bar to spend, now and
         // then go in with the strongest route they can pay for (its skills come out if the first hits land)
         const paid = S.energy >= 75 && Math.random() < 0.45 ? HC.bestRoute(f) : null;
-        const r = MIR.boss[f.hero] ? 'J' : paid || (free ? free.r : 'JJJ');
+        const r = MIR.boss[f.hero] ? 'J' : paid || (free ? free.r : 'JJJU');
         HC.start(f, r); h.mr = 26; h.lastA = 'hit'; runRoute(f, k); pl.until = now; say('STRING  ' + HC.notation(r)); return true;
       }
       case 'jumpin': if (t < 3) { k.jump = true; k[to] = true; say('JUMP IN'); return true; } pl.until = now; return false;

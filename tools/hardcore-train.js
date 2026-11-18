@@ -119,16 +119,21 @@
     return { r, dmg: Math.round(dmg), cost: Math.round(spent), hits, ok: !broken || dmg > 0, full: done };
   };
   const EXT = ['J', 'U', 'u', 'I', 'i', 'LKAAA', 'W', 'JU', 'JI'];
+  // with js/combo-fluency.js a skill can be cancelled into another and into W+O, and a J can follow a skill: o.ext adds those
+  HT.EXT2 = EXT.concat(['O', 'JO', 'UI', 'Ui', 'Iu', 'Ii', 'iO', 'JJ']);
   HT.findRoutes = function (hero, o) {
     o = o || {};
     const dummy = hero === 'kael' ? 'nyra' : 'kael';
     if (!setStage(hero, dummy)) return null;
     const seen = {}, all = [];
+    // o.needSkill: a skill somewhere in the route; o.skillBy: the first skill within the first skillBy inputs (in a fight a
+    // combo often ends early, when the target slips out: a skill at the end of a long string was seldom reached)
+    const okSkill = r => !o.needSkill || (/[UuIiO]/.test(r) && (!o.skillBy || r.search(/[UuIiO]/) < o.skillBy));
     const test = r => { if (seen[r]) return seen[r]; const x = HT.testRoute(r); seen[r] = x; all.push(x); return x; };
     let beam = ['J', 'JJ', 'JJJ', 'JJJJ'].map(test);
     for (let depth = 0; depth < (o.depth || 5); depth++) {
       const next = [];
-      beam.forEach(b => EXT.forEach(e => { const r = b.r + e; if (r.length > 14) return; const x = test(r); if (x.dmg > b.dmg) next.push(x); }));
+      beam.forEach(b => (o.ext || EXT).forEach(e => { const r = b.r + e; if (r.length > (o.maxLen || 14)) return; const x = test(r); if (x.dmg > b.dmg) next.push(x); }));
       if (!next.length) break;
       // keep the strongest at each energy budget so cheap routes survive next to the big ones
       const keep = {};
@@ -140,14 +145,15 @@
     // are played again from 16 and 30 px and keep their worst damage (in matches, routes that only worked from 22 px
     // dropped at the launcher)
     if (o.robust !== false) {
-      const by = {}; all.filter(x => x.dmg > 0).sort((p, q) => q.dmg - p.dmg).forEach(x => { const k = Math.min(7, Math.ceil(x.cost / 25)); (by[k] = by[k] || []).length < (o.robustN || 6) && by[k].push(x); });
+      const by = {}; all.filter(x => x.dmg > 0 && okSkill(x.r)).sort((p, q) => q.dmg - p.dmg).forEach(x => { const k = Math.min(7, Math.ceil(x.cost / 25)); (by[k] = by[k] || []).length < (o.robustN || 6) && by[k].push(x); });
       const top = [].concat(...Object.values(by));
       top.forEach(x => { const a = HT.testRoute(x.r, 16), b = HT.testRoute(x.r, 30); x.dmg22 = x.dmg; x.dmg = Math.min(x.dmg, a.dmg, b.dmg); });
       all.splice(0, all.length, ...top);
     }
     // the routes the bot carries: the best at each energy budget (and the ultimate on its own)
     const best = {};
-    all.filter(x => x.dmg > 0).forEach(x => { const k = Math.min(7, Math.ceil(x.cost / 25)); if (!best[k] || x.dmg > best[k].dmg || (x.dmg === best[k].dmg && x.r.length < best[k].r.length)) best[k] = x; });
+    // o.needSkill: every route the bot carries has at least one skill in it (the user: "make it 100% combo at least use a skill")
+    all.filter(x => x.dmg > 0 && okSkill(x.r)).forEach(x => { const k = Math.min(7, Math.ceil(x.cost / 25)); if (!best[k] || x.dmg > best[k].dmg || (x.dmg === best[k].dmg && x.r.length < best[k].r.length)) best[k] = x; });
     let list = Object.values(best).sort((p, q) => p.cost - q.cost);
     list = list.filter((x, i) => !list.slice(0, i).some(y => y.dmg >= x.dmg));   // drop routes a cheaper one already beats
     DATA.routes[hero] = list.map(x => ({ r: x.r, dmg: x.dmg, cost: x.cost }));
