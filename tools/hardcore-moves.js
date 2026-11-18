@@ -69,7 +69,7 @@
     log = []; log.t = 0;
     const r = { hit: -1, dmg: 0, hits: 0, rec: -1, inv: 0, mv: 0, air: false, hurtEnd: -1, blocked: false, punished: false, ub: false, last: -1, body: false, lift: 0, invFrom: -1, invTo: -1 };
     let hpB = B.state.hp, hpA = A.state.hp, started = false, freeRun = 0, answered = -1, lastHitT = -1;
-    for (let t = 0; t < 130; t++) {
+    for (let t = 0; t < (HM.long || 130); t++) {
       log.t = t; I.raw = {};
       if (hy > 0 && r.hit < 0) { q.y = GY - hy; q.vy = 0; q.vx = 0; q.onGround = false; if (q.state !== 'fall' && q.state !== 'hurt') q.enter('fall'); }
       G.tick();
@@ -93,7 +93,7 @@
     HC.test = false; log = null;
     r.mv = Math.round((p.x - x0) * p.face);
     r.last = lastHitT; r.dmg = Math.round(r.dmg); r.taken = Math.round(hpA - A.state.hp);
-    if (r.hurtEnd < 0 && lastHitT >= 0) r.hurtEnd = 130;
+    if (r.hurtEnd < 0 && lastHitT >= 0) r.hurtEnd = HM.long || 130;
     return r;
   }
   HM.shot = shot;
