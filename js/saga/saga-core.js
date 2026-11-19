@@ -337,7 +337,15 @@
     try { ok = !!(V && V.duel && V.duel(Object.assign({}, o, { onEnd(result) { undo(); afterDuel(result, n, c); } }))); } catch (e) { console.error(e); }
     if (!ok) { undo(); afterDuel('win', n, c); return; }   // the story must stay finishable even if Versus cannot start the fight
     const r = V.f[1].state;
-    if (o.rivalHp) { r.hpBonus = (r.hpBonus || 0) + o.rivalHp; r.hp += o.rivalHp; }
+    // the bonus goes into hpBonus and the health is then refilled from hpMax, as a retry (startRound) does: adding it to hp
+    // straight gave Itsuki, whose hpMax is x1.6 in Versus (ninjas7.js), 25-30% more health on every retry than on the first try.
+    // The bonus is scaled down by whatever multiplier hpMax applies, so every try has the first try's health (+rivalHp)
+    if (o.rivalHp) {
+      const keep = G.state, hm = () => V.f[1].p.hpMax();
+      G.state = r;
+      try { r.hpBonus = r.hpBonus || 0; const h0 = hm(); r.hpBonus += 100; const k = (hm() - h0) / 100 || 1; r.hpBonus += o.rivalHp / k - 100; r.hp = hm(); }
+      finally { G.state = keep; }
+    }
     if (o.rivalPower) r.stats.power = ((1 + 0.06 * (r.stats.power || 0)) * (1 + 0.06 * o.rivalPower) - 1) / 0.06;
   }
   function afterDuel(result, n, c) {
@@ -475,7 +483,7 @@
       const q = (L && L.ui) ? L.ui.quote(S.hero) : '';
       let y = 96; SW.wrap('The Hollow Crown fell into the Crater and the Legion went still, like an army at last allowed to rest. ' + h.name + "'s story is told.", wrapW).forEach(l => { txt(ctx, l, x, y, '#e8ecf4', { raw: true }); y += 11; });
       y += 8; if (q) SW.wrap('"' + q + '"', wrapW).forEach(l => { txt(ctx, l, x, y, h.colorHi || '#ffffff', { raw: true }); y += 11; });
-      y += 10; txt(ctx, 'Another hero, another story: New Game > The Hollow Crown.', x, y, '#8a92b8');
+      y += 10; SW.wrap('Another hero, another story: New Game > The Hollow Crown.', wrapW).forEach(l => { txt(ctx, l, x, y, '#8a92b8', { raw: true }); y += 11; });   // (one line, it ran past the panel's right edge)
       }
     } else {
       txt(ctx, 'CHAPTER ' + n + '  of 6', x, 44, '#8a92b8');
