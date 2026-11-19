@@ -4,12 +4,15 @@
 // in Versus, in story duels (they run on the Versus engine) and when he is played in the story. His J combo, throw and
 // ultimate are not skills and are unchanged. It comes on top of js/ninjas7.js, where Heaven's Thunder and Thunder Palm
 // already deal 0.75 in Versus (so those two now deal about 0.53 of their first numbers there).
-// SW.itsukiTune.skill = 1 gives the old damage back.
+// Then (the user, 2026-11-18: "reduce itsuki all damage by 30% in versus"): in Versus every hit he lands, J combo, throw,
+// skills and ultimate alike, deals 0.7 of what it did (so his skills now deal 0.49 of their first numbers there). Story
+// duels against him run on the Versus engine but are the story: they keep only the skill cut.
+// SW.itsukiTune.skill = 1 gives the old skill damage back; SW.itsukiTune.all = 1 the old Versus damage.
 (function () {
   const SW = window.SW, G = SW.game, V = SW.versus, P = SW.Player && SW.Player.prototype;
   if (!P || !P.takeHit) return;
-  const IT = SW.itsukiTune = { skill: 0.7 };
-  const soft = atk => Object.assign({}, atk, { dmg: Math.max(1, Math.round(atk.dmg * IT.skill)) });
+  const IT = SW.itsukiTune = { skill: 0.7, all: 0.7 };
+  const soft = (atk, k) => Object.assign({}, atk, { dmg: Math.max(1, Math.round(atk.dmg * (k === undefined ? IT.skill : k))) });
   // a skill hit: an energy hit, not during his ultimate, and not the element burst his J swings and W+J carry (that one is
   // an energy hit too, landing on the same frame as the blade: it belongs to his melee, which stays as it was)
   const isSkill = (atk, p) => !!(atk && atk.energy && atk.dmg > 0 && p && p.state !== 'ult' && p.state !== 'attack' && p.state !== 'airatk');
@@ -18,7 +21,10 @@
   const _th = P.takeHit;
   P.takeHit = function (atk, g) {
     const gg = g || this.G, a = gg && gg.scene === 'vs' && V && V.f && V.f.length === 2 ? V.f.find(f => f.p !== this) : null;
-    if (IT.skill !== 1 && gg && gg.scene === 'vs' && a && a.hero === 'itsuki' && a.p !== this && isSkill(atk, a.p)) return _th.apply(this, [soft(atk)].concat([].slice.call(arguments, 1)));
+    if (gg && gg.scene === 'vs' && a && a.hero === 'itsuki' && a.p !== this && atk && atk.dmg > 0) {
+      const k = (isSkill(atk, a.p) ? IT.skill : 1) * (V.mode !== 'duel' ? IT.all : 1);
+      if (k !== 1) return _th.apply(this, [soft(atk, k)].concat([].slice.call(arguments, 1)));
+    }
     return _th.apply(this, arguments);
   };
   // the story: Itsuki is the hero, and an enemy is being hit
