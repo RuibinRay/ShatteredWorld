@@ -19,6 +19,8 @@
   const txt = (ctx, s, x, y, c, o) => SW.text(ctx, s, x, y, c, o);
   const sfx = n => { try { SW.audio.sfx(n); } catch (e) { /* no audio yet */ } };
   const zname = z => (SW.zones[z] ? SW.zones[z].name : z);
+  const tr = s => (SW.i18n && SW.i18n.tr ? SW.i18n.tr(s) : s);
+  const fill = (s, ...a) => a.reduce((o, v, i) => o.split('{' + i + '}').join(v), s);   // a pattern, filled after it is translated
 
   // the places of each layer, west to east (roughly as the world lies)
   const BANDS = [
@@ -127,7 +129,7 @@
       ctx.globalAlpha = a;
       if (it.id === 'crown') art.ring(ctx, '#ffffff', it.node.x, it.node.y + 4, 13); else { art.rect(ctx, '#ffffff', it.x - 8, it.y - 2, 17, 1); art.rect(ctx, '#ffffff', it.x - 8, it.y + 16, 17, 1); art.rect(ctx, '#ffffff', it.x - 8, it.y - 2, 1, 19); art.rect(ctx, '#ffffff', it.x + 8, it.y - 2, 1, 19); }
       ctx.globalAlpha = 1;
-      const lbl = it.id === 'crown' ? 'The Crater' : zname(it.zone), lx = Math.max(6 + SW.textW(lbl) / 2, Math.min(W - 6 - SW.textW(lbl) / 2, it.node.x));
+      const lbl = SG.placeName ? SG.placeName(it.id === 'crown' ? 'crater' : it.zone) : it.id === 'crown' ? 'The Crater' : zname(it.zone), lx = Math.max(6 + SW.textW(lbl) / 2, Math.min(W - 6 - SW.textW(lbl) / 2, it.node.x));
       art.rect(ctx, '#05060c', Math.round(lx - SW.textW(lbl) / 2 - 2), it.node.y + 17, SW.textW(lbl) + 4, 10);
       txt(ctx, lbl, lx, it.node.y + 18, '#ffffff', { align: 'center' });
     }
@@ -140,7 +142,7 @@
     if (!live) {
       const z = SG.chap ? SG.chap(G.state.hero, Math.min(SG.LAST || 7, sg.ch)).zone : null;
       txt(ctx, sg.phase === 'end' ? 'The map opens for travel when the ending card is closed.' : sg.ch < 6 ? 'The map opens for travel once the Convergence has fallen and Vael has come.' : 'The finale is under way at the Crater.', 14, y + 6, '#e8ecf4');
-      if (z && sg.phase !== 'end') txt(ctx, 'The story goes on in: ' + zname(z), 14, y + 20, '#22d3ee');
+      if (z && sg.phase !== 'end') txt(ctx, fill(tr('The story goes on in: {0}'), SG.placeName ? SG.placeName(z) : zname(z)), 14, y + 20, '#22d3ee', { raw: true });
       txt(ctx, 'M / Esc: close', W - 14, y + 36, '#8a92b8', { align: 'right' });
       return;
     }
@@ -157,8 +159,8 @@
     const id = it.id, h = HR[id], st = Rs.status(id), X = Rs.text(id);
     ui.panel(ctx, 10, y + 4, 40, 40, h.color, 0.9); miniFace(ctx, id, 11, y + 5, 38);
     txt(ctx, h.name.toUpperCase(), 56, y + 4, h.color);
-    txt(ctx, (X.title ? X.title + '  -  ' : '') + zname(it.zone), 56 + SW.textW(h.name.toUpperCase()) + 8, y + 4, '#8a92b8', { raw: true });
-    const line = st === 'rescued' ? 'Rescued. In the muster.' : st === 'here' ? 'You are on your way: ' + Rs.kindLine(id) : Rs.kindLine(id);
+    txt(ctx, (X.title ? tr(X.title) + '  -  ' : '') + (SG.placeName ? SG.placeName(it.zone) : tr(zname(it.zone))), 56 + SW.textW(h.name.toUpperCase()) + 8, y + 4, '#8a92b8', { raw: true });
+    const line = st === 'rescued' ? tr('Rescued. In the muster.') : st === 'here' ? fill(tr('You are on your way: {0}'), Rs.kindLine(id)) : Rs.kindLine(id);
     txt(ctx, line, 56, y + 15, MARK[st] || '#ffffff', { raw: true });
     if (X.place) SW.wrap(X.place, 400).slice(0, 2).forEach((l, i) => txt(ctx, l, 56, y + 26 + i * 10, '#c8ccd8', { raw: true }));
     txt(ctx, st === 'rescued' ? 'M: close' : 'J: travel', W - 14, y + 4, st === 'rescued' ? '#8a92b8' : '#22d3ee', { align: 'right' });

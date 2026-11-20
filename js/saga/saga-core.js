@@ -614,9 +614,11 @@
     art.glow(ctx, W / 2, 70, 120, '#b48cff', 0.12 + 0.04 * Math.sin(SW.frame * 0.05));
     txt(ctx, A.over || 'THE CONVERGENCE HAS FALLEN', W / 2, 20, '#8a92b8', { align: 'center' });
     txt(ctx, A.title || 'VAEL ARRIVES', W / 2, 34, '#e8d8ff', { align: 'center', scale: 3 });
-    let y = 72; (A.paras || []).forEach(p => { SW.wrap(fillIn(p, me), 410).forEach(l => { txt(ctx, l, W / 2, y, '#e8ecf4', { align: 'center', raw: true }); y += 11; }); y += 4; });
-    txt(ctx, A.under || 'THE RESCUE BEGINS', W / 2, y + 6, '#b48cff', { align: 'center', scale: 2 });
-    if (SW.frame % 40 < 26) txt(ctx, 'J / Enter: keep going', W / 2, 254, '#8a92b8', { align: 'center' });
+    // (Spanish runs longer: the paragraphs close up and the title stays clear of the key hint at the bottom)
+    const rows = (A.paras || []).map(p => SW.wrap(fillIn(p, me), 430)), n = rows.reduce((a, r) => a + r.length, 0), gap = 72 + n * 11 + rows.length * 4 > 228 ? 1 : 4;
+    let y = 66; rows.forEach(r => { r.forEach(l => { txt(ctx, l, W / 2, y, '#e8ecf4', { align: 'center', raw: true }); y += 11; }); y += gap; });
+    txt(ctx, A.under || 'THE RESCUE BEGINS', W / 2, Math.min(y + 4, 236), '#b48cff', { align: 'center', scale: 2 });
+    if (SW.frame % 40 < 26) txt(ctx, 'J / Enter: keep going', W / 2, 258, '#8a92b8', { align: 'center' });
   }
 
   // ================= Esc: the pause screen =================

@@ -53,11 +53,18 @@
   const perLayer = () => { const d = res().done, o = { sky: 0, land: 0, deep: 0 }; others().forEach(id => { if (d[id]) o[realmOf(id)]++; }); return o; };
   const ready = () => { const p = perLayer(); return count() >= NEED && p.sky >= PER && p.land >= PER && p.deep >= PER; };
   const muster = () => others().filter(id => res().done[id]);
+  // (said on the map: translated as a pattern, then the name goes in; js/saga/lang-camp-*.js)
+  const tr = s => (SW.i18n && SW.i18n.tr ? SW.i18n.tr(s) : s);
+  const fill = (s, ...a) => a.reduce((o, v, i) => o.split('{' + i + '}').join(v), s);
+  const tnm = id => tr(nm(id));
+  // a place as the translated scenes name it (js/saga/lang-camp-*.js: SG.zoneNames), or its English name
+  const placeName = z => { const l = SW.i18n && SW.i18n.lang, t = l && SG.zoneNames && SG.zoneNames[l]; return (t && t[z]) || tr(SW.zones[z] ? SW.zones[z].name : z); };
+  SG.placeName = placeName;
   const KIND_LINE = {
-    called: id => 'Under the Call. Beat ' + nm(id) + ' in a duel to break the crown.',
-    champion: id => 'Holding out against ' + nm(plan(id).foe) + '. Duel the champion together.',
-    legion: id => 'Holding out against the Legion. Fight three waves together.',
-    walker: id => 'A Siege Walker is coming. Bring it down together.'
+    called: id => fill(tr('Under the Call. Beat {0} in a duel to break the crown.'), tnm(id)),
+    champion: id => fill(tr('Holding out against {0}. Duel the champion together.'), tnm(plan(id).foe)),
+    legion: () => tr('Holding out against the Legion. Fight three waves together.'),
+    walker: () => tr('A Siege Walker is coming. Bring it down together.')
   };
   const status = id => (res().done[id] ? 'rescued' : res().cur === id ? 'here' : plan(id).kind);
 
@@ -66,7 +73,7 @@
     const m = D.missions.SG6; if (!m) return;
     const id = res().cur, n = count(), p = perLayer();
     let t;
-    if (id) t = 'Rescue ' + nm(id) + ' at ' + (SW.zones[plan(id).zone] || {}).name;
+    if (id) t = fill(tr('Rescue {0} at {1}'), tnm(id), placeName(plan(id).zone));
     else if (ready()) t = 'Storm the Crown (M: map), or rescue more (' + n + '/' + total() + ')';
     else t = 'Rescue heroes: ' + n + '/' + NEED + ', 2 per layer (M: map)';
     m.steps[0].t = t;
@@ -109,7 +116,7 @@
       const n = art.frames(h.sheet, anim), fr = this.act ? Math.min(n - 1, this.act.t >> 2) : Math.floor(this.t / 8) % n;
       art.glow(ctx, this.x - cam.x, this.y - cam.y - 18, 18, h.color, 0.18);
       art.draw(ctx, h.sheet, anim, fr, this.x - cam.x, this.y - cam.y, this.face < 0);
-      SW.text(ctx, h.name, this.x - cam.x, this.y - cam.y - 52, h.colorHi || '#ffffff', { align: 'center', raw: true });
+      SW.text(ctx, h.name, this.x - cam.x, this.y - cam.y - 52, h.colorHi || '#ffffff', { align: 'center' });
     }
   }
   let ally = null;
@@ -127,7 +134,7 @@
     const r = res(), id = r.cur; goalLine();
     if (!id) return;
     const P = plan(id), s = r.st;
-    if (z.id !== P.zone) { G.toast(nm(id) + ' is waiting at ' + SW.zones[P.zone].name + '  (M: travel map)', '#b48cff'); return; }
+    if (z.id !== P.zone) { G.toast(fill(tr('{0} is waiting at {1}  (M: travel map)'), tnm(id), placeName(P.zone)), '#b48cff'); return; }
     if (P.kind !== 'called' && s.intro) ensureAlly(z, id);
     if (s.waves && (P.kind === 'called' || P.kind === 'champion')) placeTarget(z, id);
   }

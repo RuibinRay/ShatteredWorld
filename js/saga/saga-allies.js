@@ -47,7 +47,7 @@
       const a = this.t < 52 ? 1 : Math.max(0, 1 - (this.t - 52) / 12), anim = this.t < 16 ? 'air' : 'special', fr = this.t < 16 ? 0 : Math.min(3, (this.t - 16) >> 2);
       art.glow(ctx, this.x - cam.x, this.y - cam.y - 18, 22, h.color, 0.25 * a);
       art.draw(ctx, h.sheet, anim, fr, this.x - cam.x, this.y - cam.y, this.face < 0, { alpha: a });
-      if (!this.final && this.t > 10 && this.t < 52) SW.text(ctx, h.name.toUpperCase(), this.x - cam.x, this.y - cam.y - 46, h.colorHi || '#ffffff', { align: 'center', raw: true });
+      if (!this.final && this.t > 10 && this.t < 52) SW.text(ctx, h.name.toUpperCase(), this.x - cam.x, this.y - cam.y - 46, h.colorHi || '#ffffff', { align: 'center' });
     }
   }
   const A = SG.allies = { t: 0, turn: 0, all: false, boss: null };
@@ -132,7 +132,7 @@
         const al = a.t < 36 ? 1 : Math.max(0, 1 - (a.t - 36) / 12);
         art.glow(ctx, x, y - 18, 22, h.color, 0.25 * al);
         art.draw(ctx, h.sheet, a.t < 14 ? 'air' : 'special', a.t < 14 ? 0 : Math.min(3, (a.t - 14) >> 2), x, y, a.side > 0, { alpha: al });
-        if (a.t > 8 && a.t < 40) SW.text(ctx, h.name.toUpperCase(), x, y - 48, h.colorHi || '#ffffff', { align: 'center', raw: true });
+        if (a.t > 8 && a.t < 40) SW.text(ctx, h.name.toUpperCase(), x, y - 48, h.colorHi || '#ffffff', { align: 'center' });
       } catch (e) { console.error(e); }
       return out;
     };

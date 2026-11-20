@@ -45,7 +45,8 @@
     LOADED[lg] = 'loading';
     const sc = document.createElement('script');
     sc.src = 'js/saga/lang-' + lg + '.js';
-    sc.onload = () => { LOADED[lg] = 'done'; ensure(); };
+    // then the campaign's own text (2026-11-20: the Engine Core, Vael, the rescue scenes, the map, the finale)
+    sc.onload = () => { LOADED[lg] = 'done'; const c = document.createElement('script'); c.src = 'js/saga/lang-camp-' + lg + '.js'; document.body.appendChild(c); ensure(); };
     sc.onerror = () => { LOADED[lg] = 'missing'; };
     document.body.appendChild(sc);
   }
