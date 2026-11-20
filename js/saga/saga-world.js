@@ -74,20 +74,28 @@
       { basic: ['husk', 'glasshusk', 'elitedrone', 'husk'], tough: ['veilguard', 'veilenf', 'rootknot'], cap: ['eliteenf'] }
     ]
   };
-  SG.partOf = n => (n <= 3 ? 1 : n === 4 ? 2 : 3);
+  SG.partOf = n => (n <= 3 ? 1 : n <= 5 ? 2 : 3);   // 5: the Engine Core (Halcyon's last guard); 6-7: the Legion
   // the waves of a chapter: lists of [kind, n] ('basic' | 'tough' | 'cap')
   SG.WAVES = {
     1: [[['basic', 3]], [['basic', 3], ['tough', 1]]],
     2: [[['basic', 3], ['tough', 1]], [['basic', 2], ['tough', 1], ['cap', 1]]],
     4: [[['basic', 4]], [['basic', 3], ['tough', 2]], [['basic', 3], ['tough', 1], ['cap', 1]]],
-    5: [[['basic', 5], ['tough', 1]], [['basic', 5], ['tough', 2]], [['basic', 4], ['tough', 2], ['cap', 1]]],   // the big war: the Legion keeps coming
-    6: [[['basic', 5], ['tough', 2]], [['basic', 5], ['tough', 2], ['cap', 1]]]
+    5: [[['basic', 4], ['tough', 1]], [['basic', 3], ['tough', 2], ['cap', 1]]],   // the Engine Core: Halcyon's last guard, before the Convergence
+    7: [[['basic', 5], ['tough', 2]], [['basic', 5], ['tough', 2], ['cap', 1]]]     // the Crater: the Legion's host, before Itsuki
+  };
+  // the rescues (js/saga/saga-rescue.js), by kind: the guards around a Called hero, the wave before a champion, the
+  // three waves fought beside a hero, and the two before a Siege Walker
+  SG.RESCUE_WAVES = {
+    called: [[['basic', 3], ['tough', 1]]],
+    champion: [[['basic', 4], ['tough', 1]]],
+    legion: [[['basic', 4]], [['basic', 4], ['tough', 1]], [['basic', 3], ['tough', 2], ['cap', 1]]],
+    walker: [[['basic', 4]], [['basic', 3], ['tough', 2]]]
   };
 
   // ================= where a duel is fought =================
   // the area's own look (its theme) unless a Versus stage was built for that place
   SG.STAGE = { noble: 'sw_noble', skylift: 'sw_skylift', ballast: 'sw_ballast', glasssea: 'sw_glass', platform: 'sw_zero', enginecore: 'sw_engine',
-    tethers: 'sw_tether', heartroot: 'sw_roots', rootways: 'sw_roots', crater: 'vs_crater', spire: 'vs_spire', village: 'vs_clans', anchor: 'sw_tether' };
+    tethers: 'sw_tether', heartroot: 'sw_roots', rootways: 'sw_roots', crater: 'vs_crater', spire: 'vs_spire', village: 'vs_clans', anchor: 'sw_tether', tetherclimb: 'sw_tether' };
   SG.stageFor = function (zone) {
     const art = SW.art, s = SG.STAGE[zone] || (Z[zone] && Z[zone].theme);
     return s && art.themes[s] ? s : 'vs_crater';
