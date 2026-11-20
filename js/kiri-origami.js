@@ -227,8 +227,8 @@
     if (p.awakeT > 0 && !front) {   // a fan of paper blades behind her, like wings, turning slowly
       const fade = Math.min(1, p.awakeT / 30), cy = sy - 26, open = Math.min(1, (p.awakeMax ? (p.awakeMax - p.awakeT) : 30) / 14);
       for (let i = 0; i < 11; i++) {
-        const a = -PI / 2 + (i - 5) * 0.27 * open + Math.sin(p.t * 0.04) * 0.04, L = 44 - Math.abs(i - 5) * 3;
-        blade(ctx, sx + Math.cos(a) * L * 0.55, cy + Math.sin(a) * L * 0.55, L, a, fade * 0.95, 4);
+        const a = -PI / 2 + (i - 5) * 0.27 * open + Math.sin(p.t * 0.04) * 0.04, L = 20 - Math.abs(i - 5) * 1.5;   // small: a little fan at her back
+        blade(ctx, sx + Math.cos(a) * L * 0.6, cy + Math.sin(a) * L * 0.6, L, a, fade * 0.95, 2);
       }
     }
     if (p.modeT > 0) {   // paper scraps whip round her, two small cranes circle
@@ -250,7 +250,7 @@
     const a0 = this.awakeT || 0, r = _pu.apply(this, arguments);
     if (isK(g || this.G) && z && z.shots && !this.dead && this.awakeT > a0 + 60) {   // Thousand Folds: a storm of blades bursts outward
       const x = this.x, y = this.y - 24;
-      z.shots.push(new Vis(x, y, 16, (ctx, sx, sy, t) => { const k = t / 16; for (let i = 0; i < 12; i++) { const a = i / 12 * PI * 2 + 0.2; blade(ctx, sx + Math.cos(a) * (10 + k * 90), sy + Math.sin(a) * (10 + k * 90) * 0.7, 26, a, 1 - ease((k - 0.5) / 0.5), 3); } }));
+      z.shots.push(new Vis(x, y, 16, (ctx, sx, sy, t) => { const k = t / 16; for (let i = 0; i < 12; i++) { const a = i / 12 * PI * 2 + 0.2; blade(ctx, sx + Math.cos(a) * (8 + k * 46), sy + Math.sin(a) * (8 + k * 46) * 0.7, 16, a, 1 - ease((k - 0.5) / 0.5), 3); } }));
       scraps(x, y, 16, 3.5);
     }
     return r;

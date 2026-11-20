@@ -257,9 +257,8 @@
       const d = p.face, fade = Math.min(1, p.awakeT / 30), roar = Math.max(0, Math.sin(p.t * 0.045)) ** 8;
       ctx.save(); ctx.globalAlpha *= fade;
       // the neck comes up from behind his back shoulder; the head rides above and behind his own
-      const bx = sx - d * 16, by = top + 14;
-      for (let i = 5; i >= 0; i--) chunk(ctx, bx - d * (i % 2), by - (5 - i) * 5, 7 - i * 0.5, i + 70, i === 2 || i === 4, d);
-      head(ctx, bx - d * 2, top - 14 + Math.sin(p.t * 0.06) * 1.5, 30, d, { rot: -0.12 - roar * 0.3, jaw: 0.35 + 0.65 * roar, a: fade });
+      const bx = sx - d * 12;   // small: just its head at his shoulder (nothing big may stand behind a fighter)
+      head(ctx, bx, top + 2 + Math.sin(p.t * 0.06) * 1, 16, d, { rot: -0.12 - roar * 0.3, jaw: 0.35 + 0.65 * roar, a: fade });
       ctx.restore();
     }
   }
@@ -278,11 +277,11 @@
       if (this.awakeT > a0 + 60) {   // Titan Form: the dragon erupts behind him with a roar
         const d = this.face, x = this.x - d * 26, gy = this.y;
         for (let i = 0; i < 14; i++) part(x + rand(-14, 14), gy, i % 3 ? '#c8a878' : C.crack, rand(-2, 2), -rand(1.5, 5), 24, 3, 0.2);
-        z.shots.push(new Vis(x, gy, 48, (ctx, sx, sy, t) => {
-          const k = t / 48, rise = ease(t / 10) * (1 - ease((k - 0.7) / 0.3));
+        z.shots.push(new Vis(x, gy, 24, (ctx, sx, sy, t) => {
+          const k = t / 24, rise = ease(t / 10) * (1 - ease((k - 0.7) / 0.3));
           ctx.save(); ctx.beginPath(); ctx.rect(sx - 200, sy - 300, 400, 300); ctx.clip();
-          for (let i = 6; i >= 1; i--) chunk(ctx, sx - d * i * 3, sy + 10 - rise * (70 - i * 10), 14 - i, i + 90, i % 2 === 0, d);
-          head(ctx, sx + d * 4, sy + 10 - rise * 82, 66, d, { rot: -0.55, jaw: t < 8 ? t / 8 : t < 30 ? 1 : 0.4, a: 1 - ease((k - 0.8) / 0.2) });
+          for (let i = 6; i >= 1; i--) chunk(ctx, sx - d * i * 2, sy + 8 - rise * (38 - i * 5), 8 - i * 0.6, i + 90, i % 2 === 0, d);
+          head(ctx, sx + d * 3, sy + 8 - rise * 46, 34, d, { rot: -0.55, jaw: t < 5 ? t / 5 : 1, a: 1 - ease((k - 0.7) / 0.3) });   // small and short
           ctx.restore();
         }));
       } else if (this.modeT > m0 + 60) {   // Stoneskin: the plates come up out of the ground

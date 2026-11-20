@@ -221,7 +221,7 @@
     }
     if (p.awakeT > 0 && !front) {   // the storm-wolf stands behind him
       const fade = Math.min(1, p.awakeT / 30);
-      wolf(ctx, sx - d * 42, sy, 50, d, { sit: true, t: p.t, a: fade * 0.95, snarl: (p.t % 200) < 18 ? 1 : 0.2, howl: (p.t % 400) < 30, arcs: 3 });
+      if (!(p.modeT > 0)) wolf(ctx, sx - d * 22, sy, 20, d, Math.abs(p.vx) > 0.5 ? { run: (p.t % 10) / 10, t: p.t, a: fade } : { sit: true, t: p.t, a: fade, snarl: (p.t % 200) < 18 ? 1 : 0.2, howl: (p.t % 400) < 30 });   // small, at his heel
     }
   }
   const _pd = P.draw;
@@ -236,9 +236,9 @@
   P.update = function (g, z) {
     const a0 = this.awakeT || 0, r = _pu.apply(this, arguments);
     if (isF(g || this.G) && z && z.shots && !this.dead && this.awakeT > a0 + 60) {   // Storm Pelt: the wolf comes down in a lightning strike
-      const d = this.face, x = this.x - d * 42, y = this.y;
+      const d = this.face, x = this.x - d * 22, y = this.y;
       fx.bolt(x, y - 200, x, y - 10, '#ffffff'); fx.bolt(x + 4, y - 180, x - 2, y - 20, '#a78bfa');
-      z.shots.push(new Vis(x, y, 26, (ctx, sx, sy, t) => wolf(ctx, sx, sy, 50 + (1 - ease(t / 10)) * 30, d, { sit: true, howl: true, t, a: ease(t / 4), arcs: 4 })));
+      z.shots.push(new Vis(x, y, 16, (ctx, sx, sy, t) => wolf(ctx, sx, sy, 22 + (1 - ease(t / 8)) * 14, d, { sit: true, howl: true, t, a: ease(t / 4), arcs: 4 })));
     }
     return r;
   };

@@ -166,10 +166,14 @@
     if (cfg.weapon) {
       const W = WEAPONS[cfg.weapon], a = AF[4] + (p.wp === undefined ? 30 : p.wp) * R, len = W.len * sc;
       const wx = ax + AF[2], wy = ay + AF[3], ex = wx + Math.sin(a) * len, ey = wy + Math.cos(a) * len, ww = Math.max(2, Math.round(W.w * sc));
-      pline(x, W.col, wx, wy, ex, ey, ww);
-      if (W.hi) pline(x, W.hi, wx + Math.sin(a) * len * 0.25, wy + Math.cos(a) * len * 0.25, ex, ey, 1);
-      if (W.tip) rect(x, W.tip, ex - ww / 2, ey - ww / 2, ww, ww);
-      rect(x, W.hilt, wx - 1.5 * sc, wy - 1.5 * sc, 3 * sc, 3 * sc);
+      const WD = art.WEAPON_DRAW && art.WEAPON_DRAW[cfg.weapon];   // a weapon with a shape of its own (js/weapon-looks.js)
+      if (WD) WD(x, wx, wy, a, len, sc, W, { rect, pline, disc });
+      else {
+        pline(x, W.col, wx, wy, ex, ey, ww);
+        if (W.hi) pline(x, W.hi, wx + Math.sin(a) * len * 0.25, wy + Math.cos(a) * len * 0.25, ex, ey, 1);
+        if (W.tip) rect(x, W.tip, ex - ww / 2, ey - ww / 2, ww, ww);
+        rect(x, W.hilt, wx - 1.5 * sc, wy - 1.5 * sc, 3 * sc, 3 * sc);
+      }
     }
     drawArm(ax, ay, AF, false);
     if (cfg.shield) { rect(x, C.shield || '#6fd3e8', sx + 6 * sc, sy - 3 * sc, 3 * sc, 18 * sc); rect(x, '#e8fbff', sx + 6 * sc, sy - 3 * sc, 1, 18 * sc); }

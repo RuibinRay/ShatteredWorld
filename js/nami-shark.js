@@ -294,7 +294,7 @@
     }
     if (p.awakeT > 0) {   // a shark circles her waist
       const a = p.t * 0.07 + 1.3, sn = Math.sin(a), fade = Math.min(1, p.awakeT / 30);
-      if ((sn >= 0) === front) shark(ctx, sx + Math.cos(a) * 30, sy - 24 + sn * 4, 30, -sn >= 0 ? 1 : -1, { t: p.t, beat: 0.6, jaw: Math.pow(Math.max(0, Math.sin(p.t * 0.11)), 6), a: (front ? 0.95 : 0.7) * fade, rot: Math.cos(a) * 0.12 });
+      if ((sn >= 0) === front) shark(ctx, sx + Math.cos(a) * 20, sy - 22 + sn * 3, 18, -sn >= 0 ? 1 : -1, { t: p.t, beat: 0.6, jaw: Math.pow(Math.max(0, Math.sin(p.t * 0.11)), 6), a: (front ? 0.95 : 0.7) * fade, rot: Math.cos(a) * 0.12 });
     }
   }
   const _pu = P.update;
@@ -303,7 +303,7 @@
     if (isNami(g || this.G) && z && z.shots && !this.dead) {
       const big = this.awakeT > a0 + 60, mid = !big && this.modeT > m0 + 60;
       if (big || mid) {
-        const L = big ? 104 : 56, dir = this.face, x = this.x - dir * (big ? 26 : 30), gy = this.y, life = big ? 46 : 34;
+        const L = big ? 46 : 34, dir = this.face, x = this.x - dir * 24, gy = this.y, life = big ? 26 : 24;   // small and short: it must not block the view
         splash(x, gy, big ? 18 : 10, big ? 5.5 : 4);
         z.shots.push(new Vis(x, gy, life, (ctx, sx, sy, t) => breach(ctx, sx, sy, L, dir, t / life, big ? 0.85 : 0.9), v => { if (v.t === life - 8) splash(v.x, v.y, big ? 14 : 8, 3); }));
       }

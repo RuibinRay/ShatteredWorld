@@ -350,12 +350,12 @@
     if (front) return;
     if (p.awakeT > 0) {   // the chimera stands over him
       const fade = Math.min(1, p.awakeT / 30), roar = (p.t % 260) < 24 ? 1 : 0.35;
-      chimera(ctx, sx - d * 34, sy, 78, d, { roar, t: p.t, a: 0.9 * fade });
+      tigerHead(ctx, sx - d * 20, top + 4, 26, d, { armor: true, roar, t: p.t, a: 0.85 * fade });   // small: only its head by his shoulder
     } else if (p.modeT > 0) {   // the head of his current beast looms behind him
       const fade = Math.min(1, p.modeT / 30), f = p.form || 'tiger', br = Math.sin(p.t * 0.07) * 2;
-      if (f === 'eagle') eagle(ctx, sx - d * 16, top - 4 + br, 34, d, { wing: 0.85, scream: (p.t % 120) < 16, t: p.t, a: 0.8 * fade });
-      else if (f === 'tortoise') shell(ctx, sx - d * 4, sy - 22 + br * 0.5, 26, { rot: p.t * 0.03, t: p.t, a: 0.6 * fade });
-      else tigerHead(ctx, sx - d * 34, top + 2 + br, 64, d, { roar: (p.t % 120) < 18 ? 1 : 0.3, t: p.t, a: 0.85 * fade });
+      if (f === 'eagle') eagle(ctx, sx - d * 10, top - 2 + br, 16, d, { wing: 0.85, scream: (p.t % 120) < 16, t: p.t, a: 0.8 * fade });
+      else if (f === 'tortoise') shell(ctx, sx - d * 14, top + 4 + br * 0.5, 7, { rot: p.t * 0.03, t: p.t, a: 0.6 * fade });
+      else tigerHead(ctx, sx - d * 20, top + 4 + br, 26, d, { roar: (p.t % 120) < 18 ? 1 : 0.3, t: p.t, a: 0.85 * fade });
     }
   }
   const _pd = P.draw;
@@ -369,10 +369,9 @@
     const a0 = this.awakeT || 0, r = _pu.apply(this, arguments);
     if (isK(g || this.G) && z && z.shots && !this.dead && this.awakeT > a0 + 60) {   // Chimera: it erupts behind him, roaring
       const d = this.face, p = this;
-      ride(p, z, 26, (ctx, sx, sy, t) => {
-        const ik = t / 5, k = t / 26;
-        PX.impact(ctx, sx - d * 20, sy - 40, ik, 9);
-        chimera(ctx, sx - d * 34, sy, 78 + (1 - ease(t / 8)) * 40, d, { roar: 1, t, wing: 0.95, mono: ik < 0.5 ? '#ffffff' : undefined, a: 1 - ease((k - 0.8) / 0.2) });
+      ride(p, z, 16, (ctx, sx, sy, t) => {   // short and small: a flash of the chimera, then it is gone
+        const k = t / 16;
+        chimera(ctx, sx - d * 26, sy, 40 + (1 - ease(t / 6)) * 14, d, { roar: 1, t, wing: 0.95, mono: t < 3 ? '#ffffff' : undefined, a: 1 - ease((k - 0.6) / 0.4) });
       });
     }
     return r;

@@ -276,6 +276,54 @@
     };
   }
 
+  // ================= the great ice bird seen from the front (Glacier Form and Absolute Zero) =================
+  // Wings spread wide like a crest: a faceted crystal body, a horned head with two burning eyes, wings of long icicle
+  // feathers, tail plumes hanging and waving. (0, 0) its chest; s half its wingspan; o = { open 0-1, t, glare }
+  function greatVec(c, s, o) {
+    const open = clamp01(o.open === undefined ? 1 : o.open), t = o.t || 0, br = Math.sin(t * 0.07) * 0.04;
+    for (let i = 0; i < 5; i++) {   // the tail plumes, behind everything
+      const side = (i - 2) * 0.13, len = s * (0.95 - Math.abs(i - 2) * 0.13), pts = [];
+      for (let k = 0; k <= 8; k++) { const u = k / 8; pts.push([s * side * (0.4 + u * 1.6) + Math.sin(t * 0.18 - u * 3.5 + i) * s * 0.05 * u, s * 0.12 + u * len]); }
+      const top = [], bot = []; pts.forEach((q, k) => { const w = s * 0.05 * (1 - (k / 8) * 0.8); top.push([q[0] - w, q[1]]); bot.unshift([q[0] + w, q[1]]); });
+      poly(c, top.concat(bot), i % 2 ? K.m : K.l); poly(c, top.concat(pts.slice().reverse()), i % 2 ? K.l : K.l2);
+      const e = pts[8]; icicle(c, e[0], e[1], PI / 2 + side, s * 0.14, s * 0.03, K.hi, null);
+    }
+    for (const d of [-1, 1]) {   // the wings
+      const sx = d * s * 0.09, sy = -s * 0.1, wx = d * s * (0.2 + 0.26 * open), wy = -s * (0.18 + 0.3 * open + br);
+      poly(c, [[sx, sy - s * 0.06], [wx, wy], [wx - d * s * 0.02, wy + s * 0.14], [sx, sy + s * 0.14]], K.m);
+      poly(c, [[sx, sy - s * 0.06], [wx, wy], [wx - d * s * 0.04, wy + s * 0.06], [sx, sy + s * 0.02]], K.l2);
+      for (let i = 0; i < 8; i++) {   // primaries: a fan of long blades from the wrist: up, out, then down
+        const u = i / 7, ang = -PI / 2 - 0.25 + u * 2.0 * (0.35 + 0.65 * open), len = s * (0.62 - Math.abs(u - 0.35) * 0.3);
+        icicle(c, wx, wy, d > 0 ? ang : PI - ang, len, s * 0.04, i % 2 ? K.l2 : K.m, i % 2 ? null : K.hi);
+      }
+      for (let i = 0; i < 5; i++) { const u = (i + 0.5) / 5, px = sx + (wx - sx) * u, py = sy + (wy - sy) * u + s * 0.08, ang = PI / 2 - 0.5 + u * 0.5; icicle(c, px, py, d > 0 ? ang : PI - ang, s * (0.26 + u * 0.14), s * 0.045, i % 2 ? K.m : K.l, null); }   // secondaries hang from the arm
+      c.strokeStyle = K.w; c.lineWidth = Math.max(1, s * 0.03); c.beginPath(); c.moveTo(sx, sy - s * 0.06); c.lineTo(wx, wy); c.stroke();
+    }
+    // the body: a tall faceted crystal
+    const T0 = [0, -s * 0.3], L0 = [-s * 0.13, -s * 0.04], R0 = [s * 0.13, -s * 0.04], B0 = [0, s * 0.3], M0 = [0, -s * 0.06];
+    tri(c, T0, L0, M0, K.l2); tri(c, T0, R0, M0, K.hi); tri(c, L0, B0, M0, K.m); tri(c, R0, B0, M0, K.l);
+    tri(c, T0, [s * 0.05, -s * 0.16], M0, K.w);
+    // the head: a wedge with a crest of spikes, a hooked beak, two slanted burning eyes
+    const hy = -s * 0.4;
+    for (let i = -2; i <= 2; i++) icicle(c, i * s * 0.035, hy - s * 0.06, -PI / 2 + i * 0.3, s * (0.24 - Math.abs(i) * 0.05), s * 0.025, i % 2 ? K.l2 : K.hi, null);
+    poly(c, [[-s * 0.1, hy - s * 0.06], [s * 0.1, hy - s * 0.06], [s * 0.07, hy + s * 0.06], [0, hy + s * 0.16], [-s * 0.07, hy + s * 0.06]], K.l2);
+    poly(c, [[-s * 0.1, hy - s * 0.06], [0, hy - s * 0.02], [0, hy + s * 0.16], [-s * 0.07, hy + s * 0.06]], K.l);
+    poly(c, [[-s * 0.025, hy + s * 0.04], [s * 0.025, hy + s * 0.04], [0, hy + s * 0.17]], K.w);   // the beak
+    const eye = o.glare ? K.w : K.cy;
+    poly(c, [[-s * 0.085, hy - s * 0.035], [-s * 0.02, hy + s * 0.005], [-s * 0.07, hy + s * 0.012]], K.d0); poly(c, [[s * 0.085, hy - s * 0.035], [s * 0.02, hy + s * 0.005], [s * 0.07, hy + s * 0.012]], K.d0);
+    poly(c, [[-s * 0.075, hy - s * 0.022], [-s * 0.03, hy + s * 0.004], [-s * 0.065, hy + s * 0.006]], eye); poly(c, [[s * 0.075, hy - s * 0.022], [s * 0.03, hy + s * 0.004], [s * 0.065, hy + s * 0.006]], eye);
+  }
+  function great(ctx, x, y, s, o) {
+    o = o || {};
+    PX.sprite(ctx, x, y + s * 0.2, s * 2.7, s * 2.9, c => { c.translate(0, -s * 0.2); greatVec(c, s, o); }, { pal: CPAL, alpha: o.a, mono: o.mono });
+  }
+  IF.great = great;
+  // a burst of ice spikes out of (x, y): k 0 -> 1
+  function spikes(ctx, x, y, R, k, n) {
+    const grow = ease(k * 3), a = 1 - ease((k - 0.6) / 0.4);
+    PX.sprite(ctx, x, y, R * 2.4, R * 2.4, c => { for (let i = 0; i < (n || 10); i++) { const ang = i / (n || 10) * PI * 2 + 0.2; icicle(c, 0, 0, ang, R * grow * (i % 2 ? 0.7 : 1), R * 0.09, i % 2 ? K.l2 : K.l, i % 2 ? null : K.w); } }, { pal: CPAL, alpha: a });
+  }
+
   // ================= S+O and O: Whiteout and Glacier Form =================
   function aura(ctx, p, sx, sy, front) {
     const top = sy - (p.h || 34), d = p.face;
@@ -288,9 +336,9 @@
         if (!p.awakeT) falcon(ctx, sx - d * 5, top + 2, 16, d, { perch: true, a: fade });   // the falcon on her shoulder
       }
     }
-    if (p.awakeT > 0 && !front) {   // the great raptor perched behind her, wings half open
-      const fade = Math.min(1, p.awakeT / 30), breathe = Math.sin(p.t * 0.05) * 0.15;
-      falcon(ctx, sx - d * 18, top - 6 + Math.round(breathe * 4), 44, d, { flap: (p.t % 240) < 16 ? 1 : 0, perch: true, scream: (p.t % 240) < 16, a: fade, glow: 0.08 });
+    if (p.awakeT > 0 && front) {   // awakened: the falcon rides her shoulder
+      const fade = Math.min(1, p.awakeT / 30), open = Math.min(1, ((p.awakeMax || 900) - p.awakeT) / 14);
+      falcon(ctx, sx - d * 5, top + 2, 16, d, { perch: true, a: fade }); void open;   // small: only the falcon on her shoulder (the user: nothing big behind a fighter, it blocks the view)
     }
   }
   const _pd = P.draw;
@@ -304,11 +352,10 @@
   const _pu = P.update;
   P.update = function (g, z) {
     const a0 = this.awakeT || 0, r = _pu.apply(this, arguments);
-    if (isI(g || this.G) && z && z.shots && !this.dead && this.awakeT > a0 + 60) {   // Glacier Form: the raptor lands with its wings flared
-      const d = this.face, x = this.x, y = this.y;
-      const v = new Vis(x, y, 30, (ctx, sx, sy, t) => { const k = ease(t / 20); falcon(ctx, sx - d * (18 + 100 * (1 - k)), sy - 40 - 90 * (1 - k), 56, d, { flare: true, scream: t > 14, a: 1 - ease((t - 24) / 6) }); });
-      z.shots.push(v);
-      for (let i = 0; i < 16; i++) part(x + rand(-30, 30), y - rand(20, 70), i % 2 ? '#f4fbff' : '#93cdef', rand(-1, 1), rand(-0.5, 1), 26, 2);
+    if (isI(g || this.G) && z && z.shots && !this.dead && this.awakeT > a0 + 60) {   // Glacier Form: ice bursts out as its wings snap open
+      const x = this.x, y = this.y - 30;
+      z.shots.push(new Vis(x, y, 16, (ctx, sx, sy, t) => spikes(ctx, sx, sy, 34, t / 16, 10)));
+      for (let i = 0; i < 16; i++) part(x + rand(-30, 30), y - rand(0, 50), i % 2 ? '#ffffff' : '#86d4f6', rand(-2, 2), rand(-2, 1), 26, 2);
     }
     return r;
   };
@@ -319,10 +366,9 @@
     const r = _uf.apply(this, arguments);
     if (!isI(g)) return r;
     if (p.st === 10) {
-      const dir = p.face;
-      const wide = new Vis(p.x, p.y, 40, (ctx, sx, sy, t) => {   // it spreads its wings over the whole arena and screams
-        const k = ease(t / 10), a = 1 - ease((t - 30) / 10);
-        falcon(ctx, sx - dir * 34, sy - 74 + 14 * (1 - k), 120, dir, { flare: true, scream: t > 6 && t < 24, a: a * 0.92, glow: 0.1 });   // behind her, wings over the arena
+      const wide = new Vis(p.x, p.y, 44, (ctx, sx, sy, t) => {   // the great bird rises behind her and spreads its wings over the arena
+        const k = ease(t / 12), a = 1 - ease((t - 34) / 10);
+        great(ctx, sx, sy - 50 + 40 * (1 - k), 120, { open: k, t, a: a * 0.95, glare: t > 10 && t < 22 });
       });
       wide._ugS = 1; z.shots.push(wide);
       const T = foes.filter(e => e && !e.dead).sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
@@ -330,19 +376,22 @@
     }
     return r;
   };
-  // the cinematic finish (js/ult-cinema.js: the camera pushes in on the target from st 72, the blow at st 100)
+  // the cinematic finish (js/ult-cinema.js: the camera pushes in on the target from st 72, the blow at st 100): the great
+  // bird rises behind the target, its wings opening; on the blow they close on it and the cold bursts out in spikes
   function finale(p, z, T) {
-    const FIN = SW.ultCinema.FIN || 100, dir = T.x >= p.x ? 1 : -1;
+    const FIN = SW.ultCinema.FIN || 100;
     const v = new Vis(T.x, T.y, 400, (ctx, sx, sy) => {
-      const st = p.st; if (p.state !== 'ult' || st < 74 || st > FIN + 14) return;
-      const cy = sy - 18;
-      if (st < FIN - 6) {   // the head fills the view above the target: the eye opens, the beak screams
-        const k = ease((st - 74) / 8);
-        falcon(ctx, sx - dir * 86, cy - 7 + 30 * (1 - k), 150, dir, { flare: true, scream: st > 84, a: k, glow: 0.12 });   // its eye lands just above and behind the target, inside the pushed-in view
-      } else {   // the stoop: wings folded, straight through the target
-        const k = (st - (FIN - 6)) / 20;
-        falcon(ctx, sx - dir * 80 + dir * 200 * k, cy - 90 + 180 * k, 90, dir, { fold: 1, rot: 0.75, a: 1 - ease((st - FIN - 6) / 8), glow: 0.15 });
-        if (st === FIN) for (let i = 0; i < 20; i++) part(T.x + rand(-20, 20), T.y - rand(4, 40), i % 2 ? '#f4fbff' : '#93cdef', rand(-3, 3), -rand(0, 4), 24, 2, 0.1);
+      const st = p.st; if (p.state !== 'ult' || st < 74 || st > FIN + 16) return;
+      const cy = sy - 20;
+      if (st < FIN) {
+        const k = ease((st - 74) / 12), sh = st > FIN - 10 ? Math.sin(st * 2.3) * 1.2 : 0;
+        great(ctx, sx + sh, cy - 16 + 50 * (1 - k), 84, { open: k, t: st, a: k, glare: st > FIN - 12 });
+      } else {
+        const k = (st - FIN) / 16, ik = (st - FIN) / 5;
+        PX.impact(ctx, sx, cy, ik, 41);
+        great(ctx, sx, cy - 16, 84, { open: 1 - ease(k * 4) * 0.85, t: st, a: 1 - ease((k - 0.5) / 0.5), glare: true, mono: ik < 0.5 ? '#ffffff' : undefined });
+        spikes(ctx, sx, cy, 80, k, 12);
+        if (st === FIN) for (let i = 0; i < 24; i++) part(T.x + rand(-20, 20), T.y - rand(4, 40), i % 2 ? '#ffffff' : '#86d4f6', rand(-4, 4), -rand(0, 4), 24, 2, 0.1);
       }
     }, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
     v._ugS = 1; z.shots.push(v);

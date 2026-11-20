@@ -391,7 +391,7 @@
     }
     if (p.awakeT > 0 && front) {   // the white crane circles over him
       const fade = Math.min(1, p.awakeT / 30), a = p.t * 0.05, top = sy - (p.h || 34);
-      bird(ctx, sx + Math.cos(a) * 26, top - 16 + Math.sin(a) * 5, 30, -Math.sin(a) >= 0 ? 1 : -1, { crane: true, t: p.t, beat: 0.25, a: fade * (Math.sin(a) >= 0 ? 1 : 0.75) });
+      bird(ctx, sx + Math.cos(a) * 20, top - 12 + Math.sin(a) * 4, 18, -Math.sin(a) >= 0 ? 1 : -1, { crane: true, t: p.t, beat: 0.25, a: fade * (Math.sin(a) >= 0 ? 1 : 0.75) });
     }
   }
   const _pd = P.draw;
@@ -409,7 +409,7 @@
       const d = this.face, x = this.x, y = this.y;
       z.shots.push(new Vis(x, y, 40, (ctx, sx, sy, t) => {
         const k = ease(t / 40), bx = sx + d * (120 - 120 * k), by = sy - 140 + 90 * k;
-        bird(ctx, bx, by, 64 - 30 * k, -d, { crane: true, t, beat: 0.3, a: 1 - ease((t - 32) / 8) });
+        bird(ctx, bx, by, 34 - 16 * k, -d, { crane: true, t, beat: 0.3, a: 1 - ease((t - 32) / 8) });
       }));
       for (let i = 0; i < 12; i++) part(x + rand(-20, 20), y - rand(30, 60), '#f4f4ee', rand(-0.6, 0.6), rand(0.3, 1), 30, 2);   // feathers
     }
