@@ -70,7 +70,7 @@
     if (id === 'touch' && (d || I.ok())) {
       const opts = SW.touch.phone && SW.touch.phone() ? TOUCH.filter(t => t[0] !== 'off') : TOUCH;   // no Off on a phone: it would leave no way back here
       const i = Math.max(0, opts.findIndex(t => t[0] === SW.touch.mode)), m = opts[(i + opts.length + (d || 1)) % opts.length][0];
-      S.touch = m; save(); SW.touch.mode = m; SW.touch.layout(); SW.audio.sfx('move');
+      S.touch = m; S.touchReset = 1; save(); SW.touch.mode = m; SW.touch.layout(); SW.audio.sfx('move');
     }
     if (id === 'full' && (d || I.ok())) {   // full screen now, on or off (js/touch.js)
       const T = SW.touch, want = !(T && T.isFs());

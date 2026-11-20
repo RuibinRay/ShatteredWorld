@@ -23,6 +23,20 @@
   const mobileUA = () => /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);   // iPadOS says Macintosh; stylus phones report a fine pointer
   T.phone = () => coarse() && (!fine() || mobileUA());
   if (T.mode === 'off' && T.phone()) T.mode = 'auto';
+  // The user, 2026-11-19 ("still not fix just reset it"): a one-time reset of the saved Touch controls to Auto on every
+  // device, and from then on a touch on the screen while touch is Off (and no keyboard key pressed yet) turns it back on.
+  try {
+    const s0 = read();
+    if (localStorage.getItem(KEY) && !s0.touchReset) { delete s0.touch; s0.touchReset = 1; localStorage.setItem(KEY, JSON.stringify(s0)); T.mode = 'auto'; }
+  } catch (e) { /* private window */ }
+  let kbUsed = false;
+  window.addEventListener('keydown', () => { kbUsed = true; }, true);
+  window.addEventListener('touchstart', () => {
+    if (T.mode !== 'off' || kbUsed) return;
+    T.mode = 'auto'; T.used = true; const s = read(); s.touch = 'auto';
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* private window */ }
+    if (T.layout) T.layout();
+  }, { passive: true, capture: true });
   T.on = () => T.mode === 'on' || ((T.mode === 'auto' || (T.mode === 'off' && T.phone())) && (coarse() || T.used));
   T.setMode = function (m) {
     T.mode = m; const s = read(); s.touch = m;
