@@ -381,8 +381,10 @@
   // ult: how readily it fires a full bar; charge: how much it stands back to charge (energy now comes quickly from fighting)
   // the user (2026-11-20): "make easy and medium level bot can block and uses mostly skills and attack time is shortened":
   // Easy and Normal block more (react 0.2 -> 0.55, 0.55 -> 0.75), think twice as often (every 14 -> 7, 8 -> 4) and pick a
-  // skill (U, or I while U cools down) whenever they can pay for it, with chance `skill`. Hard and Nightmare are unchanged.
-  const LV = [{ react: 0.55, aggr: 0.45, every: 7, ult: 0.15, charge: 0.25, skill: 0.7 }, { react: 0.75, aggr: 0.75, every: 4, ult: 0.5, charge: 0.6, skill: 0.75 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }];
+  // skill (U, or I while U cools down) whenever they can pay for it, with chance `skill`. Then ("make hard bot use more skills too") Hard got skill 0.65. Nightmare is unchanged.
+  // Then ("make normal bot weaker"): Normal had become as strong as Hard (51%), so its react 0.75 -> 0.62, aggr 0.75 -> 0.5,
+  // every 4 -> 6, ult 0.5 -> 0.35. Bot v bot after: Hard beats Normal 66% (100 rounds), Normal beats Easy about 60% (240).
+  const LV = [{ react: 0.55, aggr: 0.45, every: 7, ult: 0.15, charge: 0.25, skill: 0.7 }, { react: 0.62, aggr: 0.5, every: 6, ult: 0.35, charge: 0.6, skill: 0.75 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1, skill: 0.65 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }];
   function botThink(f, o, k) {
     const p = f.p, q = o.p, S = f.state, c = LV[lvOf(f)], ai = f.ai || (f.ai = { plan: 'approach', t: 0, n: 0 }), R = Math.random;
     if (V.phase !== 'fight' || p.dead) return;
