@@ -326,7 +326,7 @@ SW.i18n.add("zh", {
  "Chemist. Every grey shape you made is listening. They forgive you. Finish the experiment, and they will thank you.":"化学家。你造出的每一个灰色身影都在聆听。他们原谅你了。完成这场实验，他们会感谢你。",
  "They speak to me now. All of them together, in one kind voice. They say it won't hurt where they're going.":"他们现在会跟我说话了。所有人一起，用同一个温柔的声音。他们说，去的地方不会疼。",
  "I never wanted anything but to know what happens next. Now I know. Hold still. You're a variable.":"我从来只想知道接下来会发生什么。现在我知道了。别动。你是一个变量。",
- "Result noted: subject resisted, then didn't. Next table, please.":"结果记录：受试者曾抵抗，随后不再抵抗。下一张桌子，谢谢。",
+ "Result noted: subject resisted, then didn't. Next table, please.":"结果记录：实验体曾抵抗，随后不再抵抗。下一张桌子，谢谢。",
  "The crown cracks. The flask falls and spins on the steel, violet bleeding out of it into grey.":"王冠裂开。药瓶落下，在钢桌上打转，紫色渗出，化入灰色。",
  "Forgiveness. Of course it was forgiveness. The one reagent I could never make myself.":"原谅。当然是原谅。唯一一种我自己永远调不出来的试剂。",
  "They never said it. Husks can't say anything. I wrote their lines for them, and let him read them aloud.":"他们从没说过。空壳什么都说不了。是我替他们写了台词，再让他念出来。",
