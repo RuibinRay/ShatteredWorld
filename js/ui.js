@@ -43,7 +43,7 @@
   dlg.update = function (G) {
     if (dlg.wait) return;
     const ln = dlg.lines[dlg.i], full = dlg.wrapped.join('\n').length, sp = dlg.speaker(G, ln.s);
-    if (dlg.chars < full) { dlg.chars += 1; if ((dlg.chars | 0) % 3 === 0 && ln.s !== 'sys') SW.audio.sfx('blip', sp.pitch); }
+    if (dlg.chars < full) dlg.chars += 1;   // no per-character typing voice (the user asked for no character voices, 2026-11-20)
     if (ln.choice && dlg.chars >= full) {
       if (I.hit('up') || I.hit('down')) { dlg.sel = (dlg.sel + (I.hit('down') ? 1 : ln.choice.length - 1)) % ln.choice.length; SW.audio.sfx('move'); }
     }

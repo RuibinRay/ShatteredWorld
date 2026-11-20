@@ -8,68 +8,70 @@
 
     // ---------------------------------------------------------------- NYRA
     nyra: {
-      1: { zone: 'medlab', goal: "Break out of the Med-Lab",
-        card: "In tank thirty-one a girl has hummed into a crack for a week, and she is the only one in the Med-Lab who sees the grey shapes walk.",
+      1: { zone: 'medlab', goal: "Fight your way out of the Med-Lab",
+        card: "Med-Lab Sector 7. In tank thirty-one a girl has hummed into the same hairline crack for a week, and she is the only one who sees the grey shapes walk the halls.",
         intro: [
-          ['sys', "Med-Lab Sector 7. Tank thirty-one has a crack in it, and for a week the girl inside has been humming into it."],
-          ['hero', "My name is Nyra. I was born where the harbour freezes. Halcyon calls me thirty-one. Numbers don't sing."],
-          ['hero', "There it is again: the grey shape behind the doctor's shoulder. Nobody else in this room ever looks at it."],
-          ['agent', "Thirty-one is vocalising. Sedate her now, before the glass-"],
-          ['hero', "Too late. Hold the note. Hold it. Break."]
+          ['sys', "Med-Lab Sector 7. Tank thirty-one has a crack in it, thin as a hair. For a week the girl inside has hummed into it."],
+          ['hero', "Nyra. Born where the harbour freezes. Halcyon wrote thirty-one on my glass. Numbers don't sing."],
+          ['hero', "There it is again. A grey shape behind the doctor's shoulder, patient as a coat on a hook. Nobody else ever looks at it."],
+          ['agent', "Thirty-one is vocalising. Sedate her before the glass-"],
+          ['hero', "Hold the note. Hold it. ...Now break."]
         ],
         win: [
-          ['hero', "The grey shapes in the halls were people. Halcyon drank them down and kept the outline."],
-          ['hero', "Husks, the charts call them, in tidy ink. My name goes in no column of theirs."],
-          ['hero', "Cryo Vault 9 is three floors down. Isolde is in there, and she will say I was too loud."]
+          ['hero', "The grey shapes in the halls were people once. Halcyon drank them down through its feed lines and left the outline standing."],
+          ['hero', "Husks, the charts call them, in neat little columns. There's a column ready for me. I'm not filling it."],
+          ['hero', "Cryo Vault 9 is three floors down. Isolde's in there, and she's going to tell me I was loud. And flat."]
         ] },
       2: { zone: 'cryo', with: 'isolde', goal: "Hold Cryo Vault 9 with Isolde",
-        card: "Isolde teaches Nyra to keep her voice low and her blade cold, and on the night they run, Maren keeps her heart from running on ahead of her.",
+        card: "Cryo Vault 9, where Isolde taught Nyra to keep her voice low and her blade cold. Tonight Halcyon's boots are on the stairs, and Maren is already counting Nyra's pulse.",
         meet: [
-          ['isolde', "You sang a tank open, Nyra. The whole ward heard you. So did Halcyon."],
-          ['hero', "And the tank is open."],
-          ['isolde', "A falcon that screams at every mouse goes hungry. Keep the voice low and the blade cold."],
-          ['hero', "Low. Cold. Noted. Now, are you coming out of that glass, or shall I sing it open too?"],
-          ['isolde', "Gently. I hate glass. ...No, too late for gently. Listen. Boots."],
-          ['maren', "Then it's tonight. I'll be behind you with the needle, Nyra. Your heart is already running ahead of you."]
+          ['isolde', "You sang a tank open, Nyra. The whole ward heard. So did Halcyon."],
+          ['hero', "And yet the tank is open. Say well done. It won't kill you."],
+          ['isolde', "A falcon that screams at every mouse goes hungry. Low voice, cold blade. Then the door."],
+          ['hero', "Low. Cold. Noted. Are you coming out of that glass, or do I sing it open too?"],
+          ['isolde', "Gently. I hate glass. ...No. Too late for gently. Listen: boots on the stairs."],
+          ['maren', "Then it's tonight. I'll be behind you both with the needle. Nyra, your pulse is already halfway down the corridor."]
         ],
         win: [
-          ['maren', "Sit. Your heart is skipping like a stone on water. Breathe with me. Slower. ...There. Now go, both of you."],
-          ['hero', "Then come with us, Maren."],
-          ['maren', "Someone has to sit with the ones who can't run yet. Come back for them. That's my fee."],
-          ['hero', "Then I'll come back. For every bed in this ward. Hold me to it."]
+          ['maren', "Sit. Your heart is skipping like a stone on water. Breathe with me. In. Out. ...Better. Now go, both of you."],
+          ['hero', "Come with us, Maren. Please."],
+          ['maren', "Somebody has to sit with the ones who can't run yet. Come back for them. That's my fee."],
+          ['hero', "Every bed in this ward. I'll come back for all of them. Hold me to it."]
         ] },
       3: { zone: 'crater', rival: 'kael', goal: "Duel Kael at the Crater",
-        card: "On the feed Nyra watched a white-haired boy open the Sump's vents on the labs; at the Crater she finds him, and the two will not match.",
+        card: "Aurelia's screens loop a boy from the Crusher Yard, lightning in his fists, gassing Halcyon's labs. At the Crater, Nyra finds him in the flesh, and the face won't sit right on him.",
         meet: [
-          ['hero', "White hair, red scarf, lightning in your fists. I've watched you on the feed, opening the Sump's vents on our labs."],
-          ['kael', "Opened what? I've never been near your labs. Halcyon told ME you sold our tunnels to their drills."],
-          ['hero', "I've lived in a tank and then on the run. I never met a tunnel I didn't want out of."],
-          ['kael', "Funny. That's word for word what a Halcyon agent would say."],
-          ['hero', "So is that. Low voice. Cold blade. Let's see what you're made of."]
+          ['hero', "White hair, lightning in your fists. I've watched you on every screen up there, opening the Sump's vents onto our labs."],
+          ['kael', "Opened what? I've never been near your labs, Sky girl. Down here the screens have YOU walking Halcyon's drills into our tunnels."],
+          ['hero', "I spent a year in a tank and a week on the run. I've never met a tunnel I didn't want out of."],
+          ['kael', "Funny. That's exactly how a Halcyon plant would put it."],
+          ['hero', "And that's exactly how one would answer. Fine. Let's hear what you sound like with your fists."]
         ],
         win: [
           ['kael', "You fight like somebody who's been in a cage. Not like somebody who builds them."],
-          ['hero', "And you don't fight like a man who floods labs. You fight like a boy raised on a scrap heap."],
-          ['kael', "Crusher Yard. Finest heap in Deepline. And I never touched those vents. Halcyon lies; ask anyone below."],
-          ['hero', "I don't know what I saw on that feed. But it wasn't the boy in front of me."]
+          ['hero', "And you don't fight like someone who gasses labs. You fight like you grew up on a scrap heap."],
+          ['kael', "Crusher Yard. Finest heap in Deepline. Whoever opened those vents, it wasn't me. Ask anyone below."],
+          ['hero', "Then the boy on the screens isn't the boy in front of me. So who lent a stranger your face? And who lent one mine?"]
         ],
         lose: [
           ['kael', "Stay down. I don't want to hurt you. I want to know why you sold us."],
-          ['hero', "I didn't. Once more."]
+          ['hero', "I didn't. Again."]
         ] },
-      4: { zone: 'noble', goal: "Lead the Subjects up to the Ring",
-        card: "Nyra brings every numbered Subject up into the light of the Noble Ring, and at the Crater Kiri's crane lands with Pell's word: the false faces were Rue's.",
+      4: { zone: 'noble', goal: "Clear the Noble Ring for the Subjects",
+        card: "Tonight two forged films have every layer ready to kill the others, and one of them wears Nyra's face. She brings the numbered up into the light.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Every screen on the Ring plays one feed, over and over: Kael at the vents."],
-          ['sys', "And up the Skylift comes Deepline's answer: Subject 31 led Halcyon's drills into the tunnels."],
-          ['hero', "I have never led a drill anywhere. Someone is wearing my face. And his."],
-          ['maren', "Then show them the real one. The wards are open, Nyra. Bring them up."],
-          ['hero', "Everyone Halcyon ever numbered: up, now. Stay low, stay close, and sing if you have a voice left."]
+          ['sys', "The Three-Layer War. Every screen in the Sky plays one film: Kael, a white-haired Deepline kid, opening the Core Sump's vents on the labs."],
+          ['sys', "Down in Deepline the screens play another: Subject 31 leading Halcyon's drills into the tunnels. Each layer swears the other struck first."],
+          ['hero', "I've never led a drill anywhere in my life. Someone is wearing my face. And his."],
+          ['maren', "Then show them the real one. The Proving Hall has orders to march on Deepline, and the wards are open. Bring everyone up."],
+          ['hero', "Everyone Halcyon ever numbered: up the stairs, onto the Ring, now. Stay low, stay close, and sing if you've got a voice left."]
         ],
         win: [
-          ['hero', "The Proving Hall has turned. Aldric's knights hold the stairs for us now, their swords facing outward."],
-          ['sys', "The Crater. Kael faces Nyra, and a second Kael watches from the crowd. Kiri's crane lands with Pell's word: Rue."],
-          ['hero', "The one in the crowd ran: a face with nothing behind it, and it wore mine too. Sorry, Kael. Now, the Spire."]
+          ['hero', "The Hall never marched. Aldric turned his knights around, and Coda cut her strings mid-opera and danced Pell's secrets onto every wall."],
+          ['sys', "Below, the Lantern Cell catches Pell in his own strings at the Pit. On the Surface, Oda's bell rings three times over the Buried Meridian."],
+          ['sys', "The Crater. Kael and Nyra face each other, each sure the other is Halcyon's. Kiri's paper crane drops between them with Pell's word: Rue."],
+          ['hero', "A second Kael in the crowd. The real one turns, and the copy runs: a face with nothing behind it. It wore mine too. Sorry, Kael."],
+          ['sys', "Four banners climb the Halcyon Spire, Hollis's new one beside the three of the Pact. Nyra hears the Engine Core's hum change pitch, like a call."]
         ] },
       5: { zone: 'pylon', foe: 'vega', goal: "Reach Vega through the Legion",
         card: "Vael's crown-ship splits the sky; in Pylon Chamber Six his champion Vega drags Aurelia down, and Nyra sings the harbour's star song at her until she falls back.",
@@ -127,65 +129,66 @@
 
     // ---------------------------------------------------------------- ISOLDE
     isolde: {
-      1: { zone: 'cryo', goal: "Break the glass of Cryo Vault 9",
-        card: "Halcyon keeps its Subjects coldest in Cryo Vault 9, and the eldest of them minds nothing about the place but the glass.",
+      1: { zone: 'cryo', goal: "Fight your way out of Cryo Vault 9",
+        card: "Cryo Vault 9 keeps Halcyon's Subjects colder than any winter. The eldest of them does not mind the cold. Tonight she has run out of patience with the glass.",
         intro: [
-          ['sys', "Cryo Vault 9. Halcyon keeps its Subjects colder here than they have ever been. The eldest has never minded the cold."],
-          ['hero', "Isolde. I kept the white falcons of the eyrie over the Frozen Harbour. The tear took all of them but one."],
-          ['hero', "She is made of ice now, like everything in this place. The cold I can bear. It is the glass I cannot."],
-          ['agent', "Subject 52, step away from the door. Sedation in ten. Nine."],
-          ['hero', "Ten was generous. My falcon needs three."]
+          ['sys', "Cryo Vault 9. Frost on the inside of the glass, and a falcon of ice asleep on one woman's wrist."],
+          ['hero', "Isolde. I kept the white falcons of the eyrie over the Frozen Harbour. The tear took the eyrie, the harbour, and every bird but one."],
+          ['hero', "She is made of ice now, like everything in this place. I never minded the cold. I mind the glass."],
+          ['agent', "Subject 52, step back from the door. Sedation in ten. Nine. Eight."],
+          ['hero', "Ten was generous. The hood comes off, and she needs three."]
         ],
         win: [
-          ['hero', "No more glass. There, little one. Up. Show me the halls."],
-          ['hero', "And the knight at the vault door: I know that stance. My falcons sat on his gate for twenty winters."]
+          ['hero', "No more glass. Up, little one. Show me the halls."],
+          ['hero', "And the knight at the end of the corridor. I know that stance. My falcons sat on his gate for twenty winters."]
         ] },
-      2: { zone: 'cryo', with: 'aldric', goal: "Make Aldric see what he guards",
-        card: "For a year the captain of her harbour's wall has guarded Isolde's door without once looking through it, and tonight she makes him look.",
+      2: { zone: 'cryo', with: 'aldric', goal: "Hold Cryo Vault 9 beside Aldric",
+        card: "For a year the captain of her harbour's sea wall has guarded Isolde's door without once looking through it. Tonight Halcyon comes to take her below the Spire, and she makes him look.",
         meet: [
-          ['aldric', "Subject 52. Go back to your vault. I take no pleasure in hurting you."],
-          ['hero', "Captain of the harbour wall. Every morning you stood under my eyrie and tossed scraps to my falcons."],
-          ['aldric', "The white birds on the gate. You are the falconer's girl. You are from home."],
-          ['hero', "You have guarded my door for a year, Captain, and never once looked through it."],
-          ['aldric', "I was told the Subjects were protected. That was the wall I kept."],
-          ['agent', "Stand aside, Sir Aldric. Subject 52 is reassigned to the feed lines. Director's order."],
-          ['aldric', "The Director's word is that she is protected. No one passes my wall to say otherwise."]
+          ['aldric', "Subject 52. Return to your vault. I take no pleasure in this, but I will do it."],
+          ['hero', "Captain of the harbour wall. Every morning you stood under my eyrie and threw your crusts to my falcons."],
+          ['aldric', "The white birds on the gate. You are the falconer. You are from home."],
+          ['hero', "You have guarded my door for a year, Captain, and not once looked through it."],
+          ['aldric', "I was told the Subjects behind these doors were protected. That was the wall I kept."],
+          ['agent', "Stand aside, sir. Subject 52 is reassigned to the feed lines. Director's order."],
+          ['aldric', "The Director's word is that she is protected. Until that word is proven false, no one passes my wall."]
         ],
         win: [
-          ['aldric', "Reassigned. To the feed lines. What waits in the feed lines, falconer?"],
-          ['hero', "Go and look, Captain. There is a girl on the Night Ward who will show you the way."],
-          ['aldric', "Then I will look. And until I know, no one lays a hand on you."],
-          ['hero', "A good wall. My falcons always liked you."]
+          ['aldric', "Reassigned. Below the Spire. Falconer, what waits in the feed lines?"],
+          ['hero', "Go and look, Captain. There is a woman on the Night Ward with a red scarf. She will show you the way down."],
+          ['aldric', "Then I will look. And until I have, no hand touches you."],
+          ['hero', "A good wall. My falcons always did like you."]
         ] },
-      3: { zone: 'icehouse', rival: 'brann', goal: "Settle winter with Brann",
-        card: "Brann, the last bear of Vharra, says winter answers to him, so Isolde goes north to the Ice House to learn whom winter listens to.",
+      3: { zone: 'icehouse', rival: 'brann', goal: "Duel Brann at the Ice House",
+        card: "Brann, the last bear of north Vharra, says winter answers to him, and he has invited Isolde north to tell him otherwise. At the Ice House, they settle whose winter it is.",
         meet: [
-          ['brann', "So. The bird-woman who says winter belongs to her. Came north at last."],
-          ['hero', "You invited me, and I came quietly. You are the one who shouts."],
-          ['brann', "Winter on Vharra had bears in it. I am the last bear. Winter answers to me."],
-          ['hero', "Winter answers to no one. It listens, though, to whoever is quietest. Shall we see who that is?"]
+          ['brann', "Hn. Bird-woman. Came north at last."],
+          ['hero', "You invited me. I came quietly. You are the one who shouts."],
+          ['brann', "Vharra's winters had bears. I am the last. Winter answers to me."],
+          ['hero', "Winter answers to no one. It listens, though, to whoever is quietest. Shall we learn which of us that is?"]
         ],
         win: [
-          ['brann', "Hah! Frost in my beard and a bird on my head. Fine. FINE. Winter listens to you."],
-          ['hero', "Winter listens to us both. You need only stop shouting at it."],
-          ['brann', "Come north again. Bring the bird. First we drink, then we argue."]
+          ['brann', "Frost in my beard. Bird on my head. Hn. Fine. It listens to you."],
+          ['hero', "It listens to us both. You need only stop shouting at it."],
+          ['brann', "Come north again. Bring the bird. Drink first. Argue after."]
         ],
         lose: [
-          ['brann', "Warm your hands, bird-woman. Then come back and lose properly."]
+          ['brann', "Warm your hands, bird-woman. Then lose properly."]
         ] },
-      4: { zone: 'noble', goal: "Fly the signal to rise",
-        card: "Isolde sends her ice falcon to every ward as the signal to rise; the knights turn, and from the Pit Pell names the copy behind the war: Rue.",
+      4: { zone: 'noble', goal: "Hold the Ring while the wards rise",
+        card: "Two forged films have turned the three layers on one another, and the Proving Hall is ordered down to Deepline. Isolde's falcon carries one word to every ward: rise.",
         intro: [
-          ['sys', "The Noble Ring. Every screen loops one feed: a white-haired Deepline boy opening the Sump's vents on the labs."],
-          ['agent', "Deepline has struck the Sky! The Proving Hall marches on the Skylift at dawn!"],
-          ['hero', "My falcon watches that feed and never stirs. She stirs for anything alive. That is not a boy."],
-          ['nyra', "The wards are ready, Isolde. They're waiting on your bird."],
-          ['hero', "Then go, little one. Every ward, every window. Tell them one word: rise."]
+          ['sys', "The Three-Layer War. Sky screens loop Kael, a Deepline kid, opening the Sump's vents on the labs; Deepline's loop Nyra leading drills. Each blames the other."],
+          ['agent', "Deepline has struck the Sky! The Proving Hall marches on the Skylift at once. All Subjects confined to wards!"],
+          ['hero', "My falcon watched that film and never stirred. She stirs for anything with a pulse. That is not a boy."],
+          ['nyra', "And that's not me on theirs, before you ask. The wards are ready, Isolde. They're waiting on your bird."],
+          ['hero', "Then she flies. Every ward, every window: rise. And you lead them out, Nyra. I will not do it for you."]
         ],
         win: [
-          ['hero', "Every ward rose to the signal. And the knights: Aldric turned them. A good wall."],
-          ['sys', "Out of the Pit comes Pell's word, and Kiri's crane carries it to the Crater: the faceless one is Rue. Rue runs."],
-          ['hero', "A face with nothing behind it. Halcyon sold us a mask and called it a war. My falcon knew. Now, the Spire."]
+          ['hero', "The wards rose to the bird. Aldric turned the Hall's swords outward, and Coda danced Pell's secrets out under the opera lights."],
+          ['sys', "Pell falls in his own strings at the Pit. Oda's bell calls the Surface to the Meridian. Kiri's crane flies Pell's word to the Crater: Rue."],
+          ['sys', "There Kael and Nyra stand face to face. A second Kael in the crowd bolts the moment the real one turns. A mask, and no one inside it."],
+          ['hero', "Halcyon sold each layer a mask and called it a war. Four banners climb the Spire now, the Engine Core at the top. We go before it finishes calling."]
         ] },
       5: { zone: 'skyport', foe: 'corvin', goal: "Keep the sun over the Skyport",
         card: "Corvin, Vael's champion from a dead world, puts out the sun over the Skyport; his crows go for Isolde's falcon, and she drives him back to the crown-ship.",
@@ -230,7 +233,7 @@
           ['sys', "It drags the Legion and every champion back through. The crows go first. Itsuki goes last."],
           ['hero', "She flew it herself, my chick. Of course she did."],
           ['sys', "The morning after. Isolde climbs to the top of the Skyport, where the wind smells like the harbour's old sky."],
-          ['hero', "Home can wait a while. Up, little one. Show me this city from above, now that it belongs to us."],
+          ['hero', "Home can wait a while. Up. Show me this city from above, now that it belongs to us."],
           ['hero', "My falcon never misses."]
         ],
         lose: [
@@ -240,64 +243,68 @@
 
     // ---------------------------------------------------------------- GALE
     gale: {
-      1: { zone: 'stacks', goal: "Ride the updraft up the Stacks",
-        card: "Gale falls a thousand metres to the bottom of the world, gets up, finds the warm air climbing, and rides it home.",
+      1: { zone: 'stacks', goal: "Fight your way up Vent Stack Four",
+        card: "The tear drops Gale to the very bottom of Deepline's Vent Stacks. He lands, counts his limbs, and starts looking for two things: the way up, and his little sister.",
         intro: [
-          ['sys', "The sky over Vharra tears. A kite goes up into the violet. The boy holding the string goes down."],
-          ['sys', "Vent Stack Four, Deepline: a thousand metres under Aurelia. He falls every one of them, and does not break."],
-          ['hero', "Ow. Right. Gale, ridge-runner of Vharra, all limbs present. Sora went UP. So I go up."],
-          ['agent', "Torn-through in Stack Four! Power reading off the chart. Get a net on him!"],
-          ['hero', "You brought a net. For the wind. That's adorable."]
+          ['sys', "Vharra, festival day. A kite climbs into a violet sky that should not be there. The string snaps. The girl goes up. The boy goes down."],
+          ['sys', "Vent Stack Four, a thousand metres under Aurelia. Hot air, old soot, and a dent in the grating shaped exactly like a young man."],
+          ['hero', "Ow. Okay. Arms, legs, hair. Hair's fine. Gale, ridge-runner of Vharra, all present. Sora went up. So up is where I'm going."],
+          ['agent', "Torn-through in Stack Four, reading off the scale. Containment, bring the net. The big net."],
+          ['hero', "You brought a net. For the wind. That's sweet. Somebody believed in you this morning."]
         ],
         win: [
-          ['hero', "Feel that? Hot air, climbing. The whole stack breathes, and it breathes up."],
-          ['hero', "Updraft, take me home. Hold on, Sora. Your big brother's coming, and he's bringing a lecture."]
+          ['hero', "Feel that on your neck? Warm air, climbing. This whole stack breathes, and it breathes up."],
+          ['hero', "Hang on, Sora. Your big brother's on his way, and he's had a long fall to work on his lecture."]
         ] },
       2: { zone: 'skylift', with: 'sora', goal: "Hold the Skylift with Sora",
-        card: "High on the Skylift cables the boy who fell finds the sister who flew, and between them and a paper girl the Paper Post is born.",
+        card: "High on the Skylift, the boy who fell finds the sister who flew. She has a paper-folding partner, a satchel of letters Halcyon would rather burn, and no wish at all to be watched.",
         meet: [
-          ['sora', "GALE?! You fell! I watched you fall!"],
-          ['hero', "A thousand metres down, then all the way back on the wind. The towers up here all look alike, you know."],
-          ['sora', "And now you're going to hover over me. I can feel it starting."],
-          ['hero', "I'm going to hover like a cloud with a grudge. Who's the one with the paper bird?"],
-          ['kiri', "Kiri, from the steppe like you. We carry the letters Halcyon would rather nobody sent. Can you fly?"],
-          ['hero', "Can I fly. I'm the wind's favourite. Deal me in."],
-          ['agent', "Unlicensed flyers on the Skylift cables. Shoot them down!"]
+          ['sora', "GALE?! You fell! I watched you fall the whole way down!"],
+          ['hero', "Down one stack, back up the same stack on the warm air. Your towers all look alike, by the way. Took me ages."],
+          ['sora', "You're alive. You're actually alive. ...And you're about to start hovering. I can feel it starting."],
+          ['hero', "Like a cloud with a grudge. Every day. Who's the girl with the paper bird? Does she pay?"],
+          ['kiri', "Kiri, from the steppe like you. We fly the letters Halcyon wants unsent. Pay's in bread. Can you fly, or only fall?"],
+          ['hero', "Falling's just flying with bad timing. Deal me in. Bread's fine. Jam would be better."],
+          ['agent', "Three unlicensed flyers on the cables. Bring them down. Mind the cars."]
         ],
         win: [
-          ['kiri', "Three flyers and every tower in Aurelia. That's not a delivery run. That's a post. The Paper Post."],
-          ['sora', "Fine. He's in. But he does NOT follow me on every run."],
-          ['hero', "Every run. Every single one. I'll be the breeze on the back of your neck."]
+          ['kiri', "Three flyers and every tower in Aurelia. That's not a delivery round any more. That's a post. The Paper Post."],
+          ['sora', "Fine. He's in. But he does NOT tail me on my runs."],
+          ['hero', "Not tail. Escort. Totally different. Mine comes with a breeze on the back of your neck, free of charge."]
         ] },
-      3: { zone: 'milezero', rival: 'tarn', goal: "Race number twelve: beat Tarn",
-        card: "Twelve races, twelve arguments: Tarn says the wind is cheating, so this time the road from Mile Zero runs with no wind at all.",
+      3: { zone: 'milezero', rival: 'tarn', goal: "Beat Tarn at Mile Zero: race twelve",
+        card: "Eleven races, eleven arguments, no agreed score. Tarn, runner of the Surface post, picks a windless dawn at Mile Zero for race twelve, and this time nobody is running.",
         meet: [
-          ['tarn', "Race twelve. Mile Zero to the Crater rim, and no wind this time, flyboy."],
-          ['hero', "No wind? The wind is the only reason I ever run anywhere."],
-          ['tarn', "I walked nine hundred miles ahead of the tear. On these feet. That's running. What you do is cheating."],
-          ['hero', "Eleven races, eleven arguments. Let's skip the running and settle it the short way."]
+          ['tarn', "Race twelve, flyboy. Mile Zero to the Crater rim, dead calm. I checked the sky twice. Not a breath."],
+          ['hero', "No wind? Tarn. The wind is the only reason I go anywhere fast. Otherwise I'd walk, like a person."],
+          ['tarn', "I've run every road from here to the rim on these two feet. That's running. You're a kite with legs."],
+          ['hero', "Eleven arguments and zero agreed scores. Skip the road. First one flat on the sand loses."],
+          ['tarn', "Deal. And this counts as twelve. I'm writing it on my arm."]
         ],
         win: [
-          ['tarn', "Fine. FINE. You're fast. You're still cheating."],
-          ['hero', "Twelve races, twelve arguments. Admit it: you'd miss me."],
-          ['tarn', "Thirteen. Next month. And bring your own legs."]
+          ['tarn', "Fine. FINE. You're fast. You're still cheating. There was a breeze. I felt it on my ear."],
+          ['hero', "That was me breathing hard. Twelve to me. Write it on the other arm."],
+          ['tarn', "Thirteen. Next month. The long road. And bring your own legs."]
         ],
         lose: [
-          ['tarn', "Legs beat wind. Carve that on something, flyboy."]
+          ['tarn', "Legs beat weather, flyboy. Go stand in the corner and think about that."]
         ] },
-      4: { zone: 'noble', goal: "Fly the plan to every ward",
-        card: "Gale flies the uprising's plan to every ward before the Proving Hall can march; Kiri flies Pell's word to the Crater, and four banners start up the Spire.",
+      4: { zone: 'noble', goal: "Clear the drones off the ward route",
+        card: "Aurelia's screens say Deepline struck first, and the Proving Hall is lacing its boots to march. Gale has one night to fly the uprising's plan to every ward before they go.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Halcyon's screens loop one feed: a Deepline boy opening the Sump's vents on the labs."],
-          ['kiri', "Below, they swear Nyra led the drills in. That same hour I took a letter from her hand, up here. Someone is lying with faces."],
-          ['hero', "Then the truth flies faster than the lie. Every ward gets the plan before the Proving Hall gets its boots on."],
+          ['sys', "The Siege of the Noble Ring starts with a film on every screen: Kael, a white-haired Deepline kid, wrenching the Sump's vents open on the labs."],
+          ['kiri', "Down below they're watching another one: Nyra, the singer who broke out of the Med-Lab, leading Halcyon's drills into the tunnels."],
+          ['kiri', "That same hour I took a letter from Nyra's own hand, up here. Someone is borrowing faces, and each layer swears the other struck first."],
+          ['hero', "And the Proving Hall's lacing up to march on Deepline. A lie has to walk. We fly. Every ward gets the plan before the first boot hits a stair."],
           ['sora', "High towers are mine, low wards are yours. And don't follow me!"],
-          ['hero', "Me? Follow? ...Only a little."]
+          ['hero', "Me? Follow? ...Only a little. Only the dangerous bits."]
         ],
         win: [
-          ['hero', "Every ward had the plan, and every ward rose on time. The Paper Post has never missed a tower."],
-          ['sys', "Kiri carries Pell's word to the Crater: the faces were Rue's. With two Kaels in plain sight, Rue runs."],
-          ['hero', "A borrowed face, a borrowed war. Four banners, four sides of the Spire. I'll take the windy one."]
+          ['hero', "Every ward had the plan, every ward rose on cue, and the Hall stopped dead on its own stairs. Not bad for a boy who fell down a chimney."],
+          ['sys', "Far below, Oda's bell tolls three times over the Meridian drills. In the Pit, Pell hangs tangled in his own Cat's Cradle, and gives up a name."],
+          ['sys', "Kiri flies it to the Crater, where Kael and Nyra stand fists up, each sure the other is Halcyon's. The name is Rue. A second Kael bolts from the crowd."],
+          ['hero', "A borrowed face, a borrowed war. Hollis has painted a fourth banner, and four of them go up the Spire from four sides. Engine Core at the top."],
+          ['hero', "Whatever that Engine's been whistling up, we switch it off before it comes. I'll take the windy side. Somebody is paying me for this, right?"]
         ] },
       5: { zone: 'skylift', foe: 'mika', goal: "Hold the Skylift cars on the wind",
         card: "Mika, a champion of Vael who never touches ground, cuts the Skylift cables; Gale holds the swinging cars on the wind and throws her off the last cable.",
@@ -353,63 +360,64 @@
     // ---------------------------------------------------------------- ALDRIC
     aldric: {
       1: { zone: 'armoury', goal: "Hold the Proving Hall",
-        card: "In the Proving Hall the Director's finest knight has not given a step in a year, and still guards a sea wall that no longer exists.",
+        card: "The Proving Hall, where the Director's champions are made. In a year its finest knight has not given a single step, and he still guards a sea wall that no longer exists.",
         intro: [
-          ['sys', "The Proving Hall, where the Director's champions are forged. In a year, Subject 12 has not given a single step."],
-          ['hero', "I am Aldric, captain of the harbour wall. The wall is gone. The oath remains: I stand between harm and the people."],
-          ['director', "My finest knight. Trial forty, Sir Aldric. Show my guests what a wall is."],
+          ['sys', "The Proving Hall. Sand on the floor, banners on the walls, a gallery of guests with wine. Subject 12 stands in the centre, as he has every night for a year."],
+          ['hero', "I am Aldric, once captain of the harbour wall. The wall is gone. The oath is not: I stand between harm and the people."],
+          ['director', "Trial forty, Twelve. My guests have come a long way to see what a wall is. Do show them."],
           ['hero', "As you command, Director. Send them in."]
         ],
         win: [
-          ['director', "Flawless. The Subjects sleep soundly because men like you stand at the door."],
-          ['hero', "The guests applaud. Yet the carts from the wards go down to the feed lines full, and come back empty."],
-          ['hero', "I hold a wall for a man's word. It is time I weighed the word."]
+          ['director', "Flawless. The Subjects sleep soundly because men like you stand at their doors."],
+          ['hero', "The guests applaud. Yet every night the carts go down from the wards full, and every morning they come back up empty."],
+          ['hero', "I have held a wall on one man's word for a year. It is time I weighed the word."]
         ] },
-      2: { zone: 'enginecore', with: 'vesper', goal: "See the feed lines with Vesper",
-        card: "Vesper leads the knight down to the feed lines, where the Subjects he guarded lie grey and breathing, and Aldric sees whose side of the door he kept.",
+      2: { zone: 'enginecore', with: 'vesper', goal: "Hold the feed lines beside Vesper",
+        card: "Aldric asked one question too many about the carts. Vesper, the Night Ward's lamplighter, answers it: she leads him below the Spire to the Engine's feed lines, and makes him look.",
         meet: [
           ['vesper', "Knight. You asked about the carts. Stop asking. Look."],
-          ['hero', "The one from the Night Ward. Seventy-seven. You lit the lamps on my sea wall, once."],
-          ['vesper', "Every dusk. You never saw me. Look down."],
-          ['hero', "Grey shapes on the feed lines. Breathing. Those are Subjects. Those are the ones I was guarding."],
-          ['vesper', "Husks. What the Engine leaves behind. That is your Director's word, knight."],
-          ['agent', "Intruders on the feed lines! ...Sir Aldric? Sir, step away from that Subject."]
+          ['hero', "Seventy-seven, of the Night Ward. ...The red scarf. You lit the lamps along my sea wall, at home."],
+          ['vesper', "Every dusk. You never turned round. Look down."],
+          ['hero', "Grey shapes along the pipes. Breathing. Those are Subjects. Those are the people I was set to guard."],
+          ['vesper', "Husks. What the Engine leaves. That is what your Director's word was worth."],
+          ['agent', "Intruders on the feed lines! ...Sir? Sir, step away from the asset."]
         ],
         win: [
-          ['hero', "I swore to stand between harm and the people. For a year I have stood on harm's side of the door."],
+          ['hero', "I swore an oath to keep harm from them. For a year I have stood on harm's side of the door."],
           ['vesper', "Then move."],
           ['hero', "I will. Not tonight, and not alone. When I turn, the whole Hall turns with me."]
         ] },
-      3: { zone: 'skyport', rival: 'tor', goal: "Hold the line against Tor",
-        card: "Halcyon sends one wall to test another at the Skyport, and Aldric and Tor learn that neither will move unless both do.",
+      3: { zone: 'skyport', rival: 'tor', goal: "Duel Tor at the Skyport",
+        card: "Halcyon sends its finest knight to the Skyport to break a wall from the Surface. Aldric goes, because he has long wished to see Tor hold a line.",
         meet: [
-          ['tor', "So you're the sky knight who holds a line. I'm Tor. Nothing has ever got past me."],
-          ['hero', "Nor past me. Halcyon sent me to test you. I came to see a wall worthy of the name."],
-          ['tor', "Then plant your feet. One of us is going to move."],
+          ['tor', "Knight. I'm Tor. Nothing has passed me."],
+          ['hero', "No one passes my wall either. Halcyon sent me to break you. I came to see a wall worthy of the name."],
+          ['tor', "Plant your feet. One of us moves."],
           ['hero', "Or neither does. Let us learn which."]
         ],
         win: [
-          ['tor', "You hit like a gate swinging shut. I'm still standing, mind. Just... further back."],
-          ['hero', "Two walls, and neither truly gave. At home we would have stood shoulder to shoulder."],
-          ['tor', "Then let's both step forward, together. When your Hall turns, knight, the Village gate turns with it."]
+          ['tor', "You hit like a gate shutting. I'm standing. Further back."],
+          ['hero', "Two walls, and neither truly gave. At home we would have stood shoulder to shoulder on the same stones."],
+          ['tor', "When your Hall turns, knight, the gate turns with it."]
         ],
         lose: [
-          ['tor', "Nothing gets past me. Not even a good knight. Up you get."]
+          ['tor', "Nothing passes. Not even you. Up."]
         ] },
-      4: { zone: 'noble', goal: "Turn the knights around",
-        card: "Aldric turns the Proving Hall on the Ring, then holds the door of Pylon Chamber Six while Kessen reroutes the pylons by hand, and Aurelia falls one floor and holds.",
+      4: { zone: 'noble', goal: "Hold the Noble Ring with your knights",
+        card: "Two stolen faces have set the three layers at each other's throats, and the Director orders the Proving Hall down to Deepline. Aldric has seen the feed lines. He turns his knights around.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. On every screen, a white-haired Deepline boy opens the Sump's vents on the labs."],
-          ['director', "Deepline has struck at us. The Proving Hall marches. Lead them down, Sir Aldric."],
-          ['hero', "I have seen that boy's face, Director. I have also seen your feed lines. One of the two is a lie, and I know which."],
+          ['sys', "The Three-Layer War. Sky screens show Kael, a Deepline street kid, opening the Sump's vents on the labs. Deepline's show Nyra leading the drills down."],
+          ['director', "Deepline has struck first, as we always knew it would. The Hall marches tonight, Twelve. Lead them down."],
+          ['hero', "I know that boy's face from your screens, Director. I also know your feed lines. One of the two is a lie, and I know which."],
           ['vesper', "The knights are at your back, Aldric. Tell them what you saw."],
-          ['hero', "Knights of the Hall! We swore to stand between harm and the people. Turn around. Harm is at our backs."]
+          ['hero', "Knights of the Hall! Our oath was to the people, never to one man. Turn around. Harm is at our backs."]
         ],
         win: [
-          ['hero', "The Hall has turned. My oath to the Director lies broken. The older oath still stands."],
-          ['sys', "Pell names the face behind the war: Rue. At the Spire, Halcyon cuts the pylons to let the city fall."],
-          ['kessen', "Pylon Chamber Six. I can reroute them by hand. Hold that door, captain. No one comes through."],
-          ['hero', "No one did. The city fell one floor, and caught. Now, the Engine Core."]
+          ['hero', "The Hall has turned, the wards rise, and Coda has cut her strings on the opera stage. My oath to the Director is broken. The older one stands."],
+          ['sys', "Oda's bell rings three times over the Buried Meridian. In the Pit, Pell is caught in his own strings and names the face-thief: Rue."],
+          ['sys', "At the Crater a second Kael runs from the real one. Each layer was blaming the other for a puppet show. Four banners start up the Spire."],
+          ['kessen', "Captain. They have cut the pylons to drop the city. Chamber Six, on your way up: I can reroute them by hand. Hold that door."],
+          ['hero', "No one came through. The city fell one floor, and caught. Now, the Engine Core, before whatever it calls can answer."]
         ] },
       5: { zone: 'pylon', foe: 'vega', goal: "Hold the floor of a falling city",
         card: "Vael's champion Vega drags Aurelia down from Pylon Chamber Six; Aldric holds the floor and the door against her until she falls back to the crown-ship.",
@@ -465,61 +473,62 @@
     // ---------------------------------------------------------------- PYRA
     pyra: {
       1: { zone: 'furnace', goal: "Burn your way out of the Burn Ward",
-        card: "For six weeks the Burn Ward has run on one girl from the Frozen Harbour, and in the seventh week the glass begins to tick.",
+        card: "For six weeks the Burn Ward has run on one girl from the Frozen Harbour, the way a stove runs on coal. It is week seven, and the glass has started to tick.",
         intro: [
-          ['sys', "The Burn Ward. For six weeks Halcyon's furnace has run on one girl from the Frozen Harbour, the way a stove runs on coal."],
-          ['hero', "Pyra. At home there was a blue forge that never went out. Here there's a bottle, and I'm the thing inside it."],
-          ['elixa', "Week seven, Subject 44. Today we add a second colour. Do hold still; I have never seen what happens next."],
-          ['hero', "Want to see what happens next? Listen. That ticking is the glass."],
+          ['sys', "The Burn Ward. Pipes sweat, gauges creep into the red, and in the middle of it all a girl in a glass bottle drums her fingers."],
+          ['hero', "Pyra. At home there was a blue forge that never went out. Here there's a bottle, and guess who gets to be the coal."],
+          ['elixa', "Week seven, Subject 44. I asked them to stop the second colour. They said no. So I am to watch, and write it down."],
+          ['hero', "Aw, notes. Sweet. Want to write down what happens next? Listen. That ticking is the glass."],
           ['agent', "Temperature spike in the Burn Ward! Contain 44! CONTAIN-"]
         ],
         win: [
-          ['hero', "I burned down the Burn Ward. Somebody should have read the name on the door."],
-          ['hero', "Down the hall there's a girl with frost in her hair who can't stand. So I carry her. Hold on, Nyra. It's warm where we're going."]
+          ['hero', "I burned down the Burn Ward. Honestly, somebody should have read the name on the door."],
+          ['hero', "Down the hall there's an ice girl with frost in her hair who swears she can walk. She can't. Up you get, Nyra. It's warm where we're going."]
         ] },
-      2: { zone: 'core', with: 'ashka', goal: "Follow your fire to the Core Sump",
-        card: "Pyra carries Nyra out through her own fire, and the fire runs on down the vents to the Core Sump, where something chained burns back like a sister.",
+      2: { zone: 'core', with: 'ashka', goal: "Hold the Core Sump with Ashka",
+        card: "Pyra's fire carries Nyra out and keeps on going, down the vents, to the Sump. Something chained in the dark burns back.",
         meet: [
-          ['sys', "Pyra's fire pours down the vents, all the way to the Core Sump. At the bottom, something burns back."],
-          ['ashka', "Who's been pouring fire down my vents? ...You. You burn like home."],
-          ['hero', "Pyra. Subject 44, former. I carried a girl out through my own fire tonight, and the fire kept going. Straight to you."],
-          ['ashka', "Ashka. Subject 60. Half of Deepline sleeps warm because I'm chained down here. A year of it."],
-          ['hero', "I can't melt those chains. I just tried. I hate that more than I hate Halcyon."],
-          ['ashka', "Nothing melts them. But I fight fine inside them. Boots on the stairs: Halcyon's coming down."]
+          ['sys', "The Core Sump, at the very bottom of Deepline. Pyra's fire pours down the vents, and in the dark, something burns back."],
+          ['ashka', "Who's pouring fire down my vents. ...You. You burn like home."],
+          ['hero', "Pyra. Subject 44, formerly. I carried a girl out through my own fire tonight, and the fire didn't stop. It came looking for you."],
+          ['ashka', "Ashka. Sixty. Half of Deepline sleeps warm because I'm chained down here. A year now."],
+          ['hero', "I tried to melt those chains just now. Nothing. I hate that more than I hate Halcyon, and I really, really hate Halcyon."],
+          ['ashka', "Nothing melts them. I fight fine inside them. Boots on the stairs. Halcyon's coming down."]
         ],
         win: [
           ['ashka', "You fight like a forge with its doors kicked open. Like a sister."],
-          ['hero', "Then that's what you are. I'll come back with something that breaks chains. Count on it."],
+          ['hero', "Then that's what we are. I'll come back with something that breaks chains, sister. Count on it."],
           ['ashka', "Burn bright up there. I'll feel it through the pipes."]
         ] },
-      3: { zone: 'ballast', rival: 'kestra', goal: "Fight twelve: settle it with Kestra",
-        card: "Two girls, one phoenix, eleven fights and no agreement on the score: Kestra calls the twelfth in the hottest room in the city.",
+      3: { zone: 'ballast', rival: 'kestra', goal: "Win fight twelve against Kestra",
+        card: "Two girls, one phoenix, eleven fights and no agreement on the score. Kestra calls fight twelve in the undercroft, the hottest room under the gold.",
         meet: [
-          ['kestra', "There she is. Strolls out of the Burn Ward wrapped in a phoenix and thinks she owns it."],
-          ['hero', "It came out of my fire, so it's mine. Eleven fights, and I'm ahead, by the way."],
-          ['kestra', "My family has danced the phoenix under this city for a hundred years. Fight twelve. Here, where it's hot."],
-          ['hero', "Hot? Oh, honey. Hot is my whole personality."]
+          ['kestra', "There she is. Strolls out of the Burn Ward wrapped in a phoenix like she owns it."],
+          ['hero', "It came out of my fire, feathers, so I kind of do. Eleven fights. I'm ahead, by the way."],
+          ['kestra', "You are NOT. My clan has danced the phoenix under this city for a hundred years. Fight twelve. Here, on our beams."],
+          ['hero', "Ooh, your beams. Hope they're fireproof, honey."]
         ],
         win: [
           ['kestra', "Fine. Twelve to you. The phoenix question stays open."],
           ['hero', "It's a bird, Kestra. It has two wings. Take one."],
-          ['lin', "Then kindly stop setting fire to the beams while you share it."]
+          ['lin', "And while you share it, both of you, kindly stop setting fire to the beams."]
         ],
         lose: [
           ['kestra', "Sit down, matchstick. Thirteen, whenever you like."]
         ] },
-      4: { zone: 'noble', goal: "Burn the Proving Hall's gates",
-        card: "Pyra burns down the gates Halcyon slammed on the Ring, Pell names the borrowed face behind the war, and the Director waits at the Engine Core.",
+      4: { zone: 'noble', goal: "Burn down the gates of the Noble Ring",
+        card: "Two forged films have every layer blaming the others, and Halcyon slams the Noble Ring's gates to march its knights down to Deepline. Pyra is very good at gates.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. On every screen, a Deepline boy opens the Sump's vents on the labs."],
-          ['hero', "Ashka watched that boy at the vents from her chains. He never sweated. In the Sump. Even the rocks sweat in the Sump."],
+          ['sys', "The Three-Layer War. Sky screens loop Kael, a Deepline kid, opening the Sump's vents on the labs. Deepline's loop Nyra leading Halcyon's drills."],
+          ['hero', "Nyra was on my back the week she's meant to be down there. And Ashka watched that boy from her chains. Never sweated. In the Sump. Even rocks sweat."],
           ['agent', "The Proving Hall marches on Deepline! Shut the gates! Nobody leaves the Ring!"],
-          ['hero', "Gates. Adorable. Stand back, everybody. This is the part I'm good at."]
+          ['hero', "Gates. Adorable. Everybody stand back, this is the part I'm good at."]
         ],
         win: [
-          ['hero', "No more gates. The knights are coming out, facing the right way for once. That's Aldric's work."],
-          ['sys', "Caught in his own strings at the Pit, Pell names the face: Rue. At the Crater she runs. Ashka was right: a copy."],
-          ['hero', "Someone struck this war with a borrowed face. On to the Engine Core. I'll find the hand that held the match."]
+          ['hero', "No more gates. Aldric's knights come out facing the right way for once, and Coda's dancing Pell's dirty secrets onto the walls."],
+          ['sys', "Oda's bell rings three times over the Buried Meridian. In the Pit, Pell is caught in his own strings, and the Sump breaks open: Ashka walks out."],
+          ['sys', "Kiri's crane carries Pell's word to the Crater: Rue. A second Kael in the crowd runs. Four banners start up the Spire toward the Engine Core."],
+          ['hero', "My sister's out, and somebody lit this war with a borrowed face. Up the Spire, then, before that Engine finishes shouting for whatever it wants."]
         ] },
       5: { zone: 'noble', foe: 'lux', goal: "Walk into Lux's white light",
         card: "Lux, Vael's champion from a world of light, burns the Noble Ring white; Pyra walks straight into the glare with red fire and drives her off.",
@@ -575,63 +584,64 @@
 
     // ---------------------------------------------------------------- YARA
     yara: {
-      1: { zone: 'range', goal: "Turn the Firing Gallery around",
-        card: "Subject 57 has never missed a target a mile out over the clouds, and today the target is a rag of sail full of runaways.",
+      1: { zone: 'range', goal: "Hold the Firing Gallery for the skiff",
+        card: "Halcyon's best marksman has not missed in a year of shooting. Today the mark is a skiff under a patched sail, and it is full of people.",
         intro: [
-          ['sys', "The Firing Gallery. A target a mile out over the clouds. Subject 57 has never once missed."],
-          ['hero', "I'm Yara. I lit the lamp on the sea wall so the ships could find their way in. Halcyon calls this the same job."],
-          ['agent', "Target at one mile, bearing for the Skylift. Fire, 57."],
-          ['hero', "Wait. That's no ship. Those are people clinging to a rag of sail. Runaways from the wards."],
-          ['agent', "They're Subjects. Fire, 57, or take their place."],
-          ['hero', "A lamp brings people home. It doesn't knock them out of the sky. I'm done aiming for you."]
+          ['sys', "The Firing Gallery. A long white room open to the wind, and a mark a mile out over the clouds. Subject 57 has never missed."],
+          ['hero', "Yara. I lit the lamp on the sea wall so the ships could find their way in. Halcyon says this is the same job."],
+          ['agent', "Target at one mile, bearing for the Skylift. Wind three knots west. Fire, 57."],
+          ['hero', "That's no ship. Those are people hanging off a rag of sail. Runaways from the wards."],
+          ['agent', "Escaped Subjects. Fire, 57, or take their place on the feed lines."],
+          ['hero', "A lamp brings people home. It doesn't knock them out of the sky. Turn around, gentlemen. I've found a nearer target."]
         ],
         win: [
           ['hero', "The skiff made the Skylift. Every soul on it."],
-          ['hero', "How many of my mile-away targets were never ships at all? I'll count them later. Every one."]
+          ['hero', "How many of my mile-out marks were never ships at all? I'll count them. Every one. Later."]
         ] },
-      2: { zone: 'saloon', with: 'jax', goal: "Cover the runaways with Jax",
-        card: "Yara follows the runaways down to the Surface, where Jax holds the Long Bar's door; ten paces or a mile, together they keep Halcyon's recovery team off them.",
+      2: { zone: 'saloon', with: 'jax', goal: "Hold the Long Bar with Jax",
+        card: "The runaways ride the Skylift down to the Surface, and Halcyon's recovery team rides down after them. At Mile Zero, Jax holds the Long Bar's door.",
         meet: [
-          ['sys', "The Long Bar at Mile Zero. The runaways rode the Skylift down and ran. Halcyon's recovery team rode down after them."],
-          ['jax', "Easy with that bow, Aurelia. You're the one who wouldn't shoot. The whole skiff's drinking on your name."],
+          ['sys', "Mile Zero, the Long Bar. Dust on the windows, cold water on the counter, a skiff's worth of runaways under the tables."],
+          ['jax', "Easy with that bow, Aurelia. You're the one who wouldn't shoot. Whole skiff's been drinkin' to your name."],
           ['hero', "Yara. I kept the lamp on our sea wall, back home. Those people are mine to bring in."],
-          ['jax', "Jax. Nobody belongs to anybody in my bar. I'll take the near ones. You take anything past ten paces."],
-          ['hero', "Past ten paces is everything worth the arrow."],
-          ['jax', "Then we argue later. Company."]
+          ['jax', "Jax. Nobody belongs to anybody in my bar, partner. I'll take the near ones. You take anything past ten paces."],
+          ['hero', "Past ten paces is everything worth an arrow."],
+          ['jax', "Then we argue later. Company's here."]
         ],
         win: [
-          ['jax', "Fine shooting, at a mile. Up close you'd have died twice, and I'd have had to watch."],
+          ['jax', "Fine shooting, at a mile. Up close you'd have died twice, and I'd have had to mop it up."],
           ['hero', "And at a mile you missed every one. Call it even?"],
-          ['jax', "Nobody buys the round. Suits me. Go home, lamp-girl. Your runaways sleep safe at my bar."]
+          ['jax', "Nobody buys the round. Suits me. Go on home, Yara. Your runaways sleep safe under my roof."]
         ] },
-      3: { zone: 'scrapton', rival: 'hart', goal: "Settle the bet with Hart",
-        card: "For two years the bet has run, bow against spear, and on the Rust Flats, with no caravan to guard, Hart finally charges.",
+      3: { zone: 'scrapton', rival: 'hart', goal: "Duel Hart on the Rust Flats",
+        card: "Bow against spear: the bet has run for two years. On the Rust Flats, with no caravan to guard, Hart finally charges.",
         meet: [
-          ['hart', "Yara. Two years this bet has run. Bow against spear, the Rust Flats, no caravan to guard."],
+          ['hart', "Two years, Yara. Bow against spear. Open ground, no wagons, no cover. Rules are rules."],
           ['hero', "A bow reaches further, Hart. That was always the whole bet."],
           ['hart', "A bow never stopped a charge. Keep your distance. I'll keep it for you."],
-          ['hero', "Then charge. Every step you take toward me, my arrows land harder."]
+          ['hero', "Then charge. Every yard you close costs you an arrow. Count them as you come."]
         ],
         win: [
-          ['hart', "I never got close. Not once. Fine. The bow reaches further."],
-          ['hero', "Settled. You owe me a drink. Jax owes me two."],
+          ['hart', "Never got close. Not once. Fine. The bow reaches further."],
+          ['hero', "Settled, spear-boy. You owe me a drink. Jax owes me two."],
           ['hart', "Jax will swear it wasn't ten paces. Good luck collecting."]
         ],
         lose: [
           ['hart', "Close enough to touch, Yara. That's a spear's distance. Again?"]
         ] },
-      4: { zone: 'noble', goal: "Shoot the length of the Ring",
-        card: "With one arrow drawn for a whole breath, Yara silences every Halcyon gun on the Ring; Rue is named and runs, and atop the Spire the Director becomes the Convergence.",
+      4: { zone: 'noble', goal: "Clear the gunners off the Noble Ring",
+        card: "Two forged films have turned the three layers on each other, and Halcyon has put a gun on every balcony around the Ring. Yara takes the long shot: the whole length of it.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Screens loop a Deepline boy at the vents; Deepline's runners swear Nyra led their drills."],
-          ['hero', "I watched that feed through my scope. The boy at the vents never blinks. Forty seconds. Nobody living goes that long."],
-          ['agent', "Gunners to the balconies! Anyone on the Ring without a Halcyon badge is a target. Anyone!"],
-          ['hero', "Halcyon guns on every balcony, end to end. One line. One breath. The lamp is lit."]
+          ['sys', "The Three-Layer War. Sky screens loop Kael opening the Sump's vents on the labs; Deepline's runners swear Nyra led the drills in. Each blames the other."],
+          ['hero', "I watched that film through my scope. The boy at the vents never blinks. Forty seconds. Nothing alive goes forty seconds."],
+          ['agent', "Gunners to the balconies. The Proving Hall marches. Anyone on the Ring without a badge is a target."],
+          ['hero', "Guns on every balcony, end to end, in one straight line. Careless. One breath, one arrow. The lamp is lit."]
         ],
         win: [
-          ['sys', "One arrow, drawn for a whole breath, runs the length of the Noble Ring. Every Halcyon gun on it falls silent."],
-          ['hero', "Clear. The Subjects can cross. Pell named the face at the Pit: Rue. At the Crater she ran. I knew that stare was wrong."],
-          ['sys', "At the top of the Spire, the Director steps into his Engine. What steps out is the Convergence, and it opens the sky."]
+          ['sys', "One arrow, drawn for a whole breath, runs the length of the Noble Ring. Every Halcyon gun along it goes quiet."],
+          ['hero', "Clear. The wards can cross, and Aldric's knights hold the stairs facing out. Word from the Pit: Pell named the face. Rue."],
+          ['sys', "At the Crater a second Kael runs from the real one. Oda's bell has called the Surface; Deepline has the Pit. Four banners climb the Spire."],
+          ['hero', "Engine Core at the top, and it's been signalling something a long while. We get there before anything signals back."]
         ] },
       5: { zone: 'noble', foe: 'lux', goal: "Pin Lux's light from a mile",
         card: "Lux burns the Noble Ring white for Vael; Yara, who lit the harbour's lamp to bring ships home, steps back a mile and pins her with one arrow.",
@@ -685,65 +695,69 @@
 
     // ---------------------------------------------------------------- KIRI
     kiri: {
-      1: { zone: 'shrine', goal: "Fold a crane and fly up the Stacks",
-        card: "A herder's daughter from the steppe wakes twice over in the Paper Shrine, and folds the wishes of the dead into a crane wide enough to fly her up.",
+      1: { zone: 'shrine', goal: "Fight your way out of the Paper Shrine",
+        card: "A herder's daughter from the steppe wakes in the Paper Shrine under Deepline, twice over, among a thousand paper wishes left for the dead. She has paper, nerve, and one way to go: up.",
         intro: [
-          ['sys', "The Paper Shrine, under Deepline. Thousands of folded wishes for the dead, and among them a torn-through girl, waking."],
-          ['hero', "Not the steppe. Definitely not the steppe. I'm Kiri, a herder's daughter from Vharra, and there are... yes. Still two of me."],
-          ['hero', "Sorry, wishes. I'm folding you into something with wings, and I'm taking you up. Every last one."],
-          ['agent', "Torn-through in the shrine! Bag her before she's properly awake!"],
-          ['hero', "Too late! We're BOTH awake!"]
+          ['sys', "The Paper Shrine, deep under Deepline. Folded wishes for the dead hang from the ceiling on threads, turning in the draught."],
+          ['hero', "This is not the steppe. The steppe has sky. Okay: Kiri, herder's daughter, Vharra. Still two of me? ...Yes. Hello, me."],
+          ['hero', "Sorry, wishes. I'm going to fold you into something with wings and take you somewhere with sky. All of you. Promise."],
+          ['agent', "Torn-through in the shrine, two signatures. Bag her before she's properly awake."],
+          ['hero', "Too late! We're BOTH awake! And we're both annoyed!"]
         ],
         win: [
-          ['hero', "One crane, wide enough for two Kiris and every wish in the shrine. Next stop: up."],
-          ['sys', "The first Deepliner to reach Aurelia without a ticket lands on a golden roof, snowed under in paper."]
+          ['hero', "One crane, wide enough for two Kiris and every wish in the shrine. Hold on tight, everyone. We're going up the Stacks."],
+          ['sys', "The first Deepliner ever to reach Aurelia without a ticket lands on a golden roof, under a snowfall of paper."]
         ] },
       2: { zone: 'slums', with: 'rook', goal: "Hold the Slums with Rook",
-        card: "The Paper Post carries a letter Halcyon wants unsent down to the Slums, where a boy named Rook signs for it eight times.",
+        card: "The Paper Post carries a letter Halcyon wants unsent down to the Deepline Slums. The boy who signs for it is Rook of the Lantern Cell, all eight of him.",
         meet: [
-          ['sys', "The Deepline Slums. The Paper Post brings a letter Halcyon wants unsent, down to a boy with a great deal of himself."],
-          ['rook', "Paper girl! Kiri, right? Wait. Which one of you do I sign for?"],
-          ['hero', "Either. Both. Same girl, twice. Sora flies the high letters; I fold the rest and run them low."],
-          ['rook', "Same! I mean, I'm the same guy, like eight times over. Everyone else thinks it's weird."],
-          ['hero', "It's not weird. It's efficient. ...Also, every Halcyon collector in the Slums is standing behind you."],
-          ['rook', "Great! There's more of me than of them!"]
+          ['sys', "The Deepline Slums. Laundry lines, cook smoke, and a crowd of boys wearing the same grin. It is one boy."],
+          ['rook', "Paper girl! Kiri, right? Letter for us? Wait. Which one of you do we sign for?"],
+          ['hero', "Either. Both. Same girl, twice. Sora flies the high letters, I fold the rest and run them low. Sign here, here, and... there."],
+          ['rook', "Same! I mean, I'm the same guy, like eight times. Everybody else says it's weird."],
+          ['hero', "It's not weird. It's efficient. ...Also, every Halcyon collector in the Slums is standing right behind you."],
+          ['rook', "Great! There's more of us than them!"]
         ],
         win: [
-          ['rook', "You fold, I clone, nobody gets lonely. Come back any time, paper girl."],
-          ['hero', "The Paper Post delivers to everyone. Even boys who are mostly reprints of themselves."],
+          ['rook', "You fold, we clone, nobody gets lonely. Come back any time, paper girl."],
+          ['hero', "The Post delivers to everyone. Even boys who are mostly reprints."],
+          ['hero', "...Mostly reprints. Sorry. That was her."],
           ['rook', "Original, thank you. The others are reprints of ME."]
         ] },
-      3: { zone: 'shrine', rival: 'rue', goal: "Stay yourself against Rue",
-        card: "Rue comes to the Paper Shrine wearing Kiri's face, and learns that a girl who is two girls cannot be copied.",
+      3: { zone: 'shrine', rival: 'rue', goal: "Duel Rue in the Paper Shrine",
+        card: "Something comes to the Paper Shrine in Kiri's face, then someone else's, then nobody's. Rue, Pell's spy, can copy anyone she meets. She has never met anyone who is two people.",
         meet: [
-          ['sys', "The Paper Shrine. A girl in a white smiling mask stands among the wishes. She is wearing Kiri's face. Then she isn't."],
-          ['rue', "Pell says copy anyone once and you can do them better than they do. So why do I keep getting lost in you?"],
-          ['hero', "Because there are two of me, and you can only be one thing at a time."],
-          ['rue', "A copy of a copy is good for nothing. Hold still and be one girl."],
-          ['hero', "Not a chance. Come on, both of us! Fold her up!"]
+          ['sys', "The Paper Shrine. Among the wishes stands a girl in a white smiling mask. She is wearing Kiri's face. Then she isn't."],
+          ['rue', "Both. Either. Same girl, two times. ...You said that in the Slums. It sounded better in your mouth. Why?"],
+          ['hero', "You followed me? Ugh. You're doing my voice, and you're doing it wrong. Who sent you?"],
+          ['rue', "Pell says, copy someone once and you do them better than they do. Pell is never wrong. But I keep getting lost in you."],
+          ['rue', "There are two of you. I can only be one thing at a time. Hold still and be one girl."],
+          ['hero', "Not a chance. You took my face without asking, and the Post doesn't deliver to thieves. Both of us! Fold her up!"]
         ],
         win: [
-          ['rue', "Stop... moving... I can't hold your shape. Which of you is real?"],
-          ['hero', "Both. That's the one thing you can't copy. We aren't pretending."],
-          ['sys', "Rue's mask slips. For a heartbeat there is nothing under it at all. Then she is gone, and the wishes settle like snow."]
+          ['rue', "Stop... moving. I can't hold your shape. Which of you is the real one?"],
+          ['hero', "Both. That's the one thing you can't copy. Neither of us is pretending."],
+          ['sys', "Rue's mask slips. For one heartbeat there is nothing under it at all. Then she is gone, and the wishes drift slowly back down."]
         ],
         lose: [
-          ['rue', "There. Three Kiris now, and the best of them is me."]
+          ['rue', "There. Three Kiris now. And the best one is me."]
         ] },
-      4: { zone: 'noble', goal: "Fly a thousand cranes over the Ring",
-        card: "Kiri sends a thousand cranes of Pell's secrets over the Ring, then flies his last word to the Crater herself: the false faces were Rue's, and Rue runs.",
+      4: { zone: 'noble', goal: "Fly the cranes past the Ring's guards",
+        card: "Aurelia's screens say Deepline struck first; Deepline's say the Sky did. Kiri knows the trick behind both; she has met it before. Tonight a thousand cranes tell the Ring the truth.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Halcyon's screens loop one feed: a Deepline boy opening the Sump's vents on the labs."],
-          ['hero', "I know that trick. I fought it in the shrine: something with no face, wearing whoever it likes."],
-          ['hero', "Up here it wore Kael. Rook says down below it wore Nyra and led the drills. The same smile under both."],
-          ['coda', "Then tell the Ring everything. Pell's secrets are stitched into my ribbons. Fold them and fly them."],
-          ['hero', "A thousand cranes, one secret each, one for every door on the Ring. Go, go, GO!"]
+          ['sys', "The night of the Siege of the Noble Ring. On every gold balcony a screen plays Kael, Deepline's white-haired street kid, gassing the labs from the Sump."],
+          ['hero', "Rook sent word up: down there they're shown Nyra, the singer from the Med-Lab, leading Halcyon's drills in. Each side blames the other."],
+          ['hero', "I know this trick. I fought it in the shrine: something with no face, wearing whoever it likes. Same empty smile under both."],
+          ['coda', "Then tell the whole Ring. Pell's secrets are stitched into my ribbons, and tonight I cut them loose. Fold them. Fly them."],
+          ['hero', "A thousand cranes, one secret each, one for every door on the Ring. The Proving Hall can read too. Go, go, GO!"]
         ],
         win: [
-          ['sys', "A thousand paper cranes settle on a thousand doorsteps. The Ring reads who pays Halcyon, and for what."],
-          ['sys', "A letter rides up the Skylift from the Pit. Pell, tangled in his own Cat's Cradle, has named the face: Rue."],
-          ['sys', "Kiri flies it to the Crater herself. Kael faces Nyra; a second Kael stands in the crowd. She shouts the name. Rue runs."],
-          ['hero', "Folded, flown, delivered. Next stop the Spire, and the Paper Post carries word for all four banners."]
+          ['sys', "A thousand cranes land on a thousand doorsteps. The Ring reads who pays Halcyon, and for what. The Proving Hall halts on its own stairs."],
+          ['sys', "A letter rides up the Skylift from the Pit. The Lantern Cell has Pell in his own Cat's Cradle, and Pell has named the face: Rue."],
+          ['sys', "Kiri flies it to the Crater herself. Kael and Nyra stand ready to tear each other apart, and a second Kael watches from the crowd."],
+          ['hero', "RUE! It's Rue! Kael, behind you! ...And there it goes. Running away with your face on."],
+          ['sys', "From the Surface comes word of Oda's bell, three tolls over the Meridian drills. Hollis paints a fourth banner, and four start up the Spire."],
+          ['hero', "Folded, flown, delivered. Next stop: the Engine Core, before the thing it keeps calling hears back. The Post carries for all four banners."]
         ] },
       5: { zone: 'skyport', foe: 'corvin', goal: "Fly through Corvin's crows",
         card: "Corvin, Vael's champion, blacks out the Skyport with his crows; Kiri, both of her, snares them in paper cranes and drives him back to the crown-ship.",
@@ -789,60 +803,64 @@
 
     // ---------------------------------------------------------------- KESTRA
     kestra: {
-      1: { zone: 'ballast', goal: "Keep the undercroft hidden",
-        card: "Under the nobles' feet, in the hot dark of the Ballast Decks, the Sky Clan has danced fire for a hundred years, and no one above has ever known.",
+      1: { zone: 'ballast', goal: "Drive Halcyon's sweep off the Decks",
+        card: "Under the nobles' feet, where the pylons run hot, the Sky Clan has danced fire for generations. Tonight a Halcyon sweep comes down looking for the heat.",
         intro: [
-          ['sys', "The Ballast Decks, the hot dark under the gold. The pylons hum, and the Sky Clan dances fire where no one looks."],
-          ['hero', "Kestra of the Sky Clan. A hundred years we've danced the fire-fan here, under the nobles' feet. Not one of them knew."],
-          ['agent', "Heat bloom on the ballast deck. Something down here is burning. Sweep it."],
-          ['hero', "Burning? How rude. It's dancing. ...And now it's both."]
+          ['sys', "The Ballast Decks, the hot dark under the gold. The pylons hum like a held note. Somewhere in the dark, a fan snaps open."],
+          ['hero', "Kestra of the Sky Clan. We've danced fire down here for a hundred years, under the nobles' slippers, and not one of them has ever looked down."],
+          ['agent', "Heat bloom on ballast deck three. Unregistered combustion. Sweep it and log it."],
+          ['hero', "Combustion? How rude. It's a dance. ...Fine. Now it's both."]
         ],
         win: [
-          ['hero', "Sweep finished. Halcyon's sweep, I mean. Fire first, then the fan to make it worse."],
-          ['hero', "Someone upstairs will notice the scorch marks. Lin is going to give me the look."]
+          ['hero', "Sweep finished. Theirs, I mean. Fire first, then the fan to make it worse. They never learn the second part."],
+          ['hero', "Someone upstairs will smell the scorch, of course. And Lin is going to give me the look. She's probably giving it to the wall already."]
         ] },
-      2: { zone: 'ballast', with: 'lin', goal: "Keep the beams from catching",
-        card: "Kestra scorches three of the beams the whole city stands on, and Lin arrives with the look, and a Halcyon captain close behind it.",
+      2: { zone: 'ballast', with: 'lin', goal: "Hold the Ballast Decks with Lin",
+        card: "Kestra has scorched three of the beams the whole city stands on. Lin arrives with the look, and close behind it comes a Halcyon captain with a full sweep.",
         meet: [
-          ['lin', "Kestra. Three beams scorched. The whole city sits on those."],
-          ['hero', "And here it comes. The look."],
-          ['lin', "It's already here. Also: Halcyon is sending a full sweep after your heat bloom. With a captain, this time."],
-          ['hero', "Then they get the whole dance. You keep the beams cool, and I'll keep the fire on them."],
-          ['lin', "Every fifth strike. And breathe, sister."]
+          ['lin', "Kestra. Three beams scorched. The city sits on those."],
+          ['hero', "And here it is. The look. I can feel it on the back of my neck."],
+          ['lin', "It's in front of you. Behind it is Halcyon: a full sweep, with a captain this time."],
+          ['hero', "Then they get the whole dance. You keep the beams cool. I keep the fire on them, and only on them. Mostly."],
+          ['lin', "Every fifth strike. Breathe, sister. Fire goes where your breath goes."]
         ],
         win: [
-          ['hero', "Not one beam caught. How do you do that?"],
-          ['lin', "I watch the fire, you watch the enemy, and neither of us watches the score."],
-          ['hero', "I always watch the score. Speaking of which: I hear the Burn Ward has a new phoenix."]
+          ['hero', "Not one beam caught. Not one! How do you DO that?"],
+          ['lin', "I watch the fire. You watch the enemy. Neither of us watches the score."],
+          ['hero', "I always watch the score. Speaking of which: they say the Burn Ward has a new phoenix. Wearing MY bird."]
         ] },
-      3: { zone: 'ballast', rival: 'pyra', goal: "Prove the real phoenix to Pyra",
-        card: "The phoenix question comes round again: fight twelve, in the Ballast Decks, and Pyra strolls in wearing the bird.",
+      3: { zone: 'ballast', rival: 'pyra', goal: "Duel Pyra in the Ballast Decks",
+        card: "Fight twelve of the phoenix question. Pyra, who burned the Burn Ward down on her way out of it, strolls into the Ballast Decks wearing the bird Kestra's family has danced for a century.",
         meet: [
-          ['pyra', "Kestra. Fight twelve. You picked the hottest room in the city. How sweet."],
-          ['hero', "My family has danced the phoenix here for a hundred years. Then you stroll out of a bottle wearing one."],
-          ['pyra', "It came out of my fire, so it's mine. Eleven fights, and I'm ahead."],
-          ['hero', "Nobody agrees on that score. Tonight we settle it."]
+          ['pyra', "Kestra! Fight twelve, feathers. And you picked the hottest room in the city. For me? You shouldn't have."],
+          ['hero', "My family danced the phoenix in this dark before your lab was even built. Then you walk out of a burning lab wearing one. Like a hat."],
+          ['pyra', "It came out of MY fire, so it's mine. And it's eleven fights, and I'm ahead. Everybody knows that."],
+          ['hero', "Nobody knows. Nobody agrees. Tonight they will. Mind the beams."],
+          ['pyra', "Ooh, the beams. Bo-ring. I'll mind them after."]
         ],
         win: [
-          ['pyra', "Fine. Twelve's yours. ...That dive was something else."],
-          ['hero', "A hundred years of practice. The phoenix is ours. But I suppose a phoenix could spare a second tail."],
-          ['lin', "Two tails, one undercroft, no burning beams. I am begging you both."]
+          ['pyra', "Fine. Twelve's yours. ...That dive, though. That was something."],
+          ['hero', "A century of practice. The phoenix is ours. ...Though I suppose a phoenix could spare a second tail."],
+          ['lin', "Two tails. One undercroft. No burning beams. I am asking you both, nicely, once."]
         ],
         lose: [
-          ['pyra', "Sit down, feather duster. Thirteen, whenever you want it."]
+          ['pyra', "Sit down, feather duster. Thirteen's whenever you want it. Bring a bucket."]
         ] },
-      4: { zone: 'noble', goal: "Raise the undercroft into the Ring",
-        card: "Kestra raises the Sky Clan out of the undercroft through the Noble Ring's floor; Rue's false faces are named, and the Hidden Clans march under a banner of their own.",
+      4: { zone: 'noble', goal: "Raise the Clan and hold the Ring",
+        card: "The screens say Deepline struck first, and Halcyon's knights will march down to make it pay, right over the Sky Clan's roof. Kestra decides the Clan has hidden long enough.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Overhead, the screens loop a Deepline boy opening the Sump's vents on the labs."],
-          ['hero', "Look at the fire on that feed. It bends round him as if he isn't there. Fire doesn't bend round people. It eats them."],
-          ['lin', "And Halcyon is using it to march the Proving Hall down to Deepline, right over our heads."],
-          ['hero', "Over our roof, you mean. Sky Clan! A hundred years beneath the floor. Tonight we come up through it."]
+          ['sys', "The night of the Siege. Above the undercroft the Noble Ring is shouting at its screens: Kael, a white-haired Deepline boy, throwing the Sump's vents open."],
+          ['hero', "Look at the fire on that feed. It bends round him as if he isn't there. Fire doesn't go round people, Lin. It goes through them."],
+          ['lin', "Below, they are shown Nyra, the singer from the Med-Lab, leading the drills in. Each layer is certain the other struck first."],
+          ['lin', "And the Proving Hall is ordered down to Deepline tonight. Its road runs over our heads."],
+          ['hero', "Over our roof, you mean. Sky Clan! A hundred years beneath their floor. Tonight we come up through it."]
         ],
         win: [
-          ['sys', "The marble floor of the Noble Ring cracks open, and the Sky Clan rises out of the undercroft on wings of fire."],
-          ['hero', "At last the nobles know who has been living under their feet. Those faces were worth a hundred years."],
-          ['hero', "Pell named the face, and Rue ran at the Crater. A false face, a false war. Now the Spire, and the Clans carry a banner."]
+          ['sys', "The Ring's marble floor cracks open, and the Sky Clan rises out of the undercroft on wings of fire. The nobles finally look down."],
+          ['hero', "Their faces! Worth every year we waited. Even the Proving Hall stopped dead on the stairs. Nobody marches into a phoenix."],
+          ['lin', "Oda's bell has rung three times over the Meridian. In the Pit, Pell is caught in his own strings. He named his spy: Rue."],
+          ['sys', "Kiri's crane flies the name to the Crater. A second Kael runs from the crowd. Hollis paints a fourth banner, for the Hidden Clans."],
+          ['hero', "Our banner, in daylight, at last. Four of them, up four sides of the Spire to the Engine Core. Whatever it's been calling, it doesn't get an answer."]
         ] },
       5: { zone: 'gallery', foe: 'mira', goal: "Burn through Mira's mirrors",
         card: "Mira, Vael's champion and a reflection out of the harbour ice, turns the Observation Gallery's glass on Aurelia; Kestra burns through every mirror to reach her.",
@@ -889,64 +907,68 @@
 
     // ---------------------------------------------------------------- SORA
     sora: {
-      1: { zone: 'skyport', goal: "Deliver the letters past the drones",
-        card: "A kite as big as a sail rides the wind between Aurelia's towers, and the girl hanging from it has not touched the ground since the sky tore.",
+      1: { zone: 'skyport', goal: "Beat the drones over the Skyport",
+        card: "A kite the size of a sail rides between Aurelia's towers. The girl hanging under it carries letters Halcyon wants unsent, and she has not touched ground since the sky tore.",
         intro: [
-          ['sys', "The Skyport. A kite as big as a sail rides the wind between Aurelia's towers, and a girl hangs from it, grinning."],
-          ['hero', "Sora, of the kite clans of Vharra! Letters for anyone who pays in bread. Halcyon hates that. I love that."],
-          ['hero', "When the sky tore I went UP. My brother went down. I haven't touched the ground since, and I don't intend to."],
-          ['agent', "Unlicensed flyer over the Skyport. Interceptors, bring her down."],
-          ['hero', "Down? Never heard of it. Is it nice?"]
+          ['sys', "The Skyport. Between the gold towers rides a kite as big as a sail, and under it, by one hand, hangs a grinning girl with a satchel."],
+          ['hero', "Sora, of the kite clans of Vharra! Letters to anyone, anywhere, for a loaf of bread. Halcyon hates it. That's the best part."],
+          ['hero', "When the sky tore I went up and my brother went down. I haven't set foot on anything since. Haven't missed it."],
+          ['agent', "Unlicensed flyer over the Skyport. Interceptors, bring her to ground."],
+          ['hero', "Ground? What's that? Is it nice? Does it have a view?"]
         ],
         win: [
-          ['hero', "Every letter delivered, every drone in the harbour, and not one toe on the ground."],
-          ['hero', "He's down there somewhere. Gale. He fell. I'll find him, from up here, where I can see everything."]
+          ['hero', "Every letter delivered, every drone in the harbour, and my boots still clean."],
+          ['hero', "Gale's down there somewhere. He fell. ...He's fine. He's always fine. I'll find him from up here, where I can see everything."]
         ] },
       2: { zone: 'skylift', with: 'gale', goal: "Hold the Skylift with Gale",
-        card: "Sora watched her brother fall a thousand metres, and on the Skylift cables he comes back up on the wind, already threatening to hover.",
+        card: "Sora watched her brother fall out of the sky. Today, on the Skylift cables, he rides a hot updraft back up, already looking at her like she is made of glass.",
         meet: [
-          ['hero', "That's... no. GALE?! You fell! I saw you fall!"],
-          ['gale', "Down a thousand metres, up a thousand on the updraft. Your towers are hard to tell apart, Sora."],
-          ['hero', "You're here. You're really here. ...You're going to hover now, aren't you."],
-          ['gale', "Like a cloud with a grudge. Every run. Who's your paper friend?"],
-          ['kiri', "Kiri. Folder, flyer, your sister's partner. Also: Halcyon, on the cables. A lot of Halcyon."],
+          ['hero', "That's... no. No, no, no. GALE?! You fell! I saw you go!"],
+          ['gale', "Down a stack, up the same stack on the warm air. Took a while. Your towers are all gold, Sora. Very confusing."],
+          ['hero', "You're here. You're really here. ...And you're going to hover. Your eyebrows are hovering already."],
+          ['gale', "Hovering is how I say I love you. Who's your paper friend? Is she paying you? Is she paying me?"],
+          ['kiri', "Kiri. I fold, your sister flies. We get paid in bread. Also, the cables are crawling with Halcyon, so: hugs later."],
           ['hero', "Brother, partner, kite. Let's give them something to look up at."]
         ],
         win: [
-          ['kiri', "Three flyers, every tower in the city. Not a delivery run any more. A post. Call it the Paper Post."],
-          ['gale', "And I'm on every run. Every one."],
-          ['hero', "You are NOT on every run. ...Fine. Some runs. Stop looking at me like that."]
+          ['kiri', "Three flyers, every tower in the city. That's not a round any more. It's a post. Call it the Paper Post."],
+          ['gale', "And I come on every run. Every single one."],
+          ['hero', "You do NOT. ...Some runs. The boring ones. Stop smiling like that."]
         ] },
-      3: { zone: 'docks', rival: 'bando', goal: "Settle the kite story with Bando",
-        card: "Bando has told all of Dockside Nine he saved Sora's kite on festival day; Sora flies down to set the story straight, and never once touches the dock.",
+      3: { zone: 'docks', rival: 'bando', goal: "Beat Bando on Dockside Nine",
+        card: "Bando of Dockside Nine tells anyone who stands still that he once saved Sora's kite. Sora flies down to correct the record, and won't set one foot on his dock to do it.",
         meet: [
-          ['sys', "Dockside Nine, last wharf of the Drowned Line. A kite drifts down the Skylift shaft and hangs above the cranes."],
-          ['bando', "SORA! Hey, everybody, it's her! The kite girl! The one I saved!"],
-          ['hero', "You did NOT save me. You reached for my kite. On festival day. While I stood right there."],
-          ['bando', "Tree, kite, little crying girl, one long arm. That's a rescue. Ask anybody. I've told everybody."],
-          ['hero', "Then here's a new one to tell. Kite girl beats long arm, and never touches the dock."],
-          ['bando', "The long arm of Deepline says: come down here and say that."]
+          ['sys', "Dockside Nine, the last wharf before the Drowned Line. A kite comes down the Skylift shaft and hangs over the cranes, very cross."],
+          ['bando', "SORA! Everybody, look, it's her! The kite girl! The one I saved!"],
+          ['hero', "You did NOT save me. You grabbed my kite out of a tree. On festival day. While I stood right underneath it."],
+          ['bando', "Big tree, little girl, kite stuck up top. Then whoosh: one arm, clear across the field. Eleven arm's lengths, easy. That's a rescue."],
+          ['hero', "I wasn't crying. I was shouting at the tree. New story for you: kite girl beats long arm, and never lands on your dock."],
+          ['bando', "Ha! Come down here and say that."]
         ],
         win: [
-          ['bando', "She never touched the dock. Not once. All right, all right. Kite girl wins."],
-          ['hero', "Now say the rest. In front of everyone."],
-          ['bando', "I didn't save you. ...I sort of did, though. A bit."],
-          ['hero', "A bit. Fine. You can tell THAT one."]
+          ['bando', "Not one toe on the boards. Not one! All right, all right. Kite girl wins."],
+          ['hero', "Now the other part. Loud. So the whole dock hears."],
+          ['bando', "I didn't save you. ...I sort of did, though. A little bit. About a thumb's length."],
+          ['hero', "A thumb's length. Fine. You can tell THAT one."]
         ],
         lose: [
-          ['bando', "Reach beats string! Twice now I've saved you, kite girl."]
+          ['bando', "Reach beats string! That's twice I've saved you now, kite girl!"]
         ] },
-      4: { zone: 'noble', goal: "Carry Coda's dance to every tower",
-        card: "Sora flies Coda's ribbons of Pell's secrets past every tower in Aurelia, while Kiri's crane carries the name to the Crater: the false faces were Rue's.",
+      4: { zone: 'noble', goal: "Clear the sky for Coda's ribbons",
+        card: "Halcyon's screens say a Deepline boy struck the Sky first, and the Proving Hall is ready to march. Coda is about to dance out the truth, and someone has to fly it to every tower.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. The screens loop a Deepline boy opening the vents. Deepline swears Nyra led the drills."],
-          ['hero', "From up here you see everyone. That night Kael was in the Crusher Yard. I flew right over him. Someone's lying."],
-          ['coda', "Then carry the truth. I'm about to dance Pell's secrets out on stage. Take them to every tower."],
-          ['hero', "Every tower, every window. Gale, take the low route! And don't follow me!"]
+          ['sys', "Dusk, the night of the Siege. From up high every screen in Aurelia glows with one film: Kael, a Deepline street kid, hauling the Sump's vents open."],
+          ['sys', "Below, Deepline watches Nyra, the singer Halcyon kept in a tank, lead the drills into its tunnels. Each layer swears the other hit first."],
+          ['hero', "I fly over the Crusher Yard every night. That night Kael was on a scrap heap eating noodles, nowhere near any vents. Somebody's lying."],
+          ['coda', "Then carry the truth. Mid-act tonight I cut Pell's ribbons loose, every secret he stitched into them. Take them to every tower."],
+          ['hero', "Every tower, every window. Gale, low route! And don't follow me!"]
         ],
         win: [
-          ['sys', "A kite trailing a dancer's ribbons crosses every tower in Aurelia, and Pell's secrets ride with it."],
-          ['hero', "And Kiri's crane made the Crater: Pell named the face. Rue. She ran. I said someone was lying."]
+          ['sys', "A kite crosses every tower in Aurelia trailing a dancer's ribbons, and on every balcony, someone stops to read them."],
+          ['hero', "The Proving Hall read them too, and stopped on the stairs. Hard to march on Deepline while the sky spells out who paid for the war."],
+          ['sys', "Oda's bell has rung three times on the Surface. In the Pit, Pell hangs in his own strings and gives up a name. Kiri's crane flies it to the Crater."],
+          ['hero', "Rue. Pell's spy with no face. Kael and Nyra were about to fight over her lies, and a spare Kael just bolted. Told you somebody was lying."],
+          ['hero', "Four banners up the Spire now, to the Engine Core, and something up there is still calling. Highest route's mine. We get there first."]
         ] },
       5: { zone: 'skylift', foe: 'mika', goal: "Bring Mika down",
         card: "Mika, Vael's champion who never touches the ground, cuts the Skylift cables; Sora, who never does either, meets her in the air and puts her on the roof.",
@@ -999,63 +1021,65 @@
 
     // ---------------------------------------------------------------- CODA
     coda: {
-      1: { zone: 'noble', goal: "Dance through the Director's show",
-        card: "The Noble Ring's star dancer learned her rhythm from a temple bell, and every step she takes for the Director's guests hangs on Pell's string.",
+      1: { zone: 'noble', goal: "Dance down the Director's drones",
+        card: "The Noble Ring's star dancer once counted temple bells with her feet. Tonight she dances against drones for the Director's guests, and every step hangs on Pell's string.",
         intro: [
-          ['sys', "The Noble Ring opera. Tonight the Director's guests want a spectacle: the star dancer against Halcyon's drones."],
-          ['hero', "Coda. I learned rhythm counting the tolls of a temple bell on the Surface. Now I count for the people in the boxes."],
-          ['pell', "Smile, my star. Every step on the beat. I will know if you miss one."],
-          ['hero', "I never miss a step, Pell. That's the whole trouble."]
+          ['sys', "The Noble Ring opera. Tonight the Director's guests want a spectacle: the star dancer against Halcyon's drones, live, without a net."],
+          ['hero', "Coda. I learned to count on a temple floor on the Surface, with the bell tolling up through my feet. Now I count for the boxes. Five, six, seven, eight."],
+          ['pell', "Smile, my star. Every step on the beat. I will know if you miss one. I always know."],
+          ['hero', "I never miss, Pell. That's the whole trouble."]
         ],
         win: [
-          ['sys', "Applause. Roses on the boards. A noble leans close to whisper about the feed lines, and the ribbons remember."],
-          ['hero', "One more secret for Pell's collection. A string on every step. Some day I'll find the scissors."]
+          ['sys', "Applause. Roses on the boards. A noble leans out of his box to whisper about the feed lines, and the ribbons remember every word."],
+          ['hero', "Another secret for Pell, stitched in on the beat. Bow. Smile. Hate it. One night I'll find the scissors."]
         ] },
-      2: { zone: 'noble', with: 'zara', goal: "Take a seat at the House Edge",
-        card: "After the opera Coda slips Pell's strings for one night; Zara gives her a seat at the House Edge, bets on her, and together they see off Pell's collectors.",
+      2: { zone: 'noble', with: 'zara', goal: "Hold the House Edge with Zara",
+        card: "After the opera, Coda slips Pell's strings for a single night and walks into the House Edge, the Ring's richest card room. Zara gives her a chair, a bet, and a fight.",
         meet: [
-          ['sys', "The House Edge, after the opera. Coda slips Pell's strings for a single night and walks into the richest card room on the Ring."],
-          ['zara', "The star dancer at my tables, and without her shadow. Sit down, darling, before somebody tells Pell."],
-          ['hero', "Every step I take, someone holds the string. Tonight I want one step that's mine, even if it only goes to a chair."],
-          ['zara', "Then the chair is yours, whenever you need it. I'm betting on you, star. I never lose."],
-          ['hero', "Your doorman says there are men in grey outside. Pell's men. Halcyon's. Both."],
-          ['zara', "Then you dance, and I'll deal. Mind the chips."]
+          ['sys', "The House Edge, past midnight. Coda walks in alone, still in stage paint, past the high tables."],
+          ['zara', "The star at my tables, and without her shadow. Sit, before somebody runs to tell Pell."],
+          ['hero', "Every step I take, somebody holds the string. Tonight I want one step that's mine. Even if it only goes as far as a chair."],
+          ['zara', "Then the chair is yours, any night you need it. I'm betting on you, star. I don't lose."],
+          ['hero', "Your doorman says there are men in grey outside. Pell's, Halcyon's. Hard to tell them apart tonight."],
+          ['zara', "Then you dance. I'll deal. Mind the chips."]
         ],
         win: [
-          ['zara', "Not one chip on the floor. You fought as if no one held the string."],
-          ['hero', "No one did. One toll, push. Two, fly. I counted it myself."],
-          ['hero', "Keep my seat warm, Zara. One night I won't go back to Pell."]
+          ['zara', "Not one chip on the floor. You fought as if nobody held the string."],
+          ['hero', "Nobody did. One, push. Two, turn. Three, fly. I counted it myself."],
+          ['hero', "Keep my seat warm, Zara. One night I won't go back to him."]
         ] },
-      3: { zone: 'noble', rival: 'pell', goal: "Cut Pell's strings mid-dance",
-        card: "Mid-performance at the Noble Ring opera, with the whole house watching, Coda cuts Pell's strings one by one.",
+      3: { zone: 'noble', rival: 'pell', goal: "Duel Pell on the opera stage",
+        card: "Mid-performance, with the whole house watching, Pell walks onto the stage to take his star back in hand. Coda decides the house can watch something new.",
         meet: [
-          ['sys', "The Noble Ring opera, mid-performance. The orchestra swells. The strings go taut."],
+          ['sys', "The opera, mid-performance. The orchestra swells. In the wings, the strings go taut."],
           ['pell', "You missed a step last night, my star. At the House Edge, of all the vulgar places."],
-          ['hero', "I didn't miss that step. I took it. Without you."],
-          ['pell', "I took you out of a temple and gave you the sky. Every step you own, I paid for."],
-          ['hero', "Then here is your change. Every string. Mid-dance."]
+          ['hero', "I didn't miss it. I took it. Without you."],
+          ['pell', "I took you out of a temple and gave you the sky. Every step you own, I bought. Bow, and we'll call tonight a rehearsal."],
+          ['hero', "I've bowed for you since I was nine. Here's your change, Pell. One string at a time, on the beat."]
         ],
         win: [
-          ['sys', "The ribbons come away in her hands: Pell's strings, cut one by one. The whole house holds its breath."],
-          ['pell', "Cutting your strings in the middle of a performance. How very rude."],
-          ['hero', "They aren't your strings any more. They're my ribbons, and this dance is mine."]
+          ['sys', "Wire after wire parts in her hands. The house thinks it is choreography, and rises to its feet."],
+          ['pell', "Cutting your strings in the middle of a performance. How very rude. ...A bow, my star? No? Then I'll take one for us both."],
+          ['hero', "The strings in your hands are gone. The ones stitched into my ribbons are next, and this time I choose the audience."]
         ],
         lose: [
-          ['pell', "Back on the beat, my star. My beat. Always mine."]
+          ['pell', "Back on the beat, my star. My beat. It always was."]
         ] },
-      4: { zone: 'noble', goal: "Dance Pell's secrets out",
-        card: "Mid-opera, Coda dances Pell's whole ledger out for the Ring to read, while Pell, caught at the Pit, names the faceless one: Rue.",
+      4: { zone: 'noble', goal: "Hold the stage through the last act",
+        card: "The screens say Deepline struck first, and the Director wants the opera to play on while the Proving Hall marches. Coda knows whose orders made those faces. They are stitched into her ribbons.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Outside, the screens loop a Deepline boy at the vents. Inside, the opera plays on."],
-          ['hero', "That boy's face is a lie. Pell taught a girl with no face to wear anyone's, and I carried her orders in my ribbons."],
-          ['hero', "Kael's face at the vents. Nyra's face on the drills. Both of them Pell's handiwork, and the Director's."],
-          ['zara', "You have the whole Ring watching, darling. The house is yours. Dance."],
-          ['hero', "Music, please. Every secret Pell ever sent through me, on the beat, for all of them to read."]
+          ['sys', "The Siege of the Noble Ring. Outside the opera, every screen loops Kael, a white-haired Deepline kid, at the Sump's vents. Inside, the show goes on."],
+          ['hero', "That face is a lie. Pell taught a girl with no face to wear anyone's, and for a year I carried her orders, stitched in my ribbons."],
+          ['hero', "Kael at the vents up here. Nyra, the singer, on the drills down there. Each layer blames the other. Pell built both, for the Director."],
+          ['zara', "The whole Ring is in the house tonight, and the Proving Hall waits for the curtain to march. Every eye is yours, star. Spend them."],
+          ['hero', "Music, please. Bar one. Mid-act I cut the ribbons loose, and every secret Pell sent through me goes up on the beat."]
         ],
         win: [
-          ['sys', "Ribbon by ribbon, Coda spells out Pell's ledger: the faces, the drills, the vents, the pay. The Ring reads every line."],
-          ['hero', "Sora flies it to every tower, Kiri's cranes to every door. Nobody can ever say they didn't know."],
-          ['sys', "From the Pit, Pell's own word: the girl with no face is Rue. At the Crater, Rue runs. Next, the Spire."]
+          ['sys', "Mid-opera, Coda cuts her ribbons free and dances Pell's ledger out, line by line: the faces, the drills, the vents, the pay."],
+          ['hero', "Sora flies them to every tower, Kiri's cranes to every door. The wards rise, and Aldric turns the Proving Hall around on its own stairs."],
+          ['sys', "In the Pit, the Lantern Cell catches Pell in his own Cat's Cradle. He names the faceless one: Rue. Kiri's crane flies it to the Crater."],
+          ['sys', "There, Kael and Nyra stand face to face, and a second Kael runs from the crowd. Far below, Oda's bell has rung three times."],
+          ['hero', "Three tolls. I'd know that bell anywhere. Four banners up the Spire to the Engine Core, before whatever it calls can answer. Last act. No bow."]
         ] },
       5: { zone: 'skylift', foe: 'mika', goal: "Out-leap Mika on the cables",
         card: "Mika, Vael's champion, cuts the Skylift cables; Coda, who learned to leap without a net, dances the cables toll by toll and out-leaps her.",
@@ -1100,63 +1124,64 @@
 
     // ---------------------------------------------------------------- ZARA
     zara: {
-      1: { zone: 'noble', goal: "Keep the House Edge's secret",
-        card: "The richest card room in Aurelia loses fortunes with impeccable manners, and its winnings slip quietly down the Skylift to Deepline.",
+      1: { zone: 'noble', goal: "Run the auditors out of the House Edge",
+        card: "In the House Edge, Aurelia's nobles lose fortunes with impeccable manners. The winnings slip quietly down to Deepline, and tonight Halcyon sends auditors to find out how.",
         intro: [
-          ['sys', "The House Edge, richest card room on the Noble Ring, where Aurelia's nobles lose fortunes with impeccable manners."],
-          ['hero', "Zara. Deepline card sharp. I won my way up the Skylift one hand at a time, and never said what I staked on the last."],
-          ['hero', "The house's winnings slip down the Skylift. Bread, medicine, lamp oil. Nobody up here thinks to ask."],
-          ['agent', "Halcyon audit, madam. Somebody's money is reaching Deepline. We'll be opening the vault."],
-          ['hero', "Darling, nobody opens my vault. Pull up a chair and lose like a gentleman."]
+          ['sys', "The House Edge, richest card room in Aurelia. Nobles lose fortunes here with perfect manners and very good wine."],
+          ['hero', "Zara. Deepline card sharp. I won my way up the Skylift one hand at a time. What I staked on the last one is my business."],
+          ['hero', "The house's winnings go back down the Skylift. Bread, medicine, lamp oil. Nobody up here ever asks where."],
+          ['agent', "Halcyon audit, madam. Irregular transfers to Deepline. We'll be opening the vault. Step away from the table."],
+          ['hero', "Nobody opens my vault. Pull up a chair, gentlemen. You can lose like everyone else."]
         ],
         win: [
-          ['hero', "Audit complete. Finding: the house won. Tell your Director to send better players."],
-          ['hero', "Lin was missing tonight. Lin is never missing. Let's see where my bodyguard spends her evenings."]
+          ['hero', "Audit concluded. Finding: the house won. Tell your Director to send better players."],
+          ['hero', "And Lin wasn't behind my chair tonight. Lin is always behind my chair. Let's see where my bodyguard goes after hours."]
         ] },
-      2: { zone: 'ballast', with: 'lin', goal: "Follow Lin into the undercroft",
-        card: "Zara follows her bodyguard down a stair no noble has heard of, and finds the Sky Clan has been reading the Ring from behind her chair.",
+      2: { zone: 'ballast', with: 'lin', goal: "Fight beside Lin in the undercroft",
+        card: "Zara follows her bodyguard down a stair no noble has ever heard of, and finds a whole clan living under the gold. Halcyon's auditors follow Zara.",
         meet: [
-          ['sys', "Under the gold, the Ballast Decks. Zara follows her bodyguard down a stair no noble has ever heard of."],
-          ['lin', "You followed me. Naturally. Nothing on the Ring gets past you."],
-          ['hero', "And now I see you. Sky Clan. You took my job so your Clan could keep an eye on the Ring."],
-          ['lin', "The House Edge sees everyone, and the Clan needed eyes there. I would have stood behind your chair regardless."],
-          ['hero', "Darling, that is the best answer in the deck. Now: who's coming down that stair?"],
-          ['lin', "Halcyon. Your auditors followed you down. Every fifth strike, Zara. Do try to keep up."]
+          ['sys', "Under the gold, the Ballast Decks: heat, hum, and a hidden stair. A top hat comes down it, very quietly."],
+          ['lin', "You followed me. Of course."],
+          ['hero', "And look what I find. A clan under the floor. You took my job so your people could watch the Ring from behind my chair."],
+          ['lin', "The House Edge sees everyone. The Clan needed eyes there. I would have stood behind your chair regardless."],
+          ['hero', "That is the best hand anyone has shown me in years. Now. Who's coming down that stair behind me?"],
+          ['lin', "Your auditors. They followed you. Every fifth strike, Zara. Try to keep up."]
         ],
         win: [
           ['hero', "The house keeps its winnings and its bodyguard. Watch the Ring for your Clan, darling. Only tell me what you see."],
-          ['lin', "Everything. Beginning with this: your money reaches Deepline, and Halcyon knows it."],
+          ['lin', "Everything. Beginning with this: Halcyon knows where your money goes."],
           ['hero', "Then it's time I raised."]
         ] },
-      3: { zone: 'saloon', rival: 'jax', goal: "Settle the old hand with Jax",
-        card: "One table, two chairs, an old flame and a revolver never once holstered: at the Long Bar, Zara and Jax deal one more hand.",
+      3: { zone: 'saloon', rival: 'jax', goal: "Duel Jax at the Long Bar",
+        card: "Jax's Long Bar at Mile Zero: one card table, two chairs, and a revolver that has never once been holstered. Zara and Jax have an old hand to finish.",
         meet: [
-          ['sys', "The Long Bar at Mile Zero. One card table, two chairs, and a revolver that has never once been holstered."],
-          ['jax', "Zara. Top hat, red waistcoat. Money suits you."],
-          ['hero', "Jax. And you still deal off the bottom when the cards turn on you."],
-          ['jax', "And you still walk out without paying when you're winning. Some of us remember how that ended."],
-          ['hero', "We don't speak of it. Except across a table, with our hands full. Deal."]
+          ['sys', "Mile Zero, past midnight. Dust on the windows, one table cleared, and Jax's revolver lying by his right hand, where it always lies."],
+          ['jax', "Zara. Top hat. Red waistcoat. Money suits you, partner."],
+          ['hero', "Jax. And you still deal off the bottom when the cards go cold."],
+          ['jax', "And you still leave before the pot's split. Some of us remember how that ended."],
+          ['hero', "We don't talk about that. Not without a table between us and our hands full. Deal."]
         ],
         win: [
-          ['jax', "Jackpot. Of course it was. You always did draw the ten."],
-          ['hero', "I stacked the deck, darling. You're the one who taught me how."],
-          ['jax', "Then we're square. Drinks on the house. Your house."]
+          ['jax', "Ten. Jackpot. 'Course it was. You always did draw the ten."],
+          ['hero', "I stacked the deck. You're the one who taught me how."],
+          ['jax', "Then we're square. Drinks are on the house. ...Your house, I mean."]
         ],
         lose: [
-          ['jax', "Six chambers, sweetheart. You were still counting the first five."]
+          ['jax', "Six in the wheel, sweetheart. You were still counting five."]
         ] },
-      4: { zone: 'noble', goal: "Bet the House on the uprising",
-        card: "Zara bets every coin in the House Edge on the uprising and pays for every door, stair and kite; from the Pit, Pell names the face behind the war: Rue.",
+      4: { zone: 'noble', goal: "Hold the House while the money moves",
+        card: "The screens say Deepline struck first, and the Proving Hall is told to march. Zara reads faces, and the one on the screen has nothing behind it. She pushes every coin she has into the middle.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Every screen loops one feed: a Deepline boy opening the Sump's vents on the labs."],
-          ['hero', "I read faces for a living, darling. That boy has a face and nothing behind it. A card with no pips."],
-          ['lin', "Deepline's runners say Nyra led the drills down there. The same blank behind her eyes."],
-          ['hero', "Someone is dealing from a stacked deck. Very well. Every coin in the House, on the uprising."]
+          ['sys', "The night of the Siege. Over the House Edge's silent tables, a screen loops Kael, a white-haired Deepline kid, opening the Sump's vents on the labs."],
+          ['hero', "I read faces for a living. That boy has a face and nothing behind it. A card with no pips."],
+          ['lin', "Deepline's runners say their screens show Nyra, the singer from the Med-Lab, leading Halcyon's drills. The same blank behind her eyes."],
+          ['hero', "So each layer thinks the other dealt first, and the Director rakes the pot. Very well. Every coin in the House, on the uprising."]
         ],
         win: [
-          ['hero', "The House paid for the Subjects' doors, the Clan's stairs and every kite in the Paper Post. All in. My finest bet."],
-          ['sys', "From the Pit comes Pell's own word: the faceless one is Rue. At the Crater, she runs."],
-          ['hero', "A card with no pips, as I said. Now, darlings: the Spire."]
+          ['hero', "The House bought the Subjects' doors, the Clan's stairs and every kite in the Paper Post. Halcyon came for the vault. Halcyon left."],
+          ['sys', "The Proving Hall turns on its own stairs. Far below, Oda's bell rings three times, and in the Pit the Lantern Cell has Pell in his own strings."],
+          ['sys', "Pell names his faceless spy: Rue. Kiri's crane flies it to the Crater, and a second Kael runs from the crowd."],
+          ['hero', "No pips, as I said. Four banners going up the Spire, toward the Engine Core. The Director's machine is calling something. We fold his hand first."]
         ] },
       5: { zone: 'skyport', foe: 'corvin', goal: "Luck against omen: face Corvin",
         card: "Corvin, Vael's champion, reads the end of the sky and blacks out the Skyport; Zara plays him for it, omen against luck, and draws the last card.",
@@ -1203,63 +1228,63 @@
 
     // ---------------------------------------------------------------- MAREN
     maren: {
-      1: { zone: 'hydro', goal: "Keep your patients off the Engine",
-        card: "Subject 21 is doctor to every Subject in the Hydro Ward, and when the carts come for beds four to nine, she does not leave the room.",
+      1: { zone: 'hydro', goal: "Hold the Hydro Ward for your patients",
+        card: "Subject 21 is doctor to every Subject in the Hydro Ward, because she is better at it than Halcyon's own staff. When the carts come for six of her beds, she does not leave the room.",
         intro: [
-          ['sys', "The Hydro Ward. Subject 21 is doctor to every other Subject, because she is better at it than Halcyon's own staff."],
-          ['hero', "Maren. At home I sat with fevered children until the fever went out with the tide. Here I sit with numbered ones."],
+          ['sys', "The Hydro Ward. Basins hum, drips tick, and a woman with her sleeves rolled walks the beds, counting breaths."],
+          ['hero', "Maren. At home I sat with fevered children until the fever went out with the tide. Here the children have numbers."],
           ['nyra', "Maren. The carts are back. Beds four to nine, for the feed lines."],
-          ['agent', "Step aside, Subject 21. Beds four through nine are past use. Engine's orders."],
-          ['hero', "These are my patients. Nobody is past use while I am still in the room."]
+          ['agent', "Step aside, 21. Beds four through nine are past use. Engine allocation."],
+          ['hero', "These are my patients. Nobody is past use while I am still in the room. Take your cart and go."]
         ],
         win: [
-          ['hero', "Beds four through nine, still breathing. That will do for tonight."],
-          ['hero', "I took Halcyon's job to stay in the room with them. I'll stay until every one of them walks out on their own feet."]
+          ['hero', "Four. Five. Six... nine. All still breathing. That will do for tonight."],
+          ['hero', "I took Halcyon's job to stay in the room with them. I'll stay until every one walks out on their own feet."]
         ] },
-      2: { zone: 'choir', with: 'nami', goal: "Pull Nami out of the Drowned Line",
-        card: "Maren keeps one girl breathing in a tank above, and below, in the Drowned Line, she argues another back out of the sea.",
+      2: { zone: 'choir', with: 'nami', goal: "Hold the Drowned Line with Nami",
+        card: "Halcyon sends its doctor down to Deepline's flooded metro with a collection team. A wall gives way, the water takes a stranger, and Maren argues with the sea.",
         meet: [
-          ['sys', "The Drowned Line. Halcyon sends its doctor down with a collection team. A wall gives way, and a woman goes under."],
-          ['hero', "Too long under. No. No, sea, you don't get her. Give her BACK."],
-          ['nami', "Cold. Who... who was arguing with the sea?"],
-          ['hero', "Your doctor. Maren. Breathe. You were gone, and now you aren't."],
-          ['agent', "Good work, doctor. She's breathing, and she's full of power. Bag her for the Spire."],
-          ['nami', "I don't think so."]
+          ['sys', "The Drowned Line. A wall gives, black water pours in, and a young woman goes under and does not come up."],
+          ['hero', "Too long under. No. No, sea, you don't get this one. Give her BACK."],
+          ['nami', "Cold. ...Who was shouting at the sea?"],
+          ['hero', "Your doctor. Maren. Breathe. You were gone a minute, and now you aren't. Slowly."],
+          ['agent', "Good work, doctor. Breathing, and full of power. Bag her for the Spire."],
+          ['nami', "No."]
         ],
         win: [
-          ['nami', "You dragged me out, then fought your own team for me. I'm Nami. I owe you my life."],
-          ['hero', "You owe me rest and fluids. I must go back up: there's a girl in a tank who keeps forgetting to breathe."],
-          ['nami', "Then I'll guard the doctor's back every time she comes down here. That's the debt, and I pay my debts."]
+          ['nami', "You pulled me out. Then you fought your own team for me. Nami. I owe you a life."],
+          ['hero', "You owe me rest and fluids. I have to go back up: there's a girl in a tank who keeps forgetting to breathe."],
+          ['nami', "Then whenever the doctor comes down here, I'm at her back. That's the debt."]
         ] },
-      3: { zone: 'market', rival: 'vesna', goal: "Face Vesna in the Neon Market",
-        card: "Vesna keeps the Red Ledger, and Maren's patients are written in it; in the Neon Market the doctor comes to settle their account.",
+      3: { zone: 'market', rival: 'vesna', goal: "Duel Vesna in the Neon Market",
+        card: "Vesna keeps the Red Ledger, and half of Maren's patients are written in it. In the Neon Market, the doctor comes to settle their account.",
         meet: [
-          ['sys', "The Neon Market, Red Quarter. Vesna keeps the Red Ledger, and Maren's patients are written in it."],
+          ['sys', "The Neon Market, Red Quarter. Pink light on wet stone, and a woman in black with a red book open on her knee."],
           ['vesna', "The Tide Doctor. You've been giving blood away for free. It's dreadful for business."],
-          ['hero', "You charge Deepline for its own blood. In my trade, that's called a sickness."],
-          ['vesna', "In mine it's called bookkeeping. Every debt is paid in red, doctor. Even yours."],
-          ['hero', "Then let us settle my account. The tide is coming in."]
+          ['hero', "You charge Deepline for its own blood. In my trade we call that a sickness."],
+          ['vesna', "In mine it's called bookkeeping. Every account is settled in red, doctor. Yours too."],
+          ['hero', "Then let's settle it. Sit still. This may sting."]
         ],
         win: [
           ['vesna', "You heal while you hit. How very tiresome."],
-          ['hero', "Strike their names from your ledger, Vesna. The ones who can't pay."],
-          ['vesna', "One page, then. Not the long one. That page is Halcyon's, and I intend to collect it."]
+          ['hero', "Strike the names off your ledger, Vesna. The ones who can't pay."],
+          ['vesna', "One page, then. Not the long one. That page is Halcyon's, and I intend to collect it in full."]
         ],
         lose: [
           ['vesna', "Your account is overdrawn, doctor. Interest is due."]
         ] },
-      4: { zone: 'noble', goal: "Hold the door while the Subjects run",
-        card: "Maren holds the ward door while every Subject runs for the Ring, and word comes up from the Pit that the false faces were Rue's.",
+      4: { zone: 'noble', goal: "Hold the ward door while they run",
+        card: "Two forged films have the three layers at each other's throats, and Halcyon is coming for the wards. Maren holds one door while every Subject runs for the Noble Ring.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. The screens loop a Deepline boy opening the Sump's vents, and every ward is full of burns."],
-          ['hero', "I dressed those burns myself. And the boy on the feed never breathes. Forty seconds in Sump smoke. That is no boy."],
-          ['nyra', "The wards are open, Maren. They're running, and Halcyon is coming down the corridor behind them."],
-          ['hero', "Then everyone through this door, and no one through it after them. The doctor is in."]
+          ['sys', "The Three-Layer War. Sky screens show Kael, a Deepline kid, opening the Sump's vents on the labs. Deepline's show Nyra leading drills. Each blames the other."],
+          ['hero', "I dressed the burns from those labs myself. And the boy on the film never breathes: forty seconds in Sump smoke. Nyra, theirs isn't you either."],
+          ['nyra', "I know. The wards are open, Maren. Everyone's running for the Ring, and Halcyon is right behind them."],
+          ['hero', "Then everyone through this door, and nobody after them. Go. I'll be the last out."]
         ],
         win: [
-          ['hero', "Last one through. Everyone is out. Now I may leave the room."],
-          ['sys', "From the Pit, Pell names the faceless one: Rue. At the Crater she runs, and the war stops being a war."],
-          ['hero', "As I thought. Now, the Spire. Someone up there needs a very long rest."]
+          ['hero', "Last one through. Every bed empty. For the first time in a year, I may leave the room."],
+          ['sys', "Aldric's knights turned on the Ring; Oda's bell called the Surface. In the Pit, Pell named the face-thief: Rue. At the Crater, a second Kael ran."],
+          ['hero', "Four banners going up the Spire, and something at the top calling in the Engine's voice. Someone up there needs a very long rest."]
         ] },
       5: { zone: 'pylon', foe: 'vega', goal: "Keep the wards alive under Vega",
         card: "Vael's champion Vega drags Aurelia down from Pylon Chamber Six and the wards below begin to crush; Maren fights her off the pylons for her patients' sake.",
@@ -1305,62 +1330,63 @@
 
     // ---------------------------------------------------------------- ELIXA
     elixa: {
-      1: { zone: 'furnace', goal: "Find out what your serums are for",
-        card: "Halcyon's brightest chemist has never asked where her Subjects come from, only what they do, until the Director wants one ready by week seven.",
+      1: { zone: 'furnace', goal: "Fight past security to the feed lines",
+        card: "Halcyon's brightest chemist has never asked where her Subjects come from, only what they do. Then the Director wants Subject 44 ready for something called the feed lines, and nobody will say what that means.",
         intro: [
-          ['sys', "The Burn Ward labs. Halcyon's brightest chemist has never once asked where her Subjects come from. Only what they do."],
-          ['hero', "Elixa, chief alchemist. Red burns, blue freezes. No one has tried both at once on a living subject. So, naturally."],
+          ['sys', "The Burn Ward labs, week six. Racks of red and blue flasks, and through the glass a girl in a bottle, glowing like a stove."],
+          ['hero', "Elixa, chief alchemist. Red burns. Blue freezes. No one has tried both on a living subject. So, naturally, I'd like to."],
           ['agent', "Doctor, the Director wants 44 ready for the feed lines by week seven. He said ready, doctor. Not interesting."],
-          ['hero', "Feed lines? No one mentioned feed lines. What becomes of her afterward?"],
-          ['agent', "Afterward is the Engine's business. Security, see the doctor to her quarters."]
+          ['hero', "Feed lines. That's not in my protocol. What becomes of her afterwards?"],
+          ['agent', "Afterwards is the Engine's business. Security, see the doctor to her quarters."]
         ],
         win: [
-          ['hero', "Curious. They were most anxious that I not see the afterward. So I went and looked."],
-          ['hero', "Grey shapes on the feed lines, still breathing. Husks. And my serums were step one of the method."],
-          ['hero', "Every result has a cause, and this cause is me. Next experiment: a cure."]
+          ['hero', "Curious. They were terribly anxious that I not see the afterwards. So I went down and looked."],
+          ['hero', "Grey shapes along the pipes, still breathing. Husks. I recognised the burn scars. I wrote those up as promising."],
+          ['hero', "Six weeks of notes on how to make one. Not a single page on how to unmake it. New notebook, then."]
         ] },
-      2: { zone: 'glowwild', with: 'ume', goal: "Gather Glowwild spores with Ume",
-        card: "Elixa walks into the Glowwild for spores to make a cure, and Ume, who has turned many Halcyon people into compost, decides to hear her out.",
+      2: { zone: 'glowwild', with: 'ume', goal: "Hold the spore beds with Ume",
+        card: "Elixa walks into the Glowwild for spores that might wake a Husk. Ume, who has turned plenty of Halcyon people into compost, decides to hear her out first.",
         meet: [
-          ['ume', "Halcyon's chemist, in my garden. Touch nothing. What do you want the spores for?"],
-          ['hero', "A cure, for the Husks. Your spores remember. I want to know if they can remind a body what it used to be."],
-          ['ume', "A good answer. Most Halcyon people say weapons. Most Halcyon people end up as compost."],
-          ['hero', "I would prefer not to be compost. Shall we settle the price first, or the drones behind you?"],
-          ['ume', "Drones, then price. Step where I step."]
+          ['ume', "Halcyon's chemist, in my garden! Don't touch that one. Or that one. What do you want the spores for?"],
+          ['hero', "A cure for the Husks. Your spores keep a memory of whatever they grew on. I want to know if they can remind a body."],
+          ['ume', "Oh, good answer. Most Halcyon people say weapons. Most Halcyon people end up as compost."],
+          ['hero', "I would prefer not to be compost. Do we settle the price first, or the drones behind you?"],
+          ['ume', "Drones, then price. Step where I step, chemist. Exactly where."]
         ],
         win: [
-          ['ume', "You fought for the garden. Very well: spores, every season. And every season I'll ask what for."],
-          ['hero', "And every season I'll answer. Green Cauldron, meet the Glowwild. This will react beautifully."]
+          ['ume', "You fought for the garden. Fine: spores, every season. And every season I'll ask what for."],
+          ['hero', "You'll get an answer every time. Green Cauldron, meet the Glowwild. Do behave, both of you."],
+          ['hero', "Now back up the Skylift. Week seven is tomorrow, and they mean to run my formula without me."]
         ] },
-      3: { zone: 'furnace', rival: 'pyra', goal: "Face your result: Pyra",
-        card: "The bottle breaks in the Burn Ward, and the fire that walks out of it turns to look at the woman who took notes.",
+      3: { zone: 'furnace', rival: 'pyra', goal: "Duel Pyra in the Burn Ward",
+        card: "Week seven. Elixa comes back to stop the second colour, and Halcyon overrules her. Then the glass gives, and her result turns to look at the woman who took the notes.",
         meet: [
-          ['sys', "The Burn Ward, week seven. The bottle breaks, and the fire walks out of it, and turns, and looks back."],
-          ['pyra', "Elixa. You mixed it. I drank it. Six weeks. And you took NOTES."],
-          ['hero', "I did. Pages of them. I didn't know what they were for. Now I do."],
-          ['pyra', "Knowing doesn't give back a single week. You're on my list."],
-          ['hero', "Then let the result look at me. I would rather see it than look away."]
+          ['sys', "The Burn Ward, week seven. Alarms, steam, a smell of hot glass. The bottle breaks, and the fire walks out of it, and turns."],
+          ['pyra', "Lab coat. You mixed it. I drank it. Six weeks. And you took NOTES."],
+          ['hero', "I did. Pages of them. Tonight I asked them to stop, they said no, and I picked up my pen anyway. That is not a defence."],
+          ['pyra', "Knowing doesn't give me back a single week. You're on my list."],
+          ['hero', "Then look at me. I would rather see the result than look away from it. I have done enough of that."]
         ],
         win: [
           ['pyra', "You stayed. Everyone else from that lab ran."],
-          ['hero', "You're my finest result. You burned my lab down and looked me in the eye. A scientist does not run from that."],
+          ['hero', "You're the only result that ever looked back at me. Running from it would be bad science. And worse manners."],
           ['pyra', "Still on the list. ...A bit lower down."]
         ],
         lose: [
           ['pyra', "Note for your records: ow."]
         ] },
-      4: { zone: 'noble', goal: "Turn the serums against Halcyon",
-        card: "Elixa reverses her own serums and sends Halcyon's guards to sleep all across the Ring, while from the Pit Pell names the face behind the war: Rue.",
+      4: { zone: 'noble', goal: "Fight Halcyon's guards on the Ring",
+        card: "Two forged films have every layer blaming the others, and the guards on the Noble Ring are running on Elixa's stimulants. She knows exactly what a second colour would do to them.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. The screens loop one feed: a Deepline boy opening the Sump's vents on the labs."],
-          ['hero', "I ran that feed through my instruments. Sump fire all round the boy, and he reads room temperature. That is no boy."],
-          ['maren', "Then put your lab to some good use, Elixa. Every Halcyon guard on the Ring is full of your stimulants."],
-          ['hero', "Then they shall have a second colour. Blue to slow, green to sleep. The Grand Experiment, everyone."]
+          ['sys', "The Three-Layer War. Sky screens loop Kael, a Deepline kid, opening the Sump's vents on the labs; Deepline's loop Nyra leading drills down."],
+          ['hero', "I ran that film through my instruments. Sump fire all round the boy, and he reads room temperature. Whatever that is, it isn't a boy."],
+          ['maren', "Then make yourself useful, Elixa. Every guard on the Ring is running on your stimulants. I checked the flasks."],
+          ['hero', "Then they get a second colour. Blue to slow, green to sleep. For once I'm on the right side of the glass."]
         ],
         win: [
-          ['hero', "Halcyon's own soldiers, snoring in the corridors. The serums run backwards. Fascinating."],
-          ['sys', "From the Pit: Pell, tangled in his own Cat's Cradle, names the faceless one. Rue. At the Crater, she runs."],
-          ['hero', "No face and no heat. I would dearly love a sample. Later. The Spire first."]
+          ['hero', "Halcyon's soldiers asleep in the corridors, and the Proving Hall turned. Aldric's doing, I'm told. Coda's dance did the rest."],
+          ['sys', "Oda's bell rings over the Meridian. In the Pit, Pell, tangled in his own Cat's Cradle, names the face-thief: Rue. At the Crater, a second Kael runs."],
+          ['hero', "No face, no heat. I would dearly love a sample. Later. Four banners are climbing the Spire, and the Engine Core is drawing power for something."]
         ] },
       5: { zone: 'gallery', foe: 'mira', goal: "Find the real Mira in the glass",
         card: "Mira, Vael's champion out of the harbour ice, turns Aurelia's glass on it from the Observation Gallery; Elixa runs the one experiment that finds the real her.",
@@ -1406,64 +1432,67 @@
 
     // ---------------------------------------------------------------- ISA
     isa: {
-      1: { zone: 'archive', goal: "Refuse the Director's seal",
-        card: "Every law the Director ever made is sealed in Isa's ink, until order forty-one comes to her desk and she will not seal it.",
+      1: { zone: 'archive', goal: "Fight off the guards in the Archive",
+        card: "Every decree the Director makes carries Isa's seal. Then order forty-one reaches her desk, and she reads what it would do with the Subjects.",
         intro: [
-          ['sys', "The Archive. Every contract on the Noble Ring, every law the Director ever made, is sealed in one woman's ink."],
-          ['hero', "Isa, of the old school on the steppe. Sen and I could draw a line no one crossed. Now I draw Halcyon's."],
-          ['agent', "Order forty-one, seal-writer. The Director wants it binding by noon. Seal it."],
-          ['hero', "Every Subject past use, to the Engine, with no record kept. ...No. Not in my ink."],
+          ['sys', "The Archive. Lamps, dust, ten thousand ledgers. Every contract in the Ring, every law of the Director's, sealed in one woman's ink."],
+          ['hero', "Isa, of the old school on the steppe. Sen and I could draw a line no one crossed. Here, I draw Halcyon's lines instead."],
+          ['agent', "Order forty-one, seal-writer. The Director wants it binding by noon."],
+          ['hero', "Every Subject past use, to the Engine. No names. No record. ...No. Not in my ink."],
           ['agent', "Then we take the brush. And the hand that holds it."]
         ],
         win: [
-          ['hero', "Order forty-one, unsealed. It will stay unsealed."],
-          ['hero', "But every law before it wears my seal. I wrote this cage. Now I must unwrite it, one word at a time."]
+          ['hero', "Order forty-one remains unsealed. It will remain so."],
+          ['hero', "But every order before it bears my seal. I wrote the bars of this cage, clause by clause. Now I must unwrite them."]
         ] },
       2: { zone: 'archive', with: 'lin', goal: "Hold the Archive with Lin",
-        card: "Halcyon comes for the hand that refused order forty-one, and Lin of the Sky Clan steps out of the stacks to guard Isa's brush hand for the first time.",
+        card: "Halcyon sends a captain for the hand that refused order forty-one. Out of the stacks steps Lin, of a clan the Ring swears is a rumour, to guard it.",
         meet: [
-          ['sys', "The Archive, after order forty-one. Halcyon wants the seal-writer's brush hand, and sends a captain to take it."],
-          ['lin', "Seal-writer. Breathe. The Sky Clan has read your seals for a year. We read the one you refused as well."],
-          ['hero', "You're from under the floor. The ones no one up here believes in. Why come up for me?"],
-          ['lin', "The Pact keeps the layers from killing one another. Your ink is the Director's finest weapon. Not today."],
+          ['sys', "The Archive, the next night. Boots between the stacks. A Halcyon captain wants the seal-writer's hand."],
+          ['lin', "Seal-writer. Breathe. The Sky Clan has read your seals for a year. We read the one you refused."],
+          ['hero', "You're from under the floor. The clan no one up here believes in. Why come up for me?"],
+          ['lin', "The Pact of Three Layers keeps the layers from killing one another. Your ink is the Director's best weapon. Not tonight."],
           ['hero', "Then keep them off my hand. I have a great many words to take back, and I need it for every one."],
-          ['lin', "Write. I'll keep the door. Every fifth strike seals."]
+          ['lin', "Write. I'll keep the door."]
         ],
         win: [
-          ['hero', "Not one drop spilled. Every law in these stacks bears my seal, Lin. I built this cage word by word."],
-          ['lin', "Then you can unbuild it. One word, large enough for all of them."],
-          ['hero', "A Final Word. ...When I'm ready. Stay near my brush hand."],
-          ['lin', "Always. It is the only hand I guard."]
+          ['hero', "Not a drop spilled. Every law in these stacks bears my seal, Lin. I built the cage myself, in a fair hand."],
+          ['lin', "Then unbuild it. One word, large enough for all of them."],
+          ['hero', "A Final Word. When I can find one that heavy. Until then, stay near my brush hand."],
+          ['lin', "Always."]
         ] },
-      3: { zone: 'metro', rival: 'sen', goal: "Draw a line Sen cannot cross",
-        card: "Isa goes down to the Old Metro to ask Sen, her old schoolmate, to help unwrite her laws; first he wants to know if her line still holds, and draws.",
+      3: { zone: 'metro', rival: 'sen', goal: "Duel Sen in the Rust Dojo",
+        card: "Isa goes down to the Old Metro to ask Sen, her old schoolmate, to help her unwrite her laws. First he wants to know whether her line still holds.",
         meet: [
-          ['sys', "The Old Metro. A rusted metro car, swept spotless: the Rust Dojo. Sen sits inside, Isa's letters in a neat stack."],
-          ['hero', "Sen. You answered every letter with one line. This time I came for more than one line."],
-          ['sen', "For a year you sealed Halcyon's laws. Each one drew a line down here. Around people."],
-          ['hero', "I know. I mean to unwrite them all. First I need to know my line still holds."],
-          ['sen', "Then draw it, and I will try to cross."]
+          ['sys', "The Old Metro. A rusted carriage swept spotless: the Rust Dojo. Sen kneels inside, beside a neat stack of Isa's letters."],
+          ['hero', "Sen. Every letter I sent, you answered with a single line. This time I came for more than a line."],
+          ['sen', "...A year of your seals. Each one drew a line down here. Around people."],
+          ['hero', "I know. I mean to unwrite every one. But first I need to know that my own line still holds."],
+          ['sen', "Draw it."]
         ],
         win: [
-          ['sen', "It held. The old school would be proud of that line."],
-          ['hero', "You stopped your blade a hair's width from it. You always did wait too long."],
-          ['sen', "Write your one word, Isa. I will answer it with one line, as I always have."]
+          ['sen', "...It held."],
+          ['hero', "You stopped a hair's width short. You always did wait too long."],
+          ['sen', "Write your word, Isa. I will answer it. One line."]
         ],
         lose: [
-          ['sen', "Crossed. Draw it again, and slower."]
+          ['sen', "Crossed. ...Again. Slower."]
         ] },
-      4: { zone: 'noble', goal: "Write the Final Word",
-        card: "With Lin guarding her brush hand, Isa writes the Final Word over the Ring and every law the Director sealed comes undone; then the faces are named: Rue.",
+      4: { zone: 'noble', goal: "Hold the Ring while you write",
+        card: "The screens show a Deepline boy striking the Sky, and Halcyon's war law waits on Isa's desk for her seal. Tonight she writes something else: one word to answer every law she ever sealed.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. The screens loop a Deepline boy at the vents; Deepline swears Nyra led the drills."],
-          ['hero', "Borrowed faces to start a war, and Halcyon has its war law waiting to be sealed. In my ink, of course."],
+          ['sys', "The night of the Siege. The Archive's windows flicker with the film on every wall: Kael, a white-haired Deepline boy, opening the Sump's vents."],
+          ['hero', "And in Deepline they watch Nyra, the escaped singer, lead the drills. Two borrowed faces, and each layer certain the other struck first."],
+          ['hero', "Halcyon's war law lies on my desk, awaiting my seal. The Proving Hall marches the moment it is binding."],
           ['lin', "I have your brush hand. No one comes near it. Write."],
-          ['hero', "Every law the Director ever had me seal. One word to answer all of them."]
+          ['hero', "Every law the Director ever had me seal, answered in one word. Ink."]
         ],
         win: [
-          ['sys', "The Final Word falls across the sky in crimson ink, and every seal on every law the Director made breaks at once."],
-          ['hero', "Unwritten. The Proving Hall has no orders, the wards have no locks, and the Subjects have their names."],
-          ['sys', "From the Pit comes Pell's word: the faces were Rue's. At the Crater she runs, and four banners start up the Spire."]
+          ['sys', "The Final Word falls across the sky in crimson ink. Every seal on every law Halcyon ever made breaks at once."],
+          ['hero', "Void. The Proving Hall has no orders, the wards have no locks, and every Subject has a name again."],
+          ['sys', "Oda's bell tolls three times on the Surface. In the Pit, Pell, caught in his own strings, names his faceless spy: Rue."],
+          ['sys', "Kiri's crane carries the name to the Crater. A second Kael flees the crowd. Four banners start up the Spire, toward the Engine Core."],
+          ['hero', "A forgery, then, the whole war. And that Engine is still calling for something. I mean to close that door before anyone answers."]
         ] },
       5: { zone: 'archive', foe: 'tessa', goal: "Keep the Archive written",
         card: "Tessa, Vael's champion who has lived this year too many times, comes to unwrite the Archive and the Subjects' names; Isa seals every page and drives her out.",
@@ -1509,61 +1538,66 @@
 
     // ---------------------------------------------------------------- LIN
     lin: {
-      1: { zone: 'ballast', goal: "Seal the ballast crews, quietly",
-        card: "For a hundred years the Sky Clan has lived under the gold, and when Halcyon comes to bolt its doors, Lin answers with a quiet hand.",
+      1: { zone: 'ballast', goal: "Stop the crews bolting the undercroft",
+        card: "For a hundred years the Sky Clan has lived in the warm dark under Aurelia. Tonight Halcyon means to seal it in like a cellar, and Lin answers with an open hand.",
         intro: [
-          ['sys', "The Ballast Decks. Halcyon's crews come down with bolts and cutters to shut the undercroft's old doors and starve its heat."],
-          ['hero', "Lin, of the Sky Clan. For a hundred years my family has lived under the gold. These doors open from our side."],
+          ['sys', "The Ballast Decks. Halcyon crews come down with bolt guns and cutters, to shut the undercroft's old doors and starve out its heat."],
+          ['hero', "Lin, of the Sky Clan. A hundred years we have lived under the gold. These doors open from our side."],
           ['kestra', "They're bolting the dance hall, Lin! Let me burn them. A little. A tasteful amount."],
-          ['hero', "No fire near the beams. Breathe, sister. This needs a quiet hand."]
+          ['hero', "No fire near the beams. Breathe, sister. This wants a quiet hand."]
         ],
         win: [
-          ['hero', "Every fifth strike seals. For a moment they forgot their own strength. A moment was all I needed."],
-          ['kestra', "Fine. That was impressive. Quiet, and annoying, and impressive."]
+          ['hero', "Five strikes, and the fifth seals. For a moment they forgot how their own arms worked. A moment is enough."],
+          ['kestra', "Fine. That was impressive. Quiet, and smug, and impressive."],
+          ['hero', "Not smug. Rested."]
         ] },
       2: { zone: 'noble', with: 'zara', goal: "Guard the House Edge with Zara",
-        card: "Zara wants a bodyguard and the Sky Clan wants eyes on the Ring, and Lin, who sees everyone, can be both from behind one chair.",
+        card: "Zara of the House Edge needs a bodyguard; the Sky Clan wants eyes on the Noble Ring. From behind one chair, Lin can be both.",
         meet: [
-          ['sys', "The House Edge, on the Noble Ring. The owner wants a bodyguard; the Sky Clan wants eyes on the Ring. One woman can be both."],
-          ['zara', "So you're the one the Ring whispers about. Small, quiet, and three of my last guards still can't lift a glass."],
-          ['hero', "They were rude to a waiter. I sealed their arms. The feeling returns by morning."],
-          ['zara', "Darling, you're hired. Stand behind my chair and see everyone."],
-          ['hero', "That is why I came. ...You have guests. Halcyon. They are unhappy about your money."]
+          ['sys', "The House Edge, richest card room in Aurelia. Chandeliers, green baize, and a great deal of money losing politely."],
+          ['zara', "So you're the one the Ring whispers about. Small, quiet, and my last three guards still can't lift a glass."],
+          ['hero', "They were rude to a waiter. I sealed their arms. The feeling comes back by morning."],
+          ['zara', "Darling, you're hired. Stand behind my chair. You'll see everyone."],
+          ['hero', "That is why I came. ...You have guests. Halcyon. They are unhappy about where your money goes."]
         ],
         win: [
-          ['zara', "Not one chip on the floor. You truly do see everyone."],
-          ['hero', "Everyone. Even where your winnings go: down, to Deepline. The Clan approves."],
-          ['zara', "Then we understand each other. The house keeps its winnings, and now its bodyguard."]
+          ['zara', "Not one chip on the floor. You really do see everyone."],
+          ['hero', "Everyone. And where your winnings go. Down."],
+          ['zara', "And?"],
+          ['hero', "And nothing. I stand behind the chair."]
         ] },
-      3: { zone: 'village', rival: 'ivo', goal: "Seal Ivo a third time",
-        card: "Before dawn in the Hidden Village, Ivo has trained an hour to beat the soft one, and Lin needs to hear only his fifth punch.",
+      3: { zone: 'village', rival: 'ivo', goal: "Duel Ivo in the Hidden Village",
+        card: "Before dawn in the Hidden Village on the Surface, Ivo has trained for an hour to beat the soft one. Lin has sealed him twice. She needs to hear only his fifth punch.",
         meet: [
-          ['sys', "The Hidden Village on the Surface, before dawn. A man with gold fists has already been training for an hour."],
-          ['ivo', "Lin! The soft one. I've been up since three. Today you don't seal me."],
-          ['hero', "Your style is loud, Ivo. Every punch arrives with a herald."],
-          ['ivo', "Twelve punches in two seconds. Herald THAT."],
-          ['hero', "I needn't hear all twelve. Only the fifth."]
+          ['sys', "The mountain, before dawn. Frost on the ring's rope. A young man with gold fists has been at his reps for an hour."],
+          ['ivo', "LIN! The soft one! I've been up since three! Today you don't seal me!"],
+          ['hero', "Good morning, Ivo. Your style is loud. Every punch sends a herald ahead of it."],
+          ['ivo', "Twelve punches in two seconds! Herald THAT!"],
+          ['hero', "I don't need all twelve. Only the fifth."]
         ],
         win: [
-          ['ivo', "Third time. THIRD. I can't feel my arms."],
-          ['hero', "They will wake. Loud isn't wrong, Ivo. It is only easy to hear."],
-          ['ivo', "Tomorrow, before dawn. I'm working on quiet."]
+          ['ivo', "Third time. THIRD. I can't feel my arms. I can feel my nose. That's something."],
+          ['hero', "They'll wake by noon. Loud isn't wrong, Ivo. It's only easy to hear."],
+          ['ivo', "Tomorrow, before dawn. I'm working on quiet. I'm working on it VERY hard."]
         ],
         lose: [
-          ['ivo', "Not so soft now, eh? Up. Again! Again!"]
+          ['ivo', "Not so soft now, eh? Up! Breathe! Again!"]
         ] },
-      4: { zone: 'noble', goal: "Guard Isa's brush hand",
-        card: "Lin guards Isa's brush hand while the Final Word unwrites every law the Director sealed, and the one who stood like no one is named at last: Rue.",
+      4: { zone: 'noble', goal: "Hold the guards off Isa's brush",
+        card: "The screens show a Deepline boy striking the Sky, and Halcyon has its war law ready to seal. Isa means to write one word that undoes every law she ever sealed. Lin keeps the room.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. Screens loop a Deepline boy at the vents. Below, Deepline swears Nyra led the drills."],
-          ['hero', "Watch the boy on that feed. No weight in his feet. Everyone stands like someone. He stands like no one."],
-          ['isa', "Then give Halcyon nothing to stand on. I'm writing the Final Word. Keep them off my hand."],
-          ['hero', "Write. The brush is yours, and the room is mine."]
+          ['sys', "The Noble Ring, the night of the Siege. Every screen shows the same few seconds: Kael, a Deepline street kid, turning the Sump's vent wheels."],
+          ['hero', "Watch his feet. No weight in them. Everyone stands like someone. That boy stands like no one."],
+          ['isa', "Deepline's screens show Nyra, the singer, leading the drills down. Each layer blames the other, while the Proving Hall waits for its marching orders."],
+          ['isa', "Orders sealed in my ink. I am writing the Final Word. Keep them off my hand."],
+          ['hero', "Write. The brush is yours. The room is mine."]
         ],
         win: [
-          ['sys', "The Final Word crosses the sky in crimson ink, and every law the Director sealed comes undone."],
-          ['hero', "Brush hand safe. Not a drop spilled. Breathe, Isa. Now out."],
-          ['sys', "From the Pit, Pell names the one who stood like no one: Rue. At the Crater, she runs."]
+          ['sys', "The Final Word crosses the sky in crimson ink. Every law the Director sealed comes undone. The Proving Hall stands on its stairs, unordered."],
+          ['hero', "Brush hand safe. Not a drop spilled. Breathe, Isa. ...Now out."],
+          ['sys', "Far off, Oda's bell rings three times over the Meridian drills. In the Pit, Pell, caught in his own strings, names the one who stood like no one: Rue."],
+          ['sys', "Kiri's crane carries the name to the Crater. A second Kael slips from the crowd and is gone. Four banners start up the Spire, toward the Engine Core."],
+          ['hero', "That Engine has been calling something. We climb quietly, and we climb now."]
         ] },
       5: { zone: 'skylift', foe: 'mika', goal: "Seal Mika off the cables",
         card: "Mika, Vael's champion, cuts the Skylift cables so the Legion can pour down on the undercroft; Lin seals her arms, strike by strike, and sends her off the cables.",
@@ -1610,64 +1644,65 @@
 
     // ---------------------------------------------------------------- VESPER
     vesper: {
-      1: { zone: 'ward', goal: "Light the lower alleys by dawn",
-        card: "Every night the Night Ward locks Subject 77 in, and most nights she leaves by the roof to light the lamps of Aurelia's dark alleys.",
+      1: { zone: 'ward', goal: "Clear the dark alleys before dawn",
+        card: "Every night the Night Ward locks Subject 77 in. Most nights she leaves by the roof, and Aurelia's dark lower alleys have started to have lamps in them.",
         intro: [
-          ['sys', "The Night Ward. Every night they lock Subject 77 in. Most nights she leaves anyway, by the roof."],
-          ['hero', "Vesper. On the harbour wall I lit every lamp at dusk. No one saw who. Only a red scarf, already at the next lamp."],
-          ['hero', "The lower alleys of Aurelia have no lamps. Tonight they will."],
-          ['agent', "Movement on the Ward roofs. A flash of red cloth. Find it."],
-          ['hero', "You will find lamps. Not me."]
+          ['sys', "The Night Ward. Lock, count, lights out. On the roof above cell 77, a red scarf is already moving."],
+          ['hero', "Vesper. At home I lit the sea wall at dusk. Every lamp. Nobody saw who."],
+          ['hero', "The alleys down here have none. Tonight, thirty."],
+          ['agent', "Movement on the Ward roofs. Red cloth. Find it."],
+          ['hero', "You'll find lamps."]
         ],
         win: [
-          ['hero', "Thirty lamps lit. Back in my cell before the count."],
-          ['hero', "On the way, a cart from the wards, rolling down to the feed lines. Full. It came back up empty."]
+          ['hero', "Thirty lit. Back before the count."],
+          ['hero', "On the way: a cart from the wards, rolling down to the feed lines. Full. It came back up empty."]
         ] },
-      2: { zone: 'enginecore', with: 'aldric', goal: "Show Aldric the feed lines",
-        card: "Vesper follows the empty carts down to the Engine's feed lines and brings the knight who guards the wards to see the Husks with his own eyes.",
+      2: { zone: 'enginecore', with: 'aldric', goal: "Hold the feed lines with Aldric",
+        card: "Vesper has shadowed the empty carts all the way to the Engine. Tonight she brings the knight who guards the wards, to see what he has been guarding.",
         meet: [
-          ['sys', "Below the Spire, the Engine's feed lines. Vesper has shadowed the carts all night. Tonight she has brought company."],
-          ['aldric', "Seventy-seven. You are outside your ward. I ought to take you back."],
-          ['hero', "Look first, knight. You held the sea wall I lit every dusk, and never once saw me."],
+          ['sys', "The Engine's feed lines. Pipes as thick as trees, a slow grey hum, and two figures on a gantry where neither should be."],
+          ['aldric', "Seventy-seven. You are outside your ward. I ought to take you back to it."],
+          ['hero', "Look first. You held the sea wall I lit every dusk. You never turned round."],
           ['aldric', "The scarf on the wall. That was you. Why have you brought me here?"],
-          ['hero', "Look down. Grey shapes, breathing. The Subjects you guard. Your Director calls them Husks."],
-          ['agent', "Intruders on the feed lines! ...Sir Aldric? Sir, step away from that Subject."]
+          ['hero', "Down there. Grey. Breathing. Your Subjects. The Director calls them Husks."],
+          ['agent', "Intruders on the feed lines! ...Sir? Sir, step away from the asset."]
         ],
         win: [
-          ['aldric', "I swore to stand between harm and the people. For a year I have stood on harm's side of the door."],
+          ['aldric', "I swore an oath to keep harm from them. For a year I have stood on harm's side of the door."],
           ['hero', "Then move."],
           ['aldric', "When I turn, the whole Hall turns with me. Not before. Not alone."],
-          ['hero', "Then I'll light the road when you do."]
+          ['hero', "Then I'll light the road."]
         ] },
-      3: { zone: 'ward', rival: 'moro', goal: "Cross Moro's rooftops",
-        card: "Moro hides in his shadows and Vesper walks through them, so on the Night Ward roofs he makes one she cannot cross.",
+      3: { zone: 'ward', rival: 'moro', goal: "Duel Moro on the Night Ward roofs",
+        card: "Moro of the Lantern Cell hides in shadows; Vesper walks through them. On the Night Ward roofs, he finally makes one she can't.",
         meet: [
-          ['sys', "The Night Ward roofs. A tired young man sits on the ridge where Vesper always crosses. His shadow runs far too long."],
-          ['moro', "You again. You walk through my shadows as if they were doors. It's rude."],
-          ['hero', "Shadows are for walking through. You hide in yours."],
-          ['moro', "Pell taught us that shadows hide things. I decided they hold things. Try walking through this one."],
-          ['hero', "Watch me."]
+          ['sys', "The Ward roofs. A sleepy young man sits on the ridge where Vesper always crosses. His shadow runs much too long."],
+          ['moro', "You again. You walk through my shadows like they're doors. It's rude."],
+          ['hero', "They're for walking through. You hide in yours."],
+          ['moro', "Pell taught us shadows hide things. I decided they hold things. Try this one."],
+          ['hero', "Already halfway."]
         ],
         win: [
           ['moro', "Fine. You walked through it. I'm going back to bed."],
-          ['hero', "Your shadow held me a whole second. Most can't hold me for one."],
+          ['hero', "It held me a whole second. Most don't manage one."],
           ['moro', "Next time, use the stairs. Please."]
         ],
         lose: [
           ['moro', "Held. Go home, lamplighter. Quietly."]
         ] },
-      4: { zone: 'noble', goal: "Light the way for the Hall",
-        card: "As the Proving Hall marches, Vesper lights a road of lamps down to the feed lines so every knight sees the Husks, and the Hall turns around.",
+      4: { zone: 'noble', goal: "Clear the road to the feed lines",
+        card: "Two stolen faces have the three layers ready to kill each other, and the knights of the Proving Hall have orders to march on Deepline. Vesper means every knight to see the Husks first.",
         intro: [
-          ['sys', "The Siege of the Noble Ring. On every screen a Deepline boy opens the vents on the labs. The Proving Hall marches."],
-          ['hero', "That boy on the feed casts no shadow. A lamp behind him, a lamp before him, nothing on the floor. I light lamps. I notice."],
-          ['aldric', "Seventy-seven. The knights wait for my word. Show them what you showed me."],
-          ['hero', "Every lamp from the Hall to the feed lines, then. Let them walk down and see."]
+          ['sys', "The Three-Layer War. Sky screens loop Kael, a Deepline kid, at the Sump's vents; Deepline's loop Nyra leading the drills. Each side blames the other."],
+          ['hero', "That boy on the film casts no shadow. Lamp behind him, lamp before him. Nothing on the floor. I light lamps. I notice."],
+          ['aldric', "Lamplighter. The knights wait on my word. Show them what you showed me."],
+          ['hero', "Every lamp from the Hall to the Husks, then. Let them walk down and look."]
         ],
         win: [
-          ['sys', "Lamp by lamp, a road of light runs down to the feed lines. The knights see the Husks, and the Proving Hall turns."],
-          ['aldric', "For a year I stood in the wrong place. No longer."],
-          ['hero', "And from the Pit: Pell named the face. Rue. At the Crater she ran. No shadow, no face. No one."]
+          ['sys', "Lamp by lamp, a road of light runs down below the Spire. The knights see the Husks, and the Proving Hall turns."],
+          ['aldric', "I stood a year in the wrong place. No longer. Coda has cut her strings on the stage above. We go up."],
+          ['hero', "Word from the Pit: Pell named the face. Rue. At the Crater a second Kael ran. No shadow, no face. No one."],
+          ['sys', "Oda's bell has called the Surface. Four banners climb the Spire toward the Engine Core; halfway up, the stair lamps are lit already. Nobody saw who."]
         ] },
       5: { zone: 'skyport', foe: 'corvin', goal: "Light a lamp in Corvin's dark",
         card: "Corvin, Vael's champion, puts out the sun over the Skyport; Vesper, who lit the harbour's lamps unseen, lights them one by one until his crows scatter.",
