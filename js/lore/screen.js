@@ -359,9 +359,10 @@
     backdrop(ctx, CHRON.col); header(ctx); tabs(ctx);
     const reading = S.focus === 'read';
     ui.panel(ctx, 10, 44, 150, 212, S.focus === 'list' ? CHRON.col : '#3a3d55', 0.88);
+    const step = Math.min(15, Math.floor(206 / L.chapters.length));   // (15 chapters since 2026-11-20: the rows close up to fit the panel)
     L.chapters.forEach((c, i) => {
-      const y = 48 + i * 15, on = i === S.chap;
-      if (on) { ctx.globalAlpha = 0.3; art.rect(ctx, CHRON.col, 12, y - 1, 146, 13); ctx.globalAlpha = 1; }
+      const y = 48 + i * step, on = i === S.chap;
+      if (on) { ctx.globalAlpha = 0.3; art.rect(ctx, CHRON.col, 12, y - 1, 146, Math.min(13, step)); ctx.globalAlpha = 1; }
       let t = tr(c.title); while (t.length > 4 && tw(t) > 138) t = t.slice(0, -1);
       txt(ctx, t, 16, y + 1, on ? '#ffffff' : '#a8b0c8', { raw: true });
     });
