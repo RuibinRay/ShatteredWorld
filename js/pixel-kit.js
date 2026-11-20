@@ -100,5 +100,13 @@
       }
     }, { pal: pal.concat(['#ffffff']), alpha: fade, outline: pal[0] });
   }
-  SW.pix = { sprite, impact, lines, claws };
+  // over(fn): draw on top of every effect (the cinematic ultimates in js/ult-grand.js draw their own finishing form
+  // after the shots, which would cover a hero's close-up). fn(ctx, cam) runs after fx.draw each frame until it returns false.
+  // The wrap is made on first use, when every script has loaded, so it sits outside the others.
+  const overs = []; let wrapped = false;
+  function over(fn) {
+    if (!wrapped && SW.fx && SW.fx.draw) { wrapped = true; const _fd = SW.fx.draw; SW.fx.draw = function (ctx, cam) { const r = _fd.apply(this, arguments); for (let i = overs.length - 1; i >= 0; i--) { let keep = false; try { ctx.save(); keep = overs[i](ctx, cam) !== false; } catch (e) { keep = false; } finally { ctx.restore(); } if (!keep) overs.splice(i, 1); } return r; }; }
+    overs.push(fn);
+  }
+  SW.pix = { sprite, impact, lines, claws, over };
 })();
