@@ -379,7 +379,10 @@
 
   // ---------- bot ----------
   // ult: how readily it fires a full bar; charge: how much it stands back to charge (energy now comes quickly from fighting)
-  const LV = [{ react: 0.2, aggr: 0.45, every: 14, ult: 0.15, charge: 0.25 }, { react: 0.55, aggr: 0.75, every: 8, ult: 0.5, charge: 0.6 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }];
+  // the user (2026-11-20): "make easy and medium level bot can block and uses mostly skills and attack time is shortened":
+  // Easy and Normal block more (react 0.2 -> 0.55, 0.55 -> 0.75), think twice as often (every 14 -> 7, 8 -> 4) and pick a
+  // skill (U, or I while U cools down) whenever they can pay for it, with chance `skill`. Hard and Nightmare are unchanged.
+  const LV = [{ react: 0.55, aggr: 0.45, every: 7, ult: 0.15, charge: 0.25, skill: 0.7 }, { react: 0.75, aggr: 0.75, every: 4, ult: 0.5, charge: 0.6, skill: 0.75 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }, { react: 0.9, aggr: 1, every: 4, ult: 0.9, charge: 1 }];
   function botThink(f, o, k) {
     const p = f.p, q = o.p, S = f.state, c = LV[lvOf(f)], ai = f.ai || (f.ai = { plan: 'approach', t: 0, n: 0 }), R = Math.random;
     if (V.phase !== 'fight' || p.dead) return;
@@ -395,6 +398,7 @@
       else if (S.awaken >= 100 && p.awakeT <= 0 && R() < 0.9) ai.plan = 'awaken';
       else if ((p.awakeT > 0 ? S.energy >= 100 : S.energy >= 300) && adx < 260 && R() < c.ult) ai.plan = 'ult';
       else if (save && adx > 90 && R() < 0.7 * c.charge) ai.plan = 'charge';   // save up for the ultimate while awakened
+      else if (c.skill && !save && adx < 320 && R() < c.skill && ((S.energy >= 25 && !((p.cd || {}).u > 0)) || (S.energy >= 50 && !((p.cd || {}).i > 0)))) ai.plan = S.energy >= 25 && !((p.cd || {}).u > 0) && (S.energy < 50 || (p.cd || {}).i > 0 || R() < 0.7) ? 'skill' : 'special';   // Easy / Normal: mostly skills
       else if (adx > 170) ai.plan = !save && S.energy >= 25 && R() < 0.45 ? 'skill' : S.energy < 120 && R() < 0.4 * c.charge ? 'charge' : 'approach';
       else if (adx > 60) ai.plan = !save && S.energy >= 50 && R() < 0.3 * c.aggr ? 'special' : !save && S.energy >= 25 && R() < 0.35 ? 'skill' : R() < 0.2 ? 'jumpin' : 'approach';
       else ai.plan = R() < c.aggr ? (R() < 0.15 ? 'launcher' : R() < 0.12 ? 'sweep' : 'combo') : R() < 0.5 ? 'guard' : 'retreat';
