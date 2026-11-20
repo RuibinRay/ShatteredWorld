@@ -9,7 +9,7 @@
   SW.audio.sfx = () => {}; SW.audio.music = () => {}; G.saveGame = () => {}; if (SW.store) SW.store.save = () => {};
   const NT = window.NT = {
     start(opp, hero) { G.manual = true; V.open(G); V.mode = 'train'; V.fmt = 0; V.speed = 0; V.diff = 0; V.diff2 = 0; V.gain = 1; V.stage = 1; V.pick = [D.heroOrder.indexOf(hero || 'nami'), D.heroOrder.indexOf(opp || 'kael')]; V.phase = 'pick'; V.step = 1; T.press('confirm'); T.step(2); let n = 0; while (V.phase !== 'fight' && n++ < 600) G.tick(); return { phase: V.phase, f: V.f.map(f => f.hero) }; },
-    prep(gap) { const a = V.f[0], b = V.f[1]; a.state.energy = 300; a.state.awaken = 100; a.p.cd = {}; a.p.modeT = 0; a.p.awakeT = 0; a.p.enter('idle'); b.p.enter('idle'); a.p.x = 200; b.p.x = 200 + (gap || 70); a.p.face = 1; b.p.face = -1; a.shots.length = 0; b.shots.length = 0; SW.fx.list.length = 0; },
+    prep(gap) { const a = V.f[0], b = V.f[1]; a.state.energy = 300; a.state.awaken = 100; a.p.cd = {}; a.p.modeT = 0; a.p.awakeT = 0; a.p.enter('idle'); b.p.enter('idle'); a.p.x = 200; b.p.x = 200 + (gap || 70); b.p.trainPin = null; a.p.face = 1; b.p.face = -1; a.shots.length = 0; b.shots.length = 0; SW.fx.list.length = 0; },
     hold(codes, n) { I.raw = {}; codes.forEach(c => { I.raw[c] = true; }); for (let i = 0; i < (n || 1); i++) G.tick(); I.raw = {}; },
     step(n) { for (let i = 0; i < n; i++) G.tick(); },
     async post(name, blob) { return (await fetch('/__rec/' + name, { method: 'POST', body: blob })).status; },
