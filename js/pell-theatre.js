@@ -48,6 +48,14 @@
 
   // ================= the marionette: (0, 0) under its feet, facing +x, s its height =================
   // o = { pose: 'hang' | 'lunge' | 'open', t, glare }
+  const mix = (a0, a1, u) => a0 + (a1 - a0) * u;
+  function cutAng(v, k, far) {
+    const u = ease(k * 1.5);
+    if (v === 0) return far ? [-0.6, -0.9] : [mix(2.7, 0.9, u), mix(3.1, 0.6, u)];                 // the near blade comes down
+    if (v === 1) return far ? [mix(0.3, 2.3, u), mix(0.1, 2.7, u)] : [-0.4, -0.7];                 // the far blade rises
+    if (v === 2) return far ? [mix(0.5, 1.6, u), mix(0.3, 1.75, u)] : [mix(0.5, 1.5, u), mix(0.3, 1.5, u)];   // both thrust
+    return far ? [mix(3.3, 1.2, u), mix(3.6, 1.0, u)] : [mix(2.9, 1.0, u), mix(3.2, 0.7, u)];       // both come down, crossing
+  }
   function marVec(c, s, o) {
     const t = o.t || 0, pose = o.pose || 'hang', sw = Math.sin(t * 0.13) * 0.12, lw = Math.max(1.2, s * 0.042);
     const sh = [0, -s * 0.72], hip = [-s * 0.02, -s * 0.44];
@@ -63,6 +71,7 @@
       let ua, fa;   // upper-arm and blade angles from straight down, toward +x
       if (pose === 'lunge') { ua = 1.5 + (far ? 0.12 : -0.08); fa = 1.5 + (far ? 0.22 : -0.02); }
       else if (pose === 'open') { ua = far ? -2.2 : 2.2; fa = far ? -2.6 : 2.6; }
+      else if (pose === 'cut') { const q = cutAng(o.v || 0, o.k || 0, far); ua = q[0]; fa = q[1]; }
       else { ua = (far ? -0.7 : 0.75) + sw; fa = (far ? -1.0 : 1.05) + sw * 1.5; }   // hanging: one blade out in front, one behind
       const sx = sh[0] + (far ? -s * 0.02 : s * 0.05), ex = sx + Math.sin(ua) * s * 0.15, ey = sh[1] + Math.cos(ua) * s * 0.15;
       bar(c, [[sx, sh[1]], [ex, ey]], lw, col); ell(c, ex, ey, lw * 0.75, lw * 0.75, C.wl);
@@ -96,13 +105,51 @@
 
   // ================= the puppet itself: every Puppet Pell owns is redrawn =================
   const S = 48;
+  // ---------- the melee: the marionette does the cutting (the user, 2026-11-20: "make sure pell melee is puppet attacking") ----------
+  // which cut a combo step is: 0 a downward slash, 1 a rising slash, 2 a double thrust, 3 both blades down in a cross
+  function cutOf(p) {
+    const a = p.atk, h = p.G && p.G.hero ? p.G.hero() : null, list = h && SW.data.combat ? SW.data.combat[h.combo] : null, i = list ? list.indexOf(a) : -1;
+    if (i >= 0) return i % 4;
+    return a.anim === 'launcher' ? 1 : a.anim === 'sweep' ? 0 : a.anim === 'air' ? 3 : 2;
+  }
+  // a cutting arc on screen: hard pixels, white inside pink; from angle a0 to a1 round (cx, cy)
+  function slashArc(ctx, cx, cy, R, a0, a1, alpha, big) {
+    ctx.save(); ctx.globalAlpha = clamp01(alpha);
+    const n = 12; let px = cx + Math.cos(a0) * R, py = cy + Math.sin(a0) * R;
+    for (let i = 1; i <= n; i++) { const u = i / n, a = a0 + (a1 - a0) * u, r = R * (1 - 0.12 * Math.sin(u * PI)), qx = cx + Math.cos(a) * r, qy = cy + Math.sin(a) * r, w = Math.max(1, Math.round((big ? 5 : 4) * Math.sin(u * PI)));
+      art.line(ctx, '#ff7ad9', Math.round(px), Math.round(py), Math.round(qx), Math.round(qy), w + 1); art.line(ctx, '#ffffff', Math.round(px), Math.round(py), Math.round(qx), Math.round(qy), Math.max(1, w - 1)); px = qx; py = qy; }
+    ctx.restore();
+  }
   function drawPuppet(ctx, cam) {
-    const p = this.p, x = Math.round(this.x - cam.x), y = Math.round(this.y - cam.y) + 10, d = this.face;
+    const p = this.p, d0 = this.face;
     const hx = Math.round(p.x - cam.x + p.face * 6), hy = Math.round(p.y - cam.y - 26);
-    const pose = this.open > 0 ? 'open' : this.job ? 'lunge' : 'hang';
-    [[0, -S * 0.98], [d * S * 0.22, -S * 0.56], [-d * S * 0.2, -S * 0.56], [d * S * 0.06, -S * 0.24], [-d * S * 0.05, -S * 0.24]].forEach((q, i) => string(ctx, hx, hy, x + q[0], y + q[1], this.t + i * 9));
-    if (pose === 'lunge') PX.lines(ctx, x - d * 26, y - 22, d > 0 ? 0 : PI, 46, 6, this.t, '#ff7ad9', 30);
-    marionette(ctx, x, y, S, d, { pose, t: this.t, glare: pose !== 'hang' });
+    const strings = (x, y, d) => [[0, -S * 0.98], [d * S * 0.22, -S * 0.56], [-d * S * 0.2, -S * 0.56], [d * S * 0.06, -S * 0.24], [-d * S * 0.05, -S * 0.24]].forEach((q, i) => string(ctx, hx, hy, x + q[0], y + q[1], this.t + i * 9));
+    const a = p.atk, melee = a && (p.state === 'attack' || p.state === 'airatk') && !this.job && !(this.open > 0);
+    if (melee) {
+      // it swings out in front of him on its strings, cuts on the frames the hit lands, and swings back
+      const d = p.face, st = p.st, v = cutOf(p), reach = (a.box ? a.box[0] + a.box[2] * 0.55 : 24);
+      const go = ease(st / Math.max(2, a.hitAt)) * (1 - ease((st - (a.dur - 5)) / 5)), k = clamp01((st - (a.hitAt - 3)) / 7);
+      const bx = Math.round(this.x - cam.x), by = Math.round(this.y - cam.y) + 10;
+      const fx2 = Math.round(p.x - cam.x + d * (reach - 6)), fy2 = Math.round(p.y - cam.y) + (v === 1 ? -4 - k * 8 : v === 3 ? -10 + k * 12 : 2);
+      const x = Math.round(bx + (fx2 - bx) * go), y = Math.round(by + (fy2 - by) * go);
+      strings(x, y, d);
+      if (go > 0.5) PX.lines(ctx, x - d * 22, y - 24, d > 0 ? 0 : PI, 36, 5, this.t, '#ff7ad9', 26);
+      marionette(ctx, x, y, S, d, { pose: 'cut', v, k, t: this.t, glare: true });
+      const hitT = st - a.hitAt;
+      if (hitT >= -1 && hitT < 7) {   // the cut itself, where the hit lands
+        const al = 1 - Math.max(0, hitT) / 7, cx = x + d * 10, cy = y - 24, big = v === 3;
+        const A = (t0, t1) => (d > 0 ? [t0, t1] : [PI - t0, PI - t1]);
+        if (v === 0) { const q = A(-1.9, 0.9); slashArc(ctx, cx, cy, 30, q[0], q[1], al); }
+        else if (v === 1) { const q = A(1.2, -1.5); slashArc(ctx, cx, cy, 30, q[0], q[1], al); }
+        else if (v === 2) { for (const o2 of [-5, 3]) { ctx.save(); ctx.globalAlpha = al; art.line(ctx, '#ff7ad9', cx - d * 6, cy + o2, cx + d * 36, cy + o2 + 1, 3); art.line(ctx, '#ffffff', cx - d * 2, cy + o2, cx + d * 38, cy + o2 + 1, 1); ctx.restore(); } }
+        else { const q = A(-2.1, 0.8), r = A(-1.2, 1.7); slashArc(ctx, cx, cy, 40, q[0], q[1], al, true); slashArc(ctx, cx + d * 4, cy, 34, r[0], r[1], al, true); }
+      }
+      return;
+    }
+    const x = Math.round(this.x - cam.x), y = Math.round(this.y - cam.y) + 10, pose = this.open > 0 ? 'open' : this.job ? 'lunge' : 'hang';
+    strings(x, y, d0);
+    if (pose === 'lunge') PX.lines(ctx, x - d0 * 26, y - 22, d0 > 0 ? 0 : PI, 46, 6, this.t, '#ff7ad9', 30);
+    marionette(ctx, x, y, S, d0, { pose, t: this.t, glare: pose !== 'hang' });
   }
   const dressPuppets = z => z.shots.forEach(s => { if (s.isPuppet && !s.pellLook) { s.pellLook = 1; s.draw = drawPuppet; } });
 
@@ -225,12 +272,17 @@
   }
   const _pd = P.draw;
   P.draw = function (ctx, cam, g) {
-    const r = _pd.apply(this, arguments);
+    const mine = isP(g || this.G) && !this.dead, a = this.atk, swap = mine && a && (this.state === 'attack' || this.state === 'airatk') && this.onGround && CONDUCT;
+    const keep = swap ? a.anim : null; if (swap) a.anim = CONDUCT;
+    let r; try { r = _pd.apply(this, arguments); } finally { if (swap) a.anim = keep; }
     if (isP(g || this.G) && !this.dead) aura(ctx, this, Math.round(this.x - cam.x), Math.round(this.y - cam.y));
     return r;
   };
+  // the pose he holds while the puppet fights: his casting pose, if his sheet has enough frames of it
+  let CONDUCT = null;
+  const conductOf = p => { if (CONDUCT !== null) return; const sh = art.sheets[p.sheet()]; CONDUCT = sh && sh.anims && sh.anims.special && sh.anims.special.length >= 3 ? 'special' : (sh && sh.anims && sh.anims.cast && sh.anims.cast.length >= 3 ? 'cast' : ''); };
   const _pu = P.update;
-  P.update = function (g, z) { const r = _pu.apply(this, arguments); if (isP(g || this.G) && z && z.shots) dressPuppets(z); return r; };
+  P.update = function (g, z) { const r = _pu.apply(this, arguments); if (isP(g || this.G) && z && z.shots) { dressPuppets(z); conductOf(this); } return r; };
 
   // ================= W+I: Grand Theatre =================
   // the curtains, in screen space: k 0 open .. 1 closed to a stage window; drop 0-1 lowers the final curtain
