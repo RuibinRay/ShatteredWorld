@@ -8,6 +8,9 @@
 //   at once, also to a game already in progress (enemies already standing keep the health they appeared with).
 (function () {
   const SW = window.SW, G = SW.game, ui = SW.ui, I = SW.input, art = SW.art, text = SW.text, P = SW.Player.prototype;
+  // duelDiff / duelEdge: the story duel's rival bot level and the old Crater table's edge, used on Hard and Nightmare. On
+  // Easy and Medium the story duels are set by js/saga/saga-assist.js instead (EDGE: per kind of duel, as a ratio to the
+  // player, measured 2026-11-20), and so are the campaign bosses' extra multipliers (BOSS).
   const LEVELS = [
     { id: 'easy',      name: 'Easy',      mobHp: 0.7, mobDmg: 0.6, bossHp: 0.75, bossDmg: 0.65, duelDiff: 0, duelEdge: 0.5, col: '#7dffa0' },
     { id: 'medium',    name: 'Medium',    mobHp: 1,   mobDmg: 1,   bossHp: 1,    bossDmg: 1,    duelDiff: 1, duelEdge: 1,   col: '#ffffff' },
