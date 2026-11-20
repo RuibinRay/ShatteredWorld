@@ -105,7 +105,7 @@
     kiri: 1.1, tarn: 1.1, maren: 0.95, yara: 1.3, brann: 0.75
   };
   const KEYS = [
-    { left: ['KeyA'], right: ['KeyD'], up: ['KeyW'], down: ['KeyS'], attack: ['KeyJ'], jump: ['KeyK'], dash: ['KeyL'], skill: ['KeyU'], special: ['KeyI'], awaken: ['KeyO'], throw: [] },   // throw: the touch button (J + L works anyway)
+    { left: ['KeyA'], right: ['KeyD'], up: ['KeyW'], down: ['KeyS'], attack: ['KeyJ'], jump: ['KeyK'], dash: ['KeyL'], skill: ['KeyU'], special: ['KeyI'], awaken: ['KeyO'], throw: [], charge: [], guard: [] },   // throw, charge, guard: the touch buttons (J + L, J + K and S work anyway)
     { left: ['ArrowLeft'], right: ['ArrowRight'], up: ['ArrowUp'], down: ['ArrowDown'], attack: ['Numpad1', 'Digit7'], jump: ['Numpad2', 'Digit8'], dash: ['Numpad3', 'Digit9'], skill: ['Numpad4', 'Digit0'], special: ['Numpad5', 'Minus'], awaken: ['Numpad6', 'Equal'] }
   ];
   SW.zones.versus = { name: 'Versus', theme: 'arena', music: 'boss', w: 38, h: 17, build(z) { z.ground(0, 37, 14); } };

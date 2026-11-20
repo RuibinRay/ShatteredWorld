@@ -90,6 +90,9 @@
     ['skill', 'U', 'Skill', 2.3, 2.1, 0.95], ['special', 'I', 'Special', 1.7, 3.45, 0.95], ['awaken', 'O', 'Awaken', 0.65, 3.7, 0.85],
     ['charge', 'J+K', 'Charge', 3.75, 0.65, 0.75], ['interact', 'E', 'Talk', 3.6, 1.95, 0.75], ['item', 'Q', 'Item', 3.25, 3.15, 0.7],
     ['throw', 'J+L', 'Throw', 4.85, 1.3, 0.75],   // js/throw.js
+    // Block (the user, 2026-11-20: "add block bottom for both phone versus and story"): holds the guard action, as S
+    // (down) does on the keyboard, in the story and in Versus (its key table passes guard on, js/versus.js)
+    ['guard', 'S', 'Block', 4.8, 2.55, 0.85],
     ['map', 'M', 'Map', 1.75, -0.6, 0.62], ['pause', 'Esc', 'Menu', 0.6, -0.6, 0.62]
   ];
   const btns = BTNS.map(([a, k, w, x, y, s]) => {
