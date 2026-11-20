@@ -16,7 +16,14 @@
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
   const T = SW.touch = { held: {}, tap: {}, mode: read().touch || 'auto', used: false };   // tap: pressed since the last frame (a tap quicker than one frame still counts)
   const coarse = () => (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || navigator.maxTouchPoints > 0;
-  T.on = () => T.mode === 'on' || (T.mode === 'auto' && (coarse() || T.used));
+  // A phone or tablet with no mouse or trackpad has only these controls to reach Settings with (the user, 2026-11-19:
+  // "for phone once the touchmode is off theres no way to change the setting"). There Touch controls offers Auto and On
+  // only, and an Off saved earlier counts as Auto, so a player who turned them off gets them back. Desktops keep Off.
+  const fine = () => !!(window.matchMedia && window.matchMedia('(any-pointer: fine)').matches);
+  const mobileUA = () => /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);   // iPadOS says Macintosh; stylus phones report a fine pointer
+  T.phone = () => coarse() && (!fine() || mobileUA());
+  if (T.mode === 'off' && T.phone()) T.mode = 'auto';
+  T.on = () => T.mode === 'on' || ((T.mode === 'auto' || (T.mode === 'off' && T.phone())) && (coarse() || T.used));
   T.setMode = function (m) {
     T.mode = m; const s = read(); s.touch = m;
     try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* private window */ }
