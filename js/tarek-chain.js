@@ -31,12 +31,13 @@
   // ---------- a chain from (x0, y0) to (x1, y1), sagging by `sag` pixels at its middle ----------
   function chain(ctx, x0, y0, x1, y1, sag, o) {
     o = o || {};
-    const L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / 4));
+    const L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / 6)), K = o.k || 1.5;   // (2026-11-20 look ranking: heavier links, the chain was a dotted line)
     ctx.save(); if (o.a !== undefined) ctx.globalAlpha *= clamp01(o.a);
     for (let i = 0; i <= n; i++) {
       const u = i / n, x = x0 + (x1 - x0) * u, y = y0 + (y1 - y0) * u + Math.sin(u * PI) * (sag || 0), X = Math.round(x), Y = Math.round(y);
-      if (i % 2) { art.rect(ctx, C.out, X - 2, Y - 1, 4, 3); art.rect(ctx, C.m, X - 1, Y, 2, 1); art.rect(ctx, C.hi, X - 1, Y - 1, 1, 1); }   // a link edge-on: a short bar
-      else { art.rect(ctx, C.out, X - 3, Y - 2, 6, 5); art.rect(ctx, C.l, X - 2, Y - 1, 4, 3); art.rect(ctx, C.out, X - 1, Y, 2, 1); art.rect(ctx, C.hi, X - 2, Y - 1, 2, 1); art.rect(ctx, C.d, X, Y + 1, 2, 1); }   // a link face-on: a ring
+      const q = v => Math.max(1, Math.round(v * K));
+      if (i % 2) { art.rect(ctx, C.out, X - q(2), Y - q(1), q(4), q(3)); art.rect(ctx, C.m, X - q(1), Y, q(2), q(1)); art.rect(ctx, C.hi, X - q(1), Y - q(1), q(1), 1); }   // a link edge-on: a short bar
+      else { art.rect(ctx, C.out, X - q(3), Y - q(2), q(6), q(5)); art.rect(ctx, C.l, X - q(2), Y - q(1), q(4), q(3)); art.rect(ctx, C.out, X - q(1), Y, q(2), q(1)); art.rect(ctx, C.hi, X - q(2), Y - q(1), q(2), 1); art.rect(ctx, C.d, X, Y + q(1), q(2), 1); }   // a link face-on: a ring
     }
     ctx.restore();
   }
@@ -216,13 +217,13 @@
       if (st < FIN) {
         const k = ease((st - 74) / 10);
         A.forEach(([dx, dy], i) => { const kk = clamp01(k * 1.4 - i * 0.07); chain(ctx, sx + dx, cy + dy, sx + dx + (-dx * 0.92) * kk, cy + dy + (-dy * 0.92) * kk, 10 * (1 - kk) + 4); });
-        const sw = Math.sin(st * 0.35) * 0.9, wx = sx + Math.sin(sw) * 26, wy = cy - 40 + Math.cos(sw) * 26;   // the weight on its last length, swinging over them
-        chain(ctx, sx, cy - 40, wx, wy, 0); weight(ctx, wx, wy, 7, { rot: st * 0.3 });
+        const sw = Math.sin(st * 0.35) * 1.1, wx = sx + Math.sin(sw) * 34, wy = cy - 46 + Math.cos(sw) * 34;   // the weight on its last length, swinging over them
+        chain(ctx, sx, cy - 46, wx, wy, 0, { k: 2 }); weight(ctx, wx, wy, 13, { rot: st * 0.3 });
       } else {
         const k = (st - FIN) / 16, ik = (st - FIN) / 5, mono = ik < 0.5 ? '#ffffff' : undefined;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 43);
         A.forEach(([dx, dy]) => { ctx.save(); if (mono) { ctx.globalAlpha = 1; art.line(ctx, '#ffffff', Math.round(sx + dx), Math.round(cy + dy), sx, cy, 3); } else chain(ctx, sx + dx, cy + dy, sx + dx * 0.08, cy + dy * 0.08, 0, { a: 1 - ease((k - 0.5) / 0.5) }); ctx.restore(); });   // all taut
-        weight(ctx, sx, cy + 14, 7, { mono, a: 1 - ease((k - 0.5) / 0.5) });
+        weight(ctx, sx, cy + 6 + Math.min(1, (st - FIN) / 2) * 8, 15, { mono, a: 1 - ease((k - 0.5) / 0.5) });
         if (st === FIN) { clank(T.x, T.y - 20, 24); for (let i = 0; i < 14; i++) part(T.x + rand(-20, 20), T.y - 2, C.dust, rand(-3, 3), -rand(1, 3), 20, 2, 0.12); }
       }
     }, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
