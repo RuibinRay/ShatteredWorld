@@ -183,9 +183,10 @@
         s.aldric = 1;
         s.paint = (ctx, sx, sy, q) => {
           const t = q.t, delay = 24;
-          sigil(ctx, sx, sy - 2, 18, t < delay ? Math.min(1, t / 6) : 1 - (t - delay) / 24, 0.3, t);
+          sigil(ctx, sx, sy - 2, 28, t < delay ? Math.min(1, t / 6) : 1 - (t - delay) / 24, 0.3, t);   // (2026-11-20 look ranking: bigger, and the sky's beam warns before the sword falls)
+          if (t < delay) { ctx.save(); ctx.globalAlpha = 0.12 + 0.18 * (t / delay); ctx.fillStyle = '#fff3c0'; ctx.fillRect(R(sx - 6 - t * 0.2), 0, R(12 + t * 0.4), R(sy)); ctx.globalAlpha *= 1.6; ctx.fillRect(R(sx - 1), 0, 2, R(sy)); ctx.restore(); }
           if (t < delay - 4) return;
-          const u = t - (delay - 4), fall = ease(Math.min(1, u / 4)), L = 96, a = t < delay + 10 ? 1 : 1 - (t - delay - 10) / 14;
+          const u = t - (delay - 4), fall = ease(Math.min(1, u / 4)), L = 130, a = t < delay + 10 ? 1 : 1 - (t - delay - 10) / 14;
           lightSword(ctx, sx, R(sy - 300 * (1 - fall) + 6), L, a, u < 6 && u >= 4 ? C.w : undefined);
           if (u >= 4 && u < 12) { const k = (u - 4) / 8; ctx.save(); ctx.globalAlpha *= 1 - k; for (let i = 0; i < 10; i++) { const an = PI + i / 9 * PI; art.line(ctx, i % 2 ? C.gd : C.w, sx, sy - 2, R(sx + Math.cos(an) * (14 + k * 26)), R(sy - 2 + Math.sin(an) * (6 + k * 14)), 1); } ctx.restore(); chips(ctx, sx, sy - 4, k, 6, 3); }
         };
