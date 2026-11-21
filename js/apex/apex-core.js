@@ -124,6 +124,33 @@
       ctx.filter = 'sepia(1) saturate(6) hue-rotate(150deg)'; ctx.drawImage(tmp, s, 0);
       ctx.filter = 'none'; ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
     }
+    if (L.slice) {   // the picture cut in two along a line through the focus: { a (angle), off (px each half slides), col }
+      snap(c); const s = L.slice, a = s.a || 0, ca = Math.cos(a), sa = Math.sin(a), ox = s.off * k, cxp = fxp * k, cyp = fyp * k, BIG = c.width * 2;
+      ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, c.width, c.height);
+      for (const side of [-1, 1]) {
+        ctx.save(); ctx.beginPath();
+        ctx.moveTo(cxp - ca * BIG, cyp - sa * BIG); ctx.lineTo(cxp + ca * BIG, cyp + sa * BIG);
+        ctx.lineTo(cxp + ca * BIG - sa * BIG * side, cyp + sa * BIG + ca * BIG * side); ctx.lineTo(cxp - ca * BIG - sa * BIG * side, cyp - sa * BIG + ca * BIG * side); ctx.closePath(); ctx.clip();
+        ctx.drawImage(tmp, R(-ca * ox * side), R(-sa * ox * side)); ctx.restore();
+      }
+      ctx.strokeStyle = s.col || '#ffffff'; ctx.lineWidth = Math.max(1, R(k * (s.w || 1))); ctx.beginPath(); ctx.moveTo(cxp - ca * BIG, cyp - sa * BIG); ctx.lineTo(cxp + ca * BIG, cyp + sa * BIG); ctx.stroke();
+    }
+    if (L.shatter) {   // the picture broken into cells of glass that drift away from the focus: { k (0-1), d (how far), seed }
+      snap(c); const s = L.shatter, cols = 7, rows = 5, cw = c.width / cols, ch = c.height / rows, cxp = fxp * k, cyp = fyp * k;
+      const J = (i, j) => { const h = ((i * 73856093) ^ (j * 19349663) ^ ((s.seed || 0) * 83492791)) >>> 0; return [((h % 1000) / 1000 - 0.5) * cw * 0.7, (((h >> 10) % 1000) / 1000 - 0.5) * ch * 0.7]; };
+      const pt = (i, j) => { const e = i === 0 || j === 0 || i === cols || j === rows, o = e ? [0, 0] : J(i, j); return [i * cw + o[0], j * ch + o[1]]; };
+      ctx.fillStyle = s.bg || '#05060c'; ctx.fillRect(0, 0, c.width, c.height);
+      for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+        const q = [pt(i, j), pt(i + 1, j), pt(i + 1, j + 1), pt(i, j + 1)], mx = (q[0][0] + q[2][0]) / 2, my = (q[0][1] + q[2][1]) / 2;
+        const dx = mx - cxp, dy = my - cyp, dist = Math.hypot(dx, dy) || 1, push = s.k * (s.d || 1) * (5 + 9 * Math.min(1, 120 * k / dist)) * k;
+        const ox = dx / dist * push, oy = dy / dist * push, rot = s.k * ((((i * 7 + j * 13) % 9) - 4) * 0.01);
+        ctx.save(); ctx.translate(mx + ox, my + oy); ctx.rotate(rot); ctx.translate(-mx, -my);
+        ctx.beginPath(); ctx.moveTo(q[0][0], q[0][1]); for (let n = 1; n < 4; n++) ctx.lineTo(q[n][0], q[n][1]); ctx.closePath(); ctx.clip();
+        ctx.drawImage(tmp, 0, 0);
+        ctx.strokeStyle = s.col || '#ffffff'; ctx.globalAlpha = 0.8; ctx.lineWidth = Math.max(1, R(k)); ctx.stroke(); ctx.globalAlpha = 1;
+        ctx.restore();
+      }
+    }
     if (L.grade) { ctx.globalAlpha = L.grade[1]; ctx.globalCompositeOperation = L.grade[2] || 'multiply'; ctx.fillStyle = L.grade[0]; ctx.fillRect(0, 0, c.width, c.height); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; }
     ctx.setTransform(k, 0, 0, k, 0, 0);
     if (L.lines) {   // speed lines: from the edges toward the focus, a gap round it
