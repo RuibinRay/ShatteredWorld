@@ -260,6 +260,7 @@
     let dusted = false;
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
     z.shots.push(v);
-    PX.over((ctx, cam) => { if (v.gone || p.state !== 'ult') return false; draw(ctx, Math.round(v.x - cam.x), Math.round(v.y - cam.y)); });
+    const t0o = SW.frame, live = () => G.player === p || !!(SW.versus && SW.versus.f && SW.versus.f.some(f => f && f.p === p));   // (a match quit or reset mid-ultimate leaves the old fighter in 'ult' for ever: stop with it)
+    PX.over((ctx, cam) => { if (v.gone || p.state !== 'ult' || SW.frame - t0o > 400 || !live()) return false; draw(ctx, Math.round(v.x - cam.x), Math.round(v.y - cam.y)); });
   }
 })();

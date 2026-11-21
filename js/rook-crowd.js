@@ -225,6 +225,7 @@
       if (!popped && p.state === 'ult' && p.st === FIN + 1) { popped = true; puff(z, vv.x, vv.y, true); puff(z, vv.x - 14, vv.y - 18, true); puff(z, vv.x + 14, vv.y - 10, true); }
     });
     z.shots.push(v);
-    PX.over((ctx, cam) => { if (v.gone || p.state !== 'ult') return false; draw(ctx, Math.round(v.x - cam.x), Math.round(v.y - cam.y)); });
+    const t0o = SW.frame, live = () => G.player === p || !!(SW.versus && SW.versus.f && SW.versus.f.some(f => f && f.p === p));   // (a match quit or reset mid-ultimate leaves the old fighter in 'ult' for ever: stop with it)
+    PX.over((ctx, cam) => { if (v.gone || p.state !== 'ult' || SW.frame - t0o > 400 || !live()) return false; draw(ctx, Math.round(v.x - cam.x), Math.round(v.y - cam.y)); });
   }
 })();
