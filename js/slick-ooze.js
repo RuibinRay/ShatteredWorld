@@ -34,10 +34,16 @@
     if (a <= 0 || r < 1) return;
     ctx.save(); ctx.globalAlpha *= a;
     const wob = k => 1 + Math.sin(t * 0.35 + k * 2.1) * 0.06;
-    ctx.globalAlpha *= 0.55; ctx.fillStyle = C.g;   // the see-through body
+    ctx.globalAlpha *= 0.78; ctx.fillStyle = C.g;   // the body, thick enough to read
     ctx.beginPath(); for (let i = 0; i <= 20; i++) { const an = i / 20 * PI * 2, w = wob(i); const px = x + Math.cos(an) * rx * w, py = y + Math.sin(an) * ry * w; if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py); } ctx.closePath(); ctx.fill();
-    ctx.globalAlpha /= 0.55;
-    for (let i = 0; i < 28; i++) { const an = i / 28 * PI * 2, w = wob(R(i * 20 / 28)); art.rect(ctx, Math.sin(an) > 0.3 ? C.rim : C.d, R(x + Math.cos(an) * rx * w), R(y + Math.sin(an) * ry * w), 2, 2); }   // the rim
+    ctx.globalAlpha /= 0.78;
+    if (r >= 6) {   // volume: a dark belly and a lit crown inside the body
+      ctx.save(); ctx.globalAlpha *= 0.5; ctx.fillStyle = C.d; ctx.beginPath(); ctx.ellipse(x, y + ry * 0.38, rx * 0.82, ry * 0.5, 0, 0, PI * 2); ctx.fill();
+      ctx.globalAlpha = ctx.globalAlpha / 0.5 * 0.4; ctx.fillStyle = C.g2; ctx.beginPath(); ctx.ellipse(x - rx * 0.1, y - ry * 0.32, rx * 0.6, ry * 0.38, 0, 0, PI * 2); ctx.fill(); ctx.restore();
+    }
+    const rw = r >= 14 ? 3 : 2;
+    for (let i = 0; i < 28; i++) { const an = i / 28 * PI * 2, w = wob(R(i * 20 / 28)); art.rect(ctx, Math.sin(an) > 0.3 ? C.rim : C.d, R(x + Math.cos(an) * rx * w), R(y + Math.sin(an) * ry * w), rw, rw); }   // the rim
+    if (r >= 12) for (let i = 0; i < 3; i++) { const dx = R(x + (i - 1) * rx * 0.45), L = 3 + R(((t * 0.15 + i * 3.1) % 1) * r * 0.35); art.rect(ctx, C.out, dx - 1, R(y + ry * 0.85), 4, L + 1); art.rect(ctx, C.g, dx, R(y + ry * 0.85), 2, L); }   // drips hanging off the bottom
     art.rect(ctx, C.l2, R(x - rx * 0.45), R(y - ry * 0.55), Math.max(2, R(rx * 0.3)), 2); art.rect(ctx, C.w, R(x - rx * 0.45), R(y - ry * 0.55), 1, 1);   // a wet highlight
     for (let i = 0; i < Math.min(5, 1 + R(r / 5)); i++) { const ph = ((t * 0.03 + i * 0.27) % 1), bx = R(x + Math.sin(i * 2.7) * rx * 0.5), by = R(y + ry * 0.6 - ph * ry * 1.2); art.rect(ctx, C.l, bx, by, 1, 1); if (i % 2) art.rect(ctx, C.l2, bx + 1, by, 1, 1); }   // bubbles drifting up inside
     if (o.grin && r >= 5) grin(ctx, x + o.grin * rx * 0.2, y + ry * 0.15, rx * 0.75, t);
@@ -54,9 +60,9 @@
   function puddleDraw(ctx, x, y, w, t, a) {   // a glossy living puddle
     if (a <= 0) return;
     ctx.save(); ctx.globalAlpha *= a;
-    ctx.globalAlpha *= 0.7; art.rect(ctx, C.g, x - w, y - 3, w * 2, 3); ctx.globalAlpha /= 0.7;
+    ctx.globalAlpha *= 0.85; art.rect(ctx, C.g, x - w, y - 5, w * 2, 5); art.rect(ctx, C.d, x - w + 2, y - 2, w * 2 - 4, 2); ctx.globalAlpha /= 0.85;
     art.rect(ctx, C.rim, x - w, y - 1, w * 2, 1); art.rect(ctx, C.d, x - w - 1, y - 2, 1, 2); art.rect(ctx, C.d, x + w, y - 2, 1, 2);
-    for (let i = -w + 2; i < w - 2; i += 5) { const hh = Math.sin(t * 0.12 + i * 0.4) > 0.6 ? 1 : 0; art.rect(ctx, C.g2, x + i, y - 4 - hh, 3, 1); }   // the surface moving
+    for (let i = -w + 2; i < w - 2; i += 5) { const hh = Math.sin(t * 0.12 + i * 0.4) > 0.6 ? 1 : 0; art.rect(ctx, C.g2, x + i, y - 6 - hh, 3, 2); }   // the surface moving
     if ((t >> 4) % 3 === 0) art.rect(ctx, C.w, x + ((t * 3) % (w * 2)) - w, y - 4, 2, 1);
     if (t % 50 < 10) { const k = (t % 50) / 10; art.rect(ctx, C.l, R(x + Math.sin(t) * w * 0.5), R(y - 4 - k * 4), 1, 1); }   // a bubble rising and popping
     ctx.restore();
@@ -76,12 +82,12 @@
       }
       if (s instanceof Proj && s.team !== 'enemy' && (s.r === 5 && s.life === 60 || s.r === 7 && s.w === 16 && s.life === 90)) {   // Slime Ball, Split
         s.slick = 1; const small = s.r === 7;
-        s.render = (ctx, x, y, q) => { const t = q.t || 0, sq = 1 + Math.max(-0.25, Math.min(0.3, (q.vy || 0) * -0.05)); blob(ctx, x, y, small ? 8 : 6, t, { squash: 1 / sq, grin: Math.sign(q.vx) || 1 }); };
+        s.render = (ctx, x, y, q) => { const t = q.t || 0, sq = 1 + Math.max(-0.25, Math.min(0.3, (q.vy || 0) * -0.05)); blob(ctx, x, y, small ? 11 : 9, t, { squash: 1 / sq, grin: Math.sign(q.vx) || 1 }); };
         return;
       }
       if (s instanceof Vis && s.life === 1 && typeof s.render === 'function' && String(s.render).indexOf("'#2d6a4f', x, y - 16, 17") >= 0) {   // Engulf's blob, drawn fresh each frame
         s.slick = 1; const d = p.face;
-        s.render = (ctx, x, y) => { const t = p.t || SW.frame; blob(ctx, x + d * 4, y - 18, 22, t * 1.5, { grin: d, squash: 1.15 }); if (t % 8 < 2) for (let i = 0; i < 3; i++) art.rect(ctx, C.l2, R(x + d * 10 + rand(-8, 8)), R(y - 18 + rand(-8, 8)), 1, 1); };   // churning as it chews
+        s.render = (ctx, x, y) => { const t = p.t || SW.frame; blob(ctx, x + d * 4, y - 20, 28, t * 1.5, { grin: d, squash: 1.15 }); if (t % 8 < 2) for (let i = 0; i < 3; i++) art.rect(ctx, C.l2, R(x + d * 10 + rand(-8, 8)), R(y - 18 + rand(-8, 8)), 1, 1); };   // churning as it chews
       }
     });
   }
@@ -109,7 +115,7 @@
       const n0 = z.shots.length, r = _bf.apply(this, arguments);
       if (!isS(G)) return r;
       const drv = z.shots.slice(n0).find(s => s.p === p && s.step);
-      if (drv && drv.end) { const _e = drv.end; drv.end = function (q, zz) { const o = _e.apply(this, arguments); const x = p.x, y = p.y; (zz || z).shots.push(new Vis(x, y, 22, (ctx, sx, sy, t) => { const k = t / 22; splash(ctx, sx, sy - 2, k, 12, 1.3); blob(ctx, sx, sy - 4, 16 * (1 - k) + 2, t, { squash: 3 + k * 3, a: 1 - k }); })); return o; }; }
+      if (drv && drv.end) { const _e = drv.end; drv.end = function (q, zz) { const o = _e.apply(this, arguments); const x = p.x, y = p.y; (zz || z).shots.push(new Vis(x, y, 22, (ctx, sx, sy, t) => { const k = t / 22; splash(ctx, sx, sy - 2, k, 16, 1.6); blob(ctx, sx, sy - 4, 22 * (1 - k) + 2, t, { squash: 3 + k * 3, a: 1 - k }); })); return o; }; }
       return r;
     };
   }
@@ -119,7 +125,7 @@
     const a = p.atk;
     if (!a || !a.fin || (p.state !== 'attack' && p.state !== 'airatk') || p.st !== a.hitAt) return;
     const d = p.face, x = p.x + d * 30, y = p.y - 20;
-    z.shots.push(new Vis(x, y, 14, (ctx, sx, sy, t) => { const k = t / 14; if (t < 5) blob(ctx, sx - d * 6 + d * t * 2, sy, 9, t, { squash: 0.8, grin: 0 }); else splash(ctx, sx, sy + 4, (t - 5) / 9, 9, 0.9); void k; }));
+    z.shots.push(new Vis(x, y, 14, (ctx, sx, sy, t) => { const k = t / 14; if (t < 5) blob(ctx, sx - d * 6 + d * t * 2, sy, 13, t, { squash: 0.8, grin: 0 }); else splash(ctx, sx, sy + 4, (t - 5) / 9, 11, 1.1); void k; }));
   }
 
   // ================= the small auras =================
@@ -167,13 +173,13 @@
     const draw = (ctx, sx, sy) => {
       const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 18) return;
       const d = T.x >= p.x ? -1 : 1;
-      if (st < FIN) { const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)); blob(ctx, sx - d * (30 - k * 18), sy - 10 - k * 26, 14 + k * 22, st, { grin: d, squash: 1.4 - k * 0.4 }); }
+      if (st < FIN) { const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)); blob(ctx, sx - d * (40 - k * 26), sy - 14 - k * 34, 20 + k * 34, st, { grin: d, squash: 1.4 - k * 0.4 }); }
       else {
         const u = st - FIN, k = u / 18, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, sy - 24, ik, 89);
         const sq = u < 6 ? 0.7 + Math.sin(u * 1.2) * 0.15 : 1;   // the squeeze
-        blob(ctx, sx, sy - 22, 30 * (1 - k * 0.6), st, { grin: d, squash: sq, a: 1 - ease((k - 0.6) / 0.4) });
-        if (u > 6) splash(ctx, sx, sy - 6, (u - 6) / 12, 14, 1.6);
+        blob(ctx, sx, sy - 26, 46 * (1 - k * 0.55), st, { grin: d, squash: sq, a: 1 - ease((k - 0.6) / 0.4) });
+        if (u > 6) splash(ctx, sx, sy - 6, (u - 6) / 12, 20, 2.2);
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
