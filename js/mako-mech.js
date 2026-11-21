@@ -87,8 +87,8 @@
   function dressShots(p, z) {
     z.shots.forEach(s => {
       if (!(s instanceof Proj) || s.mako || s.team === 'enemy') return;
-      if (s.r === 4 && s.w === 12 && s.h === 12 && s.life === 40) { s.mako = 1; s.render = (ctx, x, y, q) => { const d = Math.sign(q.vx) || 1; shell(ctx, x, y, d, 1); ctx.save(); ctx.globalAlpha *= 0.5; art.line(ctx, C.sm2, R(x - d * 12), R(y), R(x - d * 20), R(y), 1); ctx.restore(); }; }
-      else if (s.w === 8 && s.h === 8 && s.life === 90 && s.ghost) { s.mako = 1; s.render = (ctx, x, y, q) => missile(ctx, x, y, Math.atan2(q.vy, q.vx), q.t || 0); }
+      if (s.r === 4 && s.w === 12 && s.h === 12 && s.life === 40) { s.mako = 1; s.render = (ctx, x, y, q) => { const d = Math.sign(q.vx) || 1; shell(ctx, x, y, d, 1.6); ctx.save(); ctx.globalAlpha *= 0.5; art.line(ctx, C.sm2, R(x - d * 12), R(y), R(x - d * 20), R(y), 1); ctx.restore(); }; }
+      else if (s.w === 8 && s.h === 8 && s.life === 90 && s.ghost) { s.mako = 1; s.render = (ctx, x, y, q) => { ctx.save(); ctx.translate(R(x), R(y)); ctx.scale(1.5, 1.5); missile(ctx, 0, 0, Math.atan2(q.vy, q.vx), q.t || 0); ctx.restore(); }; }
     });
   }
   const _ac = CASTS.arm_cannon;
@@ -234,13 +234,14 @@
       const st = p.st; if (p.state !== 'ult' || st < 74 || st > FIN + 24) return;
       const cy = sy - 22;
       if (st < FIN) {
-        const k = ease((st - 74) / (FIN - 74)), y = cy - 52 + k * 30;   // (low enough to stay in the close-up)
-        ctx.save(); ctx.translate(R(sx), R(y)); ctx.rotate(PI / 2); shell(ctx, 14, 0, 1, 2.4); ctx.restore();
-        jet(ctx, sx, y - 28, -PI / 2, 10, st, 0.7);
+        const k = ease((st - 74) / (FIN - 74)), y = cy - 40 + k * 20;   // (low enough to stay in the close-up)
+        for (let i = 0; i < 4; i++) { const an = -PI / 2 + (i - 1.5) * 0.7, rr = 90 * (1 - k) + 20, mx = sx + Math.cos(an) * rr, my = cy + Math.sin(an) * rr * 0.7; ctx.save(); ctx.translate(R(mx), R(my)); ctx.scale(1.5, 1.5); missile(ctx, 0, 0, an + PI, st); ctx.restore(); }   // the missiles close in
+        ctx.save(); ctx.translate(R(sx), R(y)); ctx.rotate(PI / 2); shell(ctx, 20, 0, 1, 4); ctx.restore();   // the one the size of a car
+        jet(ctx, sx, y - 40, -PI / 2, 16, st, 0.8);
       } else {
         const u = st - FIN, k = u / 24, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 103);
-        blast(ctx, sx, cy, 60, Math.min(0.99, k), 0.7);
+        blast(ctx, sx, cy, 84, Math.min(0.99, k), 0.7); blast(ctx, sx + 30, cy - 10, 40, Math.min(0.99, k * 1.3), 1.9); blast(ctx, sx - 30, cy + 6, 40, Math.min(0.99, k * 1.3), 2.6);
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
