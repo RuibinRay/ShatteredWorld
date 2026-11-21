@@ -77,8 +77,8 @@
       for (let j = 4; j >= 0; j--) {
         const r2 = Math.max(0, rr - j * (o.willow ? 6 : 4)), dr = droop * (r2 / Math.max(1, Rr)) * (o.willow ? 1.4 : 1);
         const px = R(x + ca * r2), py = R(y + sa * r2 + dr);
-        if (j === 0) { if (k > 0.6 && ((i * 7 + R(k * 40)) % 3 === 0)) continue; const hs = Rr > 40 ? 3 : 2; art.rect(ctx, k < 0.3 ? C.w : col, px - 1, py - 1, hs, hs); }
-        else if (j < 4 || o.willow) art.rect(ctx, j < 2 ? col : C.g2, px, py, Rr > 40 && j < 2 ? 2 : 1, Rr > 40 && j < 2 ? 2 : 1);
+        if (j === 0) { if (k > 0.6 && ((i * 7 + R(k * 40)) % 3 === 0)) continue; const hs = Rr > 40 ? 4 : 3; art.rect(ctx, k < 0.3 ? C.w : col, px - 1, py - 1, hs, hs); }   // (2026-11-20 look ranking: thicker stars)
+        else if (j < 4 || o.willow) art.rect(ctx, j < 2 ? col : C.g2, px, py, j < 2 ? 2 : 1, j < 2 ? 2 : 1);
       }
     }
     ctx.restore();
@@ -120,8 +120,8 @@
   function dressProj(z, n0) {
     z.shots.slice(n0).forEach(s => {
       if (!(s instanceof Proj) || s.dyna) return;
-      if (s.w === 12 && s.h === 12 && s.life === 80) { s.dyna = 1; s.render = (ctx, x, y, q) => bomb(ctx, x, y, 5, q.t || 0); tagEnd(s, 'chrys'); }
-      else if (s.w === 16 && s.h === 10 && s.life === 70) { s.dyna = 1; s.render = (ctx, x, y, q) => rocket(ctx, x + (Math.sign(q.vx) || 1) * 6, y, Math.sign(q.vx) || 1, q.t || 0); tagEnd(s, 'shell'); }
+      if (s.w === 12 && s.h === 12 && s.life === 80) { s.dyna = 1; s.render = (ctx, x, y, q) => bomb(ctx, x, y, 7, q.t || 0); tagEnd(s, 'chrys'); }
+      else if (s.w === 16 && s.h === 10 && s.life === 70) { s.dyna = 1; s.render = (ctx, x, y, q) => rocket(ctx, x + (Math.sign(q.vx) || 1) * 9, y, Math.sign(q.vx) || 1, q.t || 0, 1.5); tagEnd(s, 'shell'); }
     });
   }
   const _gr = CASTS.grenade, _rk = CASTS.rocket;
@@ -165,7 +165,7 @@
 
   // ================= W+O: Cluster Bomb (bomb and bomblets drawn as bombs) =================
   function dressActs(z) {
-    z.shots.forEach(s => { if (s.dyna || !s.paint || s.style !== 'blast' || !(s.w === 8 || s.w === 6) || !(s.g > 0)) return; s.dyna = 1; const r = s.w === 8 ? 4 : 3; s.paint = (ctx, x, y, q) => bomb(ctx, x, y, r, q.t || 0); });
+    z.shots.forEach(s => { if (s.dyna || !s.paint || s.style !== 'blast' || !(s.w === 8 || s.w === 6) || !(s.g > 0)) return; s.dyna = 1; const r = s.w === 8 ? 6 : 5; s.paint = (ctx, x, y, q) => bomb(ctx, x, y, r, q.t || 0); });
   }
 
   // ================= J: a powder star in a puff of soot; the last one a string of crackers =================
@@ -216,7 +216,7 @@
   SW.ultFx = function (p, g, z, foes) {
     const r = _uf.apply(this, arguments);
     if (!isD(g) || !z || !z.shots) return r;
-    z.shots.forEach(s => { if (!(s instanceof Proj) || s.dyna || s.w !== 12 || s.h !== 12 || s.life > 90 || s.g !== 0.12) return; s.dyna = 1; s.render = (ctx, x, y, q) => bomb(ctx, x, y, 5, q.t || 0); tagEnd(s, 'ult'); });   // its falling bombs
+    z.shots.forEach(s => { if (!(s instanceof Proj) || s.dyna || s.w !== 12 || s.h !== 12 || s.life > 90 || s.g !== 0.12) return; s.dyna = 1; s.render = (ctx, x, y, q) => bomb(ctx, x, y, 7, q.t || 0); tagEnd(s, 'ult'); });   // its falling bombs
     if (p.st === 6) {
       const UG = SW.ultGrand, pl = UG && UG.on && UG.planOf ? UG.planOf('dyna') : null, FIN = pl ? pl.fin : 64, BU2 = pl ? Math.max(74, FIN - 30) : 30;
       const sky = new Vis(p.x, p.y, 600, (ctx) => {   // (screen space) festival night: rockets go up and burst in colour
@@ -236,21 +236,26 @@
     }
     return r;
   };
-  // the finishing blow (js/ult-grand.js): one great rocket climbs over the target and bursts into a giant gold firework
-  // on an impact frame, then the smoke hangs
+  // the finishing blow (js/ult-grand.js): a giant demolition bomb thuds down beside the target, its fuse burning down in a
+  // shower of sparks while two rockets climb either side; on the impact frame it goes up as a huge firework in every colour
   function finale(p, z, T, FIN, BU2) {
+    const dir = T.x >= p.x ? 1 : -1;
     const draw = (ctx, sx, sy) => {
       const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 28) return;
-      const by = sy - 46;
+      const by = sy - 30, bx = sx + dir * 30;
       if (st < FIN) {
-        const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)), y = sy + 10 - (sy + 10 - by) * k;
-        ctx.save(); ctx.translate(R(sx), R(y)); ctx.rotate(-PI / 2); rocket(ctx, 0, 0, 1, st, 1.6); ctx.restore();
+        const fall = ease((st - (BU2 - 2)) / 7), y = sy - 140 + 118 * fall, burn = clamp01((st - BU2 - 4) / Math.max(1, FIN - BU2 - 4));
+        if (fall >= 1 && st < BU2 + 8) smoke(ctx, bx, sy - 2, 22, (st - BU2 - 5) / 4, 8);   // it lands with a thud
+        bomb(ctx, bx, R(y), 22, st);
+        for (let i = 0; i < 6; i++) art.rect(ctx, i % 2 ? C.g : C.w, R(bx + 14 - burn * 10 + rand(-4, 4)), R(y - 26 + rand(-4, 4)), 2, 2);   // the fuse, sputtering lower
+        for (const d2 of [-1, 1]) { const ry = sy + 10 - 70 * ease((st - (FIN - 14)) / 14); if (st > FIN - 14) { ctx.save(); ctx.translate(R(sx + d2 * 70), R(ry)); ctx.rotate(-PI / 2); rocket(ctx, 0, 0, 1, st, 1.3); ctx.restore(); } }
       } else {
         const u = st - FIN, k = u / 28, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, by, ik, 61);
-        chrys(ctx, sx, by, 64, Math.min(0.99, k * 1.1), GOLD, 0.2, { n: 22, willow: true });
-        chrys(ctx, sx, by, 36, Math.min(0.99, k * 1.4), [C.r, C.g2], 0.5, { n: 12 });
-        if (u > 8) smoke(ctx, sx, by + 16, 30, (u - 8) / 20, 12, 1 - ease((u - 14) / 14));
+        chrys(ctx, bx, by, 80, Math.min(0.99, k * 1.05), GOLD, 0.2, { n: 24, willow: true });
+        chrys(ctx, bx, by, 52, Math.min(0.99, k * 1.25), [C.r, C.g2], 0.5, { n: 16 });
+        for (let i = 0; i < 4; i++) chrys(ctx, R(bx + Math.cos(i * PI / 2 + 0.6) * 56), R(by - 20 + Math.sin(i * PI / 2 + 0.6) * 34), 26, Math.min(0.99, (u - 3 - i * 2) / 18), FOUR[i % 4], i, { n: 10 });
+        if (u > 8) smoke(ctx, bx, by + 16, 40, (u - 8) / 20, 14, 1 - ease((u - 14) / 14));
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
