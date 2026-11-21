@@ -35,6 +35,7 @@
   }
   // an open palm of air, fingers up, facing d; s its size (about its height)
   function palmPrint(ctx, x, y, s, d, a, mono) {
+    s *= 1.4;   // (2026-11-20 look ranking: the palms were faint and small)
     const S = Math.max(8, R(s)), b = R(S * 1.5) + 4, side = d < 0 ? 1 : 0;
     const cv = baked('p' + S + '_' + side + (mono ? 'm' : ''), b, b, (c, cx, cy) => PX.sprite(c, cx, cy, b, b, q => {
       q.scale(d < 0 ? -1 : 1, 1); const u = S / 12;
@@ -45,7 +46,7 @@
       q.fillStyle = C.c3; q.beginPath(); q.ellipse(-0.8 * u, 1 * u, 1.8 * u, 2 * u, 0, 0, PI * 2); q.fill();   // light in the palm
       q.strokeStyle = C.c; q.lineWidth = 1; q.beginPath(); q.arc(0, 2.4 * u, 2.2 * u, PI * 0.2, PI * 0.9); q.stroke();   // its crease
     }, { pal: [C.out, C.sl, C.c, C.c2, C.c3, C.w], outline: C.out, keepThin: true, mono }));
-    ctx.save(); ctx.globalAlpha *= clamp01(a === undefined ? 1 : a) * 0.88; ctx.drawImage(cv, R(x - cv.width / 2), R(y - cv.height / 2)); ctx.restore();
+    ctx.save(); ctx.globalAlpha *= clamp01(a === undefined ? 1 : a); ctx.drawImage(cv, R(x - cv.width / 2), R(y - cv.height / 2)); ctx.restore();
   }
   LP.palmPrint = palmPrint;
   function airRing(ctx, x, y, r, a, sq) {   // a ring of air: dashes, brighter at the front
@@ -201,7 +202,8 @@
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 83);
         seal(ctx, sx, cy, 30, Math.min(0.99, 0.2 + k), st);
         for (let i = 0; i < 3; i++) airRing(ctx, sx, cy, 10 + k * (40 + i * 20), 1 - k, 0.8);
-        if (u < 4) palmPrint(ctx, sx, cy, 34, 1, 1, C.w);
+        const push = Math.min(1, u / 2), dir = T.x >= p.x ? 1 : -1;
+        palmPrint(ctx, sx - dir * (20 - push * 14), cy, 46, dir, 1 - ease((k - 0.5) / 0.5), ik < 0.5 ? C.w : undefined);   // one great open palm, pressed into them
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
