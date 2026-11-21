@@ -56,7 +56,7 @@
   GW.wheel = wheel;
   function smear(ctx, x, y, r, t, heat) {   // the blur of the blade tips: arcs just inside the rim
     ctx.save(); ctx.globalAlpha = 0.6;
-    for (let k = 0; k < 4; k++) { const a0 = t * 0.6 + k * PI / 2; for (let i = 1; i < 5; i++) { const a = a0 - i * 0.12; art.rect(ctx, heat ? C.hot : C.l, Math.round(x + Math.cos(a) * r * 0.92), Math.round(y + Math.sin(a) * r * 0.92), 1, 1); } }
+    for (let k = 0; k < 4; k++) { const a0 = t * 0.6 + k * PI / 2; for (let i = 1; i < 5; i++) { const a = a0 - i * 0.12; art.rect(ctx, heat ? C.hot : C.l, Math.round(x + Math.cos(a) * r * 0.92), Math.round(y + Math.sin(a) * r * 0.92), r > 14 ? 2 : 1, r > 14 ? 2 : 1); } }
     ctx.restore();
   }
   const sparks = (x, y, n, vx, vy, hot) => { for (let i = 0; i < n; i++) part(x + rand(-2, 2), y + rand(-2, 2), i % 3 ? C.spark : hot ? C.hot : C.w, vx + rand(-1.5, 1.5), vy + rand(-1.5, 1), 10 + (i % 5) * 2, 1, 0.2); };
@@ -69,8 +69,8 @@
       s.garo = 1;
       const meteor = s.w === 28 && !s.ghost, roll = !!s.breaker && s.rehit === 7;
       s.render = (ctx, x, y, q) => {
-        const r = q.r || 13, spin = q.t * (roll ? 0.45 : 0.6) * (q.vx < 0 ? -1 : 1), heat = meteor ? 1 : 0;
-        if (meteor) { ctx.save(); ctx.globalAlpha = 0.6; for (let i = 1; i < 6; i++) art.rect(ctx, i % 2 ? C.hot : C.spark, Math.round(x - q.vx * i * 1.4), Math.round(y - q.vy * i * 1.4), 3, 3); ctx.restore(); }   // a trail of heat
+        const r = Math.round((q.r || 13) * 1.4), spin = q.t * (roll ? 0.45 : 0.6) * (q.vx < 0 ? -1 : 1), heat = meteor ? 1 : 0;
+        if (meteor) { ctx.save(); ctx.globalAlpha = 0.6; for (let i = 1; i < 6; i++) art.rect(ctx, i % 2 ? C.hot : C.spark, Math.round(x - q.vx * i * 1.4), Math.round(y - q.vy * i * 1.4), 5, 5); ctx.restore(); }   // a trail of heat
         wheel(ctx, x, y, r + 2, { spin, heat });
         smear(ctx, x, y, r + 2, q.t, heat);
       };
@@ -108,7 +108,7 @@
         return out;
       };
       const _end = drv.end;
-      drv.end = function () { const out = _end ? _end.apply(this, arguments) : undefined; sparks(p.x + dir * 24, p.y - 22, 14, dir * 3, -1.5, false); z.shots.push(new Vis(p.x, p.y, 10, (ctx, sx, sy, t) => wheel(ctx, sx + dir * (16 + ease(t / 4) * 18), sy - 22, 17, { spin: t * 0.4, flat: 0.45 + t * 0.05, a: 1 - ease((t - 5) / 5) }))); return out; };
+      drv.end = function () { const out = _end ? _end.apply(this, arguments) : undefined; sparks(p.x + dir * 24, p.y - 22, 14, dir * 3, -1.5, false); z.shots.push(new Vis(p.x, p.y, 10, (ctx, sx, sy, t) => wheel(ctx, sx + dir * (16 + ease(t / 4) * 18), sy - 22, 22, { spin: t * 0.4, flat: 0.45 + t * 0.05, a: 1 - ease((t - 5) / 5) }))); return out; };
     }
     // sparks off everything it stops
     guardUntil = SW.frame + 34; guardDir = dir;
@@ -143,7 +143,7 @@
         (G.zone ? G.zone.shots : []).forEach(s => {
           if (s.garoTw || !s.paint || !s.back || s.life !== 34) return;
           s.garoTw = 1;
-          s.paint = (ctx, x, y, q) => { ctx.save(); ctx.globalAlpha = 0.7; for (let i = 1; i < 5; i++) art.rect(ctx, i % 2 ? C.spark : C.w, Math.round(x - (q.vx || 0) * i * 1.6), Math.round(y + (i % 2)), 1, 1); ctx.restore(); wheel(ctx, x, y, 11, { spin: q.t * 0.7 }); smear(ctx, x, y, 11, q.t); };
+          s.paint = (ctx, x, y, q) => { ctx.save(); ctx.globalAlpha = 0.7; for (let i = 1; i < 5; i++) art.rect(ctx, i % 2 ? C.spark : C.w, Math.round(x - (q.vx || 0) * i * 1.6), Math.round(y + (i % 2)), 1, 1); ctx.restore(); wheel(ctx, x, y, 16, { spin: q.t * 0.7 }); smear(ctx, x, y, 16, q.t); };
         });
       });
       z.shots.push(watch);
@@ -194,8 +194,8 @@
     z.shots.slice(n0).forEach(v => {
       if (!(v instanceof Vis) || !v.render) return;
       v._ugS = 1;
-      if (v.life === 60) { const d = v.x < G.cam.x + W / 2 ? 1 : -1; v.render = (ctx, x, yy, t) => { const xx = x + d * t * 10; wheel(ctx, xx, yy, 10, { spin: t * 0.7 * d }); if (t % 2 === 0) art.rect(ctx, C.spark, Math.round(xx - d * 12), yy + 2, 1, 1); }; }
-      else if (v.life === 14) v.render = (ctx, x, y, t) => { const yy = Math.round(-40 + t * 14); wheel(ctx, W / 2, yy, 50, { spin: t * 0.25, heat: 0.7 }); smear(ctx, W / 2, yy, 50, t, true); };   // the house-sized one, red-hot
+      if (v.life === 60) { const d = v.x < G.cam.x + W / 2 ? 1 : -1; v.render = (ctx, x, yy, t) => { const xx = x + d * t * 10; wheel(ctx, xx, yy, 15, { spin: t * 0.7 * d }); if (t % 2 === 0) art.rect(ctx, C.spark, Math.round(xx - d * 12), yy + 2, 1, 1); }; }
+      else if (v.life === 14) v.render = (ctx, x, y, t) => { const yy = Math.round(-40 + t * 14); wheel(ctx, W / 2, yy, 64, { spin: t * 0.25, heat: 0.7 }); smear(ctx, W / 2, yy, 64, t, true); };   // the house-sized one, red-hot
     });
     if (p.st === 6) {
       const T = foes.filter(e => e && !e.dead).sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
@@ -213,19 +213,19 @@
       const cy = sy - 36;   // low enough for the pushed-in view
       if (st < FIN) {
         const k = ease((st - (BU2 - 2)) / 10), heat = clamp01((st - (BU2 + 4)) / 14), strike = FIN - 10, hk = st - strike;
-        wheel(ctx, sx, cy + (1 - k) * -40, 30, { spin: st * 0.03, heat, a: k });
+        wheel(ctx, sx, cy + (1 - k) * -40, 44, { spin: st * 0.03, heat, a: k });
         if (hk > -8 && hk < 6) {   // the hammer: a heavy head on a haft, swung down onto the hub
-          const ang = hk < 0 ? -1.2 + ease((hk + 8) / 8) * 1.2 : 0, hx = sx + 26, hy = cy - 6;
-          ctx.save(); ctx.translate(hx, hy); ctx.rotate(ang);
+          const ang = hk < 0 ? -1.2 + ease((hk + 8) / 8) * 1.2 : 0, hx = sx + 40, hy = cy - 10;
+          ctx.save(); ctx.translate(hx, hy); ctx.rotate(ang); ctx.scale(1.6, 1.6);
           art.rect(ctx, C.br0, -2, 0, 4, 30); art.rect(ctx, C.out, -12, -8, 24, 12); art.rect(ctx, C.s, -11, -7, 22, 10); art.rect(ctx, C.l, -11, -7, 22, 2);
           ctx.restore();
-          if (hk >= 0 && hk < 4) { ctx.save(); ctx.globalAlpha = 1 - hk / 4; art.ring(ctx, C.spark, sx + 10, cy - 2, 6 + hk * 8); ctx.restore(); }
+          if (hk >= 0 && hk < 4) { ctx.save(); ctx.globalAlpha = 1 - hk / 4; art.ring(ctx, C.spark, sx + 14, cy - 4, 8 + hk * 12); art.ring(ctx, C.w, sx + 14, cy - 4, 4 + hk * 8); ctx.restore(); }
         }
         if (hk === 0 && !sparked) { sparked = true; sparks(T.x + 10, T.y - 38, 30, 0, -2, true); }
       } else {
         const k = (st - FIN) / 18, ik = (st - FIN) / 5, drop = ease(Math.min(1, (st - FIN) / 2));
         if (ik < 1) PX.impact(ctx, sx, sy - 24, ik, 37);
-        wheel(ctx, sx, cy + drop * 16, 30, { spin: st * 0.3, heat: 1, mono: ik < 0.5 ? C.w : undefined, a: 1 - ease((k - 0.55) / 0.45) });
+        wheel(ctx, sx, cy + drop * 22, 44, { spin: st * 0.3, heat: 1, mono: ik < 0.5 ? C.w : undefined, a: 1 - ease((k - 0.55) / 0.45) });
         if (st === FIN) sparks(T.x, T.y - 10, 36, 0, -4, true);
       }
     };
