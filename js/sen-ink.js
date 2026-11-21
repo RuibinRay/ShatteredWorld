@@ -30,7 +30,7 @@
 
   // a brush stroke along a polyline: k how much of it is drawn so far, a its fade; w its widest
   function brush(ctx, pts, w, k, a, o) {
-    o = o || {};
+    o = o || {}; w *= 1.6;   // (2026-11-20 look ranking: bolder strokes, they read as thin slashes)
     if (a <= 0 || pts.length < 2) return;
     const segs = []; let L = 0;
     for (let i = 0; i < pts.length - 1; i++) { const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); segs.push(l); L += l; }
@@ -86,7 +86,7 @@
     if (col === '#ffe4ee' && kind === 2 && len === 46) {   // Falling Leaf
       z.shots.push(new Vis(x, y, 16, (ctx, sx, sy, t) => brush(ctx, arcPts(sx - d * 8, sy + 10, 30, d > 0 ? PI * 0.55 : PI * 0.45, d > 0 ? -PI * 0.35 : PI * 1.35, 12), 5, Math.min(1, (t + 1) / 3), 1 - ease((t - 8) / 8))));
       const lx = x + d * 18, ly = y - 26;
-      z.shots.push(new Vis(lx, ly, 60, (ctx, sx, sy, t) => { const u = t / 60; [-1, 1].forEach(s => halfLeaf(ctx, sx + s * (u * 14 + Math.sin(t * 0.18 + s) * 6), sy + u * 60, 5, t * 0.15 * s, s, 1 - ease((u - 0.7) / 0.3))); }));
+      z.shots.push(new Vis(lx, ly, 60, (ctx, sx, sy, t) => { const u = t / 60; [-1, 1].forEach(s => halfLeaf(ctx, sx + s * (u * 14 + Math.sin(t * 0.18 + s) * 6), sy + u * 60, 8, t * 0.15 * s, s, 1 - ease((u - 0.7) / 0.3))); }));
       return;
     }
     if ((col === '#ffffff' || col === '#ff9ab8') && len === 44 && p.state !== 'attack') {   // After the Bell: crossed strokes on what he passed
