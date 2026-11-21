@@ -40,19 +40,19 @@
   }
   const blit = (ctx, cv, x, y, a) => { if (a !== undefined && a <= 0) return; ctx.save(); if (a !== undefined) ctx.globalAlpha *= clamp01(a); ctx.drawImage(cv, R(x - cv.width / 2), R(y - cv.height / 2)); ctx.restore(); };
   const LEAF = [[C.g, C.g0], [C.g2, C.g], [C.y, C.y0]];
-  function leaf(ctx, x, y, ang, kind, a) {   // a leaf, turned to ang; kind 0 green, 1 pale green, 2 gold
-    const step = ((R(ang / (PI / 8)) % 8) + 8) % 8, k = kind % 3;
-    const cv = baked('l' + step + k, 14, 14, (c, cx, cy) => PX.sprite(c, cx, cy, 14, 14, q => {
-      q.rotate(step * PI / 8);
+  function leaf(ctx, x, y, ang, kind, a, sz) {   // a leaf, turned to ang; kind 0 green, 1 pale green, 2 gold
+    const step = ((R(ang / (PI / 8)) % 8) + 8) % 8, k = kind % 3, S = sz || 1.6, B = R(14 * S);   // (2026-11-20 look ranking: 1.6x, they were specks)
+    const cv = baked('l' + step + k + '_' + S, B, B, (c, cx, cy) => PX.sprite(c, cx, cy, B, B, q => {
+      q.rotate(step * PI / 8); q.scale(S, S);
       q.beginPath(); q.moveTo(-5, 0); q.quadraticCurveTo(0, -3.4, 5, 0); q.quadraticCurveTo(0, 3.4, -5, 0); q.fillStyle = LEAF[k][0]; q.fill();
       q.strokeStyle = LEAF[k][1]; q.lineWidth = 1; q.beginPath(); q.moveTo(-6, 0); q.lineTo(4, 0); q.stroke();
     }, { pal: PAL, outline: C.out, keepThin: true }));
     blit(ctx, cv, x, y, a);
   }
-  function letter(ctx, x, y, ang, a) {   // one of the Paper Post's letters: an envelope with a red seal
-    const step = ((R(ang / (PI / 8)) % 8) + 8) % 8;
-    const cv = baked('e' + step, 16, 16, (c, cx, cy) => PX.sprite(c, cx, cy, 16, 16, q => {
-      q.rotate(step * PI / 8);
+  function letter(ctx, x, y, ang, a, sz) {   // one of the Paper Post's letters: an envelope with a red seal
+    const step = ((R(ang / (PI / 8)) % 8) + 8) % 8, S = sz || 1.6, B = R(16 * S);
+    const cv = baked('e' + step + '_' + S, B, B, (c, cx, cy) => PX.sprite(c, cx, cy, B, B, q => {
+      q.rotate(step * PI / 8); q.scale(S, S);
       q.fillStyle = C.pa; q.fillRect(-5, -3.5, 10, 7);
       q.strokeStyle = C.pa2; q.lineWidth = 1; q.beginPath(); q.moveTo(-5, -3.5); q.lineTo(0, 0.5); q.lineTo(5, -3.5); q.stroke();
       q.fillStyle = C.red; q.fillRect(-1, 0, 2, 2);
@@ -266,6 +266,7 @@
         band(ctx, sx, cy, rr, rr * 0.35, st * 2, false, 0.9);
         for (let j = 0; j < 12; j++) { const an = st * (0.18 + k * 0.25) + j / 12 * PI * 2, lx = sx + Math.cos(an) * rr, ly = cy + Math.sin(an) * rr * 0.35 + Math.sin(j * 1.7) * 10; if (j % 4 === 3) letter(ctx, lx, ly, an, 1); else leaf(ctx, lx, ly, an + PI / 2, j % 3, 1); }
         band(ctx, sx, cy, rr, rr * 0.35, st * 2, true, 1);
+        const la = st * 0.22; letter(ctx, sx + Math.cos(la) * (rr + 22), cy - 26 + Math.sin(la) * 10, la * 0.5, Math.min(1, k * 3), 4);   // a great letter rides the wind round them
       } else {
         const u = st - FIN, k = u / 18, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 43);
@@ -273,6 +274,8 @@
         band(ctx, sx, cy, rr, rr * 0.3, st * 3, false, a); band(ctx, sx, cy, rr, rr * 0.3, st * 3, true, a);
         for (let j = 0; j < 16; j++) { const an = j / 16 * PI * 2 + 0.2, lx = sx + Math.cos(an) * rr * (0.8 + (j % 3) * 0.15), ly = cy + Math.sin(an) * rr * 0.5 - 14 * k; if (j % 5 === 4) letter(ctx, lx, ly, an + st * 0.3, a); else leaf(ctx, lx, ly, an + st * 0.5, j % 3, a); }
         for (let j = 0; j < 8; j++) { const an = j / 8 * PI * 2; streak(ctx, sx + Math.cos(an) * rr * 0.6, cy + Math.sin(an) * rr * 0.3, an, 16, a, C.wh); }
+        for (let j = 0; j < 14; j++) { const an = j / 14 * PI * 2 + 0.5, d2 = 20 + ease(Math.min(1, k * 1.5)) * (60 + (j % 4) * 14); leaf(ctx, sx + Math.cos(an) * d2, cy - 10 + Math.sin(an) * d2 * 0.6 + k * 20, an + st * 0.6, j % 3, a, 2.4); }   // and bursts into a storm of big leaves
+        if (k < 0.4) letter(ctx, sx, cy - 20 - k * 40, st * 0.5, 1 - k / 0.4, 4);
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
