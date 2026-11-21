@@ -85,9 +85,10 @@
     ctx.globalAlpha = 0.14 * a; art.disc(ctx, C.tox, Math.round(x), Math.round(y), Math.round(r * 1.25));   // the halo
     ctx.globalAlpha = 0.22 * a; art.disc(ctx, C.g, Math.round(x), Math.round(y), Math.round(r * 0.8));
     ctx.globalAlpha = a;
-    for (let i = 0; i < 16; i++) {   // the spores themselves, curling
+    const n = r > 14 ? 24 : 16, big = r > 10 ? 1 : 0;
+    for (let i = 0; i < n; i++) {   // the spores themselves, curling
       const ang = i * 2.4 + t * (0.05 + (i % 3) * 0.02), rr = r * (0.2 + ((i * 37) % 10) / 12), sx = x + Math.cos(ang) * rr, sy = y + Math.sin(ang) * rr * 0.8 - (t * 0.1 + i) % 6;
-      art.rect(ctx, i % 4 === 0 ? C.w : i % 2 ? C.tox : C.tox2, Math.round(sx), Math.round(sy), i % 5 === 0 ? 2 : 1, i % 5 === 0 ? 2 : 1);
+      art.rect(ctx, i % 4 === 0 ? C.w : i % 2 ? C.tox : C.tox2, Math.round(sx), Math.round(sy), (i % 5 === 0 ? 2 : 1) + big, (i % 5 === 0 ? 2 : 1) + big);
     }
     ctx.restore();
   }
@@ -116,7 +117,7 @@
     z.shots.forEach(s => {
       if (s.ume || !(s instanceof Proj) || !s.ghost || s.w !== 24 || s.h !== 24 || s.life !== 54 || s.team === 'enemy') return;
       s.ume = 1;
-      s.render = (ctx, x, y, q) => spores(ctx, x, y, 13 + Math.min(6, q.t / 6), q.t, 1);
+      s.render = (ctx, x, y, q) => spores(ctx, x, y, 17 + Math.min(8, q.t / 5), q.t, 1);
     });
   }
   const _sp = CASTS.spore_puff;
@@ -129,10 +130,10 @@
     if (!isU(G)) return r;
     const v = z.shots.slice(n0).find(s => s instanceof Vis && s.life === 30 && s.render);
     if (v) v.render = (ctx, sx, sy, t) => {
-      const hh = 58 * Math.min(1, 0.35 + t / 5) * (t > 22 ? (30 - t) / 8 : 1), pts = [];
+      const hh = 78 * Math.min(1, 0.35 + t / 5) * (t > 22 ? (30 - t) / 8 : 1), pts = [];
       for (let i = 0; i <= 10; i++) { const u = i / 10; pts.push([sx + Math.sin(u * 5 + t * 0.4) * 5 * u, sy - hh * u]); }
-      vine(ctx, pts, 5);
-      if (hh > 16) lily(ctx, pts[10][0], pts[10][1] + 10, { s: 10, h: 6, open: 1, sway: Math.sin(t * 0.3) });
+      vine(ctx, pts, 7);
+      if (hh > 16) lily(ctx, pts[10][0], pts[10][1] + 14, { s: 17, h: 8, open: 1, sway: Math.sin(t * 0.3) });
     };
     return r;
   };
@@ -145,8 +146,8 @@
     z.shots.slice(n0).filter(s => s instanceof Vis && s.life >= 170 && s.render).forEach((v, k) => {
       v.render = (ctx, sx, sy, t) => {
         const o = clamp01((t - 8 - k * 6) / 12), a = t > v.life - 12 ? (v.life - t) / 12 : 1, t0 = 20 + k * 6, beat = t >= t0 ? (t - t0) % 20 : -1;
-        lily(ctx, sx, sy, { s: 14, open: o, sway: Math.sin(t * 0.06 + k) * 0.4, a });
-        if (o >= 1 && beat >= 0) spores(ctx, sx, sy - 24 - beat * 0.6, 8 + beat * 0.5, t, a * (1 - beat / 20));
+        lily(ctx, sx, sy, { s: 21, open: o, sway: Math.sin(t * 0.06 + k) * 0.4, a });
+        if (o >= 1 && beat >= 0) spores(ctx, sx, sy - 34 - beat * 0.6, 10 + beat * 0.6, t, a * (1 - beat / 20));
       };
     });
     return r;
@@ -162,8 +163,8 @@
       const v = z.shots.slice(n0).find(s => s instanceof Vis && s.life === 60 && s.render);
       if (v) v.render = (ctx, x, y, t) => {
         const rise = ease(t / 8), snapAt = [16, 30, 44].map(s => t - s).find(k => k >= -2 && k < 6), snap = snapAt === undefined ? 0 : snapAt < 0 ? (snapAt + 2) / 2 : snapAt < 3 ? 1 : 1 - (snapAt - 3) / 3, a = t > 52 ? (60 - t) / 8 : 1;
-        corpse(ctx, x, y + (1 - rise) * 30, 56, snap, { a });
-        if (snapAt !== undefined && snapAt >= 0 && snapAt < 4) spores(ctx, x, y - 24, 12, t, 1 - snapAt / 4);
+        corpse(ctx, x, y + (1 - rise) * 30, 68, snap, { a });
+        if (snapAt !== undefined && snapAt >= 0 && snapAt < 4) spores(ctx, x, y - 30, 18, t, 1 - snapAt / 4);
       };
       return r;
     };
@@ -183,8 +184,8 @@
           PX.sprite(ctx, sx + sh, sy - 20, 44, 52, c => { c.translate(0, 20); c.fillStyle = C.g1; c.fillRect(-2, -10 * k, 4, 10 * k); c.beginPath(); c.ellipse(0, -10 * k - 8 * (0.5 + k), 7 + 6 * k, 8 + 9 * k, 0, 0, PI * 2); c.fillStyle = C.v1; c.fill(); c.strokeStyle = C.v; c.lineWidth = 1; for (let i = -1; i <= 1; i++) { c.beginPath(); c.moveTo(i * 3, -10 * k - 12 * k); c.lineTo(i * 2, -10 * k); c.stroke(); } c.fillStyle = C.tox; c.fillRect(-1, -10 * k - 12 * (0.5 + k), 2, 2); }, { pal: PAL, outline: C.out, keepThin: true });
         } else {
           const k = (t - 16) / 124;
-          if (t < 26) lily(ctx, sx, sy, { s: 16, h: 10, open: 1, a: 1 - (t - 16) / 10 });
-          spores(ctx, sx, sy - 22, 18 + ease(k * 3) * 12, t, 1 - ease((k - 0.6) / 0.4));
+          if (t < 30) lily(ctx, sx, sy, { s: 26, h: 14, open: 1, a: 1 - (t - 16) / 14 });
+          spores(ctx, sx, sy - 30, 24 + ease(k * 3) * 16, t, 1 - ease((k - 0.6) / 0.4));
           if (t >= 16 && t < 22) { ctx.save(); ctx.globalAlpha = 1 - (t - 16) / 6; art.ring(ctx, C.tox, sx, sy - 18, 6 + (t - 16) * 6); ctx.restore(); }
         }
       }));
@@ -251,14 +252,14 @@
       const cy = sy - 18;   // low enough for the pushed-in view
       if (st < FIN) {
         const k = ease((st - (BU2 - 2)) / (FIN - BU2));
-        PX.sprite(ctx, sx, cy, 110, 110, c => { c.rotate(Math.sin(st * 0.05) * 0.05); lilyVec(c, 44, k); }, { pal: PAL, alpha: Math.min(1, k * 3), outline: C.out, keepThin: true });
-        spores(ctx, sx, cy, 10 + k * 14, st, k);
+        PX.sprite(ctx, sx, cy, 170, 170, c => { c.rotate(Math.sin(st * 0.05) * 0.05); lilyVec(c, 68, k); }, { pal: PAL, alpha: Math.min(1, k * 3), outline: C.out, keepThin: true });
+        spores(ctx, sx, cy, 12 + k * 22, st, k);
       } else {
         const k = (st - FIN) / 18, ik = (st - FIN) / 5;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 53);
-        PX.sprite(ctx, sx, cy, 110, 110, c => lilyVec(c, 44, 1), { pal: PAL, alpha: 1 - ease((k - 0.3) / 0.4), mono: ik < 0.5 ? C.w : undefined, outline: C.out, keepThin: true });
-        spores(ctx, sx, cy, 24 + k * 50, st, 1 - ease((k - 0.5) / 0.5));
-        if (!burst) { burst = true; for (let i = 0; i < 26; i++) part(T.x + rand(-14, 14), T.y - rand(10, 40), i % 3 ? C.tox : C.v2, rand(-4, 4), -rand(0, 4), 26, 2, 0.05); }
+        PX.sprite(ctx, sx, cy, 170, 170, c => { c.scale(1 + k * 0.25, 1 + k * 0.25); lilyVec(c, 68, 1); }, { pal: PAL, alpha: 1 - ease((k - 0.3) / 0.4), mono: ik < 0.5 ? C.w : undefined, outline: C.out, keepThin: true });
+        spores(ctx, sx, cy, 34 + k * 64, st, 1 - ease((k - 0.5) / 0.5));
+        if (!burst) { burst = true; for (let i = 0; i < 40; i++) part(T.x + rand(-20, 20), T.y - rand(10, 50), i % 3 ? C.tox : i % 2 ? C.v2 : C.v, rand(-5, 5), -rand(0, 5), 30, 3, 0.05); }
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
