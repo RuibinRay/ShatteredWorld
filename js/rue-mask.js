@@ -65,7 +65,7 @@
     z.shots.forEach(s => {
       if (!(s instanceof Proj) || s.rue || !(s.r === 4 || s.r === 5) || s.w !== 12 || s.h !== 12 || s.life !== 40) return;
       s.rue = 1;
-      s.render = (ctx, x, y, q) => { const t = q.t || 0; mask(ctx, x, y, 12, { ang: t * 0.6 * (Math.sign(q.vx) || 1) }); ctx.save(); ctx.globalAlpha *= 0.5; art.line(ctx, C.pink, R(x - (Math.sign(q.vx) || 1) * 8), R(y), R(x - (Math.sign(q.vx) || 1) * 16), R(y), 1); ctx.restore(); };
+      s.render = (ctx, x, y, q) => { const t = q.t || 0; mask(ctx, x, y, 18, { ang: t * 0.6 * (Math.sign(q.vx) || 1) }); ctx.save(); ctx.globalAlpha *= 0.5; art.line(ctx, C.pink, R(x - (Math.sign(q.vx) || 1) * 8), R(y), R(x - (Math.sign(q.vx) || 1) * 16), R(y), 1); ctx.restore(); };
     });
   }
   // ================= U / S+I: Copy: the mask flickers over her =================
@@ -148,11 +148,13 @@
       const cy = sy - 26;
       if (st < FIN) {
         const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)), rr = 70 - k * 40;
-        for (let i = 0; i < 8; i++) { const an = i / 8 * PI * 2 + st * 0.04; mask(ctx, sx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.6, 14, { tint: TINT[i], expr: k > 0.8 ? 1 : 0, crack: st >= FIN - 4, a: Math.min(1, k * 3) }); }
+        mask(ctx, sx, cy - 6, 44, { expr: st > FIN - 10 ? 1 : 0, crack: st >= FIN - 4, a: 0.9 * Math.min(1, k * 2) });   // her own mask, huge, behind them: the smile widens
+        for (let i = 0; i < 8; i++) { const an = i / 8 * PI * 2 + st * 0.04; mask(ctx, sx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.6, 20, { tint: TINT[i], expr: k > 0.8 ? 1 : 0, crack: st >= FIN - 4, a: Math.min(1, k * 3) }); }
       } else {
         const u = st - FIN, k = u / 18, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 101);
-        for (let i = 0; i < 8; i++) { const an = i / 8 * PI * 2 + FIN * 0.04, x = sx + Math.cos(an) * 30, y = cy + Math.sin(an) * 18; if (u < 3) mask(ctx, x, y, 14, { crack: true, expr: 2, tint: TINT[i] }); else shatter(ctx, x, y, 14, Math.min(1, (u - 3) / 15), i); }
+        for (let i = 0; i < 8; i++) { const an = i / 8 * PI * 2 + FIN * 0.04, x = sx + Math.cos(an) * 30, y = cy + Math.sin(an) * 18; if (u < 3) mask(ctx, x, y, 20, { crack: true, expr: 2, tint: TINT[i] }); else shatter(ctx, x, y, 20, Math.min(1, (u - 3) / 15), i); }
+        if (u < 4) mask(ctx, sx, cy - 6, 44, { crack: true, expr: 2, mono: ik < 0.5 ? '#ffffff' : undefined }); else shatter(ctx, sx, cy - 6, 44, Math.min(1, (u - 4) / 14), 9);   // and the great mask breaks
         if (u >= 6 && u < 16) mask(ctx, sx, cy - 30 - (u - 6), 12, { expr: 1, a: 1 - (u - 6) / 10 });   // her own, lowered: blank
       }
     };
