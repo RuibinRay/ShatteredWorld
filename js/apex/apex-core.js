@@ -90,10 +90,12 @@
 
   // ---------- the film: what the current apex ultimate wants drawn over this frame ----------
   const UG = () => SW.ultGrand;
+  // (def.film: only the film, over an ultimate another file runs, e.g. Sen's js/sen-stroke.js: no js/ult-grand.js plan)
+  const filming = (hero, p) => { const d = AP.defs[hero]; return !!(d && p && p.state === 'ult' && !p.dead && ((d.ult && p.ugrand) || (d.film && !p.ugrand))); };
   function caster() {
     if (!AP.on || !AP.film) return null;
-    if (G.scene === 'vs' && V && V.f && V.phase === 'fight') { const f = V.f.find(x => AP.defs[x.hero] && AP.defs[x.hero].ult && x.p.state === 'ult' && x.p.ugrand); return f ? { p: f.p, hero: f.hero, T: (V.f.find(y => y !== f) || {}).p } : null; }
-    if (G.scene === 'play' && G.state && AP.defs[G.state.hero] && AP.defs[G.state.hero].ult && G.player && G.player.state === 'ult' && G.player.ugrand) return { p: G.player, hero: G.state.hero, T: null };
+    if (G.scene === 'vs' && V && V.f && V.phase === 'fight') { const f = V.f.find(x => filming(x.hero, x.p)); return f ? { p: f.p, hero: f.hero, T: (V.f.find(y => y !== f) || {}).p } : null; }
+    if (G.scene === 'play' && G.state && G.player && filming(G.state.hero, G.player)) return { p: G.player, hero: G.state.hero, T: null };
     return null;
   }
   AP.caster = caster;
@@ -101,12 +103,12 @@
   function snap(c) { if (tmp.width !== c.width || tmp.height !== c.height) { tmp.width = c.width; tmp.height = c.height; } tc.setTransform(1, 0, 0, 1, 0, 0); tc.filter = 'none'; tc.clearRect(0, 0, c.width, c.height); tc.drawImage(c, 0, 0); }
   function film(ctx) {
     const cs = caster(); if (!cs) return;
-    const def = AP.defs[cs.hero], u = def.ult, st = cs.p.st; if (!u.look) return;
+    const def = AP.defs[cs.hero], u = def.ult && cs.p.ugrand ? def.ult : def.film, st = cs.p.st; if (!u || !u.look) return;
     const T = cs.T, L = u.look(st, { p: cs.p, T }); if (!L) return;
     const c = ctx.canvas, k = c.width / W;
     // the screen position of the focus (for speed lines and the vignette): the zoom is already applied, so aim at the centre
     // of where the camera looks, or at the target
-    const zm = UG() && UG().zoomAt ? UG().zoomAt(cs.p.ugrand.pl, st) : { z: 1 };
+    const zm = u.zoomAt ? u.zoomAt(st) : UG() && UG().zoomAt && cs.p.ugrand ? UG().zoomAt(cs.p.ugrand.pl, st) : { z: 1 };
     let fxp = W / 2, fyp = H / 2;
     if (!(zm.z > 1.01)) { const tg = L.at === 'hero' || !T ? cs.p : T; fxp = tg.x - G.cam.x; fyp = tg.y - 22 - G.cam.y; }
     ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.imageSmoothingEnabled = false;
@@ -219,8 +221,10 @@
   P.update = function (g, z) {
     const s0 = this.state, c0 = this.connected;
     const r = _pu.apply(this, arguments);
+    const id = g && g.state && g.state.hero, def = id && AP.defs[id];
+    if (AP.on && def && def.film && def.film.every && this.state === 'ult' && !this.ugrand && this.st !== this._apSt) { this._apSt = this.st; try { def.film.every(this.st, { p: this, T: AP.foeOf(this) }); } catch (e) { console.error('apex film', e); } }
     if (!AP.on || !AP.melee) return r;
-    const id = g && g.state && g.state.hero, def = id && AP.defs[id], m = def && def.melee;
+    const m = def && def.melee;
     if (!m) return r;
     const s = this.state, a = this.atk;
     if ((s === 'attack' || s === 'airatk') && a && this.st === a.hitAt) {
