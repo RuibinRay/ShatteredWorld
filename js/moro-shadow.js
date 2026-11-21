@@ -37,30 +37,31 @@
     const g = clamp01(o.grip || 0), arm = (o.arm === undefined ? 0.9 : o.arm) * s;
     c.rotate(o.lean || 0);
     // the forearm, thinning to the wrist, a little ragged like smoke at the floor
-    c.beginPath(); c.moveTo(-s * 0.2, 0); c.lineTo(-s * 0.13, -arm); c.lineTo(s * 0.13, -arm); c.lineTo(s * 0.2, 0); c.closePath(); c.fillStyle = C.k1; c.fill();
-    c.fillStyle = C.k2; c.fillRect(-s * 0.03, -arm, s * 0.06, arm);
+    c.beginPath(); c.moveTo(-s * 0.2, 0); c.lineTo(-s * 0.13, -arm); c.lineTo(s * 0.13, -arm); c.lineTo(s * 0.2, 0); c.closePath(); c.fillStyle = C.k2; c.fill();
+    c.fillStyle = C.v; c.fillRect(-s * 0.13, -arm, Math.max(1, s * 0.04), arm);   // (2026-11-20 look ranking: lit edges, the hands vanished on a dark stage)
+    c.fillStyle = C.m; c.fillRect(-s * 0.03, -arm, s * 0.06, arm);
     for (let i = -2; i <= 2; i++) { c.beginPath(); c.moveTo(i * s * 0.1 - s * 0.05, 0); c.lineTo(i * s * 0.1, s * 0.08); c.lineTo(i * s * 0.1 + s * 0.05, 0); c.fillStyle = C.k1; c.fill(); }
     c.translate(0, -arm);
     // the palm
-    c.beginPath(); c.moveTo(-s * 0.2, 0); c.lineTo(-s * 0.24, -s * 0.34); c.lineTo(s * 0.24, -s * 0.36); c.lineTo(s * 0.18, 0); c.closePath(); c.fillStyle = C.k2; c.fill();
+    c.beginPath(); c.moveTo(-s * 0.2, 0); c.lineTo(-s * 0.24, -s * 0.34); c.lineTo(s * 0.24, -s * 0.36); c.lineTo(s * 0.18, 0); c.closePath(); c.fillStyle = C.m; c.fill();
+    c.beginPath(); c.moveTo(-s * 0.2, 0); c.lineTo(-s * 0.24, -s * 0.34); c.lineTo(-s * 0.12, -s * 0.35); c.lineTo(-s * 0.1, 0); c.closePath(); c.fillStyle = C.v; c.fill();
     // four long fingers: spread and straight, curling in to a fist as grip goes to 1
     for (let i = 0; i < 4; i++) {
       const bx = (-0.18 + i * 0.12) * s, by = -0.34 * s, spread = (i - 1.5) * 0.34 * (1 - g), L = s * (0.58 - Math.abs(i - 1.5) * 0.07), seg = [0.45, 0.33, 0.22];
       let x = bx, y = by, a = -PI / 2 + spread;
-      c.strokeStyle = C.k2; c.lineCap = 'round'; c.lineWidth = s * 0.07;
-      c.beginPath(); c.moveTo(x, y);
-      seg.forEach((f, j) => { a += g * (j === 0 ? 1.1 : 1.25); x += Math.cos(a) * L * f; y += Math.sin(a) * L * f; c.lineTo(x, y); });
-      c.stroke();
-      c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.cos(a) * s * 0.17, y + Math.sin(a) * s * 0.17); c.strokeStyle = C.rim; c.lineWidth = Math.max(1, s * 0.045); c.stroke();   // the claw, long and hooked
+      const path = [[x, y]]; seg.forEach((f, j) => { a += g * (j === 0 ? 1.1 : 1.25); x += Math.cos(a) * L * f; y += Math.sin(a) * L * f; path.push([x, y]); });
+      c.lineCap = 'round';
+      for (const [col, w, dx] of [[C.m, s * 0.1, 0], [C.v, Math.max(1, s * 0.035), -s * 0.025]]) { c.strokeStyle = col; c.lineWidth = w; c.beginPath(); path.forEach((q, j) => (j ? c.lineTo(q[0] + dx, q[1]) : c.moveTo(q[0] + dx, q[1]))); c.stroke(); }
+      c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.cos(a) * s * 0.17, y + Math.sin(a) * s * 0.17); c.strokeStyle = C.pale; c.lineWidth = Math.max(1, s * 0.05); c.stroke();   // the claw, long and hooked
     }
     // the thumb, out to the side
-    c.strokeStyle = C.k2; c.lineWidth = s * 0.09; c.beginPath(); c.moveTo(-s * 0.2, -s * 0.12); c.lineTo(-s * (0.36 - g * 0.12), -s * (0.3 + g * 0.06)); c.lineTo(-s * (0.38 - g * 0.24), -s * (0.46 - g * 0.06)); c.stroke();
+    c.strokeStyle = C.m; c.lineWidth = s * 0.1; c.beginPath(); c.moveTo(-s * 0.2, -s * 0.12); c.lineTo(-s * (0.36 - g * 0.12), -s * (0.3 + g * 0.06)); c.lineTo(-s * (0.38 - g * 0.24), -s * (0.46 - g * 0.06)); c.stroke();
     // a faint pale vein of light down the back of the hand
     c.strokeStyle = C.m; c.lineWidth = Math.max(1, s * 0.03); c.beginPath(); c.moveTo(0, s * 0.3); c.lineTo(s * 0.02, -s * 0.3); c.stroke();
   }
   // as a sprite: (x, y) the floor under the wrist; o = { grip, arm, lean, dir (mirror), a, mono, rise 0-1 (how far out of the floor) }
   function hand(ctx, x, y, s, o) {
-    o = o || {};
+    o = o || {}; s = Math.round(s * 1.25);
     const rise = o.rise === undefined ? 1 : clamp01(o.rise), arm = o.arm === undefined ? 0.9 : o.arm, tall = (arm + 1.0) * s;
     if (rise <= 0) return;
     PX.sprite(ctx, x, y - tall / 2, s * 2.2 + 6, tall * 1.25 + 8, c => {
@@ -278,12 +279,16 @@
       const hx = sx + dir * 8;
       if (st < FIN) {
         const k = ease((st - 74) / 12), grip = ease((st - (FIN - 5)) / 5) * 0.6;
-        pool(ctx, hx, sy, 30, k);
-        hand(ctx, hx, sy + 4, 34, { grip, arm: 0.45, rise: k, lean: -dir * 0.1, a: k });
+        pool(ctx, hx, sy, 46, k);
+        for (const ex of [-7, 7]) { ctx.save(); ctx.globalAlpha = k; art.rect(ctx, C.pale, hx + ex - 3, sy - 1, 6, 1); art.rect(ctx, C.w, hx + ex - 1, sy - 1, 2, 1); ctx.restore(); }   // his eyes, open in the shadow
+        hand(ctx, hx, sy + 4, 44, { grip, arm: 0.45, rise: k, lean: -dir * 0.1, a: k });
+        for (const o of [-1, 1]) for (const r2 of [26, 46]) hand(ctx, hx + o * r2, sy + 2, r2 > 30 ? 16 : 20, { grip: grip * 1.2, arm: 0.5, rise: ease((st - 78 - r2 / 10) / 8), lean: -o * 0.45, a: k });   // a ring of hands round them
       } else {
         const k = (st - FIN) / 16, ik = (st - FIN) / 5;
         if (ik < 1) PX.impact(ctx, sx, sy - 30, ik, 47);
-        hand(ctx, hx, sy + 4, 46, { grip: 1, arm: 0.25, lean: -dir * 0.1, a: 1 - ease((k - 0.55) / 0.45), mono: ik < 0.5 ? C.w : undefined });
+        const mono = ik < 0.5 ? C.w : undefined, a2 = 1 - ease((k - 0.55) / 0.45);
+        hand(ctx, hx, sy + 4, 54, { grip: 1, arm: 0.25, lean: -dir * 0.1, a: a2, mono });
+        for (const o of [-1, 1]) for (const r2 of [22, 40]) hand(ctx, hx + o * r2, sy + 2, r2 > 30 ? 16 : 20, { grip: 1, arm: 0.5, lean: -o * 0.7, a: a2, mono });
         if (st === FIN) smoke(T.x, T.y, 24);
       }
     }, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
