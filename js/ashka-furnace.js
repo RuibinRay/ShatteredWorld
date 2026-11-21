@@ -143,7 +143,7 @@
       const n0 = z.shots.length, r = _cd.apply(this, arguments);
       if (!isA(G)) return r;
       z.shots.slice(n0).forEach(s => {
-        if (!(s instanceof Vis) || !s.render || s.ashka) return;
+        if (!s || typeof s.render !== 'function' || s.ashka) return;   // (js/moves.js has a Vis class of its own: no instanceof)
         const delay = s.life - 30; if (delay < 1 || delay > 24) return;
         s.ashka = 1; const hMax = delay === 2 ? 40 : 70;
         s.render = (ctx, sx, sy, t) => {

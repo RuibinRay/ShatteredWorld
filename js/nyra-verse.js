@@ -162,7 +162,7 @@
       const n0 = z.shots.length, r = _sv.apply(this, arguments);
       if (!isN(G)) return r;
       const d = p.face, x0 = p.x, y0 = p.y;
-      z.shots.slice(n0).forEach(s => { if (s instanceof Vis && s.life === 30 && s.render && !s.nyra) { s.nyra = 1; s.render = () => {}; } });   // (its grey spikes: the arcs and the wall stand for them)
+      z.shots.slice(n0).forEach(s => { if (s && s.life === 30 && typeof s.render === 'function' && !s.nyra) { s.nyra = 1; s.render = () => {}; } });   // (its grey spikes: the arcs and the wall stand for them)
       z.shots.push(new Vis(x0, y0, 34, (ctx, sx, sy, t) => {
         for (let k = 0; k < 3; k++) {
           const t0 = 1 + k * 7, u = (t - t0) / 10; if (u < 0 || u >= 1) continue;
