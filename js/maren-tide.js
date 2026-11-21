@@ -29,6 +29,7 @@
 
   // a wave with a real face, its foot at (x, y), rolling toward d; h tall, len long, k 0..1 how far it has risen
   function wave(ctx, x, y, d, len, h, t, a) {
+    len *= 1.25; h *= 1.3;   // (2026-11-20 look ranking: the waves read flat)
     if (a <= 0 || h < 2) return;
     ctx.save(); ctx.globalAlpha *= clamp01(a);
     for (let i = 0; i <= len; i += 2) {
@@ -213,12 +214,12 @@
   function finale(p, z, T, FIN, BU2) {
     const draw = (ctx, sx, sy) => {
       const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 18) return;
-      const d = T.x >= p.x ? -1 : 1;
-      if (st < FIN) { const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)); wave(ctx, sx - d * 10, sy, d, 60, 18 + k * 44, st, Math.min(1, k * 3)); }
+      const d = T.x >= p.x ? 1 : -1;   // the wave comes from her side and rears over them
+      if (st < FIN) { const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)); wave(ctx, sx - d * 30, sy, d, 70, 12 + k * 30, st + 7, 0.7 * Math.min(1, k * 3)); wave(ctx, sx + d * (14 - 10 * k), sy, d, 90, 24 + k * 56, st, Math.min(1, k * 3)); }   // a swell behind, and the great wave rearing over them
       else {
         const u = st - FIN, k = u / 18, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, sy - 26, ik, 73);
-        wave(ctx, sx + d * k * 30, sy, d, 60, 62 * (1 - k * 0.8), st, 1 - ease((k - 0.6) / 0.4));
+        wave(ctx, sx + d * k * 30, sy, d, 90, 80 * (1 - k * 0.8), st, 1 - ease((k - 0.6) / 0.4));
         for (let j = 0; j < 14; j++) { const an = PI + j / 13 * PI, rr = 10 + k * 50; drop(ctx, sx + Math.cos(an) * rr, sy - 26 + Math.sin(an) * rr * 0.7 + k * k * 30, j % 3 === 0 ? C.heal : j % 2 ? C.foam : C.w2, 1 - k); }
       }
     };
