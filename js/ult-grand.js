@@ -47,7 +47,8 @@
   const hash = s => { let h = 7; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973; return h; };
   const SHARE = 0.5;
   const UG = SW.ultGrand = { on: true, big: true, SHARE, FORM, sprite: 0.25, effects: 0.45 };
-  const mine = id => !!(id && D.heroes[id] && !SKIP[id] && !(UC && UC.heroes && UC.heroes.indexOf(id) >= 0));
+  const apexOf = id => (SW.apex && SW.apex.on && SW.apex.ult ? SW.apex.ult(id) : null);   // js/apex/apex-core.js: a hero's own cinematic
+  const mine = id => !!(id && D.heroes[id] && (apexOf(id) || (!SKIP[id] && !(UC && UC.heroes && UC.heroes.indexOf(id) >= 0))));
   const on = g => UG.on && g && g.state && mine(g.state.hero);
   const styleOf = id => (K && K.styleOf ? K.styleOf(id) : 'impact');
   // each hero's plan: its form, length, the frame of the finishing blow, its close-up, its colours
@@ -60,7 +61,10 @@
     len = SW.clamp(len, 112, 176);
     const fin = len - 22, cu0 = 26 + (j % 7), cu1 = Math.min(fin - 30, cu0 + 28 + (j % 11));
     const sc = K && K.STYLE[st] ? K.STYLE[st].c : ['#ffffff', '#c8ccd8', '#8a92a8'];
-    return (PLAN[id] = { id, form, style: st, len, fin, cu0, cu1, c: [h.colorHi || sc[1], h.color || sc[0], sc[0], sc[2]], n: 3 + (j % 3), seed: j });
+    const pl = { id, form, style: st, len, fin, cu0, cu1, own: 72, c: [h.colorHi || sc[1], h.color || sc[0], sc[0], sc[2]], n: 3 + (j % 3), seed: j };
+    const ax = apexOf(id);   // an apex hero's own length, blow, close-up and colours (and its build-up, blow, camera and poses below)
+    if (ax) { ['len', 'fin', 'cu0', 'cu1', 'own', 'c'].forEach(k => { if (ax[k] !== undefined) pl[k] = ax[k]; }); pl.apex = ax; }
+    return (PLAN[id] = pl);
   }
   UG.planOf = planOf;
   const sfx = n => SW.audio.sfx(n);
@@ -172,17 +176,18 @@
     if (st <= 1 || !p.ugrand) p.ugrand = { hp0: f2 ? f2.state.hp : null, hero: g.state.hero, pl };
     const C = p.ugrand;
     if (f2 && st < pl.fin) f2.stunT = Math.max(f2.stunT || 0, 3);   // held until the finishing blow
-    const r = st < 72 ? _uf.apply(this, arguments) : true;   // the hero's own ultimate, as it was
+    const r = st < pl.own ? _uf.apply(this, arguments) : true;   // the hero's own ultimate, as it was (an apex hero may keep less)
     const T = f2 ? f2.p : foes.filter(e => !e.dead).sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
     const b = T ? boxOf(T) : { x: p.x + p.face * 60 - 8, y: p.y - 32, w: 16, h: 32 }, cx = b.x + b.w / 2, cy = b.y + b.h / 2, gy = b.y + b.h;
-    const bu = Math.max(74, pl.fin - 30), dur = pl.fin - bu;   // the build-up: after the hero's own ultimate, up to 30 frames
-    if (st === bu) { sfx('charge'); add({ kind: 'dark', x: 0, y: 0, a: 0.38, life: dur + 8, max: dur + 8 }); }
-    if (st >= bu && st < pl.fin) buildUp(pl, p, st - bu, dur, cx, cy, gy);
-    if (st >= 72 && st % 3 === 0 && st < pl.fin) emit(pl, p.x + rand(-14, 14), p.y - rand(4, 40), 1, { power: 0.5, spread: 0.3 });   // the hero gathers
-    if (st === pl.fin - 6) { sfx('select'); fx.ring(p.x, p.y - 20, pl.c[0], 44, 6, 12); }
+    const ax = pl.apex, bu = ax && ax.bu !== undefined ? ax.bu : Math.max(74, pl.fin - 30), dur = pl.fin - bu;   // the build-up: after the hero's own ultimate, up to 30 frames
+    if (ax && ax.every) ax.every(st, { p, T, cx, cy, gy, pl, f2 });
+    if (st === bu && !(ax && ax.noDark)) { sfx('charge'); add({ kind: 'dark', x: 0, y: 0, a: 0.38, life: dur + 8, max: dur + 8 }); }
+    if (st >= bu && st < pl.fin) (ax && ax.build ? ax.build(st - bu, dur, { p, T, cx, cy, gy, pl }) : buildUp(pl, p, st - bu, dur, cx, cy, gy));
+    if (!(ax && ax.build) && st >= 72 && st % 3 === 0 && st < pl.fin) emit(pl, p.x + rand(-14, 14), p.y - rand(4, 40), 1, { power: 0.5, spread: 0.3 });   // the hero gathers
+    if (st === pl.fin - 6 && !(ax && ax.finish)) { sfx('select'); fx.ring(p.x, p.y - 20, pl.c[0], 44, 6, 12); }
     if (st === pl.fin) {
-      fx.flash('#ffffff', 12); fx.shake(11, 20); sfx('explode'); sfx('perfect'); sfx('heavy');
-      finish(pl, p, cx, cy, gy);
+      if (ax && ax.finish) ax.finish({ p, T, cx, cy, gy, pl });
+      else { fx.flash('#ffffff', 12); fx.shake(11, 20); sfx('explode'); sfx('perfect'); sfx('heavy'); finish(pl, p, cx, cy, gy); }
       foes.filter(e => !e.dead).forEach(e => {
         let add2 = 0;
         const fe = N.fighterOf ? N.fighterOf(e) : null;
@@ -194,7 +199,7 @@
         N.hurt(e, Math.max(1, Math.round(add2)), { unblockable: true, heavy: true, ky: -6, launch: true, down: true, stun: 50, kx: (Math.sign(e.x - p.x) || p.face) * 2, srcX: p.x });
       });
     }
-    if (st > pl.fin && st < pl.len && st % 3 === 0) emit(pl, G.cam.x + rand(0, W), G.cam.y + rand(0, 50), 1, { spread: 0.3, power: 0.3 });
+    if (!(ax && ax.finish) && st > pl.fin && st < pl.len && st % 3 === 0) emit(pl, G.cam.x + rand(0, W), G.cam.y + rand(0, 50), 1, { spread: 0.3, power: 0.3 });
     return r;
   };
   // the build-up on the target (k: frames since it started, dur in all: 16 to 30)
@@ -272,7 +277,7 @@
     const gg = g || this.G, h = gg && gg.hero && gg.hero();
     if (this.state === 'ult' && this.ugrand && on(gg)) {
       const pl = this.ugrand.pl, st = this.st, bu = Math.max(74, pl.fin - 30);
-      const s = st >= 72 && st < pl.fin - 6 ? (st < bu ? ['cast', (this.t >> 3) % 2] : ['charge', (this.t >> 2) % 2]) : st >= pl.fin - 6 && st < pl.fin + 12 ? ['special', st < pl.fin ? 0 : st < pl.fin + 5 ? 1 : 2] : st >= pl.fin + 12 ? ['cheer', 0] : null;
+      const s = pl.apex && pl.apex.pose ? pl.apex.pose(st, this) : st >= 72 && st < pl.fin - 6 ? (st < bu ? ['cast', (this.t >> 3) % 2] : ['charge', (this.t >> 2) % 2]) : st >= pl.fin - 6 && st < pl.fin + 12 ? ['special', st < pl.fin ? 0 : st < pl.fin + 5 ? 1 : 2] : st >= pl.fin + 12 ? ['cheer', 0] : null;
       if (s) POSE = [this.sheet(), s[0], s[1]];
     }
     const keep = BIG;
@@ -286,6 +291,7 @@
   // ---------- the camera ----------
   const tmp = document.createElement('canvas'), tctx = tmp.getContext('2d');
   function zoomAt(pl, st) {   // { z: how close (1 normal), bars: letterbox 0-1, on: 'hero' | 'target' }
+    if (pl.apex && pl.apex.zoom) { const z = pl.apex.zoom(st, pl); if (z) return z; }
     const a = pl.cu0, b = pl.cu1, bu = Math.max(66, pl.fin - 28), F = pl.fin;
     if (st >= a && st < b) return { z: 1 + 0.95 * ease((st - a) / 8) * (1 - ease((st - (b - 7)) / 7)), bars: ease((st - a + 2) / 5) * (1 - ease((st - (b - 5)) / 5)), on: 'hero' };
     if (st >= bu && st < F) return { z: 1 + 1.25 * ease((st - bu) / 12), bars: ease((st - bu) / 6), on: 'target' };
@@ -317,7 +323,9 @@
     const p = cs.p, pl = p.ugrand.pl, st = p.st, c = ctx.canvas, k = c.width / W, zm = zoomAt(pl, st), h = D.heroes[cs.hero];
     const f2 = vsFoe(p), T = f2 ? f2.p : null;
     if (zm.z > 1.01 && shot) {
-      const fx0 = zm.on === 'target' && T ? T.x : p.x, fy0 = (zm.on === 'target' && T ? T.y : p.y) - 22;
+      let fx0 = zm.on === 'target' && T ? T.x : p.x, fy0 = (zm.on === 'target' && T ? T.y : p.y) - 22;
+      if (zm.on === 'mid' && T) { fx0 = (p.x + T.x) / 2; fy0 = (p.y + T.y) / 2 - 22; }
+      if (zm.dx) fx0 += zm.dx * (p.face || 1); if (zm.dy) fy0 += zm.dy;
       const sw = c.width / zm.z, sh = c.height / zm.z, tx = fx0 - G.cam.x, ty = fy0 - G.cam.y;
       const sx = SW.clamp(tx * k - sw / 2, 0, c.width - sw), sy = SW.clamp(ty * k - sh * 0.5, 0, c.height - sh);
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.imageSmoothingEnabled = false; ctx.drawImage(tmp, sx, sy, sw, sh, 0, 0, c.width, c.height); ctx.restore();
@@ -328,7 +336,8 @@
       const bh = Math.round(30 * zm.bars), u = A[h.ultimate];
       art.rect(ctx, '#000000', 0, 0, W, bh); art.rect(ctx, '#000000', 0, H - bh, W, bh);
       ctx.globalAlpha = zm.bars;
-      if (st >= pl.cu0 + 2 && st < pl.cu1 - 2) { text(ctx, h.name.toUpperCase(), W / 2, H - 25, h.colorHi || '#ffffff', { align: 'center' }); if (u) text(ctx, u.name.toUpperCase(), W / 2, H - 14, '#ffffff', { align: 'center' }); }
+      if (pl.apex && pl.apex.card) pl.apex.card(ctx, st, zm, h, u);
+      else if (st >= pl.cu0 + 2 && st < pl.cu1 - 2) { text(ctx, h.name.toUpperCase(), W / 2, H - 25, h.colorHi || '#ffffff', { align: 'center' }); if (u) text(ctx, u.name.toUpperCase(), W / 2, H - 14, '#ffffff', { align: 'center' }); }
       ctx.restore();
     }
   }
