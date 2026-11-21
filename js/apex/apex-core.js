@@ -307,10 +307,24 @@
   };
 
   // ---------- Versus numbers and the rest, once everything has loaded ----------
+  // THE BALANCE TABLE (the user, 2026-11-21: "balance all strongest hero ... make them win all others but between them
+  // around 40-60% win chance"). Solved with tools/apex-balance.js: twelve passes of Nightmare rounds, a round-robin among
+  // the sixteen and each of them against heroes from the other 48, the last two passes with 90 rounds per hero among
+  // themselves and 24 against the rest. Measured on the last pass: 39-63% among the sixteen (every one within the 40-60
+  // band but for the measuring error), 92% won against the rest on average. Damage x and health x, Versus only; the
+  // ultimate stays 47% for everyone (js/ult-share.js). Itsuki was measured without the mirror show's boss rules
+  // (HC.MIR.boss: in bot-vs-bot shows the others may not slip out of his combos), so a player's Itsuki meets them fairly;
+  // his kit, routes and Thunder Palm chain are untouched, only these two Versus numbers.
+  AP.TUNE = {
+    itsuki: { dmg: 0.61, hp: 0.72 }, corvin: { dmg: 0.95, hp: 0.96 }, tessa: { dmg: 1.1, hp: 1.09 }, orin: { dmg: 1.27, hp: 1.19 },
+    noct: { dmg: 1.28, hp: 1.17 }, mira: { dmg: 1.33, hp: 1.22 }, vega: { dmg: 1.4, hp: 1.28 }, jax: { dmg: 1.69, hp: 1.44 },
+    sen: { dmg: 1.68, hp: 1.43 }, rook: { dmg: 1.02, hp: 1 }, ferra: { dmg: 1.85, hp: 1.55 }, apis: { dmg: 1.37, hp: 1.24 },
+    hex: { dmg: 2.1, hp: 1.68 }, maren: { dmg: 1.63, hp: 1.4 }, bando: { dmg: 2.17, hp: 1.71 }, vex: { dmg: 2.36, hp: 1.79 }
+  };
   function ready() {
     const B = SW.versusBalance;
     Object.keys(AP.defs).forEach(id => {
-      const t = AP.defs[id].tune; if (!t || !B) return;
+      const t = (AP.TUNE && AP.TUNE[id]) || AP.defs[id].tune; if (!t || !B) return;   // (AP.TUNE: the balance table below wins)
       if (t.dmg) B.DMG[id] = t.dmg; else delete B.DMG[id];
       if (t.hp) B.HP[id] = t.hp; else delete B.HP[id];
     });
