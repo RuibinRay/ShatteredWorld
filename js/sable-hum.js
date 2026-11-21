@@ -82,7 +82,7 @@
     z.shots.slice(n0).forEach(s => {
       if (!(s instanceof Proj) || s.sable || s.w !== 10 || s.h !== 6) return;
       s.sable = 1;
-      s.render = (ctx, x, y, q) => { const d = Math.sign(q.vx) || 1; kunai(ctx, x, y, 14, Math.atan2(q.vy, q.vx) + (d < 0 ? 0 : 0)); crackle(ctx, x, y, 5, q.t, 1); ctx.save(); ctx.globalAlpha = 0.5; art.line(ctx, C.v, Math.round(x - d * 8), y, Math.round(x - d * 18), y, 1); ctx.restore(); };
+      s.render = (ctx, x, y, q) => { const d = Math.sign(q.vx) || 1; kunai(ctx, x, y, 20, Math.atan2(q.vy, q.vx) + (d < 0 ? 0 : 0)); crackle(ctx, x, y, 8, q.t, 2); ctx.save(); ctx.globalAlpha = 0.5; art.line(ctx, C.v, Math.round(x - d * 8), y, Math.round(x - d * 18), y, 1); ctx.restore(); };
       const _end = s.onEnd;
       s.onEnd = function (g, zz, impact) {
         const r = _end ? _end.apply(this, arguments) : undefined;
@@ -228,7 +228,8 @@
       const cy = sy - 22;
       if (st < FIN) {
         const k = (st - (BU2 - 2)) / (FIN - BU2 + 2);
-        cloud(ctx, sx, sy - 46, 48, ease(k * 2), st);
+        cloud(ctx, sx, sy - 46, 60, ease(k * 2), st);
+        if (k > 0.4) kunai(ctx, sx + 4, sy - 76, 46, PI / 2, { a: ease((k - 0.4) / 0.3) });   // a great kunai hangs point-down from the cloud, humming
         hum(ctx, sx, cy, (k * 3) % 1, 34 - k * 16, 3);
         if (st % 4 < 2) crackle(ctx, sx, cy, 16, st, 2);
       } else {
@@ -241,6 +242,7 @@
           ctx.restore();
         }
         cloud(ctx, sx, sy - 46, 48, 1 - k, st);
+        if (k < 0.85) { const dn = Math.min(1, (st - FIN) / 2); kunai(ctx, sx + 4, sy - 70 + dn * 50, 46, PI / 2, { a: 1 - ease((k - 0.5) / 0.35) }); crackle(ctx, sx + 4, sy - 22, 22, st, 4); }   // the bolt rides a great kunai into the floor
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
