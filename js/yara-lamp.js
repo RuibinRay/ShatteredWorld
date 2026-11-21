@@ -37,10 +37,10 @@
   }
   // an arrow flying along (ux, uy) with its head at (x, y); far 0..1 how far it has flown
   function arrowAt(ctx, x, y, ux, uy, far, t) {
-    const L = 14, tx = x - ux * L, ty = y - uy * L, nx = -uy, ny = ux;
-    art.line(ctx, C.out, R(tx), R(ty), R(x), R(y), 3); art.line(ctx, C.wood, R(tx), R(ty), R(x), R(y), 1);   // the shaft
-    for (let j = 0; j < 2; j++) { const fx0 = tx + ux * j * 2, fy0 = ty + uy * j * 2; art.line(ctx, j ? C.ol2 : C.ol, R(fx0), R(fy0), R(fx0 - ux * 3 + nx * 3), R(fy0 - uy * 3 + ny * 3), 1); art.line(ctx, j ? C.ol2 : C.ol, R(fx0), R(fy0), R(fx0 - ux * 3 - nx * 3), R(fy0 - uy * 3 - ny * 3), 1); }   // fletching
-    art.line(ctx, C.st, R(x - ux * 2 + nx * 2), R(y - uy * 2 + ny * 2), R(x + ux * 2), R(y + uy * 2), 1); art.line(ctx, C.st, R(x - ux * 2 - nx * 2), R(y - uy * 2 - ny * 2), R(x + ux * 2), R(y + uy * 2), 1);   // the head
+    const L = 22, tx = x - ux * L, ty = y - uy * L, nx = -uy, ny = ux;   // (2026-11-20 look ranking: heavier, the arrows were hairlines)
+    art.line(ctx, C.out, R(tx), R(ty), R(x), R(y), 4); art.line(ctx, C.wood, R(tx), R(ty), R(x), R(y), 2);   // the shaft
+    for (let j = 0; j < 2; j++) { const fx0 = tx + ux * j * 2, fy0 = ty + uy * j * 2; art.line(ctx, j ? C.ol2 : C.ol, R(fx0), R(fy0), R(fx0 - ux * 5 + nx * 4), R(fy0 - uy * 5 + ny * 4), 2); art.line(ctx, j ? C.ol2 : C.ol, R(fx0), R(fy0), R(fx0 - ux * 5 - nx * 4), R(fy0 - uy * 5 - ny * 4), 2); }   // fletching
+    art.line(ctx, C.st, R(x - ux * 3 + nx * 3), R(y - uy * 3 + ny * 3), R(x + ux * 3), R(y + uy * 3), 2); art.line(ctx, C.st, R(x - ux * 3 - nx * 3), R(y - uy * 3 - ny * 3), R(x + ux * 3), R(y + uy * 3), 2);   // the head
     flame(ctx, x + ux * 2, y + uy * 2 + 1, 2 + (far || 0) * 4, t);
     ctx.save(); ctx.globalAlpha *= 0.5; art.line(ctx, C.g2, R(tx), R(ty), R(tx - ux * (6 + far * 14)), R(ty - uy * (6 + far * 14)), 1); ctx.restore();   // a thread of light behind
   }
@@ -193,11 +193,16 @@
     const draw = (ctx, sx, sy) => {
       const st = p.st; if (p.state !== 'ult' || st < 74 || st > FIN + 16) return;
       const cy = sy - 24;
-      if (st < FIN) { const k = ease((st - 74) / (FIN - 74)), an = -PI / 2 - 0.9 + k * 0.9; beam(ctx, sx + Math.cos(an) * 120, cy + Math.sin(an) * 120, sx, cy, 3, 10 - k * 6, 0.5 + k * 0.4); flame(ctx, sx + Math.cos(an) * 110, cy + Math.sin(an) * 110 + 4, 6, st); }
+      if (st < FIN) {
+        const k = ease((st - 74) / (FIN - 74)), an = -PI / 2 - 0.9 + k * 0.9; beam(ctx, sx + Math.cos(an) * 120, cy + Math.sin(an) * 120, sx, cy, 3, 10 - k * 6, 0.5 + k * 0.4); flame(ctx, sx + Math.cos(an) * 110, cy + Math.sin(an) * 110 + 4, 6, st);
+        const dir = T.x >= p.x ? 1 : -1, d = 30 + 26 * (1 - k), ux = dir, uy = 0;   // a great arrow, burning, aimed at them level with the eyes
+        ctx.save(); ctx.translate(R(sx - ux * d), R(cy - uy * d)); ctx.scale(3, 3); arrowAt(ctx, 0, 0, ux, uy, 1, st); ctx.restore();
+      }
       else {
         const u = st - FIN, k = u / 16, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 79);
         beam(ctx, sx, cy - 140, sx, cy + 30, 10 * (1 - k) + 2, 14 * (1 - k) + 2, 1 - ease((k - 0.4) / 0.6));
+        if (ik >= 0.5 && k < 0.7) { const dir = T.x >= p.x ? 1 : -1; ctx.save(); ctx.globalAlpha *= 1 - k / 0.7; ctx.translate(R(sx + dir * (50 + k * 60)), R(cy)); ctx.scale(3, 3); arrowAt(ctx, 0, 0, dir, 0, 1, st); ctx.restore(); }   // through them and out the far side
         ctx.save(); ctx.globalAlpha *= 1 - k; for (let i = 0; i < 12; i++) { const a = i / 12 * PI * 2; art.line(ctx, i % 2 ? C.g : C.w, R(sx + Math.cos(a) * 6), R(cy + Math.sin(a) * 6), R(sx + Math.cos(a) * (14 + k * 30)), R(cy + Math.sin(a) * (14 + k * 30)), 1); } ctx.restore();
       }
     };
