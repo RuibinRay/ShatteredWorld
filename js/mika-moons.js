@@ -38,13 +38,13 @@
     c.strokeStyle = C.blue; c.lineWidth = Math.max(1, r * 0.1); c.beginPath(); c.arc(r * 0.42, 0, r * 0.78, PI * 0.45, -PI * 0.45, true); c.stroke();   // the cold inner curve
   }
   function blade(ctx, x, y, r, rot, o) {
-    o = o || {};
+    o = o || {}; r *= 1.4;   // (2026-11-20 look ranking: the blades were small at game scale)
     PX.sprite(ctx, x, y, r * 2.6 + 4, r * 2.6 + 4, c => { c.rotate(rot || 0); bladeVec(c, r); }, { pal: PAL, alpha: o.a, mono: o.mono, outline: C.out, keepThin: true });
   }
   MM.blade = blade;
   // ---------- a moon: a disc with craters; phase -1..1 shades one side (0 = full) ----------
   function moon(ctx, x, y, r, o) {
-    o = o || {};
+    o = o || {}; r *= 1.25;
     PX.sprite(ctx, x, y, r * 2.4 + 4, r * 2.4 + 4, c => {
       c.beginPath(); c.arc(0, 0, r, 0, PI * 2); c.fillStyle = o.col || C.silver; c.fill();
       c.beginPath(); c.arc(-r * 0.25, -r * 0.25, r * 0.65, 0, PI * 2); c.fillStyle = C.w; c.globalAlpha = 0.6; c.fill(); c.globalAlpha = 1;
@@ -215,7 +215,8 @@
         const k = (st - FIN) / 16, ik = (st - FIN) / 5, mono = ik < 0.5 ? C.w : undefined;
         if (ik < 1) PX.impact(ctx, sx, cy + 14, ik, 31);
         moon(ctx, sx, cy, 16, { phase: 0.9, a: 1 - ease((k - 0.4) / 0.6), mono });
-        blade(ctx, sx, cy + 14, 30, -0.6 + k * 0.4, { a: 1 - ease((k - 0.5) / 0.5), mono });
+        blade(ctx, sx, cy + 14, 34, -0.6 + k * 0.4, { a: 1 - ease((k - 0.5) / 0.5), mono });
+        if (ik >= 0.5) { ctx.save(); ctx.globalAlpha = 1 - k; for (let i = 0; i < 2; i++) { ctx.strokeStyle = i ? C.peri : C.w; ctx.lineWidth = 3 - i; ctx.beginPath(); ctx.arc(sx, cy + 14, 40 + k * 50 + i * 6, -PI * 0.9, PI * 0.1); ctx.stroke(); } ctx.restore(); }   // the cut's moonlight, sweeping wide
         if (st === FIN) for (let i = 0; i < 22; i++) part(T.x + rand(-12, 12), T.y - rand(4, 40), i % 2 ? C.pale : C.peri, rand(-4, 4), -rand(0, 4), 22, 2, 0.08);
       }
     };
