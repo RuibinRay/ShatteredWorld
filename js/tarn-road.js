@@ -39,6 +39,16 @@
     c.fillStyle = C.b0; for (let i = -1; i <= 1; i++) c.fillRect(-2 * u, (-2.6 + i * 1.3) * u, 4 * u, Math.max(1, 0.45 * u));   // tread
     for (let i = 0; i < 2; i++) c.fillRect(-1.4 * u, (2.4 + i * 1.3) * u, 2.8 * u, Math.max(1, 0.45 * u));
   }
+  // his leg in light, kicking out toward +x: (0, 0) the boot's sole, s the boot's length
+  function legVec(c, s) {
+    const u = s / 10;
+    c.fillStyle = C.b1; c.beginPath(); c.moveTo(-18 * u, -3 * u); c.lineTo(-4 * u, -3.2 * u); c.lineTo(-4 * u, 3.2 * u); c.lineTo(-18 * u, 4 * u); c.closePath(); c.fill();   // the shin, fading back
+    c.fillStyle = C.b; c.beginPath(); c.moveTo(-6 * u, -4.4 * u); c.lineTo(0, -5 * u); c.lineTo(0, 5 * u); c.lineTo(-6 * u, 4.6 * u); c.closePath(); c.fill();   // the boot, sole forward
+    c.fillStyle = C.b2; c.fillRect(-5 * u, -4.4 * u, 4.4 * u, 1.4 * u);
+    c.fillStyle = C.w; for (let i = 0; i < 3; i++) c.fillRect(-4.6 * u + i * 1.4 * u, -2.6 * u, Math.max(1, 0.6 * u), 3 * u);   // laces
+    c.fillStyle = C.b0; c.fillRect(-0.8 * u, -5 * u, 0.8 * u, 10 * u);   // the sole's edge
+    c.fillStyle = C.pale; for (let i = 0; i < 4; i++) c.fillRect(-26 * u - i * 5 * u, (-2 + i * 1.3) * u, 6 * u, Math.max(1, 0.5 * u));   // streaks off it
+  }
   function sole(ctx, x, y, s, rot, o) {
     o = o || {};
     PX.sprite(ctx, x, y, s * 1.6, s * 1.6, c => { c.rotate(rot || 0); soleVec(c, s); }, { pal: PAL, alpha: o.a, mono: o.mono, outline: C.out, keepThin: true });
@@ -46,6 +56,8 @@
   TRd.sole = sole;
   // a stamp: the sole lands with a ring of light, then fades (rot: the kick's direction)
   function stamp(z, x, y, dir, s, big) {
+    s = Math.round(s * 1.35);   // (2026-11-20 look ranking: bigger, they read as specks at game scale)
+    z.shots.push(new Vis(x, y, 7, (ctx, sx, sy, t) => { if (t > 4) return; PX.sprite(ctx, sx - dir * (s * 0.9 + 4), sy, s * 2.6, s * 1.4, c => { c.scale(dir, 1); legVec(c, s); }, { pal: PAL, outline: C.out, alpha: 0.85 - t * 0.17, keepThin: true }); }));   // the leg that drove it
     z.shots.push(new Vis(x, y, big ? 14 : 9, (ctx, sx, sy, t) => {
       const k = t / (big ? 14 : 9), push = ease(Math.min(1, (t + 1) / 2));
       sole(ctx, Math.round(sx - dir * (6 - push * 6)), sy, s, dir > 0 ? -PI / 2 : PI / 2, { a: 1 - ease((k - 0.5) / 0.5), mono: big && t < 2 ? C.w : undefined });
@@ -83,6 +95,7 @@
   };
 
   // ================= the kicks that go through fx.slash =================
+  const R = Math.round;
   const BLUE = '#cfe0ff';
   const _slash = fx.slash;
   fx.slash = function (x, y, dir, kind, col, len) {
@@ -196,30 +209,37 @@
     }
     return r;
   };
-  // the finishing blow (js/ult-grand.js): every mile in one punch - a great blue fist driving down the road's centre line
-  function fistVec(c, s) {
+  // the finishing blow (js/ult-grand.js): every mile in one kick - the last mile posts count down beside them, then a
+  // great boot of blue light, the whole road streaming behind it, kicks through on an impact frame
+  function bootVec(c, s) {   // a runner's boot side-on, toe toward +x, sole down: (0, 0) the ankle, s its length
     const u = s / 10;
-    c.fillStyle = C.b; c.beginPath(); c.moveTo(-4 * u, -4 * u); c.lineTo(3 * u, -4.4 * u); c.quadraticCurveTo(5 * u, -4.2 * u, 5 * u, -2 * u); c.lineTo(5 * u, 2.6 * u); c.quadraticCurveTo(4.8 * u, 4.4 * u, 3 * u, 4.4 * u); c.lineTo(-4 * u, 4 * u); c.closePath(); c.fill();
-    c.fillStyle = C.b2; c.fillRect(-3.4 * u, -3.6 * u, 7.6 * u, 1.5 * u);
-    c.strokeStyle = C.b0; c.lineWidth = Math.max(1, u * 0.45); for (const y of [-1.8, 0.4, 2.6]) { c.beginPath(); c.moveTo(1.6 * u, y * u); c.lineTo(4.8 * u, y * u); c.stroke(); }
-    c.fillStyle = C.w; c.fillRect(-2 * u, -1.4 * u, 4 * u, Math.max(1, 0.8 * u));   // the white wrap
+    c.fillStyle = C.b1; c.beginPath(); c.moveTo(-3 * u, -9 * u); c.lineTo(2 * u, -9 * u); c.lineTo(2.4 * u, -1 * u); c.lineTo(-3.4 * u, 0); c.closePath(); c.fill();   // the collar and shin
+    c.fillStyle = C.b; c.beginPath(); c.moveTo(-4 * u, -1 * u); c.lineTo(2.6 * u, -2 * u); c.quadraticCurveTo(8 * u, -1.6 * u, 9.6 * u, 1.2 * u); c.lineTo(9.6 * u, 3 * u); c.lineTo(-4.4 * u, 3 * u); c.closePath(); c.fill();   // the upper
+    c.fillStyle = C.b2; c.beginPath(); c.moveTo(-3 * u, -0.8 * u); c.lineTo(2.6 * u, -1.6 * u); c.quadraticCurveTo(6 * u, -1.4 * u, 7.6 * u, 0); c.lineTo(-3 * u, 0.4 * u); c.closePath(); c.fill();
+    c.fillStyle = C.w; for (let i = 0; i < 4; i++) c.fillRect((-0.6 + i * 1.2) * u, (-1.2 - i * 0.1) * u, Math.max(1, 0.6 * u), Math.max(1, 1.4 * u));   // laces
+    c.fillStyle = C.w; c.fillRect(-4.6 * u, 3 * u, 14.4 * u, 1.4 * u);   // the white sole
+    c.fillStyle = C.b0; for (let i = 0; i < 6; i++) c.fillRect((-4 + i * 2.4) * u, 4.2 * u, Math.max(1, 1.2 * u), Math.max(1, 0.8 * u));   // tread
+    c.fillStyle = C.w; c.fillRect(-2.6 * u, -8.4 * u, 3.4 * u, Math.max(1, 0.9 * u));   // a stripe of his headband's white
   }
   function finale(p, z, T) {
     const UGr = SW.ultGrand, pl = UGr && UGr.on && UGr.planOf ? UGr.planOf('tarn') : null, FIN = pl ? pl.fin : 64, BU2 = pl ? Math.max(74, FIN - 30) : 30;
     let done = false;
     const draw = (ctx, sx, sy) => {
-      const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 16) return;
-      const dir = T.x >= p.x ? 1 : -1, cy = sy - 22;
+      const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 18) return;
+      const dir = T.x >= p.x ? 1 : -1, cy = sy - 22, S = 46;
       if (st < FIN) {
-        const k = ease((st - (BU2 - 2)) / (FIN - BU2)), back = 70 - k * 30;
-        ctx.save(); ctx.globalAlpha = 0.7 * k; for (let i = 0; i < 6; i++) { const u = ((st * 0.06 + i / 6) % 1); art.line(ctx, C.pale, Math.round(sx - dir * (back + 80 - u * 70)), cy, Math.round(sx - dir * (back + 74 - u * 70)), cy, 2); } ctx.restore();   // the centre line, running in
-        PX.sprite(ctx, sx - dir * back, cy, 60, 50, c => { if (dir < 0) c.scale(-1, 1); fistVec(c, 22); }, { pal: PAL, alpha: Math.min(1, k * 3), outline: C.out, keepThin: true });
-        streaks(ctx, sx - dir * (back - 10), sy, dir, st, 7, 34);
+        const k = ease((st - (BU2 - 2)) / 8), left = Math.max(1, 3 - Math.floor((st - BU2) / Math.max(1, (FIN - BU2) / 3)));
+        for (let i = 0; i < 3; i++) { const px = R(sx + dir * (30 + i * 26)), on = 3 - i >= left; milePost(ctx, px, sy, 3 - i, k * (on ? 1 : 0.35)); }   // the last three miles, counting down
+        const back = 64 + 20 * ease((st - (FIN - 8)) / 8);
+        ctx.save(); ctx.globalAlpha = 0.7 * k; for (let i = 0; i < 6; i++) { const u = ((st * 0.06 + i / 6) % 1); art.line(ctx, C.pale, R(sx - dir * (back + 90 - u * 80)), sy - 2, R(sx - dir * (back + 84 - u * 80)), sy - 2, 2); } ctx.restore();   // the road's centre line, running in
+        PX.sprite(ctx, sx - dir * back, cy - 6, S * 2.2, S * 2, c => { if (dir < 0) c.scale(-1, 1); bootVec(c, S); }, { pal: PAL, alpha: Math.min(1, k * 2), outline: C.out, keepThin: true });   // the boot, drawn back
+        streaks(ctx, sx - dir * (back - 6), sy - 4, dir, st, 8, 44);
       } else {
-        const k = (st - FIN) / 16, ik = (st - FIN) / 5, mono = ik < 0.5 ? C.w : undefined;
+        const k = (st - FIN) / 18, ik = (st - FIN) / 5, mono = ik < 0.5 ? C.w : undefined, push = ease(Math.min(1, (st - FIN) / 2));
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 43);
-        PX.sprite(ctx, sx - dir * 14, cy, 60, 50, c => { if (dir < 0) c.scale(-1, 1); fistVec(c, 22); }, { pal: PAL, alpha: 1 - ease((k - 0.55) / 0.45), mono, outline: C.out, keepThin: true });
-        if (!done) { done = true; for (let i = 0; i < 20; i++) part(T.x + rand(-10, 10), T.y - rand(10, 34), i % 2 ? C.pale : C.b, dir * rand(1, 6), rand(-2, 2), 22, 2, 0.06); }
+        PX.sprite(ctx, sx - dir * (40 - push * 56), cy - 6, S * 2.2, S * 2, c => { if (dir < 0) c.scale(-1, 1); bootVec(c, S); }, { pal: PAL, alpha: 1 - ease((k - 0.55) / 0.45), mono, outline: C.out, keepThin: true });   // through them
+        if (ik >= 0.5) { streaks(ctx, sx - dir * 20, sy - 4, dir, st, 9, 70); milePost(ctx, R(sx + dir * 40 + dir * k * 60), sy, 0, 1 - k); }   // mile zero flies off
+        if (!done) { done = true; for (let i = 0; i < 24; i++) part(T.x + rand(-10, 10), T.y - rand(10, 34), i % 2 ? C.pale : C.b, dir * rand(1, 6), rand(-2, 2), 22, 2, 0.06); }
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
