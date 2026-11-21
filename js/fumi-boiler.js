@@ -208,11 +208,12 @@
   }
   function blowout(ctx, x, y, R, k, t) {   // the boiler goes: a ring of steam, rivets and the gauge blown off
     const a = 1 - ease((k - 0.5) / 0.5);
-    for (let i = 0; i < 12; i++) { const an = i / 12 * PI * 2, rr = R * ease(Math.min(1, k * 2.2)); puff(ctx, x + Math.cos(an) * rr, y + Math.sin(an) * rr * 0.6, 8 * (1 - k) + 3, { a }); }
+    for (let i = 0; i < 14; i++) { const an = i / 14 * PI * 2, rr = R * ease(Math.min(1, k * 2.2)); puff(ctx, x + Math.cos(an) * rr, y + Math.sin(an) * rr * 0.6, 12 * (1 - k) + 5, { a }); }
+    for (let i = 0; i < 4; i++) { const an = i / 4 * PI * 2 + 0.7, rr = R * 1.1 * ease(Math.min(1, k * 1.6)), px = x + Math.cos(an) * rr, py = y + Math.sin(an) * rr * 0.6 + 50 * k * k; ctx.save(); ctx.globalAlpha *= a; ctx.translate(Math.round(px), Math.round(py)); ctx.rotate(k * 8 + i); art.rect(ctx, C.out, -7, -4, 14, 8); art.rect(ctx, i % 2 ? C.br : C.br2, -6, -3, 12, 6); art.rect(ctx, C.out, -4, -1, 2, 2); art.rect(ctx, C.out, 2, -1, 2, 2); ctx.restore(); }   // plates of the boiler, blown off
     ctx.save(); ctx.globalAlpha *= a;
     for (let i = 0; i < 8; i++) { const an = i / 8 * PI * 2 + 0.2, rr = R * 1.3 * k, gx = x + Math.cos(an) * rr, gy = y + Math.sin(an) * rr * 0.7 + 40 * k * k; art.rect(ctx, C.out, Math.round(gx) - 1, Math.round(gy) - 1, 4, 4); art.rect(ctx, i % 2 ? C.br2 : C.br, Math.round(gx), Math.round(gy), 2, 2); }
     ctx.restore();
-    if (k < 0.25) art.disc(ctx, C.w, x, y, Math.round(14 * (1 - k * 4)) + 1);
+    if (k < 0.25) { art.disc(ctx, C.w, x, y, Math.round(22 * (1 - k * 4)) + 1); ctx.save(); ctx.globalAlpha *= 1 - k * 4; for (let i = 0; i < 10; i++) { const an = i / 10 * PI * 2; art.line(ctx, C.w, Math.round(x + Math.cos(an) * 14), Math.round(y + Math.sin(an) * 10), Math.round(x + Math.cos(an) * (30 + k * 120)), Math.round(y + Math.sin(an) * (22 + k * 80)), 2); } ctx.restore(); }   // a local burst instead of a screen-wide one
     gauge(ctx, x + 14 * k, y - 36 - 50 * k + 70 * k * k, 9, 1.06, { a, crack: true });   // blown off, still pinned in the red
   }
   const _bb = CASTS.boiler_burst;
@@ -233,8 +234,7 @@
       }
       const u = t - tb, k = u / 20;
       if (k >= 1) return;
-      if (u < 4) PX.impact(ctx, sx, sy - 18, u / 4, 29);
-      blowout(ctx, sx, sy - 18, 62, k, t);
+      blowout(ctx, sx, sy - 18, 70, k, t);   // (2026-11-20 look ranking: no full-screen impact frame on a plain skill, it blacked out the whole fight)
     }, v => { if (!fired) { v.x = p.x; v.y = p.y; } }));
     return r;
   };
