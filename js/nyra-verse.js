@@ -33,6 +33,7 @@
 
   // ---------- pieces ----------
   function needle(ctx, x, y, len, ang, a) {   // an ice needle centred on (x, y)
+    len *= 1.4;   // (2026-11-20 look ranking: the ice read small at game scale)
     if (a !== undefined && a <= 0) return;
     const ca = Math.cos(ang) * len / 2, sa = Math.sin(ang) * len / 2;
     ctx.save(); if (a !== undefined) ctx.globalAlpha *= clamp01(a);
@@ -280,14 +281,14 @@
       if (st < FIN) {
         const k = ease((st - 74) / (FIN - 74));
         for (let j = 0; j < 3; j++) { const q = ((st * 0.04 + j / 3) % 1); soundRing(ctx, cx, cy, 60 * (1 - q) + 6, q * 0.9 * (1 - k * 0.5)); }
-        bigNote(ctx, cx, cy, 14 + k * 22, { a: Math.min(1, (st - 76) / 6), crack: st >= FIN - 6 });
+        bigNote(ctx, cx, cy, 20 + k * 38, { a: Math.min(1, (st - 76) / 6), crack: st >= FIN - 6 });
         if (st % 4 === 0) part(T.x + rand(-20, 20), T.y - rand(10, 50), C.i2, 0, -rand(0.2, 0.6), 18, 1, -0.01);
       } else {
         const u = st - FIN, k = u / 18, ik = u / 5;
         if (ik < 1) PX.impact(ctx, cx, cy, ik, 31);
-        if (u < 2) bigNote(ctx, cx, cy, 36, { mono: C.w });
-        for (let i = 0; i < 16; i++) { const an = i / 16 * PI * 2 + 0.1, rr = 8 + 64 * ease(Math.min(1, k * 1.6)); needle(ctx, cx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.8 + 20 * k * k, 12 - k * 5, an, 1 - ease((k - 0.5) / 0.5)); }
-        for (let i = 0; i < 5; i++) { const an = i / 5 * PI * 2 + 0.6, rr = 20 + 40 * k; note(ctx, cx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.7 - 10 * k, 7, 1 - k); }
+        if (u < 2) bigNote(ctx, cx, cy, 58, { mono: C.w });
+        for (let i = 0; i < 16; i++) { const an = i / 16 * PI * 2 + 0.1, rr = 8 + 64 * ease(Math.min(1, k * 1.6)); needle(ctx, cx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.8 + 20 * k * k, 16 - k * 6, an, 1 - ease((k - 0.5) / 0.5)); }
+        for (let i = 0; i < 5; i++) { const an = i / 5 * PI * 2 + 0.6, rr = 20 + 40 * k; note(ctx, cx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.7 - 10 * k, 11, 1 - k); }
       }
     };
     // (drawn over the cinema's own ice burst, so the note is not hidden behind it)
