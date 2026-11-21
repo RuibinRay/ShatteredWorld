@@ -184,7 +184,7 @@
       if (T.slot) {
         if (!h.tk) {
           const cd = p.cd || {}, cost = { u: 25, su: 50, i: 50, si: 100, wo: 75 }, ok = t => { const o = TOK[t]; return o && o.slot && !(cd[o.slot] > 0) && S.energy >= (t === 'U' && p.state === 'attack' && p.connected ? 0 : cost[o.slot]); };
-          h.subAt = h.ri; h.sub = ok(tk) ? null : ['U', 'u', 'I', 'i', 'O'].find(ok) || null;
+          h.subAt = h.ri; h.sub = ok(tk) ? null : (HC.subOrder ? HC.subOrder(f) : ['U', 'u', 'I', 'i', 'O']).find(ok) || null;   // (js/nightmare-kit.js: unused skills first)
         }
         if (h.subAt === h.ri && h.sub) T = TOK[h.sub];
       }

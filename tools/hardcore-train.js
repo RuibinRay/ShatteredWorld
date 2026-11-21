@@ -101,6 +101,7 @@
     G.state = B.state; const q = B.p; q.enter('hurt'); q.hurtLen = 60; B.stunT = 100000;   // as after a perfect block, and it never gets to act
     V.timer = 99 * 60; G.hitstop = 0;
   }
+  HT.setStage = setStage;   // (tools/nk-train.js)
   HT.testRoute = function (r, gap) {
     const A = V.f[0], B = V.f[1];
     reset(gap || 22);

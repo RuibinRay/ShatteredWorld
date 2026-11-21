@@ -48,6 +48,7 @@
   function ready(f, tk) {
     const p = f.p, S = f.state, cd = p.cd || {}, m = (MD[f.hero] || {})[tk];
     if (tk !== 'X' && HC.saving && (HC.saving(f) || (HC.ultReady(f) && !(p.awakeT > 0)))) return false;   // the bar is kept for the ultimate (js/hardcore.js, the ultimate plan)
+    if (HC.spendOk && !HC.spendOk(f, tk)) return false;   // (js/nightmare-kit.js: the bar goes to the skills not used yet this round)
     if (!m && tk !== 'M') return false;
     if (tk === 'X') return S.energy >= 300 || (p.awakeT > 0 && S.energy >= 100);
     if (tk === 'O' && !SIG[f.hero]) return false;
@@ -75,7 +76,7 @@
       const t = hitT(m, dx); if (t < 0 || t > within) continue;
       if (opts && opts.safe && !safeFrom(m, dx, t, opts.pg)) continue;
       if (opts && opts.minDmg && m.dmg < opts.minDmg) continue;
-      const score = m.dmg - t * 0.4 - (opts && opts.fresh ? recent(f, tk) : 0);
+      const score = m.dmg - t * 0.4 - (opts && opts.fresh ? recent(f, tk) : 0) + (HC.unusedBonus ? HC.unusedBonus(f, tk) : 0);   // (js/nightmare-kit.js)
       if (!best || score > best.s) best = { tk, t, s: score, m };
     }
     return best;
@@ -114,7 +115,7 @@
         const t = m.a[i]; if (t < 0 || t > 22 || t + 1 >= th.t) return;
         const at = fly(q, t, p.y), rx = (at.x - p.x) * (q.x > p.x ? 1 : -1), ru = p.y - at.y;   // ahead of the hero once it faces the opponent
         if (ru < 18 || Math.abs(rx - ax) > 22 || Math.abs(ru - ay) > 24) return;
-        const s = m.dmg - t * 0.5;
+        const s = m.dmg - t * 0.5 + (HC.unusedBonus ? HC.unusedBonus(f, tk) : 0);
         if (!best || s > best.s) best = { tk, s, t };
       });
     }
