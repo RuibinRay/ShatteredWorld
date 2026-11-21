@@ -31,12 +31,12 @@
 
   // ---------- the spear, lying along +x: (0, 0) the butt, L its length; the head is the last 22% ----------
   function spearVec(c, L, o) {
-    const hd = Math.min(18, L * 0.22), sh = L - hd, t = Math.max(1.5, L / 60);
+    const hd = Math.min(30, Math.max(12, L * 0.27)), sh = L - hd, t = Math.max(2.2, L / 34);   // (2026-11-20 look ranking: heavier, it was a hairline at game scale)
     c.fillStyle = C.w1; c.fillRect(0, -t, sh, t * 2); c.fillStyle = C.w2; c.fillRect(0, -t, sh, Math.max(1, t * 0.7));   // the ash shaft, lit on top
     c.fillStyle = C.s0; c.fillRect(0, -t - 0.5, 2, t * 2 + 1);   // the butt cap
     c.fillStyle = C.r; c.fillRect(sh - 6, -t - 0.5, 5, t * 2 + 1); c.fillStyle = C.r0; c.fillRect(sh - 4, -t - 0.5, 1, t * 2 + 1);   // red cord binding
     if (o.tassel !== false) { const sw = o.sway || 0; c.fillStyle = C.r; c.beginPath(); c.moveTo(sh - 3, t); c.lineTo(sh - 9 + sw, t + 7); c.lineTo(sh - 2 + sw, t + 6); c.closePath(); c.fill(); c.fillStyle = C.r2; c.fillRect(sh - 6 + sw * 0.5, t + 2, 1, 3); }   // the horsehair tassel
-    const hw = Math.max(2.5, hd * 0.24);   // the leaf-shaped blade
+    const hw = Math.max(3.5, hd * 0.3);   // the leaf-shaped blade
     c.beginPath(); c.moveTo(sh - 1, 0); c.quadraticCurveTo(sh + hd * 0.35, -hw * 1.3, sh + hd, 0); c.quadraticCurveTo(sh + hd * 0.35, hw * 1.3, sh - 1, 0); c.closePath(); c.fillStyle = C.s1; c.fill();
     c.beginPath(); c.moveTo(sh, 0); c.quadraticCurveTo(sh + hd * 0.35, -hw * 1.2, sh + hd, 0); c.lineTo(sh + hd * 0.4, -hw * 0.2); c.closePath(); c.fillStyle = C.s2; c.fill();   // the lit edge
     c.fillStyle = C.s0; c.fillRect(sh + 1, -0.5, hd * 0.6, 1);   // the fuller
@@ -53,16 +53,27 @@
     const L = Math.round((s || 7) * Math.sin(k * PI));
     ctx.save(); art.line(ctx, C.w, x - L, y, x + L, y, 1); art.line(ctx, C.w, x, y - L, x, y + L, 1); art.rect(ctx, C.gold, x - 1, y - 1, 3, 3); art.rect(ctx, C.w, x, y, 1, 1); ctx.restore();
   }
+  // the shock of a thrust: rings of air thrown off the tip, opening forward, and a cone of streaks
+  function shock(ctx, x, y, dir, k, sc) {
+    if (k <= 0 || k >= 1) return;
+    const a = 1 - k, r = (6 + 16 * k) * sc;
+    ctx.save(); ctx.globalAlpha = 0.9 * a; ctx.strokeStyle = C.cream; ctx.lineWidth = 2;
+    for (let i = 0; i < 2; i++) { const rr = r * (1 - i * 0.4); ctx.beginPath(); ctx.ellipse(Math.round(x + dir * (r * 0.4 + i * 6)), y, rr * 0.35, rr, 0, 0, PI * 2); ctx.stroke(); }
+    ctx.restore();
+    PX.lines(ctx, x + dir * 6, y, dir > 0 ? 0 : PI, 30 * sc, 5, R(k * 9), C.cream, 10 * sc);
+  }
+  const R = Math.round;
   // a thrust: the spear shoots out from his hands to reach R and snaps back (screen space, re-anchored on him each frame)
-  function thrustVis(z, p, R, o) {
+  function thrustVis(z, p, Rr, o) {
     o = o || {};
     const dir = p.face, life = o.life || 10, up = o.up || 0;
     const v = new Vis(p.x, p.y, life, (ctx, sx, sy, t) => {
-      const out = t < 2 ? ease((t + 1) / 3) : 1 - ease((t - 3) / (life - 3)), L = 54 + (R - 30) * out * 0.6, hx = sx - dir * (14 - 20 * out), hy = sy - 22 + up;
+      const out = t < 2 ? ease((t + 1) / 3) : 1 - ease((t - 3) / (life - 3)), L = 60 + (Rr - 30) * out * 0.7, hx = sx - dir * (14 - 20 * out), hy = sy - 22 + up;
       if (out <= 0.02) return;
       spear(ctx, hx, hy, L, dir > 0 ? 0 : PI, { sway: t % 2, a: o.a });
       const tx = hx + dir * L;
       if (t >= 1 && t < 5) glint(ctx, Math.round(tx), Math.round(hy), (t - 1) / 4, o.big ? 11 : 7);
+      if (t >= 1 && t < 6) shock(ctx, tx + dir * 4, hy, dir, (t - 1) / 5, o.big ? 1.4 : 1);
       if (t < 3 && out > 0.6) { ctx.save(); ctx.globalAlpha = 0.6; art.line(ctx, C.cream, Math.round(hx + dir * L * 0.3), Math.round(hy - 2), Math.round(tx - dir * 4), Math.round(hy - 2), 1); ctx.restore(); }   // the glint running down to the tip
     }, vv => { vv.x = p.x; vv.y = p.y; });
     z.shots.push(v);
@@ -167,7 +178,7 @@
     if (!isH(G)) return r;
     z.shots.slice(n0).forEach(v => {   // the falling spears: real spears, point down
       if (!(v instanceof Vis) || v.life !== 14 || !v.render) return;
-      v._ugS = 1; v.render = (ctx, sx, sy, t) => { const y = sy + t * 16; spear(ctx, sx, y - 44, 44, PI / 2, { tassel: true, sway: t % 2 }); };
+      v._ugS = 1; v.render = (ctx, sx, sy, t) => { const y = sy + t * 16; spear(ctx, sx, y - 60, 60, PI / 2, { tassel: true, sway: t % 2 }); };
     });
     if (p.st === 6) {
       const T = foes.filter(e => e && !e.dead).sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
@@ -175,23 +186,53 @@
     }
     return r;
   };
-  // the finishing blow (js/ult-grand.js): the tip glints at eye level beside the target; then one great spear drives
-  // through it on an impact frame
+  // the red-gold dragon of his Dragon Lance, coiled round a spear lying along +x from (0, 0) to (L, 0): k how far it
+  // has coiled (0 none .. 1 to the tip), roar 0..1 how far its jaws are open
+  const DPAL = ['#100c0a', '#5a1414', '#a82a1c', '#e0482a', '#ff8a3a', '#ffd24a', '#fff0b0', '#ffffff'];
+  function dragonVec(c, L, k, roar, t) {
+    const n = 26, pts = [];
+    for (let i = 0; i <= n; i++) { const u = i / n; if (u > k) break; const x = u * L * 0.9, ph = u * 7 - t * 0.25; pts.push([x, Math.sin(ph) * 13, Math.cos(ph)]); }
+    for (let pass = 0; pass < 2; pass++) for (let i = 0; i < pts.length - 1; i++) {   // the body: behind the shaft first, then in front of it
+      const a = pts[i], b = pts[i + 1]; if ((a[2] >= 0) !== !!pass) continue;
+      const w = 4.5 + 2.5 * (i / n), dx = b[0] - a[0], dy = b[1] - a[1], m = Math.hypot(dx, dy) || 1, nx = -dy / m * w, ny = dx / m * w;
+      c.beginPath(); c.moveTo(a[0] + nx, a[1] + ny); c.lineTo(b[0] + nx, b[1] + ny); c.lineTo(b[0] - nx, b[1] - ny); c.lineTo(a[0] - nx, a[1] - ny); c.closePath(); c.fillStyle = a[2] >= 0 ? DPAL[3] : DPAL[2]; c.fill();
+      c.beginPath(); c.moveTo(a[0] + nx * 0.2, a[1] + ny * 0.2); c.lineTo(b[0] + nx * 0.2, b[1] + ny * 0.2); c.lineTo(b[0] - nx * 0.6, b[1] - ny * 0.6); c.lineTo(a[0] - nx * 0.6, a[1] - ny * 0.6); c.closePath(); c.fillStyle = DPAL[5]; c.fill();   // its golden belly
+      if (i % 3 === 0) { c.beginPath(); c.moveTo(a[0] - nx, a[1] - ny); c.lineTo(a[0] - nx * 1.9 - dx * 0.3, a[1] - ny * 1.9 - dy * 0.3); c.lineTo(b[0] - nx, b[1] - ny); c.closePath(); c.fillStyle = DPAL[4]; c.fill(); }   // a fin of flame along its back
+    }
+    if (pts.length < 2) return;
+    const hdp = pts[pts.length - 1], hx = hdp[0] + 4, hy = hdp[1], s = 22, j = roar * 0.6;   // the head, at the front of the coil
+    c.save(); c.translate(hx, hy);
+    c.beginPath(); c.moveTo(-s * 0.1, s * 0.1); c.lineTo(s * 0.9, s * 0.18 + j * s * 0.5); c.lineTo(s * 0.75, s * 0.34 + j * s * 0.5); c.lineTo(-s * 0.15, s * 0.3); c.closePath(); c.fillStyle = DPAL[2]; c.fill();   // the lower jaw
+    if (roar > 0.1) { c.beginPath(); c.moveTo(s * 0.1, s * 0.08); c.lineTo(s * 0.9, s * 0.05); c.lineTo(s * 0.85, s * 0.18 + j * s * 0.5); c.closePath(); c.fillStyle = DPAL[6]; c.fill(); }   // fire in its throat
+    c.beginPath(); c.moveTo(-s * 0.3, -s * 0.3); c.lineTo(s * 0.4, -s * 0.36); c.lineTo(s * 1.0, -s * 0.1); c.lineTo(s * 0.95, s * 0.08); c.lineTo(s * 0.1, s * 0.1); c.lineTo(-s * 0.3, s * 0.15); c.closePath(); c.fillStyle = DPAL[3]; c.fill();   // the skull and upper jaw
+    c.beginPath(); c.moveTo(-s * 0.3, -s * 0.3); c.lineTo(s * 0.4, -s * 0.36); c.lineTo(s * 1.0, -s * 0.1); c.lineTo(s * 0.3, -s * 0.18); c.closePath(); c.fillStyle = DPAL[4]; c.fill();
+    for (let i = 0; i < 4; i++) { c.beginPath(); c.moveTo(s * (0.3 + i * 0.16), s * 0.08); c.lineTo(s * (0.36 + i * 0.16), s * 0.08); c.lineTo(s * (0.33 + i * 0.16), s * 0.2); c.closePath(); c.fillStyle = DPAL[7]; c.fill(); }   // fangs
+    for (const hk of [[-0.25, -0.28, -0.8, -0.75], [0.05, -0.33, -0.5, -0.9]]) { c.beginPath(); c.moveTo(s * hk[0], s * hk[1]); c.lineTo(s * hk[2], s * hk[3]); c.lineTo(s * (hk[0] + 0.15), s * (hk[1] + 0.02)); c.closePath(); c.fillStyle = DPAL[5]; c.fill(); }   // swept-back horns
+    c.beginPath(); c.moveTo(s * 0.35, -s * 0.24); c.lineTo(s * 0.6, -s * 0.18); c.lineTo(s * 0.38, -s * 0.12); c.closePath(); c.fillStyle = DPAL[7]; c.fill();   // the eye, a slit of white
+    c.beginPath(); c.moveTo(s * 0.3, -s * 0.3); c.lineTo(s * 0.62, -s * 0.24); c.lineTo(s * 0.6, -s * 0.2); c.lineTo(s * 0.3, -s * 0.24); c.closePath(); c.fillStyle = DPAL[0]; c.fill();   // the brow, drawn down
+    for (let i = 0; i < 3; i++) { c.beginPath(); c.moveTo(-s * 0.2, s * (0.05 + i * 0.08)); c.lineTo(-s * (0.7 + i * 0.15), s * (0.1 + i * 0.14) + Math.sin(t * 0.4 + i) * 2); c.lineTo(-s * 0.2, s * (0.1 + i * 0.08)); c.closePath(); c.fillStyle = DPAL[4]; c.fill(); }   // a mane of flame
+    c.restore();
+  }
+  // the finishing blow (js/ult-grand.js): a great spear drawn back beside them, the Dragon Lance coiling up it to roar at
+  // the tip; then the spear drives through them on an impact frame and the dragon bursts out the far side
   function finale(p, z, T) {
     const UGr = SW.ultGrand, pl = UGr && UGr.on && UGr.planOf ? UGr.planOf('hart') : null, FIN = pl ? pl.fin : 64, BU2 = pl ? Math.max(74, FIN - 30) : 30;
     let dusted = false;
     const draw = (ctx, sx, sy) => {
-      const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 16) return;
-      const dir = T.x >= p.x ? 1 : -1, cy = sy - 22;
+      const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 18) return;
+      const dir = T.x >= p.x ? 1 : -1, cy = sy - 22, L = 120;
       if (st < FIN) {
-        const k = ease((st - (BU2 - 2)) / (FIN - BU2)), back = 60 + 20 * ease((st - (FIN - 8)) / 8);
-        spear(ctx, sx - dir * (back + 70), cy, 70, dir > 0 ? 0 : PI, { a: Math.min(1, k * 3), sway: st % 3 - 1 });   // drawn back, aimed at them
-        if (st % 10 < 5) glint(ctx, Math.round(sx - dir * back), cy, (st % 10) / 5, 9);
+        const k = ease((st - (BU2 - 2)) / 8), coil = ease((st - BU2) / Math.max(1, FIN - BU2 - 6)), back = 36 + 12 * ease((st - (FIN - 8)) / 8), x0 = sx - dir * (back + L);
+        spear(ctx, x0, cy, L, dir > 0 ? 0 : PI, { a: Math.min(1, k * 3), sway: st % 3 - 1 });   // drawn back, aimed at them
+        PX.sprite(ctx, x0 + dir * L / 2, cy, L + 60, 80, c => { c.scale(dir, 1); c.translate(-L / 2, 0); dragonVec(c, L, coil, st > FIN - 10 ? 0.6 + 0.4 * Math.sin(st * 0.8) : 0, st); }, { pal: DPAL, outline: DPAL[0], alpha: Math.min(1, k * 2) });
+        if (st % 10 < 5) glint(ctx, Math.round(x0 + dir * L), cy, (st % 10) / 5, 10);
       } else {
-        const k = (st - FIN) / 16, ik = (st - FIN) / 5, mono = ik < 0.5 ? C.w : undefined, push = ease(Math.min(1, (st - FIN) / 2));
+        const k = (st - FIN) / 18, ik = (st - FIN) / 5, mono = ik < 0.5 ? C.w : undefined, push = ease(Math.min(1, (st - FIN) / 2)), a = 1 - ease((k - 0.55) / 0.45);
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 59);
-        spear(ctx, sx - dir * (170 - push * 120), cy, 150, dir > 0 ? 0 : PI, { mono, a: 1 - ease((k - 0.55) / 0.45) });   // through them
-        if (!dusted) { dusted = true; for (let i = 0; i < 18; i++) part(T.x + dir * rand(0, 20), T.y - rand(10, 34), i % 2 ? C.cream : C.s2, dir * rand(1, 5), rand(-2, 2), 20, 2, 0.08); }
+        const x0 = sx - dir * (L + 40 - push * 90);
+        spear(ctx, x0, cy, L + 40, dir > 0 ? 0 : PI, { mono, a });   // through them
+        PX.sprite(ctx, x0 + dir * (L + 40) / 2 + dir * 30 * k, cy, L + 120, 90, c => { c.scale(dir, 1); c.translate(-(L + 40) / 2, 0); dragonVec(c, L + 40, 1, 1, st); }, { pal: DPAL, outline: DPAL[0], alpha: a, mono });
+        if (!dusted) { dusted = true; for (let i = 0; i < 22; i++) part(T.x + dir * rand(0, 20), T.y - rand(10, 34), i % 3 === 0 ? '#ffd24a' : i % 2 ? C.cream : '#e0482a', dir * rand(1, 5), rand(-2, 2), 20, 2, 0.08); }
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
