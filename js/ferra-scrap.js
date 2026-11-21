@@ -47,6 +47,7 @@
     sign(q, u) { q.save(); q.rotate(PI / 4); q.fillStyle = C.yel; q.fillRect(-3.6 * u, -3.6 * u, 7.2 * u, 7.2 * u); q.restore(); q.fillStyle = C.blk; q.fillRect(-0.6 * u, -2.4 * u, 1.2 * u, 3.2 * u); q.fillRect(-0.6 * u, 1.4 * u, 1.2 * u, 1.2 * u); q.fillStyle = C.s0; q.fillRect(-0.5 * u, 4.6 * u, 1 * u, 3 * u); }
   };
   function junk(ctx, kind, x, y, s, ang, a, mono) {
+    s *= 1.35;   // (2026-11-20 look ranking: the junk read as specks)
     const step = ((R(ang / (PI / 8)) % 16) + 16) % 16, S = Math.max(1, Math.round(s * 4) / 4), b = R(16 * S) + 6;
     const cv = baked(kind + S + '_' + step + (mono || ''), b, b, (c, cx, cy) => PX.sprite(c, cx, cy, b, b, q => { q.rotate(step * PI / 8); KINDS[kind](q, S); }, { pal: PAL, outline: C.out, keepThin: true, mono }));
     blit(ctx, cv, x, y, a);
@@ -218,27 +219,38 @@
   };
   // the finishing blow (js/ult-grand.js): junk streaks in from every side and crushes into a cube over the target, then
   // it comes down with a crusher-yard crunch on an impact frame
-  function cube(ctx, x, y, s, a) {
+  function cube(ctx, x, y, s, a) {   // a bale of crushed junk seen a little from above: front, lit top, dark side
     ctx.save(); ctx.globalAlpha *= clamp01(a);
-    art.rect(ctx, C.out, R(x - s / 2) - 1, R(y - s / 2) - 1, R(s) + 2, R(s) + 2);
-    const rows = [C.red, C.s, C.rust, C.blue, C.s2, C.red2];
-    for (let j = 0; j < 6; j++) art.rect(ctx, rows[j], R(x - s / 2), R(y - s / 2 + j * s / 6), R(s), Math.max(1, R(s / 6)));
-    art.rect(ctx, C.glass, R(x - s / 4), R(y - s / 6), R(s / 4), 2); art.rect(ctx, C.yel, R(x + s / 8), R(y + s / 8), 3, 3);
+    const h = s / 2, d = s * 0.28, X = R(x - h), Y = R(y - h), S = R(s);
+    ctx.fillStyle = C.out; ctx.beginPath(); ctx.moveTo(X - 1, Y + S + 1); ctx.lineTo(X - 1, Y - 1); ctx.lineTo(X + d, Y - d - 1); ctx.lineTo(X + S + d + 1, Y - d - 1); ctx.lineTo(X + S + d + 1, Y + S - d); ctx.lineTo(X + S + 1, Y + S + 1); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = C.s; ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(X + d, Y - d); ctx.lineTo(X + S + d, Y - d); ctx.lineTo(X + S, Y); ctx.closePath(); ctx.fill();   // the top, lit
+    ctx.fillStyle = C.rust; ctx.beginPath(); ctx.moveTo(X + S, Y); ctx.lineTo(X + S + d, Y - d); ctx.lineTo(X + S + d, Y + S - d); ctx.lineTo(X + S, Y + S); ctx.closePath(); ctx.fill();   // the side, in shadow
+    const rows = [C.red, C.s2, C.rust, C.blue, C.s2, C.red2, C.s, C.blue];
+    for (let j = 0; j < 8; j++) art.rect(ctx, rows[j], X, R(Y + j * s / 8), S, Math.max(1, R(s / 8)));   // the crushed layers
+    for (let j = 1; j < 8; j++) art.rect(ctx, C.out, X, R(Y + j * s / 8), S, 1);
+    art.rect(ctx, C.glass, R(x - s / 4), R(y - s / 6), R(s / 3), 3); art.rect(ctx, C.yel, R(x + s / 8), R(y + s / 8), 4, 4); art.rect(ctx, C.w, R(x - s / 3), R(y + s / 5), 5, 1);
     ctx.restore();
+  }
+  function plate(ctx, x, y, w, h, side) {   // a crusher plate: heavy steel with hazard stripes on its face
+    const X = R(x - w / 2), Y = R(y - h / 2);
+    art.rect(ctx, C.out, X - 1, Y - 1, R(w) + 2, R(h) + 2); art.rect(ctx, C.s2, X, Y, R(w), R(h)); art.rect(ctx, C.s, X, Y, R(w), 2);
+    for (let i = 0; i < R(h); i += 6) art.rect(ctx, (i / 6) % 2 ? C.out : C.yel, side > 0 ? X : X + R(w) - 4, Y + i, 4, 3);
+    art.rect(ctx, C.out, X + 3, R(y) - 1, R(w) - 6, 2);
   }
   function finale(p, z, T, FIN, BU2) {
     const draw = (ctx, sx, sy) => {
       const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 18) return;
-      const cy = sy - 44;
+      const cy = sy - 30;   // (the bale sits on them: it was cropped by the zoom higher up)
       if (st < FIN - 6) {
         const k = ease((st - (BU2 - 2)) / (FIN - 6 - BU2 + 2));
         for (let i = 0; i < 12; i++) { const an = i / 12 * PI * 2 + 0.2, rr = 120 * (1 - k) + 6; junk(ctx, JUNK[i % 7], sx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.6, 1, an + st * 0.3, Math.min(1, k * 3)); if (k < 0.9) art.line(ctx, C.s2, R(sx + Math.cos(an) * (rr + 10)), R(cy + Math.sin(an) * (rr + 10) * 0.6), R(sx + Math.cos(an) * (rr + 22)), R(cy + Math.sin(an) * (rr + 22) * 0.6), 1); }
       } else if (st < FIN) {
-        const k = (st - (FIN - 6)) / 6; cube(ctx, sx, cy - k * 4 + (st % 2), 22 - k * 2, 1);   // crushed
+        const k = (st - (FIN - 6)) / 6, w = 44 - k * 4; cube(ctx, sx, cy - k * 4 + (st % 2), w, 1);   // crushed into a bale
+        for (const d2 of [-1, 1]) plate(ctx, sx + d2 * (w / 2 + 14 + 30 * (1 - ease(k))), cy, 24, 62, d2);   // the crusher plates close on it
       } else {
         const u = st - FIN, k = u / 18, ik = u / 5, y = cy + Math.min(1, u / 2) * 30;
         if (ik < 1) PX.impact(ctx, sx, sy - 20, ik, 71);
-        if (u < 6) cube(ctx, sx, y, 20, 1);
+        if (u < 6) { cube(ctx, sx, y, 40, 1); for (const d2 of [-1, 1]) plate(ctx, sx + d2 * 34, cy, 24, 62, d2); }
         for (let i = 0; i < 10; i++) { const s = i % 2 ? 1 : -1, row = i >> 1; junk(ctx, JUNK[(i + 2) % 7], sx + s * (8 + k * (30 + row * 10)), sy - 12 - Math.sin(Math.min(1, k * 1.5) * PI) * (16 + row * 6) + k * k * 30, 1, k * 6 * s + i, 1 - ease((k - 0.6) / 0.4)); }
         ctx.save(); ctx.globalAlpha *= 1 - k; for (let i = 0; i < 10; i++) { const a = PI + i / 9 * PI; art.line(ctx, i % 2 ? C.spark : C.w, sx, sy - 4, R(sx + Math.cos(a) * (16 + k * 40)), R(sy - 4 + Math.sin(a) * (6 + k * 16)), 1); } ctx.restore();
       }
