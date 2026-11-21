@@ -86,7 +86,7 @@
     z.shots.slice(n0).forEach(s => {
       if (!(s instanceof Proj) || s.ashka || s.w !== 12 || s.h !== 12 || s.life !== 90 || s.g !== 0.24) return;
       s.ashka = 1;
-      s.render = (ctx, x, y, q) => { const t = q.t || 0; rock(ctx, x, y, 6, t * 0.4 * (Math.sign(q.vx) || 1), 1, t % 6 < 3); if (t % 3 === 0) part(q.x - q.vx, q.y + 3, t % 2 ? C.o : C.y, 0, 0.6, 12, 2, 0.15); };
+      s.render = (ctx, x, y, q) => { const t = q.t || 0; rock(ctx, x, y, 9, t * 0.4 * (Math.sign(q.vx) || 1), 1, t % 6 < 3); if (t % 3 === 0) part(q.x - q.vx, q.y + 3, t % 2 ? C.o : C.y, 0, 0.6, 12, 2, 0.15); };
     });
   }
   const _mg = CASTS.magma_glob;
@@ -283,16 +283,16 @@
       const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 20) return;
       if (st < FIN) {
         const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2));
-        ventRing(ctx, sx, sy, 34 + k * 10, k, st);
-        ctx.save(); ctx.globalAlpha *= 0.5 + k * 0.5; door(ctx, sx, sy - 3, 14, 0, k, 1); ctx.restore();
+        ventRing(ctx, sx, sy, 44 + k * 14, k, st);
+        ctx.save(); ctx.globalAlpha *= 0.5 + k * 0.5; door(ctx, sx, sy - 3, 26, 0, k, 1); ctx.restore();   // a great furnace door in the floor under them, glowing hotter
         if (st % 3 === 0) part(T.x + rand(-14, 14), T.y - 2, k > 0.6 ? C.y : C.o, 0, -rand(0.8, 2), 16, 2, -0.02);
-        if (st >= FIN - 6) { const u = (st - (FIN - 6)) / 6; link(ctx, sx - 18 - u * 10, sy - 10 - u * 8, 5, u * 2, 1, true); link(ctx, sx + 18 + u * 10, sy - 10 - u * 8, 5, -u * 2, 1, true); }   // the last links snap
+        if (st >= FIN - 6) { const u = (st - (FIN - 6)) / 6; link(ctx, sx - 28 - u * 14, sy - 14 - u * 10, 9, u * 2, 1, true); link(ctx, sx + 28 + u * 14, sy - 14 - u * 10, 9, -u * 2, 1, true); }   // the last links snap
       } else {
         const u = st - FIN, k = u / 20, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, sy - 24, ik, 47);
-        column(ctx, sx, sy, R(70 * Math.min(1, u / 3) * (1 - ease((k - 0.6) / 0.4))), 26, st);
-        door(ctx, sx + 30 * k, sy - 20 - 70 * Math.sin(Math.min(1, k * 1.4) * PI * 0.5) + 40 * k * k, 14, k * 7, 1, 1 - ease((k - 0.7) / 0.3));
-        shards(ctx, sx, sy - 30, Math.min(1, k * 1.2), 10, 1.8, 7);
+        column(ctx, sx, sy, R(110 * Math.min(1, u / 3) * (1 - ease((k - 0.6) / 0.4))), 44, st);
+        door(ctx, sx + 30 * k, sy - 20 - 70 * Math.sin(Math.min(1, k * 1.4) * PI * 0.5) + 40 * k * k, 26, k * 7, 1, 1 - ease((k - 0.7) / 0.3));
+        shards(ctx, sx, sy - 30, Math.min(1, k * 1.2), 16, 2.4, 7);
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
