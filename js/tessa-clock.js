@@ -212,7 +212,8 @@
   }
 
   // ================= W+I: the grey world (only she keeps her colour) =================
-  const grey = TC.grey = { on: false, p: null, until: 0 };   // (exposed for testing)
+  const grey = TC.grey = { on: false, p: null, until: 0 };
+  const greyLive = () => grey.on && grey.p && !grey.p.dead && (G.player === grey.p || !!(SW.versus && SW.versus.f && SW.versus.f.some(f => f && f.p === grey.p)));   // a match quit mid-ultimate must not leave the next one grey   // (exposed for testing)
   function greyRect(ctx, x, y, w, h, a) {
     ctx.save(); ctx.globalCompositeOperation = 'saturation'; ctx.globalAlpha = a; ctx.fillStyle = '#808080'; ctx.fillRect(x, y, w, h); ctx.restore();
   }
@@ -245,11 +246,11 @@
   const _pd = P.draw;
   P.draw = function (ctx, cam, g) {
     const gg = g || this.G, on = isT(gg) && !this.dead, sx = R(this.x - cam.x), sy = R(this.y - cam.y);
-    if (grey.on && grey.p === this) greyRect(ctx, -W, -H, W * 3, H * 3, 0.88);   // everything drawn so far goes grey; she is drawn after, in colour
+    if (greyLive() && grey.p === this) greyRect(ctx, -W, -H, W * 3, H * 3, 0.88);   // everything drawn so far goes grey; she is drawn after, in colour
     if (on) aura(ctx, this, sx, sy, false);
     const r = _pd.apply(this, arguments);
     if (on) aura(ctx, this, sx, sy, true);
-    if (grey.on && grey.p && grey.p !== this) greyRect(ctx, sx - 28, sy - 60, 56, 66, 0.88);   // and whoever is drawn after her
+    if (greyLive() && grey.p !== this) greyRect(ctx, sx - 28, sy - 60, 56, 66, 0.88);   // and whoever is drawn after her
     return r;
   };
   const _pu = P.update;
@@ -282,7 +283,7 @@
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
     z.shots.push(v);
     PX.over((ctx, cam) => {
-      if (v.gone || p.state !== 'ult') return false;
+      if (v.gone || p.state !== 'ult' || SW.frame - (v.f0o === undefined ? (v.f0o = SW.frame) : v.f0o) > 400 || !(G.player === p || (SW.versus && SW.versus.f && SW.versus.f.some(f => f && f.p === p)))) return false;   // (a match quit mid-ultimate leaves the old fighter in 'ult' for ever: stop when it is gone)
       const st = p.st; if (st < BU2 - 2 || st > FIN + 18) return;
       const sx = R(v.x - cam.x), sy = R(v.y - cam.y), cy = sy - 20, wx = sx - dir * 50, wy = cy - 14, sw = R(Math.sin(st * 0.08) * 3);
       if (st < FIN) {

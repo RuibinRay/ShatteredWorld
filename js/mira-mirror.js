@@ -252,7 +252,7 @@
       }
     }, { pal: PAL, outline: glass ? false : OUT, alpha: a });
     PX.over((ctx, cam) => {
-      if (v.gone || p.state !== 'ult') return false;
+      if (v.gone || p.state !== 'ult' || SW.frame - (v.f0o === undefined ? (v.f0o = SW.frame) : v.f0o) > 400 || !(G.player === p || (SW.versus && SW.versus.f && SW.versus.f.some(f => f && f.p === p)))) return false;   // (a match quit mid-ultimate leaves the old fighter in 'ult' for ever: stop when it is gone)
       const st = p.st; if (st < BU2 - 2 || st > FIN + 18) return;
       const sx = Math.round(v.x - cam.x), sy = Math.round(v.y - cam.y), cy = sy - 20, my = sy + 2 - MH / 2;
       if (st < FIN) {   // it rises behind them; her reflection is in it; cracks spread from where they stand

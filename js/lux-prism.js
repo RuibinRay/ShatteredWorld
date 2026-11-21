@@ -248,7 +248,7 @@
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
     z.shots.push(v);
     PX.over((ctx, cam) => {
-      if (v.gone || p.state !== 'ult') return false;
+      if (v.gone || p.state !== 'ult' || SW.frame - (v.f0o === undefined ? (v.f0o = SW.frame) : v.f0o) > 400 || !(G.player === p || (SW.versus && SW.versus.f && SW.versus.f.some(f => f && f.p === p)))) return false;   // (a match quit mid-ultimate leaves the old fighter in 'ult' for ever: stop when it is gone)
       const st = p.st; if (st < BU2 - 2 || st > FIN + 18) return;
       const sx = R(v.x - cam.x), sy = R(v.y - cam.y), cy = sy - 20, tx = sx - dir * 70, ty = cy - 18;
       if (st < FIN) {
