@@ -41,6 +41,8 @@
     if (!cv) {
       w = 2 * Math.ceil(w / 2); h = 2 * Math.ceil(h / 2);
       cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const drop = () => { if (kept.get(key) === cv) kept.delete(key); };   // a canvas the browser drops while the tab is hidden comes back blank: draw it again
+      cv.addEventListener('contextlost', drop); cv.addEventListener('contextrestored', drop);
       PX.sprite(cv.getContext('2d'), w / 2, h / 2, w, h, draw, { pal: PAL, outline: OUT });
       if (kept.size > 500) kept.clear();
       kept.set(key, cv);

@@ -85,6 +85,8 @@
     if (!cv) {
       const W2 = 2 * Math.ceil(s * 1.6);
       cv = document.createElement('canvas'); cv.width = cv.height = W2;
+      const drop = () => { if (kept.get(key) === cv) kept.delete(key); };   // a canvas the browser drops while the tab is hidden comes back blank: draw it again
+      cv.addEventListener('contextlost', drop); cv.addEventListener('contextrestored', drop);
       PX.sprite(cv.getContext('2d'), W2 / 2, W2 / 2, W2, W2, c => { c.translate(off, 0); if (rq) c.rotate(rq * 0.3); crowVec(c, s, { wing: wg === null ? undefined : wg, flap: fl / 8, caw: o.caw }); }, { pal: PAL, mono: o.mono, outline: RIM });
       if (kept.size > 500) kept.clear();
       kept.set(key, cv);
