@@ -39,6 +39,7 @@
   }
   function scrap(ctx, x, y, kind, s, rot, o) {
     o = o || {};
+    s *= 1.5;
     PX.sprite(ctx, x, y, s * 3, s * 3, c => { c.rotate(rot || 0); scrapVec(c, kind, s); }, { pal: PAL, alpha: o.a, mono: o.mono, outline: C.out, keepThin: true });
   }
   VF.scrap = scrap;
@@ -51,17 +52,18 @@
       c.fillStyle = C.w; c.fillRect(-r * 0.6, -r * 0.14, r * 1.2, Math.max(1, r * 0.28)); if (plus) c.fillRect(-r * 0.14, -r * 0.6, Math.max(1, r * 0.28), r * 1.2);
     }, { pal: PAL, outline: C.out, keepThin: true });
     const n = 5, ph = (t || 0) * 0.2;   // the shell's crackle
-    ctx.save(); for (let i = 0; i < n; i++) { const a = ph + i / n * PI * 2; if ((i + ((t || 0) >> 1)) % 2) art.rect(ctx, plus ? C.r2 : C.b2, Math.round(x + Math.cos(a) * r * 1.6), Math.round(y + Math.sin(a) * r * 1.6), 1, 1); } ctx.restore();
+    ctx.save(); for (let i = 0; i < n; i++) { const a = ph + i / n * PI * 2; if ((i + ((t || 0) >> 1)) % 2) art.rect(ctx, plus ? C.r2 : C.b2, Math.round(x + Math.cos(a) * r * 1.6), Math.round(y + Math.sin(a) * r * 1.6), r > 5 ? 2 : 1, r > 5 ? 2 : 1); } ctx.restore();
   }
   // field lines: n curved lines from (x, y); out = bursting outward, else bending inward toward it; k 0..1
   function field(ctx, x, y, n, R, out, k, col, sq) {
     if (k <= 0 || k >= 1) return;
-    ctx.save(); ctx.globalAlpha = Math.sin(k * PI) * 0.9;
+    ctx.save(); ctx.globalAlpha = Math.min(1, Math.sin(k * PI) * 1.3);
+    const lw = R >= 30 ? 2 : 1;
     for (let i = 0; i < n; i++) {
       const a = i / n * PI * 2, bend = 0.5;
       const r0 = out ? R * 0.2 + R * 0.6 * k : R * (1 - k * 0.8), r1 = out ? r0 + R * 0.35 : r0 + R * 0.25;
       let px = x + Math.cos(a) * r0, py = y + Math.sin(a) * r0 * (sq || 1);
-      for (let j = 1; j <= 5; j++) { const rr = r0 + (r1 - r0) * j / 5, aa = a + bend * j / 5 * (out ? 1 : -1) * 0.4, nx = x + Math.cos(aa) * rr, ny = y + Math.sin(aa) * rr * (sq || 1); art.line(ctx, j === 5 ? C.w : col, Math.round(px), Math.round(py), Math.round(nx), Math.round(ny), 1); px = nx; py = ny; }
+      for (let j = 1; j <= 5; j++) { const rr = r0 + (r1 - r0) * j / 5, aa = a + bend * j / 5 * (out ? 1 : -1) * 0.4, nx = x + Math.cos(aa) * rr, ny = y + Math.sin(aa) * rr * (sq || 1); art.line(ctx, j === 5 ? C.w : col, Math.round(px), Math.round(py), Math.round(nx), Math.round(ny), lw); px = nx; py = ny; }
     }
     ctx.restore();
   }
@@ -77,7 +79,7 @@
     z.shots.slice(n0 || 0).forEach(s => {
       if (s.vex || !(s instanceof Proj) || s.team === 'enemy') return;
       if (s.w === 10 && s.h === 10 && s.life === 26 && s.ghost) { s.vex = 1; const kind = scrapN++ % 4, spin = rand(0.2, 0.5) * (scrapN % 2 ? 1 : -1); s.render = (ctx, x, y, q) => scrap(ctx, x, y, kind, kind === 1 ? 5 : 4, q.t * spin); return; }   // Iron Storm's scrap
-      if (s.r === 5 && s.life === 40) { s.vex = 1; s.render = (ctx, x, y, q) => { field(ctx, x, y, 6, 14, true, (q.t % 12) / 12, C.r2); charge(ctx, x, y, 5, true, q.t); }; }   // Repel Shot
+      if (s.r === 5 && s.life === 40) { s.vex = 1; s.render = (ctx, x, y, q) => { field(ctx, x, y, 8, 22, true, (q.t % 12) / 12, C.r2); charge(ctx, x, y, 7, true, q.t); }; }   // Repel Shot
     });
   }
   const _rs = CASTS.repel_shot; CASTS.repel_shot = function (p, z) { const n0 = z.shots.length, r = _rs.apply(this, arguments); if (isV(G)) dress(p, z, n0); return r; };
@@ -101,7 +103,7 @@
       for (let j = -2; j <= 2; j++) { let px = ex, py = ey + j * 6; for (let i = 1; i <= 8; i++) { const u = i / 8, nx = ex + (hx - ex) * u, ny = ey + j * 6 * (1 - u) + Math.sin(u * PI) * j * 7; art.line(ctx, i > 6 ? C.w : C.b, Math.round(px), Math.round(py), Math.round(nx), Math.round(ny), 2); px = nx; py = ny; } }
       ctx.restore();
       filings(ctx, ex, ey, hx, hy, t, 16);
-      charge(ctx, hx, hy, 4, false, t);
+      charge(ctx, hx, hy, 6, false, t);
     }, v => { v.x = p.x; v.y = p.y; }));
     return r;
   };
@@ -117,8 +119,8 @@
         if (!s.paint && !s.render) return;
         const draw = (ctx, x, y, t) => {
           const cy = y - 22;
-          field(ctx, x, cy, 10, 44, false, (t % 24) / 24, C.b, 0.7);
-          PX.sprite(ctx, x, cy, 30, 30, c => {   // the lodestone, filings standing up on it like fur
+          field(ctx, x, cy, 12, 56, false, (t % 24) / 24, C.b, 0.7);
+          PX.sprite(ctx, x, cy, 46, 46, c => { c.scale(1.5, 1.5);   // the lodestone, filings standing up on it like fur
             c.beginPath(); c.arc(0, 0, 7, 0, PI * 2); c.fillStyle = C.lode; c.fill(); c.beginPath(); c.arc(-2, -2, 2.5, 0, PI * 2); c.fillStyle = C.i1; c.fill();
             c.strokeStyle = C.i; c.lineWidth = 1; for (let i = 0; i < 18; i++) { const a = i / 18 * PI * 2, L = 3 + Math.abs(Math.sin(i * 1.7 + t * 0.2)) * 3; c.beginPath(); c.moveTo(Math.cos(a) * 7, Math.sin(a) * 7); c.lineTo(Math.cos(a) * (7 + L), Math.sin(a) * (7 + L)); c.stroke(); }
           }, { pal: PAL, outline: C.out, keepThin: true });
@@ -139,9 +141,9 @@
       const r = _ff.apply(this, arguments);
       if (!isV(G)) return r;
       z.shots.push(new Vis(p.x, p.y, 36, (ctx, sx, sy, t) => {
-        if (t < 16) { field(ctx, sx, sy - 20, 12, 70, true, t / 16, C.r); charge(ctx, sx, sy - 20, 5, true, t); }
-        else if (t < 22) { charge(ctx, sx, sy - 20, 5, t % 2 === 0, t); }   // the field flips
-        else { field(ctx, sx, sy - 20, 12, 140, false, (t - 22) / 14, C.b); charge(ctx, sx, sy - 20, 5, false, t); }
+        if (t < 16) { field(ctx, sx, sy - 20, 12, 70, true, t / 16, C.r); charge(ctx, sx, sy - 20, 8, true, t); }
+        else if (t < 22) { charge(ctx, sx, sy - 20, 8, t % 2 === 0, t); }   // the field flips
+        else { field(ctx, sx, sy - 20, 12, 140, false, (t - 22) / 14, C.b); charge(ctx, sx, sy - 20, 8, false, t); }
       }, v => { v.x = p.x; v.y = p.y; }));
       return r;
     };
@@ -204,18 +206,20 @@
   // the finishing blow (js/ult-grand.js): scrap from everywhere crushes onto the target into a ball of iron
   function finale(p, z, T) {
     const UGr = SW.ultGrand, pl = UGr && UGr.on && UGr.planOf ? UGr.planOf('vex') : null, FIN = pl ? pl.fin : 64, BU2 = pl ? Math.max(74, FIN - 30) : 30;
-    const bits = []; for (let i = 0; i < 22; i++) bits.push({ a: rand(0, PI * 2), r: rand(60, 120), kind: i % 4, s: rand(3, 5.5), spin: rand(-0.4, 0.4) });
+    const bits = []; for (let i = 0; i < 30; i++) bits.push({ a: rand(0, PI * 2), r: rand(70, 140), kind: i % 4, s: rand(4, 7), spin: rand(-0.4, 0.4) });
     const draw = (ctx, sx, sy) => {
       const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 16) return;
       const cy = sy - 22;
       if (st < FIN) {
         const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2));
         field(ctx, sx, cy, 12, 70, false, (st % 14) / 14, k > 0.5 ? C.b : C.r, 0.8);
-        bits.forEach((b, i) => { const rr = b.r * (1 - k) + 12 * k; scrap(ctx, sx + Math.cos(b.a + k) * rr, cy + Math.sin(b.a + k) * rr * 0.75, b.kind, b.s, st * b.spin + i); });
+        bits.forEach((b, i) => { const rr = b.r * (1 - k) + 20 * k; scrap(ctx, sx + Math.cos(b.a + k) * rr, cy + Math.sin(b.a + k) * rr * 0.75, b.kind, b.s, st * b.spin + i); });
       } else {
         const k = (st - FIN) / 16, ik = (st - FIN) / 5, mono = ik < 0.5 ? C.w : undefined;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 91);
-        bits.forEach((b, i) => { if (i % 2) scrap(ctx, sx + Math.cos(b.a) * 8, cy + Math.sin(b.a) * 6, b.kind, b.s, b.a, { mono, a: 1 - ease((k - 0.55) / 0.45) }); });   // the ball of iron
+        const sq = 1 - Math.min(1, (st - FIN) / 3) * 0.35;   // crushed tighter on the hit
+        bits.forEach((b, i) => { const rr = (8 + (i % 3) * 7) * sq; scrap(ctx, sx + Math.cos(b.a + i) * rr, cy + Math.sin(b.a + i) * rr * 0.8, b.kind, b.s, b.a, { mono, a: 1 - ease((k - 0.55) / 0.45) }); });   // the great ball of iron
+        if (k < 0.6) field(ctx, sx, cy, 16, 110, true, k / 0.6, C.r);
       }
     };
     const v = new Vis(T.x, T.y, 500, null, vv => { if (T && !T.dead) { vv.x = T.x; vv.y = T.y; } if (p.state !== 'ult') vv.gone = true; });
