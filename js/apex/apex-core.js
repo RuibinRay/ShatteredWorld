@@ -316,7 +316,9 @@
   // (HC.MIR.boss: in bot-vs-bot shows the others may not slip out of his combos), so a player's Itsuki meets them fairly;
   // his kit, routes and Thunder Palm chain are untouched, only these two Versus numbers.
   AP.TUNE = {
-    itsuki: { dmg: 0.61, hp: 0.72 }, corvin: { dmg: 0.95, hp: 0.96 }, tessa: { dmg: 1.1, hp: 1.09 }, orin: { dmg: 1.27, hp: 1.19 },
+    // (Itsuki's damage: the user, 2026-11-21, "all skills dmg and melee, not ult, reduce by 20%"; his ultimate stays 47%:
+    // js/ult-share.js caps and tops it up whatever this says)
+    itsuki: { dmg: 0.49, hp: 0.72 }, corvin: { dmg: 0.95, hp: 0.96 }, tessa: { dmg: 1.1, hp: 1.09 }, orin: { dmg: 1.27, hp: 1.19 },
     noct: { dmg: 1.28, hp: 1.17 }, mira: { dmg: 1.33, hp: 1.22 }, vega: { dmg: 1.4, hp: 1.28 }, jax: { dmg: 1.69, hp: 1.44 },
     sen: { dmg: 1.68, hp: 1.43 }, rook: { dmg: 1.02, hp: 1 }, ferra: { dmg: 1.85, hp: 1.55 }, apis: { dmg: 1.37, hp: 1.24 },
     hex: { dmg: 2.1, hp: 1.68 }, maren: { dmg: 1.63, hp: 1.4 }, bando: { dmg: 2.17, hp: 1.71 }, vex: { dmg: 2.36, hp: 1.79 }
