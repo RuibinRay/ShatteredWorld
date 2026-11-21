@@ -85,7 +85,7 @@
     z.shots.forEach(s => {
       if (!(s instanceof Proj) || s.elixa || s.w !== 10 || s.h !== 10 || s.life !== 60 || !(s.g > 0.2 && s.g < 0.3)) return;
       s.elixa = 1; const col = colOf(s), spin = (Math.sign(s.vx) || 1) * 0.35;
-      s.render = (ctx, x, y, q) => flask(ctx, x, y, 5, (q.t || 0) * spin, col, q.t || 0);
+      s.render = (ctx, x, y, q) => flask(ctx, x, y, 8, (q.t || 0) * spin, col, q.t || 0);   // (2026-11-20 look ranking: bigger, the flasks were specks)
     });
   }
   // where they land: their smoke and glass (the landing ring), and the reaction (the reaction ring)
@@ -194,8 +194,9 @@
   function finale(p, z, T, FIN, BU2) {
     const draw = (ctx, sx, sy) => {
       const st = p.st; if (p.state !== 'ult' || st < BU2 - 2 || st > FIN + 22) return;
-      const cy = sy - 48;
-      if (st < FIN) { const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)), sh = k > 0.7 ? (st % 2 ? 1 : -1) : 0; flask(ctx, sx + sh, cy - (1 - k) * 20, 9, Math.sin(st * 0.15) * 0.4 * (1 - k), ['red', 'blue', 'green'][(st >> 3) % 3], st); sigil(ctx, sx, sy - 1, 18 + k * 12, st * 2, k, C.gold); }
+      const cy = sy - 44;
+      if (st < FIN) { const k = ease((st - (BU2 - 2)) / (FIN - BU2 + 2)), sh = k > 0.7 ? (st % 2 ? 1 : -1) : 0; for (let i = 0; i < 3; i++) { const an = st * 0.12 + i * 2.09, rr = 40 * (1 - k) + 6; flask(ctx, sx + Math.cos(an) * rr, cy + Math.sin(an) * rr * 0.5 + 8, 10, an, ['red', 'blue', 'green'][i], st, Math.min(1, k * 3)); }   // her three flasks circle in to it
+        flask(ctx, sx + sh, cy - (1 - k) * 20, 18, Math.sin(st * 0.15) * 0.4 * (1 - k), ['red', 'blue', 'green'][(st >> 3) % 3], st); sigil(ctx, sx, sy - 1, 26 + k * 20, st * 2, k, C.gold); }
       else {
         const u = st - FIN, k = u / 22, ik = u / 5;
         if (ik < 1) PX.impact(ctx, sx, cy, ik, 97);
