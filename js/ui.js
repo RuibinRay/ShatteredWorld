@@ -86,7 +86,7 @@
     text(ctx, hero.energy.toUpperCase(), 119, 17, hero.color);
     const full = S.awaken >= 100 && p.awakeT <= 0;
     bar(ctx, 10, 27, 104, 2, S.awaken / 100, p.awakeT > 0 ? hero.colorHi : full && SW.frame % 16 < 8 ? '#ffffff' : '#8b5cf6', '#1a1626');
-    if (full && G.has(hero.awaken) && SW.frame % 40 < 28) text(ctx, 'O!', 119, 24, '#ffffff');
+    if (full && G.has(hero.awaken) && SW.frame % 40 < 28) text(ctx, 'O: AWAKEN', 119, 24, '#ffffff');
     text(ctx, 'LV' + S.level, 10, 32, '#ffffff');
     art.rect(ctx, '#f5c542', 38, 34, 4, 4); text(ctx, String(S.creds), 45, 32, '#f5c542');
     art.rect(ctx, '#7dffa0', 76, 35, 6, 2); art.rect(ctx, '#7dffa0', 78, 33, 2, 6); text(ctx, 'x' + S.items, 85, 32, S.items ? '#7dffa0' : '#5a6078');

@@ -101,9 +101,10 @@
     S.clock = (S.clock + 1) % (DAY * 1000);
     if (H.zone !== z) {
       H.zone = z; H.huskT = 1200;   // the first one comes 5 s after you arrive in the dark
-      if (RAD[z.id] && !g.flag('rad_seen')) { g.setFlag('rad_seen'); g.toast('Radiation builds out here. Save points are filter stations: stand at one to clear it.', '#b8ff40'); }
+      if (RAD[z.id] && !g.state.saga && !g.flag('rad_seen')) { g.setFlag('rad_seen'); g.toast('Radiation builds out here. Save points are filter stations: stand at one to clear it.', '#b8ff40'); }
     }
-    tickNight(g, z); tickRad(g, z);
+    if (!g.state.saga) { tickNight(g, z); tickRad(g, z); }   // (The Hollow Crown never explains either: no radiation and no night Husks in its chapters - the playtest)
+    else { g.state.rad = 0; z.ents.forEach(e => { if (e.nightHusk && !e.dead) e.gone = true; }); }
     return r;
   };
   // Night Eyes (black-market gear, ledger.js): more damage in the dark
@@ -154,7 +155,7 @@
     if (!inStory() || !g.zone) return;
     const S = g.state, p = g.player;
     let x = heatShown(g) ? 248 : 168;
-    if (RAD[g.zone.id] || S.rad > 0) {
+    if (!S.saga && (RAD[g.zone.id] || S.rad > 0)) {   // (no meter in The Hollow Crown: it has no radiation)
       const f = S.rad / 100, full = S.rad >= 100, col = full ? (SW.frame % 30 < 18 ? '#ff5a5a' : '#ffffff') : f > 0.7 ? '#ffd24a' : '#b8ff40';
       ui.panel(ctx, x, 4, 76, 14, null, 0.5);
       text(ctx, 'RAD', x + 4, 7, full ? '#ff5a5a' : '#c8ccd8');

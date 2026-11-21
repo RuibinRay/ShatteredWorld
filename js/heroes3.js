@@ -200,9 +200,9 @@
     ctx.globalAlpha = 1;
     if (t > 5) {
       const name = D.abilities[h.ultimate].name.toUpperCase(), sc = SW.textW(name) * 3 > 250 ? 2 : 3, k = 1 - Math.pow(1 - Math.min(1, (t - 5) / 8), 3);
-      const sub = cut.veil || h.title, tw = Math.max(SW.textW(name) * sc, SW.textW(sub)), tx = d > 0 ? 12 - Math.round((1 - k) * 80) : W - 12 + Math.round((1 - k) * 80), ty = by + bh - 6 - 7 * sc, al = d > 0 ? 'left' : 'right';
-      ctx.globalAlpha = 0.6 * (1 - out); art.rect(ctx, '#05060c', d > 0 ? tx - 12 : tx - tw - 8, ty - 15, tw + 20, 15 + 7 * sc + 6);
-      ctx.globalAlpha = 1 - out;
+      const sub = cut.veil || h.title, tw = Math.max(SW.textW(name) * sc, SW.textW(sub)), tx = d > 0 ? 12 + Math.round((1 - k) * 30) : W - 12 - Math.round((1 - k) * 30), ty = by + bh - 6 - 7 * sc, al = d > 0 ? 'left' : 'right';
+      ctx.globalAlpha = 0.6 * (1 - out) * k; art.rect(ctx, '#05060c', d > 0 ? tx - 12 : tx - tw - 8, ty - 15, tw + 20, 15 + 7 * sc + 6);
+      ctx.globalAlpha = (1 - out) * k;   // (it slides in already on screen, fading up: it used to start past the edge, clipped)
       text(ctx, sub, tx, ty - 11, hi, { align: al });
       text(ctx, name, tx, ty, '#ffffff', { align: al, scale: sc });
       ctx.globalAlpha = 1;
