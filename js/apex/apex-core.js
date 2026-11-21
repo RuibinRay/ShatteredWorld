@@ -175,6 +175,20 @@
   if (ui && ui.hud) { const _hud = ui.hud; ui.hud = function (ctx, g) { if (g && g.scene === 'play') { try { film(ctx); } catch (e) { console.error(e); } } return _hud.apply(this, arguments); }; }
   // a blow that stops the world for n frames
   AP.stop = n => { G.hitstop = Math.max(G.hitstop || 0, n); };
+  // the opponent (Versus) or the nearest enemy (the story)
+  AP.foeOf = p => { if (G.scene === 'vs' && V && V.f) { const o = V.f.find(f => f && f.p !== p); return o && o.p; } const z = G.zone; return z && z.ents ? z.ents.filter(e => e.team === 'enemy' && !e.dead).sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0] : null; };
+  // a burst of bits: o = { cols, sp, sz, grav, life, up, shape(ctx, x, y, i, t) }
+  AP.bits = function (x, y, n, o) {
+    o = o || {}; const cols = o.cols || ['#ffffff'];
+    for (let i = 0; i < n; i++) {
+      const a = SW.rand(0, PI * 2), s = SW.rand((o.sp || 2) * 0.3, o.sp || 2), life = R(SW.rand((o.life || 18) * 0.6, o.life || 18));
+      AP.fx({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - (o.up || 0), life, draw(ctx, q, sx, sy, t) {
+        const k = q.max - q.life, X = R(sx + q.vx * k), Y = R(sy + q.vy * k + (o.grav || 0) * k * k);
+        ctx.globalAlpha = 1 - ease((t - 0.6) / 0.4);
+        if (o.shape) o.shape(ctx, X, Y, i, t); else { const z = o.sz || 2; art.rect(ctx, cols[i % cols.length], X, Y, z, z); }
+      } });
+    }
+  };
   // a skill's cast, with something drawn round it (after the cast itself has run): fn(p, z, dmg, result)
   AP.onCast = function (ability, fn) {
     const C = SW.casts, old = C && C[ability]; if (!old) return false;
