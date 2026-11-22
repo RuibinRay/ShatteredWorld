@@ -219,6 +219,30 @@
     cloth: { collar: '#ffb703', hem: '#2a2a2a' }
   };
 
+  // Nami: short ragged dark-blue hair, a sharp eye and a shark's grin of white teeth; a blue coat with a raised collar
+  L.nami = {
+    head: ['...hh.h....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'HhhhSsshhh.', 'HhhSssseeS.', '.HhSssssSss', '..SswwwwS..', '...SSsssS..', '.....SSS...'],
+    c: { white: '#f4fbff', top: '#1a3a7a' },
+    cloth: { collar: '#0a1e48', seam: '#48cae4', hem: '#12306a' }
+  };
+  // Lin: long black hair falling and streaming behind; a white blouse with a cyan collar
+  L.lin = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'hhhhSsshh..', 'hhhSssseeS.', 'hhhSssssSss', 'hhHSsssss..', 'hhH.SSssS..', 'hH...SSS...'],
+    cloth: { collar: '#5ec8d8', hem: '#d4eaec' }
+  };
+  // Corvin: a crow's hood with a gold beak jutting over the shadowed face and one pale eye; purple feather trim
+  L.corvin = {
+    head: ['...hhhhh...', '..hhhhhhhh.', '.hhhhhhhhhh', '.hhhHHHHhh.', '.hhhHSSSSm.', '.hhHSSSgSmm', '.hhHSSSSSmm', '.hhhSSSSSm.', '.hhhhSSSS..', '..hhhhh....'],
+    c: { trail: '#2a1a3a' },
+    cloth: { collar: '#7209b7', hem: '#3a1a5a', seam: '#2a1a3a' }
+  };
+  // Thorne: long white hair with a braid streaming behind, a dark brow and eye on a pale face; a crimson coat
+  L.thorne = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'hhhHSsseee.', 'hhhSsssseS.', 'hhhSssssSss', 'hhHSsssss..', 'hHh.SSssS..', 'hH...SSS...'],
+    c: { skin: '#d8ccc0', top: '#5a1a24', trail: '#e8e2d0' }, rig: { trailHead: 1, trailLen: 6 },
+    cloth: { collar: '#2a0c12', seam: '#8a1c2a', hem: '#44121a' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
