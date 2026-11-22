@@ -12,14 +12,14 @@
   const SK = SW.senSakura = { on: true };
 
   // 11 x 10, facing right. h hair, H hair shade, m the pink tie of his man bun, s skin, S skin shade, e brow and eye
-  art.HEADS.sen_sakura = [
-    '.hhh.......',
-    'hhhhmhhh...',
+  art.HEADS.sen_sakura = [   // (2026-11-21, the user: "show his face, the hair more to left": the hairline and the bun sit further back)
+    'hhh........',
+    'hmhhhhhh...',
     '.hhhhhhhhh.',
-    '.hhhhhhhhh.',
-    '.Hhhhhhhhs.',
-    '.HhHsssees.',
-    '.HhHssssess',
+    '.hhhhhssss.',
+    '.HhhSsssss.',
+    '.HhSsssees.',
+    '.HhSssssess',
     '..HSssssss.',
     '...SSsssS..',
     '....SSSS...'
