@@ -1,37 +1,38 @@
 'use strict';
 // Shattered Worlds — Sen, the sakura swordsman (2026-11-21, the user: "improve sen ... combine it with sakura and his look
-// like character appearance make it look handsome", "like in game appearance"). His sprite is rebaked: long black hair
-// swept over the brow and tied in a high tail that streams behind him, a sharp eye with a pink glint, a dark haori over a
-// white kimono, a pink obi and a sakura crest on the chest, dark hakama. Awakened (One Mind) his hair turns blossom-white
-// and the haori sakura-pink. A few petals fall from him while he stands still. Draw-only. Loaded after js/apex/sen.js
-// (its Sakura Edge katana stays: this rebake keeps the weapon the sheet already has).
+// like character appearance make it look handsome", "like in game appearance", then "make him not look like girl and
+// hair like the image"). His sprite is rebaked after his art (assets/source/hero_sen.png): black hair swept back and tied
+// in a topknot bun with a pink tie, a lock at the side of his face, a dark brow over a dark eye, a firm jaw, broad
+// shoulders; a white kimono with dark wrapped forearms, a pink sash whose end flutters behind him, a black belt, pale
+// lavender hakama. Awakened (One Mind) his hair goes dark crimson and the kimono blossom-pink, as in his ultimate's art.
+// A few petals fall from him while he stands still. Loaded after js/apex/sen.js. Draw-only.
 (function () {
   const SW = window.SW, art = SW.art, D = SW.data;
   if (!art || !art.bake || !art.HEADS || !D || !D.heroes.sen) return;
   const SK = SW.senSakura = { on: true };
 
-  // 11 x 10, facing right. h hair, H hair shade, s skin, S skin shade, e eye, g eye glint (pink), w white
+  // 11 x 10, facing right. h hair, H hair shade, m the pink hair tie, s skin, S skin shade, e brow and eye
   art.HEADS.sen_sakura = [
-    '...hhhh....',
+    '...hhh.....',
+    '...hmhh....',
     '..hhhhhhh..',
-    '.hhhhhhhhhh',
-    'Hhhhhhhhhhh',
-    'HHhhsshhhh.',
-    'HHhsssegsh.',
-    'HHssssssSss',
-    '.HSssssssS.',
-    '.HHSSssss..',
-    '..H..SSS...'
+    '.hhhhhhhhh.',
+    '.Hhhhhhhss.',
+    '.HhHsssees.',
+    '.HhHssssess',
+    '..HSssssss.',
+    '...SSsssS..',
+    '....SSSS...'
   ];
   const LOOK = {
-    head: 'sen_sakura', sc: 1.04, bulk: 7, trailHead: 1, trailLen: 6, trailW: 2,
-    c: { skin: '#f2cfb4', hair: '#17131f', eye: '#120e18', glow: '#ff7aa8', top: '#f2ece2', arm: '#2b2238', fore: '#2b2238', hand: '#f2cfb4',
-      pants: '#272231', boots: '#15121b', belt: '#ff8fb4', chest: '#ff8fb4', trail: '#17131f' }
+    head: 'sen_sakura', sc: 1.06, bulk: 8, trailHead: 0, trailLen: 3, trailW: 2,
+    c: { skin: '#e8b48c', hair: '#16121c', eye: '#100c14', acc: '#ff4f93', top: '#ece8f2', arm: '#ece8f2', fore: '#1c1820', hand: '#e8b48c',
+      pants: '#8c80a6', boots: '#1c1820', belt: '#1c1820', chest: '#ff4f93', trail: '#ff4f93' }
   };
   const LOOK_AW = {
-    head: 'sen_sakura', sc: 1.04, bulk: 7, trailHead: 1, trailLen: 6, trailW: 2, outline: '#3a1426',
-    c: { skin: '#f6d8c2', hair: '#fff0f5', eye: '#2a0a1a', glow: '#ff3a7a', top: '#fff6f8', arm: '#ff8fb4', fore: '#ff8fb4', hand: '#f6d8c2',
-      pants: '#3a2440', boots: '#22162a', belt: '#ffffff', chest: '#ff3a7a', trail: '#fff0f5' }
+    head: 'sen_sakura', sc: 1.06, bulk: 8, trailHead: 0, trailLen: 3, trailW: 2, outline: '#3a0a1c',
+    c: { skin: '#f0c4a0', hair: '#6a1430', eye: '#1a0610', acc: '#ffffff', top: '#ffe0ec', arm: '#ffe0ec', fore: '#ff4f93', hand: '#f0c4a0',
+      pants: '#6a4a86', boots: '#22162a', belt: '#ffffff', chest: '#ffffff', trail: '#ffffff' }
   };
   // ---------- his katana (the user, 2026-11-21: "improve weapon look"): a curved blade, steel with a dark spine and a white
   // edge, a pink temper line (hamon) waving along it, a bright point; a gold collar, a round black guard set with five pink
