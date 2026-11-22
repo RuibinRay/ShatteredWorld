@@ -106,7 +106,7 @@
     for (const q of s.plats) if (q.alive && !(q.kind === 'glass' && q.load > 30) && !(q.kind === 'root' && q.st !== 'up') && p.y - q.y >= 20 && p.y - q.y <= reach) { const x = SW.clamp(p.x, q.x + 14, q.x + q.w - 14), c = cost(x, q.y); if (!best || c < best.c) best = { x, y: q.y, c, q }; }
     return best;
   }
-  const floorHaz = s => s.train || s.flood;   // the hazards that sweep the floor: the train, the rootlight
+  const floorHaz = s => s.train || s.flood || s.floorHaz;   // the hazards that sweep the floor: the train, the rootlight (floorHaz: crazy-core.js stages)
   const danger = s => { const h = floorHaz(s); return !!(h && (h.warn > 0 || h.run)); };
   // whether this bot heeds a warning: Easy about half the time, Normal three in four, Hard always (asked once per warning)
   const heeds = (f, h) => { if (!h.heed) h.heed = {}; if (h.heed[f.i] === undefined) { const d = V.mode === 'bvb' && f.i === 1 ? V.diff2 : V.diff; h.heed[f.i] = Math.random() < [0.45, 0.75, 1, 1][d | 0]; } return h.heed[f.i]; };
@@ -116,12 +116,12 @@
     if (!foe || f.stunT > 0 || p.state === 'hurt') { f.swGoal = null; return; }
     const dy = foe.y - p.y, adx = Math.abs(foe.x - p.x), onFloor = p.y >= FLOOR - 1, reach = s.lowG ? 170 : 92;
     // the Crown's marks: step out from under a chain
-    const ch = s.chains;
+    const ch = s.chains || s.marks;   // marks: crazy-core.js stages
     if (ch && ch.warn > 0 && heeds(f, ch)) { const m = ch.xs.find(x => Math.abs(x - p.x) < 28); if (m !== undefined) { f.swGoal = null; quiet(); hold(p.x < m ? -1 : 1); return; } }
     // a climb in progress: run under the platform, jump, jump again near the top, and stop once standing on it
     let g = f.swGoal;
     if (g && (--g.t <= 0 || (p.onGround && p.y <= g.y + 2))) g = f.swGoal = null;
-    if (!g) {
+    if (!g && !s.noClimb) {   // noClimb: a hazard sweeps the high air (crazy-core.js)
       const want = (danger(s) && onFloor && heeds(f, floorHaz(s))) || (dy < -30 && adx < 140 && p.onGround && Math.random() < 0.06)
         || (p.onGround && onFloor && adx > 70 && Math.random() < (s.lowG ? 0.03 : 0.008));
       if (want) { const t = platAbove(s, p, reach); if (t) g = f.swGoal = { x: t.x, y: t.y, q: t.q, t: 110, jumped: 0 }; }
@@ -497,6 +497,7 @@
     sw_roots: 'Root platforms wither and grow back. Rootlight floods the floor: get off it.',
     sw_crown: 'The Crown marks spots on the ground, and chains slam down on them. Step aside.'
   };
+  ST.TWIST = TWIST;   // crazy-core.js adds its stages' lines
   const pv = { id: undefined, zone: null, can: null, ctx: null };
   function previewZone(id) {   // built once per stage shown (the same arena the match builds), kept while it stays chosen
     if (pv.id === id) return pv.zone;

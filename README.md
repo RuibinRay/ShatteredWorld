@@ -658,6 +658,49 @@ The three invasion stages: Hard bot matches with no errors, 23 to 27% of a fight
 standing fighter about 30 px a second and a falling one about 80; Hard bots took 5 chain hits from 18 marks.
 versus.js shares its stage list (`V.STAGES`) so this file can add to it.
 
+## Crazy stages in Versus (`js/crazy/`)
+
+Fifteen more stages, built on the same machinery (each is also an entry of `SW.stages.DEF`, so platforms, drop-through,
+the menu picture, H for hazards and the bots' climbing work the same way). `crazy-core.js` holds the shared parts
+(registering a stage, moving platforms, twist timers, hits and launches, bot help, pixel-art paint helpers);
+`crazy-sky.js`, `crazy-land.js` and `crazy-far.js` hold five stages each. Backdrops are painted once in code (dithered
+skies, hue-shifted ramps, creatures through `js/pixel-kit.js`), floors are painted over the baked tiles.
+- **The Sky Leviathan**: the floor is a sky whale's back above a sunset cloud sea. Its blowholes erupt (THE LEVIATHAN
+  BREATHES): a geyser throws whoever stands over it high, no damage. Bots step away from the hole.
+- **The Orbital Wreck**: a wrecked station over a planet. Low gravity all the time; three wreckage platforms drift.
+- **The Endless Fall**: a slab falling beside an endless tower. Rubble rises from below as platforms and breaks apart at
+  the top; falls are a little slower.
+- **The Event Horizon**: a black hole overhead. When it pulses (THE STAR PULLS) everyone is pulled toward the middle for
+  four seconds, the air most of all.
+- **The Skyfall Observatory**: a meteor shower (METEOR SHOWER): rings on the ground mark where each meteor lands (9 to
+  whoever it hits on the way down, 7 in the splash). Bots step out of the rings.
+- **The Giant's Table**: tiny fighters on a giant's dinner table; its eye follows the fight. A fingertip flicks a marble
+  across the floor (MARBLE! JUMP IT): jump it or take 10. Platforms are safe. Bots hold back and jump it.
+- **The Dragon's Hoard**: a dragon wakes on its gold and breathes fire across the arena, low (FIRE LOW: CLIMB!, the
+  platforms are safe) or high (FIRE HIGH: GET DOWN!, the floor is safe). 11 to whoever it catches.
+- **The Singing Dunes**: a worm follows one fighter under the sand (the sand trembles), settles, then bursts up: 13 and a
+  launch. Bots step away from the tremor.
+- **The Frozen Mirror**: a frozen lake under the aurora, something vast frozen in the ice. The floor is slippery:
+  fighters slide when they start, stop or are hit (a hit or a dash still starts at full speed).
+- **The Midnight Express**: the roof of a speeding train. Low bridges sweep over it (LOW BRIDGE!): anyone up high (on a
+  rack or in a jump) takes 12; the roof is safe. Bots come down and don't jump.
+- **The Pinball Palace**: inside a pinball machine. The walls are bumpers: a fighter knocked into one bounces back out
+  (once in 45 frames); two kickers on the floor near the walls fling whoever steps on them up.
+- **The Last Disco**: a rooftop dance floor at the end of the world (the moon is broken). A roaming spotlight charges the
+  energy of whoever stands in it (0.3 a frame, about 18 a second).
+- **The Drowned Galleon**: a ghost ship in a storm. The deck rolls every ten seconds: whoever stands on anything slides
+  downhill (up to 0.45 px a frame, half in guard); the sea tilts against it, lightning flashes.
+- **The Midnight Carnival**: a haunted carnival. Four Ferris wheel cars are platforms riding the wheel; now and then the
+  wheel lurches (THE WHEEL LURCHES) and spins four times as fast for two seconds.
+- **The Sunken Reef**: a tidal grotto. The tide rises and falls every 25 seconds (THE TIDE COMES IN); under water,
+  gravity is halved and fighters sink slowly.
+
+H on the Stage row turns every twist off (the layouts, drifting wreckage, rising rubble and the wheel keep moving).
+Names, menu lines and warnings are in Spanish and Chinese. Tested (tools/crazy-test.js): on every one of the fifteen a
+bot-vs-bot match runs to the end with no errors at Hard vs Hard, Nightmare vs Nightmare, Easy vs Normal and with the
+twists off; 3 vs 3 on five of them; player vs bot on four; Random picks them. Each costs under 3 ms a frame. A picture
+of all fifteen: recordings/crazy-maps-sheet.png (outside the repository).
+
 ## Awakening in Versus (`js/vsawaken.js`)
 
 In Versus an awakening (O) now holds one ultimate: the ultimate plays out, then the hero goes back to normal (or the
