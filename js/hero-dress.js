@@ -45,6 +45,31 @@
     cloth: { collar: '#7fd8ff', seam: '#7fd8ff', hem: '#173058' }
   };
 
+  // Brakk: a bald stone giant with a heavy brow over one amber eye; stone armour with darker plate seams and an amber rune
+  L.brakk = {
+    head: ['...........', '...sssss...', '..sssssss..', '.Sssssssss.', '.SsssssSeee', '.SSsssssgS.', '.Sssssssss.', '..SssssssSs', '..SSssssS..', '...SSSSS...'],
+    c: { glow: '#ffb02e', top: '#8a857a', pants: '#3a3530' },
+    cloth: { seam: '#3a3732', emblem: ['#ffb02e', '#c87a1a'], hem: '#5e5a54', cuff: '#3a3732', sash: ['#5e5a54', '#46423c'], sashDir: -1 }
+  };
+  // Pyra: hair that is flame (yellow tips flickering up out of the orange) streaming behind; a crimson jacket, gold collar
+  L.pyra = {
+    head: ['..m.h.m....', '.hhmhhhm...', '.hhhhhhhh..', 'hhhhhhhhhh.', 'hhhhSsshhh.', 'HhhSsssee..', 'HhhSssssSss', 'HHhSsssss..', '.HHSSssS...', '..H..SS....'],
+    c: { acc: '#ffd24a', top: '#5a1a2a' }, rig: { trailHead: 1, trailLen: 6 },
+    cloth: { collar: '#ffd24a', seam: '#ff7043', hem: '#3e1220' }
+  };
+  // Gale: teal hair swept back by the wind under a white band; a white robe with a green sash and a long green tail
+  L.gale = {
+    head: ['....hhh....', '.hhhhhhhh..', 'hhhhhhhhhh.', 'hhhhhhhhhhh', 'Hhmmmmmmmm.', 'HHhSsssee..', 'HhhSssssSss', '.HhSsssss..', '..HSSssS...', '....SSS....'],
+    rig: { trailLen: 7, trailW: 3 },
+    cloth: { sash: ['#3fd6a8', '#2a9a78'], hem: '#c8dccc' }
+  };
+  // Ashka: dark skin, a short black cut; black obsidian armour split by glowing magma seams
+  L.ashka = {
+    head: ['...........', '...hhhhh...', '..hhhhhhh..', '.hhhhhhhhh.', '.HhhSssshh.', '.HhSsssees.', '.HSsssssSss', '..SssssssS.', '...SSsssS..', '.....SSS...'],
+    c: { top: '#1e181c' },
+    cloth: { seam: '#ff5a1f', emblem: ['#ffb02e', '#ff5a1f'], hem: '#ff5a1f', cuff: '#ff7a2a' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
