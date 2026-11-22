@@ -12,20 +12,20 @@
   // (2026-11-21, later the same day, the user: "you know what just restore everything i like the simple two color": his sprite is
   // the original again - head, clothes, colours and katana. SK.look = true before the game loads brings the redraw back.
   // What stays: the blade held forward in every pose, his quick-draw entrance, the petals while he stands still.)
-  const SK = SW.senSakura = { on: true, look: false };
+  const SK = SW.senSakura = { on: true, look: true };   // (2026-11-22: on again, with the plain old face; SK.look = false before the game loads: the original sprite)
 
   // 11 x 10, facing right. h hair, H hair shade, m the pink tie of his man bun, s skin, S skin shade, e brow and pupil
-  art.HEADS.sen_sakura = [   // (2026-11-21: "show his face", then "make his eyes look better and a more handsome face": then "make eye better handsome it looks stupid": no white (it looked wide-eyed); a brow slanting down into a narrow dark eye with a shadow under it, a straight nose, a sharp jaw tapering to the chin)
+  art.HEADS.sen_sakura = [   // (2026-11-22, the user: "restore only sens face to the older one ... make his eyes like everyone else like before but keep weapon": the face is the plain one every hero has - the same two eye pixels, no brow, no shading of its own - under the man bun)
     'hhh........',
     'hmhhhhhh...',
     '.hhhhhhhhh.',
-    '.hhhhhhsss.',
-    '.HhhSssshh.',
-    '.HhSsssees.',
-    '.HhSsssSsss',
-    '..HSssssSs.',
-    '...SSsssS..',
-    '.....SSS...'
+    '.hhhhhhhhh.',
+    '.Hhhsssss..',
+    '.Hhsssesss.',
+    '.Hssssesss.',
+    '..Sssssssss',
+    '..Sssssss..',
+    '...Sssss...'
   ];
   const LOOK = {
     head: 'sen_sakura', sc: 1.06, bulk: 8, trailHead: 0, trailLen: 3, trailW: 2,
