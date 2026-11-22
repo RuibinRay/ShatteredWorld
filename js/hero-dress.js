@@ -170,6 +170,31 @@
     cloth: { collar: '#d8c8b0', sash: ['#c1121f', '#7a0a12'], hem: '#2a1a10' }
   };
 
+  // Rook: spiky teal hair over a metal brow plate, a cocky grin; a teal jacket with a raised dark collar
+  L.rook = {
+    head: ['.h.h.h.h...', '.hhhhhhhh..', 'hhhhhhhhhh.', '.mmmmmwWm..', '.HhhSsshh..', '.HhSssseeS.', '.HSssssSss.', '..SsseeeS..', '...SSsssS..', '.....SSS...'],   // (the smirk a dark line: in the plate's grey it read as a beard)
+    c: { white: '#c8ccd8', boots: '#1e3a40' },
+    cloth: { collar: '#0e3434', seam: '#0e3434', hem: '#164846' }
+  };
+  // Sable: long black hair streaming, a sharp eye over a purple mask; a dark purple suit with lighter seams
+  L.sable = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'hhhhSsshh..', 'hhhSssseeS.', 'hhhmmmmmmm.', 'hhHmmmmmmmm', 'hhH.Mmmmmm.', 'hH...MMmm..'],
+    c: { top: '#3e2072' }, rig: { trailLen: 6 },
+    cloth: { seam: '#8f7bff', hem: '#2e1658', collar: '#7a3ac8' }
+  };
+  // Dune: a sand cloak's hood with the face lost in its shadow and one pale eye; a scarf over the mouth; a cloak tail
+  L.dune = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhhh', 'HhhhSSSSSh.', 'HhhSSSgSSS.', 'HhhmmmmmmmM', '.HmmmmmmmM.', '..MmmmmmM..', '...MMMMM...'],
+    c: { skin: '#4a3424', hair: '#a8824a', acc: '#7a5a30', top: '#9a7a48', arm: '#8a6c3e', trail: '#9a7a48' }, rig: { trailLen: 5, trailW: 3 },
+    cloth: { seam: '#6a5230', hem: '#7a6038', collar: '#7a5a30' }
+  };
+  // Moro: black hair tied in a knot at the back, long bangs framing his face; a dark robe with a pale collar
+  L.moro = {
+    head: ['.hh........', 'hhhhhhh....', '.hhhhhhhh..', 'hhhhhhhhhh.', 'HhhhhSshhh.', 'HhhSssseeh.', '.HhSssssSss', '.HhSsssss..', '..hSSssS...', '....SSS....'],
+    c: { top: '#2e3250' },
+    cloth: { collar: '#9a9ed0', seam: '#5b5f97', hem: '#22253e' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
