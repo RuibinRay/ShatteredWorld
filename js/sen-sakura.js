@@ -1,8 +1,8 @@
 'use strict';
 // Shattered Worlds — Sen, the sakura swordsman (2026-11-21, the user: "improve sen ... combine it with sakura and his look
 // like character appearance make it look handsome", "like in game appearance", then "make him not look like girl and
-// hair like the image"). His sprite is rebaked after his art (assets/source/hero_sen.png): black hair swept back and tied
-// in a topknot bun with a pink tie, a lock at the side of his face, a dark brow over a dark eye, a firm jaw, broad
+// hair like the image"). His sprite is rebaked after his art (assets/source/hero_sen.png): black hair pulled back and tied
+// in a man bun at the back of his crown with a pink tie, a lock at the side of his face, a dark brow over a dark eye, a firm jaw, broad
 // shoulders; a white kimono with dark wrapped forearms, a pink sash whose end flutters behind him, a black belt, pale
 // lavender hakama. Awakened (One Mind) his hair goes dark crimson and the kimono blossom-pink, as in his ultimate's art.
 // A few petals fall from him while he stands still. Loaded after js/apex/sen.js. Draw-only.
@@ -11,13 +11,13 @@
   if (!art || !art.bake || !art.HEADS || !D || !D.heroes.sen) return;
   const SK = SW.senSakura = { on: true };
 
-  // 11 x 10, facing right. h hair, H hair shade, m the pink hair tie, s skin, S skin shade, e brow and eye
+  // 11 x 10, facing right. h hair, H hair shade, m the pink tie of his man bun, s skin, S skin shade, e brow and eye
   art.HEADS.sen_sakura = [
-    '...hhh.....',
-    '...hmhh....',
-    '..hhhhhhh..',
+    '.hhh.......',
+    'hhhhmhhh...',
     '.hhhhhhhhh.',
-    '.Hhhhhhhss.',
+    '.hhhhhhhhh.',
+    '.Hhhhhhhhs.',
     '.HhHsssees.',
     '.HhHssssess',
     '..HSssssss.',
