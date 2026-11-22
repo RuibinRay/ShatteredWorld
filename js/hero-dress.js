@@ -243,6 +243,30 @@
     cloth: { collar: '#2a0c12', seam: '#8a1c2a', hem: '#44121a' }
   };
 
+  // Ume: pale-green hair in a messy high bun with locks falling by her face; a green coat crossed by a bag strap
+  L.ume = {
+    head: ['...hhh.....', '..hhhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'HhhhSsshhh.', 'HhhSssseeS.', 'hHhSssssSss', 'h.HSsssss..', 'h..SSssS...', '....SSS....'],
+    c: { boots: '#1b2a22' },
+    cloth: { sash: ['#1b4332', '#12301f'], collar: '#9ef01a', hem: '#245a42' }
+  };
+  // Tarek: a grey head-wrap whose tails fly behind, dark hair under it; a studded leather vest (gold studs, a seam)
+  L.tarek = {
+    head: ['...........', '...mmmmm...', '..mmmmmmm..', 'Mmmmmmmmmm.', 'MMhhSsshh..', '.hhSssseeS.', '.HhSssssSss', '..SssssssS.', '...SSsssS..', '.....SSS...'],
+    c: { trail: '#6c757d' }, rig: { trailHead: 1, trailLen: 3 },
+    cloth: { seam: '#c9a227', emblem: ['#c9a227', '#7a6018'], hem: '#2a2214' }
+  };
+  // Isa: black hair in a bun pinned with red sticks; a white robe crossed by a red sash, a black collar
+  L.isa = {
+    head: ['....hh.m...', '...hhhhm...', '..hhhhhhh..', '.hhhhhhhhh.', 'HhhhSsshhh.', 'HhhSssseeS.', '.HhSssssSss', '..HSsssss..', '...SSssS...', '....SSS....'],
+    c: { acc: '#ef476f' },
+    cloth: { sash: ['#ef476f', '#a8304a'], collar: '#14141e', hem: '#e0dccf' }
+  };
+  // Garo: a rounded great helm with a dark visor slit and breathing holes; plate armour with darker seams
+  L.garo = {
+    head: ['...........', '...hhhhh...', '..hhhhhhhh.', '.hhhhhhhhh.', '.Hhhheeeee.', '.Hhhhhhhhh.', '.HhhhhheehW', '.HHhhhhhhh.', '..HHhhhhH..', '...HHHHH...'],
+    cloth: { seam: '#6a7280', hem: '#7a8494', cuff: '#6a7280' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
