@@ -65,21 +65,39 @@
   function halfPetal(ctx, x, y, ang, side, a) {
     PX.sprite(ctx, R(x), R(y), 12, 12, c => { c.rotate(ang); c.beginPath(); c.moveTo(-3, 0); c.quadraticCurveTo(0, side * 3, 3, 0); c.closePath(); c.fillStyle = C.pink; c.fill(); c.fillStyle = C.w; c.fillRect(-3, 0, 6, 1); }, { alpha: a, outline: C.ink, keepThin: true });
   }
-  // one sakura petal (the user, 2026-11-21: "like sakura petal not sakura flower"): narrow at the base, wide, with the
-  // notch at its tip; deep pink at the base fading to pale, a white sheen down the middle. side 0 whole, -1 / 1 one half
-  // of it, cut down its length
-  function blossom(ctx, x, y, s, ang, side, a) {
+  // one sakura petal (the user, 2026-11-21: "like sakura petal not sakura flower", then "improve petal look"): a rounded
+  // petal with a soft notch at its tip and a slim base; deep rose at the base, pale to white at the tip, folded along its
+  // middle (one half lit, one half in shade) and outlined in dark rose. flip (-1..1) squashes it across, so a petal turning
+  // in the air shows its edge. side 0 whole, -1 / 1 one half of it, cut down its length
+  const PET = { out: '#6e1a3a', base: '#d9406e', body: '#ff8fb1', lit: '#ffc4d6', tip: '#fff2f6', shade: '#ee6f96' };
+  function blossom(ctx, x, y, s, ang, side, a, flip) {
     if (a <= 0) return;
+    const fx2 = flip === undefined ? 1 : (Math.abs(flip) < 0.22 ? 0.22 * (flip < 0 ? -1 : 1) : flip);
     PX.sprite(ctx, R(x), R(y), s * 2.4 + 4, s * 2.4 + 4, c => {
-      c.rotate(ang);
+      c.rotate(ang); c.scale(fx2, 1);
+      const outline = k => {   // tip up (y < 0), base down
+        c.beginPath();
+        c.moveTo(0, s * 0.95 * k);   // (longer than wide, a clear V at the tip: a heart shape read as a heart)
+        c.bezierCurveTo(-s * 0.18 * k, s * 0.6 * k, -s * 0.52 * k, s * 0.15 * k, -s * 0.48 * k, -s * 0.45 * k);
+        c.quadraticCurveTo(-s * 0.42 * k, -s * 0.9 * k, -s * 0.2 * k, -s * 0.95 * k);
+        c.lineTo(0, -s * 0.62 * k);
+        c.lineTo(s * 0.2 * k, -s * 0.95 * k);
+        c.quadraticCurveTo(s * 0.42 * k, -s * 0.9 * k, s * 0.48 * k, -s * 0.45 * k);
+        c.bezierCurveTo(s * 0.52 * k, s * 0.15 * k, s * 0.18 * k, s * 0.6 * k, 0, s * 0.95 * k);
+        c.closePath();
+      };
+      c.save();
       if (side) { c.beginPath(); c.rect(side > 0 ? 0 : -s * 2, -s * 2, s * 2, s * 4); c.clip(); }
-      const shape = k => { c.beginPath(); c.moveTo(0, s * 0.8 * k); c.quadraticCurveTo(-s * 0.85 * k, s * 0.1 * k, -s * 0.36 * k, -s * 0.8 * k); c.lineTo(0, -s * 0.5 * k); c.lineTo(s * 0.36 * k, -s * 0.8 * k); c.quadraticCurveTo(s * 0.85 * k, s * 0.1 * k, 0, s * 0.8 * k); c.closePath(); };
-      shape(1); c.fillStyle = C.pink; c.fill();
-      c.save(); c.translate(0, -s * 0.12); shape(0.62); c.fillStyle = C.pale; c.fill(); c.restore();
-      c.beginPath(); c.moveTo(-s * 0.16, s * 0.8); c.lineTo(0, s * 0.42); c.lineTo(s * 0.16, s * 0.8); c.closePath(); c.fillStyle = C.deep; c.fill();   // the deep pink at its base
-      c.fillStyle = C.w; c.fillRect(-0.5, -s * 0.35, 1, s * 0.6);   // the sheen
-      if (side) { c.fillStyle = C.w; c.fillRect(side > 0 ? 0 : -1, -s * 2, 1, s * 4); }   // the clean cut
-    }, { alpha: a, outline: C.ink, keepThin: true });
+      outline(1); c.fillStyle = PET.body; c.fill(); c.save(); c.clip();
+      c.fillStyle = fx2 > 0 ? PET.shade : PET.lit; c.fillRect(-s * 2, -s * 2, s * 2, s * 4);   // the fold: one half in shade
+      c.fillStyle = fx2 > 0 ? PET.lit : PET.shade; c.fillRect(0, -s * 2, s * 2, s * 4);
+      c.fillStyle = PET.tip; c.beginPath(); c.ellipse(s * 0.08, -s * 0.55, s * 0.3, s * 0.2, 0, 0, PI * 2); c.fill();   // pale towards the tip
+      c.fillStyle = PET.base; c.beginPath(); c.ellipse(0, s * 0.82, s * 0.16, s * 0.3, 0, 0, PI * 2); c.fill();   // deep rose at the base
+      c.fillStyle = PET.body; c.fillRect(-0.5, -s * 0.5, 1, s * 1.1);   // the midrib
+      c.restore();
+      if (side) { c.fillStyle = C.w; c.fillRect(side > 0 ? 0 : -1, -s * 0.85, 1, s * 1.7); }   // the clean cut
+      c.restore();
+    }, { alpha: a, outline: PET.out, keepThin: true });
   }
   SI.blossom = blossom;
   const petalBurst = (x, y, n, sp) => { for (let i = 0; i < n; i++) part(x + rand(-4, 4), y + rand(-4, 4), i % 3 ? C.pink : i % 2 ? C.pale : C.w, rand(-sp, sp), rand(-sp, sp * 0.4), 30 + (i % 4) * 6, 2, 0.02); };
@@ -112,7 +130,7 @@
     }
     if ((col === '#ffffff' || col === '#ff9ab8') && len === 44 && p.state !== 'attack') {   // After the Bell: crossed strokes on what he passed
       const s = col === '#ffffff' ? 1 : -1;
-      if (s > 0) { petalBurst(x, y, 16, 2.4); z.shots.push(new Vis(x, y, 26, (ctx, sx, sy, t) => { const u = t / 26; for (let i = 0; i < 5; i++) { const an = i / 5 * PI * 2 + 0.4, rr = 4 + ease(u * 1.6) * 26; blossom(ctx, sx + Math.cos(an) * rr, sy + Math.sin(an) * rr * 0.8 + u * u * 14, 9, an + PI / 2 + u * 3, 0, 1 - ease((u - 0.5) / 0.5)); } })); }   // big petals fly off the cut
+      if (s > 0) { petalBurst(x, y, 16, 2.4); z.shots.push(new Vis(x, y, 26, (ctx, sx, sy, t) => { const u = t / 26; for (let i = 0; i < 5; i++) { const an = i / 5 * PI * 2 + 0.4, rr = 4 + ease(u * 1.6) * 26; blossom(ctx, sx + Math.cos(an) * rr, sy + Math.sin(an) * rr * 0.8 + u * u * 14, 10, an + PI / 2 + u * 3, 0, 1 - ease((u - 0.5) / 0.5), Math.cos(t * 0.35 + i * 1.3)); } })); }   // big petals fly off the cut
       z.shots.push(new Vis(x, y, 20, (ctx, sx, sy, t) => brush(ctx, line(sx - 16, sy - 16 * s, sx + 16, sy + 16 * s), 5, Math.min(1, (t + 1) / 2), 1 - ease((t - 10) / 10))));
       return;
     }
@@ -159,7 +177,7 @@
       if (!isS(G)) return r;
       z.shots.push(new Vis(p.x, p.y, 72, (ctx, sx, sy, t) => {
         const a = Math.min(1, t / 6, (72 - t) / 10);
-        for (let i = 0; i < 8; i++) { const an = t * 0.16 + i / 8 * PI * 2, rr = 40 + (i % 2) * 6; blossom(ctx, sx + Math.cos(an) * rr, sy - 18 + Math.sin(an) * rr * 0.5, i % 2 ? 7 : 9, an + PI / 2 + t * 0.1 * (i % 2 ? 1 : -1), 0, a); }
+        for (let i = 0; i < 8; i++) { const an = t * 0.16 + i / 8 * PI * 2, rr = 40 + (i % 2) * 6; blossom(ctx, sx + Math.cos(an) * rr, sy - 18 + Math.sin(an) * rr * 0.5, i % 2 ? 8 : 10, an + PI / 2 + t * 0.1 * (i % 2 ? 1 : -1), 0, a, Math.cos(t * 0.22 + i * 0.9)); }
         if (t % 4 === 0) petalBurst(sx + rand(-40, 40), sy - 18 + rand(-16, 16), 1, 1.2);
       }, v => { v.x = p.x; v.y = p.y; }));
       return r;
