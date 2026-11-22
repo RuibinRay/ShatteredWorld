@@ -145,6 +145,31 @@
     cloth: { collar: '#ff4d6d', hem: '#e2ddd4' }
   };
 
+  // Tarn: short black spikes under a blue headband whose tails fly; a navy tank top on bare arms, white shin wraps
+  L.tarn = {
+    head: ['...h.h.....', '..hhhhhh...', '.hhhhhhhh..', 'hmmmmmmmmm.', 'HHhhSsshh..', '.HhSssseeS.', '.HSssssSss.', '..SssssssS.', '...SSsssS..', '.....SSS...'],
+    c: { top: '#1e2a50', boots: '#e8ecf4', trail: '#3a86ff' }, rig: { trailHead: 1, trailLen: 2 },
+    cloth: { hem: '#16203e', collar: '#3a86ff' }
+  };
+  // Maren: long dark-teal hair flowing back; a white coat with a teal high collar and trim
+  L.maren = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'hhhhSsshh..', 'hhhSssseeS.', 'hhhSssssSss', 'hhHSsssss..', 'hhH.SSssS..', 'hH...SSS...'],
+    rig: { trailHead: 1, trailLen: 6 },
+    cloth: { collar: '#2a9d8f', seam: '#2a9d8f', hem: '#cfe2dc' }
+  };
+  // Yara: a high brown ponytail swinging behind, a fierce eye; dark archer's clothes with a gold sash
+  L.yara = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'HhhhSsshh..', 'HhhSssseeS.', '.HhSssssSss', '..HSsssss..', '...SSssS...', '....SSS....'],
+    c: { top: '#2a2a22', arm: '#33332a', pants: '#22221c' }, rig: { trailHead: 1, trailLen: 6 },
+    cloth: { sash: ['#ffd60a', '#a88a08'], hem: '#1c1c16' }
+  };
+  // Brann: long dark hair, a heavy brow, a full beard; a dark coat with a pale fur collar and a red sash
+  L.brann = {
+    head: ['...........', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'hHhhSsshee.', 'hHhSsssesS.', 'hHhhhSssSss', 'hH.hhhhhhh.', 'h..Hhhhhh..', '....Hhhh...'],
+    c: { top: '#3a2418' },
+    cloth: { collar: '#d8c8b0', sash: ['#c1121f', '#7a0a12'], hem: '#2a1a10' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
