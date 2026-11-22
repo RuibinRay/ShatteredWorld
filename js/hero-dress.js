@@ -120,6 +120,31 @@
     cloth: { collar: '#f5c542', seam: '#9d6cff', hem: '#1e1648' }
   };
 
+  // Tessa: full wavy copper hair with brass goggles over it; a brown vest open on a white shirt, a gold watch chain
+  L.tessa = {
+    head: ['..hhhhh....', '.hhhhhhhh..', 'hhhhhhhhhh.', 'hmmwmmwmh..', 'hhhhSsshh..', 'HhhSssseeS.', 'HhhSssssSss', 'HHhSsssss..', '.hHSSssS...', '..h..SS....'],
+    c: { acc: '#b08a3a', white: '#bfe8ff' },
+    cloth: { collar: '#f4f1ea', seam: '#f4f1ea', emblem: ['#ffd24a', '#b08a3a'], hem: '#5e4436' }
+  };
+  // Jax: a wide-brimmed hat throwing his eyes into shadow, stubble; a red poncho with a tail, dark trim
+  L.jax = {
+    head: ['...mmmm....', '..mmmmmm...', '..MMMMMM...', 'mmmmmmmmmmm', '.MMSSSSSM..', '..hSssee...', '..SsssssSs.', '..SwwwwSS..', '...Swwws...', '....SSS....'],
+    c: { white: '#6a5444', top: '#a8302a', trail: '#a8302a' }, rig: { trailLen: 4, trailW: 3 },
+    cloth: { collar: '#4a1a14', hem: '#6a1e18', seam: '#c86a3a' }
+  };
+  // Ferra: a tall red mohawk in spikes over a shaved head, a hard brow; blue plate armour with dark seams
+  L.ferra = {
+    head: ['....h.h.h..', '...hhhhhh..', '....hhhhh..', '...sHHHss..', '..SssssSee.', '.SsssssseS.', '.SssssssSss', '..SssssssS.', '...SSsssS..', '.....SSS...'],
+    c: { top: '#3a5a8a' },
+    cloth: { seam: '#1c2840', emblem: ['#d83a3a', '#8a1e1e'], hem: '#2a4468' }
+  };
+  // Kiri: black hair in a bun with a white pin, side locks; a white kimono with a red collar; a white ribbon streaming
+  L.kiri = {
+    head: ['...hhh.w...', '...hhhhw...', '..hhhhhhh..', '.hhhhhhhhh.', 'HhhhSsshhh.', 'HhhSssseeS.', 'HhhSssssSss', '.HhSsssss..', '..HSSssS...', '....SSS....'],
+    rig: { trailLen: 5 },
+    cloth: { collar: '#ff4d6d', hem: '#e2ddd4' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
