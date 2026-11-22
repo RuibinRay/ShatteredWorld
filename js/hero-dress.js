@@ -95,6 +95,31 @@
     cloth: { collar: '#8a92b8', seam: '#8a92b8', hem: '#2e3244' }
   };
 
+  // Noct: a pointed hood with a teal rim at its edge, the face in shadow and one teal eye; a dark cloak tail; teal trim
+  L.noct = {
+    head: ['....h......', '...hhhh....', '..hhhhhhh..', '.hhhhhhhhm.', '.hhhhSSSSm.', '.hhhSSSgSm.', '.hhhSSSSSS.', '.hhhhSSSS..', '..hhhhhhh..', '...hhhhh...'],
+    c: { acc: '#5ad6c8', trail: '#1e2c30' }, rig: { trailLen: 6, trailW: 3 },
+    cloth: { seam: '#5ad6c8', hem: '#2a4a4c' }, awCloth: {}
+  };
+  // Bando: a green bandana whose knot tails fly behind him, hair tufts under it, a narrow eye and a grin; a dark-seamed vest
+  L.bando = {
+    head: ['...........', '...mmmmm...', '..mmmmmmm..', 'Mmmmmmmmmm.', 'MMhhSsshh..', '..hSssseeS.', '.HhSssssSss', '..SssssssS.', '...SwwwsS..', '....SSS....'],
+    c: { trail: '#b6e84a' }, rig: { trailHead: 1, trailLen: 3 },
+    cloth: { seam: '#1c4a40', hem: '#22584a' }
+  };
+  // Aldric: a closed great helm with a dark T-shaped visor slit; steel plate with darker seams, a gold boss; a long red cape
+  L.aldric = {
+    head: ['....hh.....', '...hhhhh...', '..hhhhhhh..', '.hhhhhhhhh.', '.Hhhheeeee.', '.Hhhhhhehh.', '.HhhhhhehhW', '.HHhhhhhhh.', '..HHhhhhH..', '...HHHHH...'],
+    rig: { trailLen: 6, trailW: 3 },
+    cloth: { seam: '#5a6078', emblem: ['#f0e0a0', '#c8a050'], hem: '#6a7288', cuff: '#5a6078' }
+  };
+  // Vega: long dark-blue hair under a gold circlet set with a star; purple robes with a gold collar and violet seam
+  L.vega = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhmmmgmmm..', 'hhhhSsshh..', 'hhhSssseeS.', 'hhhSssssSss', 'hhHSsssss..', 'hhH.SSssS..', 'hH...SSS...'],
+    rig: { trailHead: 1, trailLen: 6 },
+    cloth: { collar: '#f5c542', seam: '#9d6cff', hem: '#1e1648' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
