@@ -26,7 +26,7 @@
   const PI = Math.PI, Vis = N.Vis, part = N.part, W = SW.W, H = SW.H, R = Math.round;
   const clamp01 = v => (v < 0 ? 0 : v > 1 ? 1 : v);
   const ease = t => { t = clamp01(t); return t * t * (3 - 2 * t); };
-  const C = { ink: '#16121c', ink2: '#3a3040', paper: '#f4ecdc', paper2: '#d8ccb4', pink: '#ffa0c0', pale: '#ffe4ee', w: '#ffffff', lf: '#d9622b', lf2: '#f2a23a', lf0: '#8a2a10' };
+  const C = { deep: '#d63a6a', ink: '#16121c', ink2: '#3a3040', paper: '#f4ecdc', paper2: '#d8ccb4', pink: '#ffa0c0', pale: '#ffe4ee', w: '#ffffff', lf: '#d9622b', lf2: '#f2a23a', lf0: '#8a2a10' };
 
   // a brush stroke along a polyline: k how much of it is drawn so far, a its fade; w its widest
   function brush(ctx, pts, w, k, a, o) {
@@ -45,6 +45,7 @@
       const q = at(d), u = d / L, ww = width(u);
       art.line(ctx, u < 0.2 ? C.w : C.paper, R(prev[0]), R(prev[1]), R(q[0]), R(q[1]), R(Math.max(1, ww - 1)));   // the stroke itself: the paper's white, the ink showing at its edge (it reads on a dark stage)
       if (u > 0.55 && ww >= 3 && (R(d / step) % 3 === 0)) { const nx = -(q[1] - prev[1]) / step, ny = (q[0] - prev[0]) / step; art.line(ctx, C.ink, R(prev[0] + nx), R(prev[1] + ny), R(q[0] + nx), R(q[1] + ny), 1); }   // dry brush at the tail: ink streaks through it
+      if (!o.nopink && u > 0.1 && u < 0.7 && ww >= 3) art.line(ctx, u < 0.4 ? C.pink : C.pale, R(prev[0]), R(prev[1]), R(q[0]), R(q[1]), ww >= 6 ? 2 : 1);   // (2026-11-21: sakura) the pink heart of the stroke
       prev = q;
     }
     if (o.spatter && k >= 1) for (let i = 0; i < 6; i++) { const q = at(L * (0.5 + i * 0.08)); art.rect(ctx, C.ink, R(q[0] + Math.sin(i * 2.3) * 8), R(q[1] + Math.cos(i * 1.9) * 6 + 4), 2, 2); }
@@ -64,6 +65,25 @@
   function halfPetal(ctx, x, y, ang, side, a) {
     PX.sprite(ctx, R(x), R(y), 12, 12, c => { c.rotate(ang); c.beginPath(); c.moveTo(-3, 0); c.quadraticCurveTo(0, side * 3, 3, 0); c.closePath(); c.fillStyle = C.pink; c.fill(); c.fillStyle = C.w; c.fillRect(-3, 0, 6, 1); }, { alpha: a, outline: C.ink, keepThin: true });
   }
+  // a sakura blossom: five notched petals round a dark-pink heart; side 0 whole, -1 / 1 one half of it, cut through
+  function blossom(ctx, x, y, s, ang, side, a) {
+    if (a <= 0) return;
+    PX.sprite(ctx, R(x), R(y), s * 3 + 4, s * 3 + 4, c => {
+      c.rotate(ang);
+      if (side) { c.beginPath(); c.rect(-s * 2, side > 0 ? 0 : -s * 2, s * 4, s * 2); c.clip(); }
+      for (let i = 0; i < 5; i++) {
+        const an = i / 5 * PI * 2 - PI / 2, px = Math.cos(an) * s * 0.55, py = Math.sin(an) * s * 0.55;
+        c.save(); c.translate(px, py); c.rotate(an + PI / 2);
+        c.beginPath(); c.moveTo(0, s * 0.5); c.quadraticCurveTo(-s * 0.55, 0, -s * 0.22, -s * 0.5); c.lineTo(0, -s * 0.32); c.lineTo(s * 0.22, -s * 0.5); c.quadraticCurveTo(s * 0.55, 0, 0, s * 0.5); c.closePath();
+        c.fillStyle = i % 2 ? C.pink : C.pale; c.fill(); c.restore();
+      }
+      c.beginPath(); c.arc(0, 0, s * 0.24, 0, PI * 2); c.fillStyle = C.deep; c.fill();
+      c.fillStyle = C.w; for (let i = 0; i < 5; i++) { const an = i / 5 * PI * 2; c.fillRect(Math.cos(an) * s * 0.3, Math.sin(an) * s * 0.3, 1, 1); }
+      if (side) { c.fillStyle = C.w; c.fillRect(-s * 2, side > 0 ? 0 : -1, s * 4, 1); }   // the clean cut
+    }, { alpha: a, outline: C.ink, keepThin: true });
+  }
+  SI.blossom = blossom;
+  const petalBurst = (x, y, n, sp) => { for (let i = 0; i < n; i++) part(x + rand(-4, 4), y + rand(-4, 4), i % 3 ? C.pink : i % 2 ? C.pale : C.w, rand(-sp, sp), rand(-sp, sp * 0.4), 30 + (i % 4) * 6, 2, 0.02); };
   function enso(ctx, x, y, r, sq, k, a, w) {   // the brush circle, left open where the brush lifts
     brush(ctx, arcPts(x, y, r, -PI * 0.55, PI * 1.32, 24, sq), w || 3, k, a);
   }
@@ -76,21 +96,24 @@
     const d = dir || p.face;
     if (col === '#ffe4ee' && kind === 3 && (len === 54 || len === 90)) {   // Draw (the True Draw is the longer one)
       const tru = len === 90, x0 = x - d * len * 1.1, x1 = x + d * len * 0.45, life = tru ? 26 : 20;
+      for (let i = 0; i < (tru ? 14 : 8); i++) { const u = i / (tru ? 14 : 8); part(x0 + (x1 - x0) * u, y + rand(-3, 3), i % 2 ? C.pink : C.pale, d * rand(0.3, 1.2), -rand(0.2, 1), 34, 2, 0.02); }   // petals shaken off along the line
       z.shots.push(new Vis(x, y, life, (ctx, sx, sy, t) => {
         const ox = sx - x, oy = sy - y, k = Math.min(1, (t + 1) / 3);
         brush(ctx, line(x0 + ox, y + oy + 2, x1 + ox, y + oy - 2), tru ? 7 : 5, k, 1 - ease((t - life * 0.5) / (life * 0.5)));
-        if (tru) { const u = t / life; [-1, 1].forEach(s => halfPetal(ctx, sx + d * 6 + s * u * 6, sy - 10 + s * u * 8 + u * u * 10, u * 2 * s, s, 1 - u)); }
+        { const u = t / life; [-1, 1].forEach(s => blossom(ctx, sx + d * 6 + s * u * 8, sy - 12 + s * u * 10 + u * u * 12, tru ? 9 : 6, u * 2 * s, s, 1 - u)); }   // a blossom cut in two where the draw ends
       }));
       return;
     }
     if (col === '#ffe4ee' && kind === 2 && len === 46) {   // Falling Leaf
       z.shots.push(new Vis(x, y, 16, (ctx, sx, sy, t) => brush(ctx, arcPts(sx - d * 8, sy + 10, 30, d > 0 ? PI * 0.55 : PI * 0.45, d > 0 ? -PI * 0.35 : PI * 1.35, 12), 5, Math.min(1, (t + 1) / 3), 1 - ease((t - 8) / 8))));
       const lx = x + d * 18, ly = y - 26;
-      z.shots.push(new Vis(lx, ly, 60, (ctx, sx, sy, t) => { const u = t / 60; [-1, 1].forEach(s => halfLeaf(ctx, sx + s * (u * 14 + Math.sin(t * 0.18 + s) * 6), sy + u * 60, 8, t * 0.15 * s, s, 1 - ease((u - 0.7) / 0.3))); }));
+      z.shots.push(new Vis(lx, ly, 60, (ctx, sx, sy, t) => { const u = t / 60; [-1, 1].forEach(s => blossom(ctx, sx + s * (u * 16 + Math.sin(t * 0.18 + s) * 6), sy + u * 60, 11, t * 0.12 * s, s, 1 - ease((u - 0.7) / 0.3))); }));
+      petalBurst(lx, ly, 10, 1.6);
       return;
     }
     if ((col === '#ffffff' || col === '#ff9ab8') && len === 44 && p.state !== 'attack') {   // After the Bell: crossed strokes on what he passed
       const s = col === '#ffffff' ? 1 : -1;
+      if (s > 0) { petalBurst(x, y, 16, 2.4); z.shots.push(new Vis(x, y, 26, (ctx, sx, sy, t) => blossom(ctx, sx, sy, 14, t * 0.05, 0, t < 3 ? 1 : 1 - ease((t - 8) / 18)))); }   // a blossom opens on the cut
       z.shots.push(new Vis(x, y, 20, (ctx, sx, sy, t) => brush(ctx, line(sx - 16, sy - 16 * s, sx + 16, sy + 16 * s), 5, Math.min(1, (t + 1) / 2), 1 - ease((t - 10) / 10))));
       return;
     }
@@ -106,8 +129,8 @@
   function dressBreaths(z) {
     z.shots.forEach(s => {
       if (!(s instanceof Proj) || s.sen || s.w !== 18 || s.life !== 44 || !s.ghost) return;
-      s.sen = 1; const heavy = s.h === 44;
-      s.render = (ctx, x, y, q) => { const d = Math.sign(q.vx) || 1, hh = heavy ? 22 : 16; brush(ctx, arcPts(x - d * hh * 0.6, y, hh, d > 0 ? -1.2 : PI + 1.2, d > 0 ? 1.2 : PI - 1.2, 10), heavy ? 6 : 4, 1, 1, { spatter: heavy && (q.t || 0) % 4 < 2 }); };
+      s.sen = 1; const heavy = s.h >= 44;
+      s.render = (ctx, x, y, q) => { const d = Math.sign(q.vx) || 1, hh = heavy ? 28 : 20; if ((q.t || 0) % 3 === 0) part(x - d * 6 + rand(-2, 2), y + rand(-hh, hh) * 0.8, (q.t || 0) % 2 ? C.pink : C.pale, -d * rand(0.5, 1.5), rand(-0.6, 0.6), 24, 2, 0.02); brush(ctx, arcPts(x - d * hh * 0.6, y, hh, d > 0 ? -1.2 : PI + 1.2, d > 0 ? 1.2 : PI - 1.2, 10), heavy ? 8 : 5, 1, 1, { spatter: heavy && (q.t || 0) % 4 < 2 }); };
     });
   }
 
@@ -137,7 +160,8 @@
       if (!isS(G)) return r;
       z.shots.push(new Vis(p.x, p.y, 72, (ctx, sx, sy, t) => {
         const a = Math.min(1, t / 6, (72 - t) / 10);
-        for (let i = 0; i < 4; i++) { const an = t * 0.16 + i / 4 * PI * 2, rr = 30 + (i % 2) * 6; halfLeaf(ctx, sx + Math.cos(an) * rr, sy - 18 + Math.sin(an) * rr * 0.5, 4, an * 2, i % 2 ? 1 : -1, a); }
+        for (let i = 0; i < 6; i++) { const an = t * 0.16 + i / 6 * PI * 2, rr = 40 + (i % 2) * 6; blossom(ctx, sx + Math.cos(an) * rr, sy - 18 + Math.sin(an) * rr * 0.5, i % 2 ? 6 : 8, an * 2, 0, a); }
+        if (t % 4 === 0) petalBurst(sx + rand(-40, 40), sy - 18 + rand(-16, 16), 1, 1.2);
       }, v => { v.x = p.x; v.y = p.y; }));
       return r;
     };

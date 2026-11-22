@@ -18,7 +18,7 @@
   // ---------- data ----------
   C.stretch = C.fist.map(a => Object.assign({}, a, { slash: 0, kx: a.kx * 1.2, box: [a.box[0], a.box[1], a.box[2] + 38, a.box[3]] }));
   C.great = C.blade.map(a => Object.assign({}, a, { dmg: Math.round(a.dmg * 1.6), dur: a.dur + 7, hitAt: a.hitAt + 3, hitEnd: a.hitEnd + 4, kx: a.kx * 1.5, box: [a.box[0], a.box[1] - 6, a.box[2] + 12, a.box[3] + 8] }));
-  C.iai = C.blade.map(a => Object.assign({}, a, { dur: a.dur - 3, dmg: a.dmg - 1 }));
+  C.iai = C.blade.map(a => Object.assign({}, a, { dur: a.dur - 3, dmg: a.dmg - 1, box: [a.box[0], a.box[1] - 2, a.box[2] + 14, a.box[3] + 4] }));   // (Sen's reach, 2026-11-21: +14 px)
 
   // kit slots: [0] U  [1] S+U  [2] I  [3] traversal  [4] S+I mode  [5] awakening  [6] ultimate
   // trait: phase (perfect guard = untouchable for `phase` frames), reach, bulwark, draw, float, rewind, cylinder
@@ -351,15 +351,15 @@
     draw(p, z, dmg) {
       const calm = p.calmSnap >= 80; p.calmSnap = 0;
       if (calm) { fx.flash('#ffe4ee', 5); fx.text(p.x, p.y - 46, 'TRUE DRAW', '#ffe4ee'); sfx('perfect'); }
-      z.shots.push(new Rush(p, calm ? dmg * 2 : dmg, { dist: calm ? 170 : 92, speed: calm ? 22 : 13, onEnd(q) { fx.slash(q.x - q.face * 30, q.y - 20, q.face, 3, '#ffe4ee', calm ? 90 : 54); sfx('swing'); } }));
+      z.shots.push(new Rush(p, calm ? dmg * 2 : dmg, { dist: calm ? 210 : 124, speed: calm ? 24 : 15, onEnd(q) { fx.slash(q.x - q.face * 30, q.y - 20, q.face, 3, '#ffe4ee', calm ? 90 : 54); sfx('swing'); } }));
     },
     falling_leaf(p, z, dmg) {
       sfx('swing'); fx.slash(p.x + p.face * 12, p.y - 24, p.face, 2, '#ffe4ee', 46);
-      hit(p.face > 0 ? p.x - 4 : p.x - 52, p.y - 62, 56, 62, dmg, { kx: p.face * 0.6, ky: -9, stun: 50, launch: true, heavy: true, srcX: p.x });
+      hit(p.face > 0 ? p.x - 4 : p.x - 68, p.y - 66, 72, 66, dmg, { kx: p.face * 0.6, ky: -9, stun: 50, launch: true, heavy: true, srcX: p.x });
       p.vy = -7.6; p.onGround = false; p.y -= 1;
     },
     three_breaths(p, z, dmg) {
-      [0, 9, 18].forEach((d, i) => z.shots.push(new Later(d + 1, () => { sfx('swing'); z.shots.push(new Proj({ x: p.x + p.face * 16, y: p.y - 22 + (i - 1) * 5, vx: p.face * 8, dmg: i === 2 ? dmg * 2 : dmg, w: 18, h: i === 2 ? 44 : 32, life: 44, ghost: true, pierce: true, breaker: i === 2, heavy: i === 2, kx: 2, render: R.crescent('#ffa0c0', '#ffffff') })); })));
+      [0, 9, 18].forEach((d, i) => z.shots.push(new Later(d + 1, () => { sfx('swing'); z.shots.push(new Proj({ x: p.x + p.face * 16, y: p.y - 22 + (i - 1) * 5, vx: p.face * 9, dmg: i === 2 ? dmg * 2 : dmg, w: 18, h: i === 2 ? 52 : 38, life: 44, ghost: true, pierce: true, breaker: i === 2, heavy: i === 2, kx: 2, render: R.crescent('#ffa0c0', '#ffffff') })); })));
     },
     // Vega
     heavy_star(p, z, dmg, up) { z.shots.push(new Well(p.x + p.face * 14, p.y - 22, p.face * 3.2, up ? -2 : 0, dmg, { burst: 1.4 })); },

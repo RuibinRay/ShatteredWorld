@@ -210,7 +210,7 @@
     pillar(p, z, x, 24, { w: 26, h: 140, dmg: d, style: 'light', cols: ['#fff3c0', '#ffffff', '#ffd60a'], kind: 'column', sfx: 'explode', atk: { heavy: true, ky: -2, stun: 34 } });
   });
   sg('sen', 'petal_storm', 'Petal Storm', 5, 'Blossoms whirl around him like blades, cutting everything close for a long breath.', (p, z, d) => {
-    sfx('swing'); orbit(p, z, { n: 8, r: 32, life: 72, every: 10, dmg: d, style: 'petal',
+    sfx('swing'); orbit(p, z, { n: 8, r: 42, life: 72, every: 10, dmg: d, style: 'petal',
       item: (ctx, x, y, i, t) => { art.rect(ctx, i % 2 ? '#ffa0c0' : '#ffd0e0', x - 1, y, 3, 1); art.rect(ctx, '#ffffff', x, y, 1, 1); } });
   });
   sg('vega', 'gravity_well', 'Gravity Well', 6, 'A well of crushing weight opens ahead and drags everything in before it collapses.', (p, z, d) => {

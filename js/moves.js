@@ -361,7 +361,7 @@ if (SW.rubberArm) SW.rubberArm(ctx, x0, yy, x1, yy, { col: p.G && art.sheets[p.s
   }, { ground: true });
   mv('sen', 'after_the_bell', 'After the Bell', 50, 'Pass through everything in front of you. Nothing happens. Then you sheathe the blade, and it does.', (p, z, dmg) => {
     const dir = p.face, x0 = p.x, marked = new Set(); let moved = 0; sfx('dash'); p.iframes = Math.max(p.iframes, 14);
-    while (moved < 120 && slide(p, z, dir, 4)) { moved += 4; if (moved % 12 === 0) fx.ghost(p.sheet(), 'dash', 0, p.x, p.y, p.face < 0); }
+    while (moved < 150 && slide(p, z, dir, 4)) { moved += 4; if (moved % 12 === 0) fx.ghost(p.sheet(), 'dash', 0, p.x, p.y, p.face < 0); }
     z.ents.forEach(e => { if (isFoe(e) && (e.x - x0) * dir > -10 && (e.x - p.x) * dir < 14 && Math.abs(e.y - p.y) < 50) marked.add(e); });
     marked.forEach(e => { if (e.stagger && !e.isBoss) e.stagger(34); });
     z.shots.push(new Vis(x0, p.y - 20, 34, (ctx, x, y, t) => { if (t < 8) { ctx.globalAlpha = 1 - t / 8; art.rect(ctx, '#ffffff', dir > 0 ? x : x - moved, y, moved, 1); ctx.globalAlpha = 1; } }, v => {
