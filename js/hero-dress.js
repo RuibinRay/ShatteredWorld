@@ -195,6 +195,30 @@
     cloth: { collar: '#9a9ed0', seam: '#5b5f97', hem: '#22253e' }
   };
 
+  // Pell: an angular porcelain mask with one slanted slit eye glowing magenta and a thin painted smile, dark hair behind;
+  // a magenta coat with a black collar and a coat tail
+  L.pell = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhh..', 'hhhwwwwwww.', 'hhwwwwwwww.', 'hhwwweegww.', 'hhwwwwwwWw.', '.hwwwwwwww.', '.hhwwWWWw..', '..hh.www...'],
+    c: { top: '#7a1660', trail: '#7a1660' }, rig: { trailLen: 5, trailW: 3 },
+    cloth: { collar: '#1a0c18', seam: '#b5179e', hem: '#5a1048' }
+  };
+  // Hollis: an old sage under a green band, bushy white brows, a long white beard; a pale rope sash across his green robe
+  L.hollis = {
+    head: ['...........', '...hhhhh...', '..hhhhhhhh.', '.hhhmmmmmm.', 'hhhhSsswww.', 'hhhSssseeS.', 'hhHSsssSsss', 'hhHwwwwwwww', 'hH.wwwwwww.', 'h...wwwww..'],
+    cloth: { sash: ['#d8c89a', '#8a7a58'], hem: '#3a5a2e' }
+  };
+  // Kestra: a high red ponytail swinging behind, a fierce eye; a dark red jacket with a gold collar and orange trim
+  L.kestra = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'HhhhSsshh..', 'HhhSssseeS.', '.HhSssssSss', '..HSsssss..', '...SSssS...', '....SSS....'],
+    c: { top: '#4a1418' }, rig: { trailHead: 1, trailLen: 6 },
+    cloth: { collar: '#ffd24a', seam: '#ff6b35', hem: '#3a1012' }
+  };
+  // Ivo: wild black hair in big spikes, a hard brow; a black sleeveless top with a gold collar, gold wraps
+  L.ivo = {
+    head: ['h.h.h.h....', '.hhhhhhh...', 'hhhhhhhhh..', '.hhhhhhhhh.', '.HhhSssseee', '.HhSssssesS', '.HSssssSss.', '..SssssssS.', '...SSsssS..', '.....SSS...'],
+    cloth: { collar: '#ffb703', hem: '#2a2a2a' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
