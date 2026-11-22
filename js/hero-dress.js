@@ -70,6 +70,31 @@
     cloth: { seam: '#ff5a1f', emblem: ['#ffb02e', '#ff5a1f'], hem: '#ff5a1f', cuff: '#ff7a2a' }
   };
 
+  // Dyna: messy blond hair, goggles pushed up on the brow, a grin; a khaki jacket with a red bomb bandolier across it
+  L.dyna = {
+    head: ['..h.hh.h...', '.hhhhhhhh..', 'hhhhhhhhhh.', 'Hmmwmmwmm..', 'HhhhSsshh..', 'HhSssseeS..', '.HSssssSss.', '..SsssssS..', '...SSwwS...', '....SSS....'],
+    c: { acc: '#6a4a2a', white: '#bfe8ff' },
+    cloth: { sash: ['#c8402a', '#7a2a20'], seam: '#8a7650', hem: '#9a8458' }
+  };
+  // Vesper: a black hood with the face lost in shadow, two red eyes; a long red scarf wrapped at the throat and streaming
+  L.vesper = {
+    head: ['...mmmm....', '..mmmmmmm..', '.mmmmmmmmm.', 'mmmmmmmmmmm', 'MmmmMMMMMm.', 'MmmMMMggMM.', 'MmmMMMMMMM.', '.MmmmmmmmMm', '..Mmmmmmm..', '...MMmmm...'],
+    c: { glow: '#ff3a4a', acc: '#263052' }, rig: { trailLen: 7, trailW: 3 },   // (the hood its own shade: the cloth pass finds the body by its colour)
+    cloth: { collar: '#e0283c', seam: '#2a3458', hem: '#141a30' }, awCloth: {}   // (awakened his top turns red like the scarf: no paint there)
+  };
+  // Orin: spiky dark hair with a magenta streak; bare arms (sleeveless dark top with a magenta seam), magenta wraps
+  L.orin = {
+    head: ['..h.hmh....', '.hhhhmhhh..', 'hhhhhmhhhhh', '.hhhhhhhhhh', '.HhhSsshh..', '.HhSssseeS.', '.HSssssSss.', '..SssssssS.', '...SSsssS..', '.....SSS...'],
+    c: { acc: '#e04dff', top: '#2a2040', arm: '#c8a080' },
+    cloth: { seam: '#5a2a7a', hem: '#1c1830', collar: '#e04dff' }
+  };
+  // Mira: long grey hair down her back and streaming; a black mirror visor with one cyan glint; a dark grey hooded cloak
+  L.mira = {
+    head: ['...hhhh....', '..hhhhhhh..', '.hhhhhhhhh.', 'hhhhhhhhhh.', 'hhhmmmmmmm.', 'hhhmmmgmmm.', 'hhhSsssSss.', 'hhHSsssss..', 'hhH.SSssS..', 'hH...SSS...'],
+    c: { acc: '#1a1c28', top: '#3a3e52', pants: '#2a2e40' }, rig: { trailHead: 1, trailLen: 6 },
+    cloth: { collar: '#8a92b8', seam: '#8a92b8', hem: '#2e3244' }
+  };
+
   // ---------- the engine ----------
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
   const owner = {};   // sheet id -> [hero, 'base' | 'aw']
