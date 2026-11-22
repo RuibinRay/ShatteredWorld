@@ -9,7 +9,10 @@
 (function () {
   const SW = window.SW, art = SW.art, D = SW.data;
   if (!art || !art.bake || !art.HEADS || !D || !D.heroes.sen) return;
-  const SK = SW.senSakura = { on: true };
+  // (2026-11-21, later the same day, the user: "you know what just restore everything i like the simple two color": his sprite is
+  // the original again - head, clothes, colours and katana. SK.look = true before the game loads brings the redraw back.
+  // What stays: the blade held forward in every pose, his quick-draw entrance, the petals while he stands still.)
+  const SK = SW.senSakura = { on: true, look: false };
 
   // 11 x 10, facing right. h hair, H hair shade, m the pink tie of his man bun, s skin, S skin shade, e brow and pupil
   art.HEADS.sen_sakura = [   // (2026-11-21: "show his face", then "make his eyes look better and a more handsome face": then "make eye better handsome it looks stupid": no white (it looked wide-eyed); a brow slanting down into a narrow dark eye with a shadow under it, a straight nose, a sharp jaw tapering to the chin)
@@ -83,13 +86,14 @@
   }
   // every bake of one of his sheets goes through here, whoever asks for it: js/clan-poses.js rebakes him with his iai
   // stance and js/anim2.js bakes his in-between frames (the "+" sheets) later on; each gets the forward blade and the cloth
-  const MINE = /^sen(_aw|_sheathed)?[+]?$/;
+  const MINE = /^sen(_aw|_sheathed)?(@2)?[+]?$/;   // ("@2": the double-resolution twins of js/hero-dress.js)
   const _bake = art.bake;
   art.bake = function (id, cfg) {
     if (!SK.on || !MINE.test(id)) return _bake.apply(this, arguments);
     const args = arguments, self = this;
-    return withBlade(() => { const r = _bake.apply(self, args); try { cloth(id, /_aw/.test(id) ? LOOK_AW : LOOK); } catch (e) { console.error('sen-sakura cloth', e); } return r; });
+    return withBlade(() => { const r = _bake.apply(self, args); if (SK.look) { try { cloth(id, /_aw/.test(id) ? LOOK_AW : LOOK); } catch (e) { console.error('sen-sakura cloth', e); } } return r; });
   };
+  SK.withBlade = withBlade; SK.LOOK = LOOK; SK.LOOK_AW = LOOK_AW;   // (js/hero-dress.js: his double-resolution twins)
   function rebake() { rebakeAll(); }
   // ---------- his clothes (the user, 2026-11-21: "better cloth"): the rig draws the kimono as one flat white stroke. After
   // baking, each frame's body pixels (found by their colour) get his pink sash across the chest from the back shoulder to
@@ -132,14 +136,16 @@
     [[h.sheet || 'sen', LOOK], [h.sheetAw || 'sen_aw', LOOK_AW]].forEach(([sid, look]) => {
       const s = art.sheets[sid]; if (!s || !s.cfg) return;
       const cfg = JSON.parse(JSON.stringify(s.cfg));
-      Object.assign(cfg, { head: look.head, sc: look.sc, bulk: look.bulk, trailHead: look.trailHead, trailLen: look.trailLen, trailW: look.trailW });
-      if (look.outline) cfg.outline = look.outline;
-      cfg.c = Object.assign({}, look.c);   // (the shades are made fresh by bake)
-      cfg.weapon = 'sen_katana'; cfg.armed = 1;
+      if (SK.look) {
+        Object.assign(cfg, { head: look.head, sc: look.sc, bulk: look.bulk, trailHead: look.trailHead, trailLen: look.trailLen, trailW: look.trailW });
+        if (look.outline) cfg.outline = look.outline;
+        cfg.c = Object.assign({}, look.c);   // (the shades are made fresh by bake)
+        cfg.weapon = 'sen_katana'; cfg.armed = 1;
+      }
       const set = setOf(s);
       try { art.bake(sid, cfg, set); } catch (e) { console.error('sen-sakura', e); }
       if (sid === (h.sheet || 'sen')) {   // the same, the blade still in its sheath (his entrance)
-        const c2 = JSON.parse(JSON.stringify(cfg)); delete c2.weapon; c2.armed = 0; c2.c = Object.assign({}, look.c);
+        const c2 = JSON.parse(JSON.stringify(cfg)); delete c2.weapon; c2.armed = 0; if (SK.look) c2.c = Object.assign({}, look.c);
         try { art.bake('sen_sheathed', c2, set); } catch (e) { console.error('sen-sakura sheathed', e); }
       }
     });
