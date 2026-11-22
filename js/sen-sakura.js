@@ -11,28 +11,30 @@
   if (!art || !art.bake || !art.HEADS || !D || !D.heroes.sen) return;
   const SK = SW.senSakura = { on: true };
 
-  // 11 x 10, facing right. h hair, H hair shade, m the pink tie of his man bun, s skin, S skin shade, e brow and eye
-  art.HEADS.sen_sakura = [   // (2026-11-21, the user: "show his face, the hair more to left": the hairline and the bun sit further back)
+  // 11 x 10, facing right. h hair, H hair shade, m the pink tie of his man bun, s skin, S skin shade, e brow and pupil
+  art.HEADS.sen_sakura = [   // (2026-11-21: "show his face", then "make his eyes look better and a more handsome face": then "make eye better handsome it looks stupid": no white (it looked wide-eyed); a brow slanting down into a narrow dark eye with a shadow under it, a straight nose, a sharp jaw tapering to the chin)
     'hhh........',
     'hmhhhhhh...',
     '.hhhhhhhhh.',
-    '.hhhhhssss.',
-    '.HhhSsssss.',
+    '.hhhhhhsss.',
+    '.HhhSssshh.',
     '.HhSsssees.',
-    '.HhSssssess',
-    '..HSssssss.',
+    '.HhSsssSsss',
+    '..HSssssSs.',
     '...SSsssS..',
-    '....SSSS...'
+    '.....SSS...'
   ];
   const LOOK = {
     head: 'sen_sakura', sc: 1.06, bulk: 8, trailHead: 0, trailLen: 3, trailW: 2,
-    c: { skin: '#e8b48c', hair: '#16121c', eye: '#100c14', acc: '#ff4f93', top: '#ece8f2', arm: '#ece8f2', fore: '#1c1820', hand: '#e8b48c',
-      pants: '#8c80a6', boots: '#1c1820', belt: '#1c1820', chest: '#ff4f93', trail: '#ff4f93' }
+    c: { skin: '#e8b48c', hair: '#16121c', eye: '#100c14', acc: '#ff4f93', top: '#ece8f2', arm: '#dcd6e6', fore: '#1c1820', hand: '#e8b48c',
+      pants: '#8c80a6', boots: '#1c1820', belt: '#1c1820', trail: '#ff4f93' },
+    cloth: { sash: '#ff4f93', sash2: '#c02a6a', collar: '#3a3048', fold: '#cfc8dc', cuff: '#b8b0c8' }
   };
   const LOOK_AW = {
     head: 'sen_sakura', sc: 1.06, bulk: 8, trailHead: 0, trailLen: 3, trailW: 2, outline: '#3a0a1c',
-    c: { skin: '#f0c4a0', hair: '#6a1430', eye: '#1a0610', acc: '#ffffff', top: '#ffe0ec', arm: '#ffe0ec', fore: '#ff4f93', hand: '#f0c4a0',
-      pants: '#6a4a86', boots: '#22162a', belt: '#ffffff', chest: '#ffffff', trail: '#ffffff' }
+    c: { skin: '#f0c4a0', hair: '#6a1430', eye: '#1a0610', acc: '#ffffff', top: '#ffe0ec', arm: '#f6d2e0', fore: '#ff4f93', hand: '#f0c4a0',
+      pants: '#6a4a86', boots: '#22162a', belt: '#ffffff', trail: '#ffffff' },
+    cloth: { sash: '#ffffff', sash2: '#ff4f93', collar: '#6a1430', fold: '#f0bcd0', cuff: '#e0a8c0' }
   };
   // ---------- his katana (the user, 2026-11-21: "improve weapon look"): a curved blade, steel with a dark spine and a white
   // edge, a pink temper line (hamon) waving along it, a bright point; a gold collar, a round black guard set with five pink
@@ -79,7 +81,52 @@
     });
     try { return fn(); } finally { Object.keys(keep).forEach(n => { PO[n] = keep[n]; }); }
   }
-  function rebake() { withBlade(rebakeAll); }
+  // every bake of one of his sheets goes through here, whoever asks for it: js/clan-poses.js rebakes him with his iai
+  // stance and js/anim2.js bakes his in-between frames (the "+" sheets) later on; each gets the forward blade and the cloth
+  const MINE = /^sen(_aw|_sheathed)?[+]?$/;
+  const _bake = art.bake;
+  art.bake = function (id, cfg) {
+    if (!SK.on || !MINE.test(id)) return _bake.apply(this, arguments);
+    const args = arguments, self = this;
+    return withBlade(() => { const r = _bake.apply(self, args); try { cloth(id, /_aw/.test(id) ? LOOK_AW : LOOK); } catch (e) { console.error('sen-sakura cloth', e); } return r; });
+  };
+  function rebake() { rebakeAll(); }
+  // ---------- his clothes (the user, 2026-11-21: "better cloth"): the rig draws the kimono as one flat white stroke. After
+  // baking, each frame's body pixels (found by their colour) get his pink sash across the chest from the back shoulder to
+  // the front hip, a dark crossed collar, the cloth gathered above the belt; the sleeves get a dark cuff ----------
+  const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+  function cloth(sid, look) {
+    const s = art.sheets[sid], K = look.cloth; if (!s || !K) return;
+    const c = s.img, x = c.getContext('2d'), im = x.getImageData(0, 0, c.width, c.height), d = im.data, W2 = c.width;
+    const top = hexRgb(look.c.top), topD = hexRgb(art.shade(look.c.top, 0.7)), arm = hexRgb(look.c.arm), fore = hexRgb(look.c.fore);
+    const is = (i, q) => d[i] === q[0] && d[i + 1] === q[1] && d[i + 2] === q[2] && d[i + 3] > 0;
+    const put = (i, h) => { const q = hexRgb(h); d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2]; };
+    const cols = s.cols, rows = Math.ceil(c.height / s.fh), K2 = {}; Object.keys(K).forEach(k => { K2[k] = K[k]; });
+    for (let fy = 0; fy < rows; fy++) for (let fx = 0; fx < cols; fx++) {
+      const ox = fx * s.fw, oy = fy * s.fh, body = [], sleeve = [];
+      let x0 = 1e9, x1 = -1, y0 = 1e9, y1 = -1;
+      for (let yy = 0; yy < s.fh; yy++) for (let xx = 0; xx < s.fw; xx++) {
+        const i = ((oy + yy) * W2 + ox + xx) * 4;
+        if (is(i, top) || is(i, topD)) { body.push([xx, yy, i]); x0 = Math.min(x0, xx); x1 = Math.max(x1, xx); y0 = Math.min(y0, yy); y1 = Math.max(y1, yy); }
+        else if (is(i, arm)) sleeve.push([xx, yy, i]);
+      }
+      if (body.length < 12) continue;
+      const w = Math.max(1, x1 - x0), h = Math.max(1, y1 - y0);
+      body.forEach(([xx, yy, i]) => {
+        const u = (xx - x0) / w, v = (yy - y0) / h, dd = v - (u * 0.95 + 0.02);
+        if (Math.abs(dd) < 0.13) put(i, K2.sash);   // the sash, back shoulder to front hip
+        else if (dd >= 0.13 && dd < 0.2) put(i, K2.sash2);   // its shadow
+        else if (v < 0.5 && u > 0.45 && Math.abs(u - (1 - v * 1.1)) < 0.1) put(i, K2.collar);   // the crossed collar
+        else if (v > 0.82 && dd > 0.2) put(i, K2.fold);   // the cloth gathered above the belt
+      });
+      sleeve.forEach(([xx, yy, i]) => {
+        const below = ((oy + yy + 1) * W2 + ox + xx) * 4, right = i + 4, left = i - 4;
+        if ([below, right, left].some(j => j >= 0 && j < d.length && is(j, fore))) put(i, K2.cuff);   // the cuff where the wraps begin
+      });
+    }
+    x.putImageData(im, 0, 0);
+  }
+  SK.cloth = cloth;
   function rebakeAll() {
     const h = D.heroes.sen;
     [[h.sheet || 'sen', LOOK], [h.sheetAw || 'sen_aw', LOOK_AW]].forEach(([sid, look]) => {

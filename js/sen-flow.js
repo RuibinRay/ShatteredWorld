@@ -78,6 +78,19 @@
     };
   }
 
+  // ---------- his skills deal 25% less (the user, 2026-11-21: "make his skill dmg -25%"): U, S+U, I, S+I and W+O, not J or
+  // the ultimate. Every cast gets its damage as its third argument (js/elements.js, moves.js, signature.js) ----------
+  SF.SKILL = 0.75;
+  const BUR = SW.moves && SW.moves.BURST && SW.moves.BURST.sen;
+  [[CASTS, 'draw'], [CASTS, 'falling_leaf'], [CASTS, 'three_breaths'], [BUR, 'cast'], [SIG, 'cast']].forEach(([o, k]) => {
+    if (!o || typeof o[k] !== 'function') return;
+    const fn = o[k];
+    o[k] = function (p, z, dmg) {
+      if (meIn(p) && typeof dmg === 'number') { const a = Array.prototype.slice.call(arguments); a[2] = Math.max(1, Math.round(dmg * SF.SKILL)); return fn.apply(this, a); }
+      return fn.apply(this, arguments);
+    };
+  });
+
   const _pu = P.update;
   P.update = function (g, z) { const r = _pu.apply(this, arguments); if (z && z.shots && meIn(this)) calmBreaths(this, z); return r; };
 })();
