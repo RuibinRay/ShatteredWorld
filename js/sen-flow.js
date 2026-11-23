@@ -79,8 +79,9 @@
   }
 
   // ---------- his skills deal 25% less (the user, 2026-11-21: "make his skill dmg -25%"): U, S+U, I, S+I and W+O, not J or
-  // the ultimate. Every cast gets its damage as its third argument (js/elements.js, moves.js, signature.js) ----------
-  SF.SKILL = 0.75;
+  // the ultimate. Every cast gets its damage as its third argument (js/elements.js, moves.js, signature.js). Then
+  // (2026-11-22: "REDUCE SEN SKILL DAMAGE BY 30%") 30% less again: 0.75 x 0.7 = 0.525 of the original ----------
+  SF.SKILL = 0.75 * 0.7;
   const BUR = SW.moves && SW.moves.BURST && SW.moves.BURST.sen;
   [[CASTS, 'draw'], [CASTS, 'falling_leaf'], [CASTS, 'three_breaths'], [BUR, 'cast'], [SIG, 'cast']].forEach(([o, k]) => {
     if (!o || typeof o[k] !== 'function') return;
