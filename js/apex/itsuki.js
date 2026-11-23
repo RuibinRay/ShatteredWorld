@@ -10,8 +10,9 @@
 //   W+I      FIVE CALAMITIES, a film of its own (198 frames): his close-up under the hollow crown and his card; five
 //            cuts on the target, one per calamity, each opening on a frame of its own colour: fire falls, a storm wind
 //            cuts, thunder strikes, the earth breaks into fangs, a flood crashes; then the five gather round him as orbs,
-//            fly to the target and burn a five-pointed seal into the floor; on the blow a negative frame and a palm of
-//            lightning the size of the target slams down on the seal
+//            fly out and surround the target, circling faster and tighter over a five-pointed seal burned into the floor,
+//            spiral in and collide on it; on the blow a negative frame and their explosion: a white core, five rings,
+//            shards of every element and a crimson shockwave (2026-11-22: it used to end with a palm of lightning)
 (function () {
   const SW = window.SW, AP = SW.apex, G = SW.game, art = SW.art, fx = SW.fx, rand = SW.rand;
   if (!AP || !SW.data.heroes.itsuki) return;
@@ -74,14 +75,43 @@
     AP.bits(x, y - 24, 10, { cols: [c1, c2], sp: 2.8, life: 16 });
     SW.audio.sfx(e === 2 ? 'zap' : 'heavy'); fx.shake(5, 8);
   }
-  function orbs(p, T) {   // the five gather round him, then fly to the target
-    for (let e = 0; e < 5; e++) AP.fx({ x: p.x, y: p.y - 30, life: BU - (CUTS + 5 * CUT) + 40, draw(ctx, q, sx, sy, t, cam) {
-      const cs = AP.caster(), st = cs ? cs.p.st : FIN + 1, a = -PI / 2 + e * 2 * PI / 5 + st * 0.12, fly = st >= BU ? easeOut((st - BU) / 14) : 0;
+  // the ending (the user, 2026-11-22: "dont make it end with hand make it end with the orbs surround enemy collide and
+  // explode"): the five gather round him, fly out and surround the target, circle it faster and tighter, spiral in and
+  // collide on it at the blow, and the blow is their explosion (boom), not a palm
+  const SPIRAL = 14;   // the last frames before the blow: the orbs spiral in to collide
+  function tgtC(T, cam) { const b = T.box ? T.box() : { x: T.x - 7, y: T.y - 30, w: 14, h: 30 }; return [b.x + b.w / 2 - cam.x, b.y + b.h / 2 - cam.y]; }
+  function orbAt(e, st, sx, sy, T, cam) {   // where orb e is at frame st (screen space), and how big
+    const [tx, ty] = tgtC(T, cam), spin = st < BU + 14 ? st * 0.12 : (BU + 14) * 0.12 + (st - BU - 14) * (0.14 + (st - BU - 14) * 0.006);
+    const a = -PI / 2 + e * 2 * PI / 5 + spin;
+    const ox = sx + Math.cos(a) * 26, oy = sy + Math.sin(a) * 18;                          // round him
+    const cin = st >= FIN - SPIRAL ? ease((st - FIN + SPIRAL) / SPIRAL) : 0;              // spiralling in
+    const r = (42 - 8 * Math.min(1, Math.max(0, (st - BU - 14) / (FIN - SPIRAL - BU - 14)))) * (1 - cin);
+    const rx = tx + Math.cos(a) * r, ry = ty + Math.sin(a) * r * 0.55;                    // round the target, a tilted ring
+    const fly = st >= BU ? easeOut((st - BU) / 14) : 0;
+    return { X: ox + (rx - ox) * fly, Y: oy + (ry - oy) * fly, a, fly, cin, size: 5 + cin * 2, front: Math.sin(a) >= 0 };
+  }
+  function orbs(p, T) {
+    for (let e = 0; e < 5; e++) AP.fx({ x: p.x, y: p.y - 30, life: FIN - (CUTS + 5 * CUT) + 34, draw(ctx, q, sx, sy, t, cam) {
+      const cs = AP.caster(), st = cs ? cs.p.st : FIN + 1;
       if (st >= FIN) return;
-      const ox = sx + Math.cos(a) * 26, oy = sy + Math.sin(a) * 18, tx = T.x - cam.x + Math.cos(a) * 30, ty = T.y - cam.y + 6 + Math.sin(a) * 6;
-      const X = ox + (tx - ox) * fly, Y = oy + (ty - oy) * fly;
-      D2.disc(ctx, X, Y, 6, EL[e][2]); D2.disc(ctx, X, Y, 5, EL[e][0]); D2.disc(ctx, X, Y, 2, EL[e][1]);
-      if (fly > 0 && fly < 1) art.line(ctx, EL[e][0], R(ox + (tx - ox) * fly * 0.6), R(oy + (ty - oy) * fly * 0.6), R(X), R(Y), 1);
+      const o = orbAt(e, st, sx, sy, T, cam), [c1, c2, c3] = EL[e];
+      if (o.fly >= 1) for (let k = 3; k >= 1; k--) {   // a comet tail along the circle
+        const b = orbAt(e, st - k * (1 + o.cin * 0.5), sx, sy, T, cam);
+        ctx.globalAlpha = 0.18 + 0.12 * (3 - k); D2.disc(ctx, b.X, b.Y, Math.max(1, o.size - k), k === 1 ? c1 : c3);
+      }
+      ctx.globalAlpha = o.fly >= 1 && !o.front && o.cin < 0.5 ? 0.7 : 1;   // the far side of the ring a little dimmer
+      if (o.fly > 0 && o.fly < 1) { const b = orbAt(e, st - 3, sx, sy, T, cam); D2.streak(ctx, b.X, b.Y, o.X, o.Y, 3, [c3, c1]); }
+      D2.disc(ctx, o.X, o.Y, o.size + 1, c3); D2.disc(ctx, o.X, o.Y, o.size, c1); D2.disc(ctx, o.X, o.Y, Math.max(1, o.size - 3), c2);
+      if (o.cin > 0) { ctx.globalAlpha = o.cin; art.line(ctx, c1, R(o.X), R(o.Y), R(tgtC(T, cam)[0]), R(tgtC(T, cam)[1]), 1); }   // drawn together
+      ctx.globalAlpha = 1;
+    } });
+    // where they meet: a light gathers on the target as they close in, and flickers just before they collide
+    AP.fx({ x: p.x, y: p.y, life: FIN - (CUTS + 5 * CUT) + 34, draw(ctx, q, sx, sy, t, cam) {
+      const cs = AP.caster(), st = cs ? cs.p.st : FIN + 1; if (st >= FIN || st < FIN - SPIRAL) return;
+      const k = ease((st - FIN + SPIRAL) / SPIRAL), [tx, ty] = tgtC(T, cam);
+      art.glow(ctx, R(tx), R(ty), 10 + 26 * k, C.r, 0.15 + 0.35 * k);
+      if (st % 2 === 0) D2.disc(ctx, tx, ty, 2 + 5 * k, C.w);
+      if (st >= FIN - 4) D2.burst(ctx, tx, ty, 10 + 14 * k, 10, EL.map(c => c[1]), st * 0.4);
     } });
   }
   function seal(T) {   // a five-pointed seal burned into the floor under them
@@ -92,23 +122,24 @@
       ctx.restore();
     } });
   }
-  function palm(cx, gy) {   // a palm of lightning the size of the target, slamming down on the seal
-    const FING = [[-0.42, 30], [-0.14, 36], [0.14, 34], [0.4, 27]];   // finger angle off straight up, length
-    AP.fx({ x: cx, y: gy, life: 26, draw(ctx, q, sx, sy, t) {
-      const drop = easeOut(t * 4), X = sx, Y = R(sy - 26 - 110 * (1 - drop)), fade = 1 - ease((t - 0.62) / 0.38), fl = (t * 40 | 0) % 2;
+  function boom(cx, cy, gy) {   // the five orbs collide on the target and explode
+    const SH = [];   // the shards: each orb breaks into pieces of its colour, thrown out on its own angle
+    for (let e = 0; e < 5; e++) for (let k = 0; k < 4; k++) SH.push({ e, a: -PI / 2 + e * 2 * PI / 5 + (k - 1.5) * 0.28 + rand(-0.08, 0.08), v: 70 + k * 18 + rand(0, 14) });
+    AP.fx({ x: cx, y: cy, life: 40, draw(ctx, q, sx, sy, t) {
+      const k = easeOut(t * 2.2), fade = 1 - ease((t - 0.5) / 0.5);
+      // the core: white, then crimson, then a dark heart as it burns out
+      if (t < 0.55) { const r = 6 + 40 * easeOut(t * 3.5); ctx.globalAlpha = fade; art.glow(ctx, R(sx), R(sy), r * 1.6, C.r, 0.5); D2.disc(ctx, sx, sy, r, t < 0.12 ? C.w : C.r); D2.disc(ctx, sx, sy, r * 0.7, t < 0.2 ? C.w : C.r2); if (t > 0.25) D2.disc(ctx, sx, sy, r * 0.4 * (t - 0.25) / 0.3, C.ink); }
+      // five rings, one per element, each a beat behind the last
+      EL.forEach(([c1, c2], i) => { const u = (t - i * 0.04) / 0.7; if (u <= 0 || u >= 1) return; ctx.globalAlpha = 1 - u; D2.ring(ctx, sx, sy, 10 + 70 * easeOut(u), c1, 2); D2.ring(ctx, sx, sy, 8 + 70 * easeOut(u), c2, 1); });
+      // the shards
       ctx.globalAlpha = fade;
-      const shape = (col, grow) => {   // the palm, the four fingers, the thumb (grow: outline width)
-        ctx.save(); ctx.translate(X, Y); ctx.scale(1, 1.15); art.disc(ctx, col, 0, 0, 22 + grow); ctx.restore();
-        FING.forEach(([a, L]) => { const bx = X + Math.sin(a) * 16, by = Y - 18, ex = bx + Math.sin(a) * L, ey = by - Math.cos(a) * L; art.line(ctx, col, R(bx), R(by), R(ex), R(ey), 10 + grow * 2); art.disc(ctx, col, R(ex), R(ey), 5 + grow); });
-        const tx = X + 22, ty = Y + 2; art.line(ctx, col, R(tx - 6), R(ty), R(tx + 16), R(ty - 16), 10 + grow * 2); art.disc(ctx, col, R(tx + 16), R(ty - 16), 5 + grow);
-      };
-      shape(C.ink, 3); shape(EL[2][2], 1); shape(EL[2][0], 0);
-      ctx.save(); ctx.globalAlpha = fade * 0.9;   // the palm lines and finger joints in white light
-      art.line(ctx, C.w, X - 14, Y - 4, X + 12, Y - 10, 1); art.line(ctx, C.w, X - 12, Y + 6, X + 8, Y + 2, 1); art.line(ctx, C.w, X + 2, Y + 18, X + 6, Y - 12, 1);
-      FING.forEach(([a, L]) => { for (const u of [0.45, 0.75]) { const bx = X + Math.sin(a) * 16 + Math.sin(a) * L * u, by = Y - 18 - Math.cos(a) * L * u; art.line(ctx, EL[2][2], R(bx - 4), R(by), R(bx + 4), R(by), 1); } });
-      ctx.restore();
-      FING.forEach(([a, L], k) => { let px = X + Math.sin(a) * (16 + L), py = Y - 18 - Math.cos(a) * L - 5; for (let n = 0; n < 4; n++) { const nx = px + ((n + k + fl) % 2 ? 5 : -5), ny = py - 7; art.line(ctx, EL[2][1], R(px), R(py), R(nx), R(ny), n ? 1 : 2); px = nx; py = ny; } });   // lightning off the fingertips
-      if (drop >= 1 && t < 0.4) D2.burst(ctx, X, sy - 4, 30, 16, [C.w, EL[2][0], EL[2][1]]);
+      SH.forEach(s => { const [c1, c2, c3] = EL[s.e], d = s.v * k, x1 = sx + Math.cos(s.a) * d, y1 = sy + Math.sin(s.a) * d * 0.8, x0 = sx + Math.cos(s.a) * d * 0.7, y0 = sy + Math.sin(s.a) * d * 0.56; D2.streak(ctx, x0, y0, x1, y1, 4, [c3, c1, c2]); });
+      // five-colour rays in the first instant
+      if (t < 0.22) D2.burst(ctx, sx, sy, 48, 20, EL.map(c => c[0]).concat([C.w]), t * 2);
+      // the shockwave along the floor, crimson over black
+      const g = gy - (cy - sy), w = 20 + 120 * easeOut(t * 1.6); ctx.globalAlpha = fade;
+      ctx.save(); ctx.translate(sx, g); ctx.scale(1, 0.18); D2.ring(ctx, 0, 0, w + 3, C.ink, 3); D2.ring(ctx, 0, 0, w, C.r, 2); ctx.restore();
+      ctx.globalAlpha = 1;
     } });
   }
   const ult = {
@@ -126,10 +157,10 @@
     finish(o) {
       const { cx, cy, gy } = o;
       SW.audio.sfx('explode'); SW.audio.sfx('heavy'); SW.audio.sfx('perfect'); SW.audio.sfx('zap');
-      AP.stop(12); fx.shake(16, 26);
-      palm(cx, gy);
+      AP.stop(12); fx.shake(18, 28); fx.flash('#ffffff', 6);
+      boom(cx, cy, gy);
       EL.forEach((e, i) => fx.ring(cx, cy, e[0], 4 + i * 3, 80 + i * 16, 18 + i * 2));
-      AP.bits(cx, cy, 30, { cols: EL.map(e => e[0]), sp: 4.4, life: 24 });
+      AP.bits(cx, cy, 40, { cols: EL.map(e => e[0]).concat([C.r]), sp: 4.8, life: 26 });
     },
     pose(st) {
       if (st < 72) return null;
@@ -143,7 +174,7 @@
       if (st >= CUTS && st < CUTS + 5 * CUT) { const e = ((st - CUTS) / CUT) | 0, k = (st - CUTS) % CUT; return k < 2 ? { impact: 'tint', tint: EL[e][0], lines: 30, lineCol: EL[e][1] } : { vig: 0.45, grade: [EL[e][2], 0.25], lines: k < 6 ? 14 : 0, lineCol: EL[e][1] }; }
       if (st >= CUTS + 5 * CUT && st < FIN) return { vig: 0.5, grade: ['#1a0a10', 0.25], lines: st >= BU ? 20 : 0, lineCol: C.r2 };
       if (st >= FIN && st < FIN + 2) return { impact: 'neg' };
-      if (st >= FIN + 2 && st < FIN + 4) return { impact: 'tint', tint: EL[2][0] };
+      if (st >= FIN + 2 && st < FIN + 4) return { impact: 'tint', tint: C.r };
       if (st >= FIN + 4 && st < FIN + 12) return { lines: 40, lineCol: C.w, split: 3, vig: 0.4 };
       return null;
     }
