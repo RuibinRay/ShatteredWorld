@@ -182,7 +182,104 @@
     };
   }
 
-  // ================= W+O: Fire Serpent =================
+  // ================= W+O: Fire Serpent: a forge viper (redrawn 2026-11-23: "it looks bad make it cool") =================
+  // Local frame: (0, 0) is the runner on the ground, facing +x. The body lies in humps that stay put on the ground while
+  // it slides through them (the way a real snake travels), the neck rears like a cobra's, and the head strikes so that the
+  // jaws close on every hit frame of the runner (t % 10 === 0). It bursts out of the ground and burns away at the end.
+  const SV = { speed: 3.6, len: 120, kw: PI * 2 / 46, every: 10, life: 48 };
+  function serpentPose(t) {
+    const u = (t % SV.every) / SV.every;   // 0: the bite lands
+    let rear, gape;
+    if (u < 0.3) { const k = ease(u / 0.3); rear = 0.85 * k; gape = 0.12 + 0.55 * k; }   // recoil, jaws opening
+    else if (u < 0.82) { const k = ease((u - 0.3) / 0.52); rear = 0.85 + 0.15 * k; gape = 0.67 + 0.33 * k; }   // reared, hood up
+    else { const k = (u - 0.82) / 0.18; rear = 1 - k * k; gape = 1 - 0.25 * k; }   // the lunge, jaws wide
+    return { u, rear, gape };
+  }
+  function serpentVec(c, t, o) {
+    o = o || {};
+    const ps = o.pose || serpentPose(t), rear = ps.rear, gape = ps.gape, lunge = ps.u > 0.82 || ps.u < 0.08;
+    const sway = Math.sin(t * 0.33) * 1.5;
+    const hx = 17 + (0 - 17) * rear + sway * 0.3, hy = -12 + (-35 + 12) * rear + sway, ang = 0.32 + (-0.18 - 0.32) * rear;
+    const HS = 1.5, dx = Math.cos(ang), dy = Math.sin(ang);
+    // ---- the centre line: the neck (head -> base) then the body (base -> tail)
+    const bx = -9, by = -6, line = [], half = [];
+    const n0 = [hx - dx * 4 * HS, hy - dy * 4 * HS], n1 = [hx - dx * 15, hy - dy * 15 + 2], n2 = [bx + 5, by - 6 - 12 * rear], n3 = [bx, by];
+    for (let i = 0; i <= 10; i++) {   // a cubic from the back of the skull down to the base of the neck
+      const v = i / 10, a = (1 - v) ** 3, b = 3 * (1 - v) ** 2 * v, cc = 3 * (1 - v) * v * v, d = v ** 3;
+      line.push([n0[0] * a + n1[0] * b + n2[0] * cc + n3[0] * d, n0[1] * a + n1[1] * b + n2[1] * cc + n3[1] * d]); half.push(5 + 1.6 * v);
+    }
+    const NB = 40;
+    for (let i = 1; i <= NB; i++) {
+      const s = i / NB * SV.len, f = 1 - s / SV.len, amp = (3 + 12 * Math.pow(f, 0.7)) * ease(s / 16);
+      line.push([bx - s, by - amp * Math.pow(0.5 + 0.5 * Math.sin(SV.kw * (SV.speed * t - s)), 1.6)]); half.push(0.9 + 5.7 * Math.pow(f, 0.8));
+    }
+    const nrm = line.map((q, i) => { const a = line[Math.max(0, i - 1)], b = line[Math.min(line.length - 1, i + 1)], tx = b[0] - a[0], ty = b[1] - a[1], l = Math.hypot(tx, ty) || 1; return [-ty / l, tx / l]; });   // points up, over the back
+    const edge = (k, m) => line.map((q, i) => [q[0] + nrm[i][0] * half[i] * k * (m ? 1 : 1), q[1] + nrm[i][1] * half[i] * k]);
+    const band = (k0, k1, col, i0, i1) => { const A = edge(k0).slice(i0 || 0, i1), B = edge(k1).slice(i0 || 0, i1); poly(c, A.concat(B.reverse()), col); };
+    // ---- fins of fire along the back, leaning back as it races forward
+    for (let i = 13; i < line.length - 2; i += 2) {
+      const q = line[i], n = nrm[i], f = 1 - (i - 11) / NB, L = (9 + 13 * f) * (0.75 + 0.35 * Math.sin(t * 0.7 + i * 1.9));
+      tongue(c, q[0] + n[0] * half[i] * 0.85, q[1] + n[1] * half[i] * 0.85, Math.atan2(n[1], n[0]) - 0.75, L, 1.8 + 2.2 * f, i % 4 ? C.o : C.ro, i % 4 ? C.y : C.a, -0.12);
+    }
+    const tl = line[line.length - 1], tp = line[line.length - 3];   // the tail ends in a flame
+    tongue(c, tl[0], tl[1], Math.atan2(tl[1] - tp[1], tl[0] - tp[0]) - 0.25, 16 + 3 * Math.sin(t * 0.8), 2.4, C.o, C.y, -0.12);
+    // ---- the body: charred plates, a red rim where the light catches, molten seams and blue-white forge vents
+    band(1, -1, C.r0);
+    band(1, 0.55, C.r);
+    band(1, 0.82, C.ro, 0, line.length - 6);
+    band(-0.6, -1, C.r, 0, line.length - 4);
+    for (let i = 3; i < line.length - 5; i += 2) { const q = line[i], n = nrm[i], h = half[i]; poly(c, [[q[0] - n[0] * h * 0.5, q[1] - n[1] * h * 0.5], [q[0] - n[0] * h * 1.02 + 0.7, q[1] - n[1] * h * 1.02], [q[0] - n[0] * h * 1.02 - 0.7, q[1] - n[1] * h * 1.02]], C.o); }   // belly plates lit from the burning ground
+    for (let i = 3; i < line.length - 6; i += 3) {   // molten seams between the plates: a chevron of fire
+      const q = line[i], n = nrm[i], h = half[i], a = line[i - 1], b = line[i + 1];
+      const hot = (i % 9 === 0) ? C.y : C.o;
+      poly(c, [[a[0] + n[0] * h * 0.9, a[1] + n[1] * h * 0.9], [q[0] - n[0] * h * 0.55, q[1] - n[1] * h * 0.55], [q[0] - n[0] * h * 0.25 - (b[0] - a[0]) * 0.35, q[1] - n[1] * h * 0.25 - (b[1] - a[1]) * 0.35], [q[0] + n[0] * h * 0.75 - (b[0] - a[0]) * 0.45, q[1] + n[1] * h * 0.75 - (b[1] - a[1]) * 0.45]], hot);
+      if (i % 12 === 0 && h > 2.5) { const vx = q[0] + n[0] * h * 0.2, vy = q[1] + n[1] * h * 0.2; ell(c, vx, vy, h * 0.32 + 0.6, h * 0.32 + 0.6, C.bd); ell(c, vx, vy, h * 0.2 + 0.5, h * 0.2 + 0.5, C.bl); ell(c, vx, vy, 0.7, 0.7, C.w); }
+    }
+    // ---- the hood: a flare of flame behind the skull, raised when it rears
+    c.save(); c.translate(hx, hy); c.rotate(ang);
+    for (let i = 0; i < 8; i++) { const a = PI - 1.45 + i * 0.37 + Math.sin(t * 0.5 + i * 1.7) * 0.08; tongue(c, -5, -2, a, (11 + 13 * rear) * (1 - Math.abs(i - 3.5) * 0.07), 3.6, i % 2 ? C.o : C.ro, i % 2 ? C.y : C.a, 0.1 * (i < 4 ? -1 : 1)); }
+    c.restore();
+    // ---- the head: a viper's, flat and wedge-shaped, back-swept horns, a slit eye of forge-blue, long fangs
+    c.save(); c.translate(hx, hy); c.rotate(ang); c.scale(HS, HS);
+    if (lunge) for (let i = 0; i < 3; i++) tongue(c, -4, -2 + i * 2.2, PI + (i - 1) * 0.12, 16 + i * 3, 1.6, i === 1 ? C.y : C.a, null, 0);   // the smear of the strike
+    poly(c, [[-1, -5.5], [-13, -12 - 3 * rear], [-4, -3.5]], C.a); poly(c, [[-1, -5.5], [-13, -12 - 3 * rear], [-6, -6]], C.y);   // the horns
+    poly(c, [[-4, -3], [-11, -5.5 - 2 * rear], [-5, -1]], C.o);
+    const ga = gape * 0.95;
+    if (ga > 0.12) {   // the open mouth, with the forge in its throat
+      const jx = -4, jy = 1, tip = [jx + Math.cos(ga) * 17, jy + Math.sin(ga) * 17];
+      poly(c, [[jx, jy], [15, 0.5], tip], C.r0);
+      tongue(c, -2, 1.5, ga * 0.5, 9 + 7 * gape, 1.4 + 1.4 * gape, C.bd, C.bl, 0);
+      tongue(c, -2, 1.5, ga * 0.5, 6 + 5 * gape, 0.8 + gape, C.bl, C.w, 0);
+    }
+    c.save(); c.translate(-4, 1); c.rotate(ga);   // the lower jaw
+    poly(c, [[-1, -1], [17, -0.4], [15, 2.6], [0, 3.8]], C.r0); poly(c, [[-1, -1], [17, -0.4], [6, 0.6]], C.r); poly(c, [[2, 1.6], [12, 1], [6, 2.4]], C.o);
+    poly(c, [[12, -0.6], [13.5, -0.6], [12.8, -3.2]], C.w); poly(c, [[7.5, -0.8], [8.8, -0.8], [8.2, -2.6]], C.w);
+    c.restore();
+    poly(c, [[-6, -4], [-1, -7], [7, -6.8], [14, -4], [17.5, -1.2], [15.5, 1], [-5, 1.6]], C.r);   // the skull, charred
+    poly(c, [[-1, -7], [7, -6.8], [14, -4], [6, -4.8], [-1, -5.4]], C.ro);
+    poly(c, [[2, -6.9], [7, -6.8], [12, -4.8], [7, -5.6]], C.o);
+    poly(c, [[-5, 1.6], [15.5, 1], [14.5, -0.4], [-3, -0.4]], C.r0);
+    poly(c, [[-4, -1], [4, -2.2], [1, -0.6]], C.a); poly(c, [[6, -1.6], [12, -2.2], [9, -0.8]], C.o);   // molten seams on the jaw line
+    poly(c, [[13.6, -3], [15.2, -2.4], [14, -1.8]], C.r0);   // the nostril
+    poly(c, [[11.6, 0.6], [13.4, 0.6], [12.6, 6.4]], C.w); poly(c, [[8, 0.8], [9.4, 0.8], [8.8, 4.2]], C.w);   // fangs
+    poly(c, [[0, -8], [11, -5], [10.6, -3.4], [0.6, -5.6]], C.k);   // the brow, drawn down hard
+    poly(c, [[3, -4.6], [9.6, -3.2], [4.4, -2.4]], C.bl); poly(c, [[5, -4.1], [8.6, -3.2], [5.6, -3.1]], C.w);   // the slit eye
+    if (ps.u < 0.2) { const k = ps.u / 0.2; for (let i = 0; i < 5; i++) tongue(c, 15, 2, -0.9 + i * 0.45, (6 + 5 * (1 - k)) * (i % 2 ? 0.7 : 1), 1.2, i % 2 ? C.y : C.w, null, 0); }   // the bite flashes
+    c.restore();
+  }
+  // serpent(ctx, x, y, dir, t, o): x, y the runner on the ground; o = { a, pose }
+  function serpent(ctx, x, y, d, t, o) {
+    o = o || {};
+    const em = ease(t / 7), a = (o.a === undefined ? 1 : o.a) * Math.min(1, (SV.life - t) / 7);
+    if (a <= 0) return;
+    PX.sprite(ctx, x - d * 50, y - 30, 210, 84, c => {
+      c.translate(50 * d, 30); c.scale(d, 1);
+      if (em < 1) { c.save(); c.beginPath(); c.rect(-200, -120, 400, 121); c.clip(); c.translate(-(1 - em) * 30, (1 - em) * 34); }
+      serpentVec(c, t, o);
+      if (em < 1) { c.restore(); for (let i = 0; i < 6; i++) tongue(c, -26 + i * 9, 1, -PI / 2 + (i - 2.5) * 0.22, (1 - em) * (16 + 10 * rnd(i, 3)), 3.5, i % 2 ? C.o : C.ro, C.y, 0.1); }   // the ground bursts
+    }, { pal: PAL, alpha: a });
+  }
+  PP.serpent = serpent;
   const SIG = SW.signature && SW.signature.SIG && SW.signature.SIG.pyra;
   if (SIG && SIG.cast) {
     const _fs = SIG.cast;
@@ -190,28 +287,7 @@
       const n0 = z.shots.length, r = _fs.apply(this, arguments);
       if (!isP(G)) return r;
       const s0 = z.shots.slice(n0).find(s => s.life === 48 && s.paint); if (!s0) return r;
-      s0.paint = (ctx, x, y, s) => {
-        const d = s.dir, t = s.t;
-        PX.sprite(ctx, x - d * 40, y - 26, 170, 84, c => {
-          c.translate(40 * d, 26); c.scale(d, 1);
-          const spine = i => [-i * 7.5, -13 - Math.sin(t * 0.5 - i * 0.75) * 8 - Math.max(0, 3 - i) * 5];
-          for (let i = 13; i >= 1; i--) {   // the body: coils of flame, a blue spine, fins of fire along the back
-            const q = spine(i), rr = 9.5 - i * 0.5;
-            if (i % 2) tongue(c, q[0], q[1] - rr * 0.5, -PI / 2 - 0.7, rr * 2.2, rr * 0.5, C.o, C.y, 0.12);
-            poly(c, [[q[0] - rr * 1.3, q[1]], [q[0], q[1] - rr], [q[0] + rr * 1.3, q[1]], [q[0], q[1] + rr]], i % 2 ? C.ro : C.o);
-            poly(c, [[q[0] - rr * 1.1, q[1] + rr * 0.15], [q[0], q[1] + rr], [q[0] + rr * 1.1, q[1] + rr * 0.15]], C.r);
-            poly(c, [[q[0] - rr * 0.6, q[1] - rr * 0.1], [q[0], q[1] - rr * 0.5], [q[0] + rr * 0.6, q[1] - rr * 0.1], [q[0], q[1] + rr * 0.3]], i % 3 ? C.y : C.bl);
-          }
-          const h = spine(0), jaw = 0.25 + 0.6 * Math.max(0, Math.sin(t * 0.63));   // the head: it bites every ten frames
-          c.save(); c.translate(h[0] + 3, h[1] - 3); c.scale(1.7, 1.7);
-          for (let i = 0; i < 4; i++) tongue(c, -3 - i * 1.5, -5, PI + 0.5 + i * 0.28, 13 - i * 2, 2.4, i % 2 ? C.a : C.ro, i % 2 ? null : C.y, 0.1);   // a mane of flame
-          c.save(); c.rotate(jaw * 0.7); poly(c, [[-2, 2], [15, 3], [12, 7], [-2, 7]], C.ro); poly(c, [[-2, 2], [15, 3], [6, 4]], C.r0); poly(c, [[9, 3.5], [11.5, 3.5], [10, -1]], C.w); poly(c, [[4, 3], [6, 3], [5, 0]], C.w); c.restore();
-          poly(c, [[-5, 4], [-6, -6], [2, -9], [12, -6], [18, -1], [14, 2], [-2, 3]], C.o); poly(c, [[2, -9], [12, -6], [18, -1], [8, -3]], C.a); poly(c, [[-5, 4], [-6, -2], [4, 0], [-2, 3]], C.ro);
-          poly(c, [[12, 1], [14.5, 1], [13, 6.5]], C.w); poly(c, [[7, 1.5], [9, 1.5], [8, 5]], C.w);   // fangs
-          poly(c, [[2, -7.5], [12, -4.5], [11.5, -3], [2.5, -5.5]], C.k); poly(c, [[4, -5.2], [11, -3], [6, -2]], C.bl); poly(c, [[6, -4.4], [10, -3.1], [7, -2.6]], C.w);   // the eye under its brow
-          c.restore();
-        }, { pal: PAL });
-      };
+      s0.paint = (ctx, x, y, s) => serpent(ctx, x, y, s.dir, s.t);
       return r;
     };
   }
