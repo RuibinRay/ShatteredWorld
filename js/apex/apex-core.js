@@ -315,13 +315,16 @@
   // ultimate stays 47% for everyone (js/ult-share.js). Itsuki was measured without the mirror show's boss rules
   // (HC.MIR.boss: in bot-vs-bot shows the others may not slip out of his combos), so a player's Itsuki meets them fairly;
   // his kit, routes and Thunder Palm chain are untouched, only these two Versus numbers.
+  // 2026-11-23 the user asked for every hero's Versus win rate within about +-20 of 50%, these sixteen and Itsuki included
+  // ("Everyone, Itsuki too"), so the table below replaces the "beat the other 48" numbers: tools/band-balance.js, full round
+  // robins of all 64 (see js/versus-balance.js). Story duels keep the old numbers (SW.versusBalance.STORY).
   AP.TUNE = {
-    // (Itsuki's damage: the user, 2026-11-21, "all skills dmg and melee, not ult, reduce by 20%"; his ultimate stays 47%:
-    // js/ult-share.js caps and tops it up whatever this says)
-    itsuki: { dmg: 0.49, hp: 0.72 }, corvin: { dmg: 0.95, hp: 0.96 }, tessa: { dmg: 1.1, hp: 1.09 }, orin: { dmg: 1.27, hp: 1.19 },
-    noct: { dmg: 1.28, hp: 1.17 }, mira: { dmg: 1.33, hp: 1.22 }, vega: { dmg: 1.4, hp: 1.28 }, jax: { dmg: 1.69, hp: 1.44 },
-    sen: { dmg: 1.68, hp: 1.43 }, rook: { dmg: 1.02, hp: 1 }, ferra: { dmg: 1.85, hp: 1.55 }, apis: { dmg: 1.37, hp: 1.24 },
-    hex: { dmg: 2.1, hp: 1.68 }, maren: { dmg: 1.63, hp: 1.4 }, bando: { dmg: 2.17, hp: 1.71 }, vex: { dmg: 2.36, hp: 1.79 }
+    itsuki: { dmg: 0.17, hp: 0.3 }, corvin: { dmg: 0.54, hp: 0.65 }, tessa: { dmg: 0.51, hp: 0.64 },
+    orin: { dmg: 0.68, hp: 0.78 }, noct: { dmg: 0.65, hp: 0.76 }, mira: { dmg: 0.73, hp: 0.81 },
+    vega: { dmg: 0.7, hp: 0.8 }, jax: { dmg: 0.72, hp: 0.82 }, sen: { dmg: 0.76, hp: 0.84 },
+    rook: { dmg: 0.56, hp: 0.67 }, ferra: { dmg: 0.77, hp: 0.87 }, apis: { dmg: 0.87, hp: 0.92 },
+    hex: { dmg: 1.12, hp: 1.14 }, maren: { dmg: 0.74, hp: 0.85 }, bando: { dmg: 1, hp: 1.03 },
+    vex: { dmg: 1.29, hp: 1.2 }
   };
   function ready() {
     const B = SW.versusBalance;

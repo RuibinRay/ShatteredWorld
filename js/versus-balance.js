@@ -15,36 +15,69 @@
   // (spread 9). Corvin is left out too (the user wants him the strongest counter hero). Clamped to 0.7-1.45 damage and
   // 0.8-1.3 health, so no hero changes past that; Lin, Mako, Nyra, Kova, Sora and Tarn are at the top, Rook and Apis at
   // the bottom (Rook's S+U lands in 6 frames from up to 180 px)
+  // 2026-11-23 (the user: "rebalance versus every hero win rate ... similar +-20%", for every hero, Itsuki and the apex
+  // sixteen included; Itsuki v2 may stay strong and is not in the tables). Solved with tools/band-balance.js: full round
+  // robins, Nightmare vs Nightmare, all 64 heroes, both sides (4,032 rounds a pass, 126 per hero), 5 passes, then
+  // Itsuki's health on its own (his hits were already near 1 damage each; he wins by control).
+  // Before: 20-88% (20 heroes outside 30-70; the sixteen apex heroes 74-88%, Itsuki 84%). After, measured on a fresh
+  // load: 36.5-59.5% for all 64 (Itsuki 51.6%). The sixteen apex heroes' numbers are in AP.TUNE (js/apex/apex-core.js),
+  // which writes them here; the weak heroes were lifted through their skill damage (js/weak-skills.js,
+  // SW.weakSkills.per, as the user asked: "improve skill dmg if too weak") and some health, their damage table unchanged.
   const DMG = {
-    apis: 0.7, ashka: 0.8, brakk: 0.99, brann: 1.38, coda: 1.19, convergence: 1.37, dune: 1.3, dyna: 0.78,
-    elixa: 0.7, fenn: 0.7, fumi: 0.92, gale: 1.18, garo: 1.1, hart: 1.15, hex: 1.01, hollis: 1.18, isa: 0.7,
-    isolde: 0.99, ivo: 1.16, kael: 0.8, kestra: 1.02, kiri: 0.75, kova: 1.45, lin: 1.45, lux: 0.72, mako: 1.45,
-    maren: 0.7, mika: 1.25, moro: 0.85, nami: 0.81, nyra: 1.45, oda: 1.24, opal: 0.77, pell: 0.7, pyra: 1.06,
-    rook: 0.7, rue: 1.1, ryo: 1.22, sable: 1.07, slick: 0.83, sora: 1.45, tarek: 0.95, tarn: 1.45, taro: 0.83,
-    thorne: 1.19, tor: 1.15, ume: 0.73, vesna: 1.14, vesper: 1.06, vex: 1.07, yara: 1.27, zara: 0.94
+    aldric: 0.97, ashka: 0.8, brakk: 0.99, brann: 1.38, coda: 1.19, convergence: 1.37, dune: 1.3, dyna: 0.78,
+    elixa: 0.7, fenn: 0.7, fumi: 0.92, gale: 1.18, garo: 1.1, hart: 1.15, hollis: 1.18, isa: 0.7, isolde: 0.99,
+    ivo: 1.16, kael: 0.8, kestra: 1.02, kiri: 0.75, kova: 1.45, lin: 1.45, lux: 0.72, mako: 1.45, mika: 1.25,
+    moro: 0.85, nami: 0.81, nyra: 1.45, oda: 1.24, opal: 0.77, pell: 0.7, pyra: 1.06, rue: 1.1, ryo: 1.22,
+    sable: 1.07, slick: 0.83, sora: 1.4, tarek: 0.95, tarn: 1.45, taro: 0.83, thorne: 1.19, tor: 1.15, ume: 0.73,
+    vesna: 1.14, vesper: 1.06, yara: 1.27, zara: 0.94
   };
   const HP = {
-    apis: 0.8, ashka: 0.88, brakk: 0.99, brann: 1.23, coda: 1.13, convergence: 1.23, dune: 1.18, dyna: 0.86,
-    elixa: 0.8, fenn: 0.8, fumi: 0.95, gale: 1.11, garo: 1.06, hart: 1.09, hex: 1, hollis: 1.12, isa: 0.8, isolde: 1,
-    ivo: 1.1, kael: 0.88, kestra: 1.01, kiri: 0.83, kova: 1.3, lin: 1.3, lux: 0.82, mako: 1.3, maren: 0.8,
-    mika: 1.16, moro: 0.91, nami: 0.88, nyra: 1.3, oda: 1.14, opal: 0.86, pell: 0.8, pyra: 1.04, rook: 0.8,
-    rue: 1.07, ryo: 1.14, sable: 1.05, slick: 0.89, sora: 1.29, tarek: 0.97, tarn: 1.3, taro: 0.89, thorne: 1.12,
-    tor: 1.1, ume: 0.82, vesna: 1.09, vesper: 1.03, vex: 1.04, yara: 1.18, zara: 0.96
+    aldric: 1.01, ashka: 1.26, brakk: 1.04, brann: 1.32, coda: 1.25, convergence: 1.41, dune: 1.24, dyna: 0.92,
+    elixa: 0.92, fenn: 0.91, fumi: 1.02, gale: 1.26, garo: 1.24, hart: 1.12, hollis: 1.29, isa: 1, isolde: 1.09,
+    ivo: 1.19, kael: 1.04, kestra: 1.27, kiri: 1.03, kova: 1.46, lin: 1.68, lux: 1.21, mako: 1.47, mika: 1.31,
+    moro: 1.06, nami: 1.1, nyra: 1.4, oda: 1.23, opal: 1, pell: 1.05, pyra: 1.12, rue: 1.17, ryo: 1.26, sable: 1.15,
+    slick: 1.09, sora: 1.31, tarek: 1.24, tarn: 1.5, taro: 0.98, thorne: 1.28, tor: 1.26, ume: 1.21, vesna: 1.34,
+    vesper: 1.26, yara: 1.53, zara: 1.11
   };
-  const B = SW.versusBalance = { on: true, DMG, HP };
+  // story duels (V.mode 'duel': The Hollow Crown and the rest) keep the numbers they had before 2026-11-23, apex ones
+  // included, so story mode does not change with the Versus tables
+  const STORY = {
+    DMG: {
+      apis: 1.37, ashka: 0.8, bando: 2.17, brakk: 0.99, brann: 1.38, coda: 1.19, convergence: 1.37, corvin: 0.95,
+      dune: 1.3, dyna: 0.78, elixa: 0.7, fenn: 0.7, ferra: 1.85, fumi: 0.92, gale: 1.18, garo: 1.1, hart: 1.15,
+      hex: 2.1, hollis: 1.18, isa: 0.7, isolde: 0.99, itsuki: 0.49, ivo: 1.16, jax: 1.69, kael: 0.8, kestra: 1.02,
+      kiri: 0.75, kova: 1.45, lin: 1.45, lux: 0.72, mako: 1.45, maren: 1.63, mika: 1.25, mira: 1.33, moro: 0.85,
+      nami: 0.81, noct: 1.28, nyra: 1.45, oda: 1.24, opal: 0.77, orin: 1.27, pell: 0.7, pyra: 1.06, rook: 1.02,
+      rue: 1.1, ryo: 1.22, sable: 1.07, sen: 1.68, slick: 0.83, sora: 1.45, tarek: 0.95, tarn: 1.45, taro: 0.83,
+      tessa: 1.1, thorne: 1.19, tor: 1.15, ume: 0.73, vega: 1.4, vesna: 1.14, vesper: 1.06, vex: 2.36, yara: 1.27,
+      zara: 0.94
+    },
+    HP: {
+      apis: 1.24, ashka: 0.88, bando: 1.71, brakk: 0.99, brann: 1.23, coda: 1.13, convergence: 1.23, corvin: 0.96,
+      dune: 1.18, dyna: 0.86, elixa: 0.8, fenn: 0.8, ferra: 1.55, fumi: 0.95, gale: 1.11, garo: 1.06, hart: 1.09,
+      hex: 1.68, hollis: 1.12, isa: 0.8, isolde: 1, itsuki: 0.72, ivo: 1.1, jax: 1.44, kael: 0.88, kestra: 1.01,
+      kiri: 0.83, kova: 1.3, lin: 1.3, lux: 0.82, mako: 1.3, maren: 1.4, mika: 1.16, mira: 1.22, moro: 0.91,
+      nami: 0.88, noct: 1.17, nyra: 1.3, oda: 1.14, opal: 0.86, orin: 1.19, pell: 0.8, pyra: 1.04, rook: 1,
+      rue: 1.07, ryo: 1.14, sable: 1.05, sen: 1.43, slick: 0.89, sora: 1.29, tarek: 0.97, tarn: 1.3, taro: 0.89,
+      tessa: 1.09, thorne: 1.12, tor: 1.1, ume: 0.82, vega: 1.28, vesna: 1.09, vesper: 1.03, vex: 1.79, yara: 1.18,
+      zara: 0.96
+    }
+  };
+  const B = SW.versusBalance = { on: true, DMG, HP, STORY };
+  const tab = k => (V.mode === 'duel' ? B.STORY : B)[k];
   const inVs = () => B.on && G.scene === 'vs';
   // damage: V.tune[hero] reads through this, keeping whatever the older tables (and getters) give
   B.apply = function () {
-    Object.keys(B.DMG).forEach(h => {
+    Object.keys(Object.assign({}, B.STORY.DMG, B.DMG)).forEach(h => {
       const d = Object.getOwnPropertyDescriptor(V.tune, h);
       if (d && d.get && d.get.nkBal) return;
       let base = d && d.get ? d.get : null, val = d && !d.get ? d.value : 1;
-      const get = () => (base ? base() : val) * (inVs() ? B.DMG[h] || 1 : 1); get.nkBal = true;
+      const get = () => (base ? base() : val) * (inVs() ? tab('DMG')[h] || 1 : 1); get.nkBal = true;
       Object.defineProperty(V.tune, h, { configurable: true, enumerable: true, get, set: v => { base = null; val = v; } });
     });
   };
   // health
   const _hm = P.hpMax;
-  P.hpMax = function () { const v = _hm.apply(this, arguments), h = G.state && G.state.hero, k = inVs() && h ? B.HP[h] : 0; return k ? Math.round(v * k) : v; };
+  P.hpMax = function () { const v = _hm.apply(this, arguments), h = G.state && G.state.hero, k = inVs() && h ? tab('HP')[h] : 0; return k ? Math.round(v * k) : v; };
   B.apply();
 })();
